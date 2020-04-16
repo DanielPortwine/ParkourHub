@@ -25,3 +25,5 @@ Route::get('email/verify/{id}/{hash}', 'Auth\VerificationController@verify')->na
 Route::get('email/resend', 'Auth\VerificationController@resend')->name('verification.resend');
 
 Route::get('/home', 'HomeController@index')->name('home')->middleware('verified');
+
+Route::post('/home', 'UserController@update')->name('user_update');
