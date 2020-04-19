@@ -5,9 +5,9 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">Account Information</div>
+                <div class="card-header bg-green sedgwick">Account Information</div>
 
-                <div class="card-body">
+                <div class="card-body bg-grey text-white">
                     @if (session('status'))
                         <div class="alert alert-success" role="alert">
                             {{ session('status') }}
@@ -25,7 +25,7 @@
                             <label for="email">Email Address</label>
                             <input type="email" id="email" class="form-control" name="email" value="{{ $user->email }}">
                         </div>
-                        <button type="submit" class="btn btn-primary">Save</button>
+                        <button type="submit" class="btn btn-green">Save</button>
                     </form>
                 </div>
             </div>
