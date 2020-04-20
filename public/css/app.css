@@ -10926,6 +10926,14 @@ body {
   font-weight: 400;
 }
 
+.btn-link {
+  color: #73c979;
+}
+
+.btn-link:hover {
+  color: #73c979;
+}
+
 .links > a {
   color: #636b6f;
   padding: 0 25px;
@@ -10954,6 +10962,10 @@ body {
   border-radius: 5px;
 }
 
+.separator {
+  border-bottom: 1px solid #f0f5f0;
+}
+
 .register-button {
   background-color: #f0f5f0;
   color: #73c979;
@@ -10967,20 +10979,6 @@ body {
   background-color: #6c757d;
   color: #f0f5f0;
   text-decoration: none;
-}
-
-.signup-button {
-  background-color: #73c979;
-  color: #f0f5f0;
-  font-size: 20px;
-  font-weight: 600;
-  border-radius: 5px;
-  border: none;
-}
-
-.signup-button:hover {
-  background-color: #f0f5f0;
-  color: #73c979;
 }
 
 .feature-icon {
@@ -11004,20 +11002,8 @@ body {
   color: #f0f5f0;
 }
 
-.text-white * {
+.text-white {
   color: #f0f5f0;
-}
-
-.text-white a:hover {
-  color: #73c979;
-}
-
-.text-white .dropdown-item:hover {
-  color: #f0f5f0;
-}
-
-.text-white input {
-  color: #454545;
 }
 
 .bg-grey {
@@ -11038,8 +11024,8 @@ body {
 }
 
 .btn-green:hover {
-  background-color: #6c757d;
-  color: #73c979;
+  background-color: #529e58;
+  color: #f0f5f0;
 }
 
 .card {
@@ -11070,6 +11056,7 @@ input[type=checkbox] + label:before {
   font: 16px/1em sans-serif;
   height: 16px;
   padding: 0;
+  margin-right: 5px;
   vertical-align: center;
   width: 16px;
 }

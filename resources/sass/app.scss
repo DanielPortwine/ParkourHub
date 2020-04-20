@@ -48,6 +48,14 @@ html, body {
     font-weight: 400;
 }
 
+.btn-link {
+    color: $green;
+}
+
+.btn-link:hover {
+    color: $green;
+}
+
 .links > a {
     color: $grey1;
     padding: 0 25px;
@@ -76,6 +84,10 @@ html, body {
     border-radius: 5px;
 }
 
+.separator {
+    border-bottom: 1px solid $white;
+}
+
 .register-button {
     background-color: $white;
     color: $green;
@@ -89,20 +101,6 @@ html, body {
     background-color: $grey2;
     color: $white;
     text-decoration: none;
-}
-
-.signup-button {
-    background-color: $green;
-    color: $white;
-    font-size: 20px;
-    font-weight: 600;
-    border-radius: 5px;
-    border: none;
-}
-
-.signup-button:hover {
-    background-color: $white;
-    color: $green;
 }
 
 .feature-icon {
@@ -126,20 +124,8 @@ html, body {
     color: $white;
 }
 
-.text-white * {
+.text-white {
     color: $white;
-}
-
-.text-white a:hover {
-    color: $green;
-}
-
-.text-white .dropdown-item:hover {
-    color: $white;
-}
-
-.text-white input {
-    color: $grey;
 }
 
 .bg-grey {
@@ -160,8 +146,8 @@ html, body {
 }
 
 .btn-green:hover {
-    background-color: $grey2;
-    color: $green;
+    background-color: $green1;
+    color: $white;
 }
 
 .card {
@@ -190,6 +176,7 @@ input[type="checkbox"] + label:before {
     font: 16px/1em sans-serif;
     height: 16px;
     padding: 0;
+    margin-right: 5px;
     vertical-align: center;
     width: 16px;
 }

@@ -24,7 +24,7 @@
     <div class="flex-center full-height section title-section">
         <div class="top-right links">
             @auth
-                <a href="{{ url('/home') }}">Account</a>
+                <a href="{{ url('/home') }}">Home</a>
             @else
                 <a href="{{ route('login') }}">Login</a>
 
