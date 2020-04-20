@@ -12,10 +12,11 @@
             <div class="col-md-8">
                 <h3 class="footer-subtitle mb-0 sedgwick">Subscribe</h3>
                 <small class="mb-2">Receive updates when new features are added or improved.</small>
-                <form>
+                <form method="POST" action="/subscribe">
+                    @csrf
                     <div class="row">
                         <div class="col-7 col-md-10 pr-0">
-                            <input type="email" placeholder="Email Address" class="w-100">
+                            <input type="email" name="email" placeholder="Email Address" class="w-100">
                         </div>
                         <div class="col-5 col-md-2">
                             <input type="submit" value="Subscribe" class="btn btn-green">

@@ -6,7 +6,3 @@ $window.scroll(function () {
         $('#scroll-arrow').fadeOut();
     }
 });
-
-if (typeof jQuery != 'undefined') {
-    console.log(jQuery.fn.jquery);
-}

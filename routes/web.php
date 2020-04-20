@@ -27,3 +27,8 @@ Route::get('email/resend', 'Auth\VerificationController@resend')->name('verifica
 Route::get('/home', 'HomeController@index')->name('home')->middleware('verified');
 
 Route::post('/home', 'UserController@update')->name('user_update');
+Route::post('/subscribe', 'UserController@subscribe')->name('user_subscribe');
+
+Route::get('/thanks', function() {
+    return view('subscription_thanks');
+})->name('subscription_thanks');
