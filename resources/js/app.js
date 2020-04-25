@@ -1,14 +1,283 @@
 require('./bootstrap');
 
-var $window = $(window);
-$window.scroll(function() {
-    if ($window.scrollTop() > 100) {
-        $('#scroll-arrow').fadeOut();
-    }
-});
+import 'ol/ol.css';
+import Map from 'ol/Map';
+import View from 'ol/View';
+import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer';
+import OSM from 'ol/source/OSM';
+import Overlay from 'ol/Overlay';
+import Feature from 'ol/Feature';
+import Point from 'ol/geom/Point';
+import VectorSource from 'ol/source/Vector';
+import {Circle as CircleStyle, Fill, Icon, Stroke, Style} from 'ol/style';
+import {fromLonLat} from 'ol/proj';
+import {boundingExtent} from 'ol/extent';
 
-$('.require-confirmation').click(function() {
-    $(this).hide();
-    $(this).siblings('.confirmation-button').removeClass('d-none');
-    $(this).siblings('.confirmation-text').removeClass('d-none');
+function showSpot(feature, viewSpotPopup, viewSpotOverlay, urlParams, map = null)
+{
+    $('.ol-popup').hide();
+    var coordinates = feature.getGeometry().getCoordinates();
+    if (feature.get('private') == true) {
+        $('#spot-private').removeClass('d-none');
+    } else {
+        $('#spot-private').addClass('d-none');
+    }
+    if (feature.get('image') != null) {
+        $('#spot-image').attr('src', feature.get('image'));
+        $('#spot-image').closest('.row').show();
+    } else {
+        $('#spot-image').closest('.row').hide();
+    }
+    $('#spot-name').text(feature.get('name'));
+    $('#spot-description').text(feature.get('description'));
+    $('#view-spot-button').attr('href', '/spots/spot/' + feature.get('id'));
+    $(viewSpotPopup).show();
+    viewSpotOverlay.setPosition(coordinates);
+    $(viewSpotPopup).css('top', -10);
+    if (map != null) {
+        map.getView().setCenter(coordinates);
+    }
+    if (urlParams.has('latLon')) {
+        urlParams.delete('latLon');
+    }
+    if (urlParams.has('coords')) {
+        urlParams.delete('coords');
+    }
+    if (urlParams.has('bounding')) {
+        urlParams.delete('bounding');
+    }
+    if (urlParams.has('spot')) {
+        urlParams.set('spot', feature.get('id'));
+    } else {
+        urlParams.append('spot', feature.get('id'));
+    }
+    window.history.pushState('obj', '', window.location.protocol + "//" + window.location.host + window.location.pathname + '?' + urlParams);
+}
+
+function searchAddress(search) {
+    $.ajax({
+        url: 'https://nominatim.openstreetmap.org/search?q=' + search + '&format=json&addressdetails=1&limit=20',
+        type: 'GET',
+        success: function(result) {
+            if (result.length > 0) {
+                var $addressResults = $('#address-results');
+                $addressResults.html('');
+                for (var address in result) {
+                    address = (result[address]);
+                    $addressResults.append($('<div class="row btn text-white w-100 text-left" onclick="window.location = `/spots?search=' + search + '&bounding=' + address.boundingbox + '`"><div class="col">' + address.display_name + '</div></div>'));
+                }
+                $('#map-search-results').removeClass('d-none').show();
+                $('#map-search-results-addresses').removeClass('d-none');
+                $('#map-search-results-addresses-count').text(result.length);
+            } else {
+                $('#map-search-results-addresses').addClass('d-none');
+            }
+        }
+    })
+}
+
+function searchSpot(search) {
+    $.ajax({
+        url: '/spots/search',
+        type: 'GET',
+        data: 'search=' + search,
+        success: function(result) {
+            if (result.length > 0) {
+                var $spotResults = $('#spot-results');
+                $spotResults.html('');
+                for (var spot in result) {
+                    spot = (result[spot]);
+                    $spotResults.append($('<div class="row btn text-white w-100 text-left" onclick="window.location = `/spots?search=' + search + '&spot=' + spot.id + '`"><div class="col">' + spot.name + ' by ' + spot.user.name + '</div></div>'));
+                }
+                $('#map-search-results').removeClass('d-none').show();
+                $('#map-search-results-spots').removeClass('d-none');
+                $('#map-search-results-spots-count').text(result.length);
+            } else {
+                $('#map-search-results-spots').addClass('d-none');
+            }
+        }
+    })
+}
+
+function mapSearch(urlParams, search = null) {
+    if (search == null) {
+        search = $('#map-search-input').val();
+    }
+    if (search == '') {
+        urlParams.delete('search');
+        window.history.pushState('obj', '', window.location.protocol + "//" + window.location.host + window.location.pathname);
+        $('#map-search-results').addClass('d-none');
+        return;
+    }
+    var latLon = search.split(',');
+    if (latLon.length == 2 && (-85 <= latLon[0] && latLon[0] <= 85) && (-180 <= latLon[1] && latLon[1] <= 180)) {
+        console.log('searching lat lon');
+        window.location = '/spots?latLon=' + latLon;
+    }
+    if (urlParams.has('search')) {
+        urlParams.set('search', search);
+    } else {
+        urlParams.append('search', search);
+    }
+    window.history.pushState('obj', '', window.location.protocol + "//" + window.location.host + window.location.pathname + '?' + urlParams);
+    searchAddress(search);
+    searchSpot(search);
+}
+
+$(document).ready(function() {
+    var $window = $(window);
+    $window.scroll(function() {
+        if ($window.scrollTop() > 100) {
+            $('#scroll-arrow').fadeOut();
+        }
+    });
+
+    $('.require-confirmation').click(function() {
+        $(this).hide();
+        $(this).siblings('.confirmation-button').removeClass('d-none');
+        $(this).siblings('.confirmation-text').removeClass('d-none');
+    });
+
+    var popupOptions = {
+            positioning: 'bottom-center',
+            autoPan: true,
+            autoPanMargin: 1,
+            autoPanAnimation: {
+                duration: 250
+            }
+        },
+        createSpotPopup = document.getElementById('create-spot-popup'),
+        createSpotOverlay = new Overlay(
+            $.extend(popupOptions,
+                {
+                    element: createSpotPopup
+                }
+            )
+        ),
+        viewSpotPopup = document.getElementById('view-spot-popup'),
+        viewSpotOverlay = new Overlay(
+            $.extend(popupOptions,
+                {
+                    element: viewSpotPopup
+                }
+            )
+        ),
+        urlParams = new URLSearchParams(window.location.search),
+        vectorSource = new VectorSource(),
+        startingCoords = [-175394.8171068958, 7317942.661464895],
+        startingZoom = 10;
+
+    if (urlParams.has('search')) {
+        searchAddress(urlParams.get('search'));
+        searchSpot(urlParams.get('search'));
+    }
+
+    if (urlParams.has('latLon')) {
+        var latLon = urlParams.get('latLon').split(','),
+            lonLat = [latLon[1], latLon[0]];
+        startingCoords = fromLonLat(lonLat);
+        startingZoom = 15;
+    } else if (urlParams.has('coords')) {
+        startingCoords = urlParams.get('coords').split(',');
+        startingZoom = 16;
+    } else if (urlParams.has('spot')) {
+        startingZoom = 18;
+    }
+    var map = new Map({
+        layers: [
+            new TileLayer({
+                source: new OSM(),
+            }),
+            new VectorLayer({
+                source: vectorSource,
+                style: new Style({
+                    image: new CircleStyle({
+                        radius: 7,
+                        fill: new Fill({
+                            color: 'black'
+                        }),
+                        stroke: new Stroke({
+                            color: 'white',
+                            width: 2
+                        })
+                    })
+                })
+            })
+        ],
+        overlays: [createSpotOverlay, viewSpotOverlay],
+        target: 'map',
+        view: new View({
+            center: startingCoords,
+            zoom: startingZoom,
+        }),
+        controls: [],
+    });
+
+    if (urlParams.has('bounding')) {
+        var boundingBoxLatLon = urlParams.get('bounding').split(','),
+            boundingBox = [fromLonLat([boundingBoxLatLon[2], boundingBoxLatLon[1]])];
+        boundingBox.push(fromLonLat([boundingBoxLatLon[3], boundingBoxLatLon[0]]));
+        map.getView().fit(boundingExtent(boundingBox), {
+            padding: [20, 20, 20, 20],
+            maxZoom: 20,
+        });
+    }
+
+    $.ajax({
+        url: '/spots/fetch',
+        type: 'GET',
+        success: function(result) {
+            for (var spot in result) {
+                spot = (result[spot]);
+                var feature = new Feature({
+                    type: 'spot',
+                    geometry: new Point(spot.coordinates.split(',')),
+                    id: spot.id,
+                    name: spot.name,
+                    description: spot.description,
+                    private: spot.private,
+                    image: spot.image,
+                });
+                vectorSource.addFeature(feature);
+                if (urlParams.get('spot') == spot.id) {
+                    showSpot(feature, viewSpotPopup, viewSpotOverlay, urlParams, map);
+                }
+            }
+        },
+    });
+    // prevent loading of too many spots at once
+    map.on('movestart', function(e) {
+        if (map.getView().getZoom() > 22) {
+            map.getView().setZoom(22);
+        }
+    });
+    map.on('click', function(e) {
+        var feature = map.forEachFeatureAtPixel(e.pixel, function(feature) {
+            return feature;
+        });
+        if (feature) {
+            showSpot(feature, viewSpotPopup, viewSpotOverlay, urlParams);
+        } else {
+            $('.ol-popup').hide();
+            $(createSpotPopup).show();
+            $('#coordinates').val(e.coordinate[0] + ',' + e.coordinate[1]);
+            createSpotOverlay.setPosition(e.coordinate);
+            $(createSpotPopup).css('margin-top', -parseInt($(createSpotPopup).height()) - 10);
+        }
+    });
+
+    $('.close-popup-button').click(function() {
+        $(this).closest('.popup').fadeOut();
+        if ($(this).closest('.popup').attr('id') == 'view-spot-popup') {
+            window.history.pushState('obj', '', window.location.protocol + "//" + window.location.host + window.location.pathname);
+        }
+    });
+
+    $('#map-search-button').click(function() {
+        mapSearch(urlParams);
+    });
+    $('#map-search-form').submit(function(e) {
+        mapSearch(urlParams);
+        e.preventDefault();
+    });
 });

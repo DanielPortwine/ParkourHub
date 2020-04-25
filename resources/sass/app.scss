@@ -188,3 +188,65 @@ input[type="checkbox"]:checked + label:before {
 input[type="checkbox"]:checked + label:after {
     font-weight: bold;
 }
+
+.vh-100-nav {
+    height: calc(100vh - 59px);
+}
+
+#map{
+    height: 100%;
+}
+
+.ol-popup {
+    position: relative;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    max-width: 100vw;
+    display: none;
+}
+
+.ol-popup:after {
+    top: 100%;
+    left: calc(50% - 10px);
+    border: 10px solid transparent;
+    border-top-color: $green;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+}
+
+.ol-popup .card {
+    word-wrap: normal;
+}
+
+.my-spot-card {
+    cursor: pointer;
+}
+
+#view-spot-popup {
+    width: 250px;
+}
+
+.map-search {
+    z-index: 100;
+    width: 500px;
+}
+
+#address-results,
+#spot-results {
+    max-height: 50vh;
+    overflow: auto;
+}
+
+@include media-breakpoint-down(md) {
+    .map-search {
+        width: 100%;
+    }
+
+    #address-results,
+    #spot-results {
+        max-height: 40vh;
+        overflow: auto;
+    }
+}

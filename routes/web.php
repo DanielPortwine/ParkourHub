@@ -36,6 +36,18 @@ Route::prefix('user')->middleware('verified')->group(function() {
     Route::get('delete', 'UserController@delete')->name('user_delete');
 });
 
+Route::prefix('spots')->middleware('verified')->group(function() {
+    Route::get('/', 'SpotController@index')->name('spots');
+    Route::get('/spot/{id}', 'SpotController@view')->name('spot_view');
+    Route::get('/fetch', 'SpotController@fetch')->name('spot_fetch');
+    Route::post('/create', 'SpotController@create')->name('spot_create');
+    Route::get('/edit/{id}', 'SpotController@edit')->name('spot_edit');
+    Route::post('/edit/{id}', 'SpotController@update')->name('spot_update');
+    Route::get('/delete/{id}', 'SpotController@delete')->name('spot_delete');
+    Route::get('/my-spots', 'SpotController@my_spots')->name('my_spots');
+    Route::get('/search', 'SpotController@search')->name('spot_search');
+});
+
 Route::get('/thanks', function() {
     return view('subscription_thanks');
 })->name('subscription_thanks');
