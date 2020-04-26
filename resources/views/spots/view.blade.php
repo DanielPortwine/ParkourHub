@@ -6,13 +6,15 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header bg-green">
-                        <span class="sedgwick">{{ $spot->name }}</span>
-                        <span class="float-right">
-                            @if ($spot->user->id === Auth()->id())
-                                <a class="btn text-white" href="{{ route('spot_edit', $spot->id) }}"><i class="fa fa-pencil"></i></a>
-                            @endif
-                            <a class="btn text-white" href="{{ route('spots', ['spot' => $spot->id]) }}"><i class="fa fa-map-marker"></i></a>
-                        </span>
+                        <div class="row">
+                            <span class="col sedgwick">{{ $spot->name }}</span>
+                            <span class="col-auto">
+                                @if ($spot->user->id === Auth()->id())
+                                    <a class="btn text-white" href="{{ route('spot_edit', $spot->id) }}"><i class="fa fa-pencil"></i></a>
+                                @endif
+                                <a class="btn text-white" href="{{ route('spots', ['spot' => $spot->id]) }}"><i class="fa fa-map-marker"></i></a>
+                            </span>
+                        </div>
                     </div>
                     <div class="card-body bg-grey text-white">
                         @if (session('status'))
@@ -50,13 +52,15 @@
                                     <div class="col-md-4">
                                         <div class="card">
                                             <div class="card-header bg-green">
-                                                <span class="sedgwick">{{ $challenge->name }}</span>
-                                                <span class="float-right">
-                                                    @if($challenge->user_id === Auth()->id())
-                                                        <a class="btn text-white" href="{{ route('challenge_edit', $challenge->id) }}"><i class="fa fa-pencil"></i></a>
-                                                    @endif
-                                                    <a class="btn text-white" href="{{ route('challenge_view', $challenge->id) }}"><i class="fa fa-eye"></i></a>
-                                                </span>
+                                                <div class="row">
+                                                    <span class="col sedgwick">{{ $challenge->name }}</span>
+                                                    <span class="col-auto">
+                                                        @if($challenge->user_id === Auth()->id())
+                                                            <a class="btn text-white" href="{{ route('challenge_edit', $challenge->id) }}"><i class="fa fa-pencil"></i></a>
+                                                        @endif
+                                                        <a class="btn text-white" href="{{ route('challenge_view', $challenge->id) }}"><i class="fa fa-eye"></i></a>
+                                                    </span>
+                                                </div>
                                             </div>
                                             @if(!empty($challenge->video))
                                                 <div class="video-wrapper">

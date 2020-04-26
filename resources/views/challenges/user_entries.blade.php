@@ -21,10 +21,12 @@
                                     <div class="col-md-4">
                                         <div class="card">
                                             <div class="card-header bg-green">
-                                                <span class="sedgwick">{{ $entry->challenge->name }}</span>
-                                                <span class="float-right">
-                                                    <a class="btn text-white" href="{{ route('challenge_view', $entry->challenge->id) }}"><i class="fa fa-eye"></i></a>
-                                                </span>
+                                                <div class="row">
+                                                    <span class="col sedgwick">{{ $entry->challenge->name }}</span>
+                                                    <span class="col-auto">
+                                                        <a class="btn text-white" href="{{ route('challenge_view', $entry->challenge->id) }}"><i class="fa fa-eye"></i></a>
+                                                    </span>
+                                                </div>
                                             </div>
                                             @if(!empty($entry->video))
                                                 <div class="video-wrapper">

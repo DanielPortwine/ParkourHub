@@ -104,11 +104,13 @@
         <div class="popup ol-popup" id="view-spot-popup">
             <div class="card">
                 <div class="card-header bg-green">
-                    <span class="sedgwick" id="spot-name"></span>
-                    <span class="float-right">
-                        <a class="btn text-white" id="view-spot-button"><i class="fa fa-eye"></i></a>
-                        <a class="btn close-popup-button"><i class="fa fa-times"></i></a>
-                    </span>
+                    <div class="row">
+                        <span class="col sedgwick" id="spot-name"></span>
+                        <span class="col-auto">
+                            <a class="btn text-white" id="view-spot-button"><i class="fa fa-eye"></i></a>
+                            <a class="btn close-popup-button"><i class="fa fa-times"></i></a>
+                        </span>
+                    </div>
                 </div>
                 <div class="card-body bg-grey text-white">
                     <div class="row d-none" id="spot-private">

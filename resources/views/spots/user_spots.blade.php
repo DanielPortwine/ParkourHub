@@ -21,12 +21,14 @@
                                     <div class="col-md-4">
                                         <div class="card">
                                             <div class="card-header bg-green">
-                                                <span class="sedgwick">{{ $spot->name }}</span>
-                                                <span class="float-right">
-                                                    <a class="btn text-white" href="{{ route('spot_edit', $spot->id) }}"><i class="fa fa-pencil"></i></a>
-                                                    <a class="btn text-white" href="{{ route('spot_view', $spot->id) }}"><i class="fa fa-eye"></i></a>
-                                                    <a class="btn text-white" href="{{ route('spots', ['spot' => $spot->id]) }}"><i class="fa fa-map-marker"></i></a>
-                                                </span>
+                                                <div class="row">
+                                                    <span class="col sedgwick">{{ $spot->name }}</span>
+                                                    <span class="col-auto">
+                                                        <a class="btn text-white" href="{{ route('spot_edit', $spot->id) }}"><i class="fa fa-pencil"></i></a>
+                                                        <a class="btn text-white" href="{{ route('spot_view', $spot->id) }}"><i class="fa fa-eye"></i></a>
+                                                        <a class="btn text-white" href="{{ route('spots', ['spot' => $spot->id]) }}"><i class="fa fa-map-marker"></i></a>
+                                                    </span>
+                                                </div>
                                             </div>
                                             <img src="{{ $spot->image }}" class="card-image-top w-100">
                                             <div class="card-body bg-grey text-white">

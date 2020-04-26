@@ -6,14 +6,16 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header bg-green">
-                        <span class="sedgwick">{{ $challenge->name }}</span>
-                        <span class="float-right">
-                            @if ($challenge->user->id === Auth()->id())
-                                <a class="btn text-white" href="{{ route('challenge_edit', $challenge->id) }}"><i class="fa fa-pencil"></i></a>
-                            @endif
-                            <a class="btn text-white" href="{{ route('spot_view', $challenge->spot_id) }}"><i class="fa fa-eye"></i></a>
-                            <a class="btn text-white" href="{{ route('spots', ['spot' => $challenge->spot_id]) }}"><i class="fa fa-map-marker"></i></a>
-                        </span>
+                        <div class="row">
+                            <span class="col sedgwick">{{ $challenge->name }}</span>
+                            <span class="col-auto">
+                                @if ($challenge->user->id === Auth()->id())
+                                    <a class="btn text-white" href="{{ route('challenge_edit', $challenge->id) }}"><i class="fa fa-pencil"></i></a>
+                                @endif
+                                <a class="btn text-white" href="{{ route('spot_view', $challenge->spot_id) }}"><i class="fa fa-eye"></i></a>
+                                <a class="btn text-white" href="{{ route('spots', ['spot' => $challenge->spot_id]) }}"><i class="fa fa-map-marker"></i></a>
+                            </span>
+                        </div>
                     </div>
                     <div class="card-body bg-grey text-white">
                         @if (session('status'))
@@ -143,12 +145,14 @@
                                                         <span class="col-auto text-right"><i class="fa fa-trophy"></i></span>
                                                     </div>
                                                 @else
-                                                    <span class="sedgwick">{{ $entry->user->name }}</span>
-                                                    <span class="float-right">
-                                                        @if($challenge->user_id === Auth()->id() && !$challenge->won)
-                                                            <a class="btn text-white" href="{{ route('challenge_win', $entry->id) }}"><i class="fa fa-trophy"></i></a>
-                                                        @endif
-                                                    </span>
+                                                    <div class="row">
+                                                        <span class="col sedgwick">{{ $entry->user->name }}</span>
+                                                        <span class="col-auto">
+                                                            @if($challenge->user_id === Auth()->id() && !$challenge->won)
+                                                                <a class="btn text-white" href="{{ route('challenge_win', $entry->id) }}"><i class="fa fa-trophy"></i></a>
+                                                            @endif
+                                                        </span>
+                                                    </div>
                                                 @endif
                                             </div>
                                         </div>

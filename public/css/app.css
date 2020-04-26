@@ -11123,7 +11123,8 @@ input[type=checkbox]:checked + label:after {
 }
 
 #view-spot-popup {
-  width: 250px;
+  min-width: 250px;
+  max-width: 500px;
 }
 
 .map-search {
