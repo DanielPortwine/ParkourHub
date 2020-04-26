@@ -18,7 +18,6 @@
                         @foreach($spots->chunk(3) as $chunk)
                             <div class="card-deck mb-4">
                                 @foreach($chunk as $spot)
-                                    {{--<a href="{{ route('spot_view', $spot->id) }}"></a>--}}
                                     <div class="card my-spot-card" onclick="window.location = '{{ route('spot_view', $spot->id) }}'">
                                         <div class="card-header bg-green sedgwick">{{ $spot->name }}</div>
                                         <img src="{{ $spot->image }}" class="card-image-top w-100">

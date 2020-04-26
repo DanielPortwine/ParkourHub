@@ -75,7 +75,7 @@ class SpotController extends Controller
 
     public function delete($id)
     {
-        $spot = Spot::with(['user'])->where('id', $id)->first();
+        $spot = Spot::where('id', $id)->first();
         if ($spot->user_id === Auth()->id()) {
             $spot->delete();
         }
@@ -83,11 +83,11 @@ class SpotController extends Controller
         return redirect()->route('spots');
     }
 
-    public function my_spots()
+    public function user_spots()
     {
         $spots = Spot::where('user_id', Auth()->id())->orderBy('updated_at', 'desc')->get();
 
-        return view('spots.my_spots', ['spots' => $spots]);
+        return view('spots.user_spots', ['spots' => $spots]);
     }
 
     public function search(Request $request)

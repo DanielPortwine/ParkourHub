@@ -220,6 +220,26 @@ input[type="checkbox"]:checked + label:after {
     word-wrap: normal;
 }
 
+.card-header-bottom {
+    font-size: 25px;
+}
+
+.video-wrapper {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: 56.25%;
+}
+
+.video-wrapper iframe,
+.video-wrapper video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
 .my-spot-card {
     cursor: pointer;
 }

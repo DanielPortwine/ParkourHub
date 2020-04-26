@@ -5,15 +5,7 @@
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header bg-green">
-                        <span class="sedgwick">{{ $spot->name }}</span>
-                        <span class="float-right">
-                            @if ($spot->user->id === Auth()->id())
-                                <a class="btn text-white" href="{{ route('spot_edit', $spot->id) }}"><i class="fa fa-pencil"></i></a>
-                            @endif
-                            <a class="btn text-white" href="{{ route('spots', ['spot' => $spot->id]) }}"><i class="fa fa-map-marker"></i></a>
-                        </span>
-                    </div>
+                    <div class="card-header bg-green sedgwick">Challenges</div>
                     <div class="card-body bg-grey text-white">
                         @if (session('status'))
                             <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -23,28 +15,7 @@
                                 </button>
                             </div>
                         @endif
-                        <small>{{ $spot->private ? 'Private' : '' }}</small>
-                        @if(!empty($spot->image))
-                            <div class="row">
-                                <div class="col">
-                                    <img class="w-100" src="{{ $spot->image }}">
-                                </div>
-                            </div>
-                        @endif
-                        <div class="row">
-                            <div class="col">
-                                {{ $spot->description }}
-                            </div>
-                        </div>
-                        <div class="row py-4">
-                            <div class="col">
-                                <h2 class="sedgwick">Challenges ({{ count($spot->challenges) }})</h2>
-                            </div>
-                            <div class="col-auto">
-                                <a class="btn btn-green" href="{{ route('challenge_create', ['spot' => $spot->id]) }}"><i class="fa fa-plus"></i></a>
-                            </div>
-                        </div>
-                        @foreach($spot->challenges->chunk(3) as $chunk)
+                        @foreach($challenges->chunk(3) as $chunk)
                             <div class="row">
                                 @foreach($chunk as $challenge)
                                     <div class="col-md-4">
