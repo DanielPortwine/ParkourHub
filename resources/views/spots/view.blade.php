@@ -49,7 +49,7 @@
                                 @foreach($chunk as $challenge)
                                     <div class="col-md-4">
                                         <div class="card">
-                                            <div class="card-header bg-green text-white">
+                                            <div class="card-header bg-green">
                                                 <span class="sedgwick">{{ $challenge->name }}</span>
                                                 <span class="float-right">
                                                     @if($challenge->user_id === Auth()->id())

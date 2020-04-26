@@ -20,7 +20,7 @@
                                 @foreach($chunk as $entry)
                                     <div class="col-md-4">
                                         <div class="card">
-                                            <div class="card-header bg-green text-white">
+                                            <div class="card-header bg-green">
                                                 <span class="sedgwick">{{ $entry->challenge->name }}</span>
                                                 <span class="float-right">
                                                     <a class="btn text-white" href="{{ route('challenge_view', $entry->challenge->id) }}"><i class="fa fa-eye"></i></a>
@@ -37,7 +37,7 @@
                                                     <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/{{ $entry->youtube }}" frameborder="0" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                                                 </div>
                                             @endif
-                                            <div class="card-footer card-header-bottom bg-green text-white">
+                                            <div class="card-footer card-header-bottom bg-green">
                                                 @if($entry->winner)
                                                     <div class="row">
                                                         <span class="col-auto"><i class="fa fa-trophy"></i></span>

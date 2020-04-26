@@ -66,7 +66,7 @@
                                         <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/{{ $winner->youtube }}" frameborder="0" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                                     </div>
                                 @endif
-                                <div class="card-footer card-header-bottom bg-green text-white" style="font-size: 25px">
+                                <div class="card-footer card-header-bottom bg-green" style="font-size: 25px">
                                     <div class="row">
                                         <span class="col-auto"><i class="fa fa-trophy"></i></span>
                                         <span class="col text-center sedgwick">{{ $winner->user->name }}</span>
@@ -79,7 +79,7 @@
                             <p class="mb-3">You have entered this challenge.</p>
                         @else
                             <div class="card mb-4">
-                                <div class="card-header bg-green text-white sedgwick">Enter challenge</div>
+                                <div class="card-header bg-green sedgwick">Enter challenge</div>
                                 <div class="card-body bg-grey text-white">
                                     <form method="POST" action="{{ route('challenge_enter', $challenge->id) }}" enctype="multipart/form-data">
                                         @csrf
@@ -135,7 +135,7 @@
                                                     <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/{{ $entry->youtube }}" frameborder="0" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                                                 </div>
                                             @endif
-                                            <div class="card-footer card-header-bottom bg-green text-white">
+                                            <div class="card-footer card-header-bottom bg-green">
                                                 @if($entry->winner)
                                                     <div class="row">
                                                         <span class="col-auto"><i class="fa fa-trophy"></i></span>

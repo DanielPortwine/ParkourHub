@@ -11122,10 +11122,6 @@ input[type=checkbox]:checked + label:after {
   height: 100%;
 }
 
-.my-spot-card {
-  cursor: pointer;
-}
-
 #view-spot-popup {
   width: 250px;
 }
