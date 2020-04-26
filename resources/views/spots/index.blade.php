@@ -105,7 +105,10 @@
             <div class="card">
                 <div class="card-header bg-green">
                     <span class="sedgwick" id="spot-name"></span>
-                    <a class="btn close-popup-button float-right"><i class="fa fa-times"></i></a>
+                    <span class="float-right">
+                        <a class="btn text-white" id="view-spot-button"><i class="fa fa-eye"></i></a>
+                        <a class="btn close-popup-button"><i class="fa fa-times"></i></a>
+                    </span>
                 </div>
                 <div class="card-body bg-grey text-white">
                     <div class="row d-none" id="spot-private">
@@ -119,14 +122,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col">
-                            <p id="spot-description"></p>
-                        </div>
-                    </div>
-                    <div class="row mb-0">
-                        <div class="col">
-                            <a class="btn btn-green" id="view-spot-button">View</a>
-                        </div>
+                        <div class="col" id="spot-description"></div>
                     </div>
                 </div>
             </div>
