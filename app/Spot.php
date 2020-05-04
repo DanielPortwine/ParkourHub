@@ -20,6 +20,11 @@ class Spot extends Model
         return $this->belongsTo('App\User');
     }
 
+    public function hits()
+    {
+        return $this->hasMany('App\Hit');
+    }
+
     public function challenges()
     {
         return $this->hasMany('App\Challenge');

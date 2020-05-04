@@ -35,6 +35,7 @@ Route::prefix('user')->middleware('verified')->group(function() {
     Route::get('obfuscate/{field}', 'UserController@obfuscate')->name('obfuscate');
     Route::get('delete', 'UserController@delete')->name('user_delete');
     Route::get('/spots', 'UserController@spots')->name('user_spots');
+    Route::get('/hitlist', 'UserController@hitlist')->name('user_hitlist');
     Route::get('/challenges', 'UserController@challenges')->name('user_challenges');
     Route::get('/entries', 'UserController@entries')->name('user_entries');
 });
@@ -48,6 +49,8 @@ Route::prefix('spots')->middleware('verified')->group(function() {
     Route::post('/edit/{id}', 'SpotController@update')->name('spot_update');
     Route::get('/delete/{id}', 'SpotController@delete')->name('spot_delete');
     Route::get('/search', 'SpotController@search')->name('spot_search');
+    Route::get('/add_to_hitlist/{id}', 'SpotController@addToHitlist')->name('add_to_hitlist');
+    Route::get('/tick_off_hitlist/{id}', 'SpotController@tickOffHitlist')->name('tick_off_hitlist');
 });
 
 Route::prefix('challenges')->middleware('verified')->group(function() {

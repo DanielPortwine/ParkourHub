@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Challenge;
 use App\ChallengeEntry;
+use App\Hit;
 use App\Spot;
 use App\Subscriber;
 use App\User;
@@ -85,9 +86,21 @@ class UserController extends Controller
 
     public function spots()
     {
-        $spots = Spot::where('user_id', Auth()->id())->orderBy('updated_at', 'desc')->get();
+        $spots = Spot::where('user_id', Auth::id())->orderBy('updated_at', 'desc')->get();
 
         return view('user.spots', ['spots' => $spots]);
+    }
+
+    public function hitlist()
+    {
+        $hits = Hit::with(['spot'])->where('user_id', Auth::id())->get();
+        $hitsToTickOff = $hits->whereNull('completed_at')->sortByDesc('created_at');
+        $hitsTickedOff = $hits->whereNotNull('completed_at')->sortByDesc('completed_at');
+
+        return view('user.hitlist', [
+            'hitsToTickOff' => $hitsToTickOff,
+            'hitsTickedOff' => $hitsTickedOff,
+        ]);
     }
 
     public function challenges()

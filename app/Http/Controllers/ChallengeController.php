@@ -14,7 +14,7 @@ class ChallengeController extends Controller
     {
         $challenge = Challenge::with(['spot', 'user', 'entries'])->where('id', $id)->first();
         $entered = !empty(
-            ChallengeEntry::where('challenge_id', $id)->where('user_id', Auth()->id())->first()
+            ChallengeEntry::where('challenge_id', $id)->where('user_id', Auth::id())->first()
         );
         $winner = ChallengeEntry::with(['user'])->where('challenge_id', $id)->where('winner', true)->first();
 
@@ -34,7 +34,7 @@ class ChallengeController extends Controller
     {
         $challenge = new Challenge;
         $challenge->spot_id = $request['spot'];
-        $challenge->user_id = Auth()->id();
+        $challenge->user_id = Auth::id();
         $challenge->name = $request['name'];
         $challenge->description = $request['description'];
         if (!empty($request['youtube'])){
@@ -86,7 +86,7 @@ class ChallengeController extends Controller
         if (empty(ChallengeEntry::where('challenge_id', $id)->where('user_id', Auth::id())->first())) {
             $entry = new ChallengeEntry;
             $entry->challenge_id = $id;
-            $entry->user_id = Auth()->id();
+            $entry->user_id = Auth::id();
             if (!empty($request['youtube'])) {
                 $entry->youtube = substr($request->youtube, -11);
             } else if (!empty($request['video'])) {

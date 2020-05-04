@@ -64,6 +64,7 @@
                                 <div class="dropdown-menu dropdown-menu-right bg-grey" aria-labelledby="user-dropdown">
                                     <a class="dropdown-item text-white" href="{{ route('user_manage') }}">Account</a>
                                     <a class="dropdown-item text-white" href="{{ route('user_spots') }}">Spots</a>
+                                    <a class="dropdown-item text-white" href="{{ route('user_hitlist') }}">Hitlist</a>
                                     <a class="dropdown-item text-white" href="{{ route('user_challenges') }}">Challenges</a>
                                     <a class="dropdown-item text-white" href="{{ route('user_entries') }}">Challenge Entries</a>
                                     <a class="dropdown-item text-white" href="{{ route('logout') }}"

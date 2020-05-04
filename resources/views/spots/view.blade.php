@@ -12,6 +12,13 @@
                                 @if ($spot->user->id === Auth()->id())
                                     <a class="btn text-white" href="{{ route('spot_edit', $spot->id) }}"><i class="fa fa-pencil"></i></a>
                                 @endif
+                                @if(in_array($spot->id, array_keys($hitlist)))
+                                    @if(empty($hitlist[$spot->id]))
+                                        <a class="btn text-white" href="{{ route('tick_off_hitlist', $spot->id) }}"><i class="fa fa-check"></i></a>
+                                    @endif
+                                @else
+                                    <a class="btn text-white" href="{{ route('add_to_hitlist', $spot->id) }}"><i class="fa fa-crosshairs"></i></a>
+                                @endif
                                 <a class="btn text-white" href="{{ route('spots', ['spot' => $spot->id]) }}"><i class="fa fa-map-marker"></i></a>
                             </span>
                         </div>
