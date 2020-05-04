@@ -116,18 +116,4 @@ class ChallengeController extends Controller
 
         return redirect()->route('home')->with('status', 'This challenge has already been won');
     }
-
-    public function user_challenges()
-    {
-        $challenges = Challenge::where('user_id', Auth::id())->get();
-
-        return view('challenges.user_challenges', ['challenges' => $challenges]);
-    }
-
-    public function user_entries()
-    {
-        $entries = ChallengeEntry::where('user_id', Auth::id())->get();
-
-        return view('challenges.user_entries', ['entries' => $entries]);
-    }
 }

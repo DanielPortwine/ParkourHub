@@ -34,6 +34,9 @@ Route::prefix('user')->middleware('verified')->group(function() {
     Route::post('manage', 'UserController@update')->name('user_update');
     Route::get('obfuscate/{field}', 'UserController@obfuscate')->name('obfuscate');
     Route::get('delete', 'UserController@delete')->name('user_delete');
+    Route::get('/spots', 'UserController@spots')->name('user_spots');
+    Route::get('/challenges', 'UserController@challenges')->name('user_challenges');
+    Route::get('/entries', 'UserController@entries')->name('user_entries');
 });
 
 Route::prefix('spots')->middleware('verified')->group(function() {
@@ -44,7 +47,6 @@ Route::prefix('spots')->middleware('verified')->group(function() {
     Route::get('/edit/{id}', 'SpotController@edit')->name('spot_edit');
     Route::post('/edit/{id}', 'SpotController@update')->name('spot_update');
     Route::get('/delete/{id}', 'SpotController@delete')->name('spot_delete');
-    Route::get('/user_spots', 'SpotController@user_spots')->name('user_spots');
     Route::get('/search', 'SpotController@search')->name('spot_search');
 });
 
@@ -57,8 +59,6 @@ Route::prefix('challenges')->middleware('verified')->group(function() {
     Route::get('/delete/{id}', 'ChallengeController@delete')->name('challenge_delete');
     Route::post('/enter/{id}', 'ChallengeController@enter')->name('challenge_enter');
     Route::get('/win/{id}', 'ChallengeController@win')->name('challenge_win');
-    Route::get('/user_challenges', 'ChallengeController@user_challenges')->name('user_challenges');
-    Route::get('/user_challenge_entries', 'ChallengeController@user_entries')->name('user_challenge_entries');
 });
 
 Route::get('/thanks', function() {

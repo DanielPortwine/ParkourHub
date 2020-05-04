@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Challenge;
+use App\ChallengeEntry;
+use App\Spot;
 use App\Subscriber;
 use App\User;
 use Illuminate\Http\Request;
@@ -78,5 +81,26 @@ class UserController extends Controller
         User::where('id', Auth::id())->forceDelete();
 
         return redirect()->route('welcome');
+    }
+
+    public function spots()
+    {
+        $spots = Spot::where('user_id', Auth()->id())->orderBy('updated_at', 'desc')->get();
+
+        return view('user.spots', ['spots' => $spots]);
+    }
+
+    public function challenges()
+    {
+        $challenges = Challenge::where('user_id', Auth::id())->get();
+
+        return view('user.challenges', ['challenges' => $challenges]);
+    }
+
+    public function entries()
+    {
+        $entries = ChallengeEntry::where('user_id', Auth::id())->get();
+
+        return view('user.entries', ['entries' => $entries]);
     }
 }

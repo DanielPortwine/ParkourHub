@@ -83,13 +83,6 @@ class SpotController extends Controller
         return redirect()->route('spots');
     }
 
-    public function user_spots()
-    {
-        $spots = Spot::where('user_id', Auth()->id())->orderBy('updated_at', 'desc')->get();
-
-        return view('spots.user_spots', ['spots' => $spots]);
-    }
-
     public function search(Request $request)
     {
         $search = $request['search'];
