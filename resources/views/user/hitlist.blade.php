@@ -21,7 +21,7 @@
                                 <div class="row mb-3">
                                     @foreach($chunk as $hit)
                                         <div class="col-md-4">
-                                            @include('components.spot_card', ['spot' => $hit->spot, 'completed' => $hit->completed_at])
+                                            @include('components.card', ['card' => $hit->spot, 'type' => 'spot', 'spot' => $hit->spot_id, 'completed' => $hit->completed_at])
                                         </div>
                                     @endforeach
                                 </div>
@@ -39,7 +39,7 @@
                                 <div class="row mb-3">
                                     @foreach($chunk as $hit)
                                         <div class="col-md-4">
-                                            @include('components.spot_card', ['spot' => $hit->spot, 'completed' => $hit->completed_at])
+                                            @include('components.card', ['card' => $hit->spot, 'type' => 'spot', 'spot' => $hit->spot_id, 'completed' => $hit->completed_at])
                                         </div>
                                     @endforeach
                                 </div>

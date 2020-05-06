@@ -14,6 +14,10 @@ html, body {
     margin: 0;
 }
 
+.navbar {
+    border-bottom: 3px solid $green;
+}
+
 .full-height {
     height: 100vh;
 }
@@ -254,6 +258,11 @@ input[type="checkbox"]:checked + label:after {
 #spot-results {
     max-height: 50vh;
     overflow: auto;
+}
+
+.user-stats {
+    font-size: 30px;
+
 }
 
 @include media-breakpoint-down(md) {

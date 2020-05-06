@@ -5,7 +5,7 @@
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header bg-green sedgwick">My Spots</div>
+                    <div class="card-header bg-green sedgwick">Spots</div>
                     <div class="card-body bg-grey text-white">
                         @if (session('status'))
                             <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -19,7 +19,7 @@
                             <div class="row">
                                 @foreach($chunk as $spot)
                                     <div class="col-md-4">
-                                        @include('components.spot_card', ['spot' => $spot])
+                                        @include('components.card', ['card' => $spot, 'type' => 'spot', 'spot' => $spot->id])
                                     </div>
                                 @endforeach
                             </div>

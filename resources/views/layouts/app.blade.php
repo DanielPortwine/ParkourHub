@@ -26,7 +26,7 @@
 </head>
 <body>
     <div id="app">
-        <nav class="navbar navbar-expand-md navbar-dark text-white bg-grey shadow-sm">
+        <nav class="navbar sticky-top navbar-expand-md navbar-dark text-white bg-grey shadow-sm">
             <div class="container">
                 <a class="navbar-brand sedgwick" href="{{ url('/') }}">
                     {{ config('app.name') }}
@@ -62,6 +62,7 @@
                                     {{ Auth::user()->name }} <span class="caret"></span>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right bg-grey" aria-labelledby="user-dropdown">
+                                    <a class="dropdown-item text-white" href="{{ route('home') }}">Home</a>
                                     <a class="dropdown-item text-white" href="{{ route('user_manage') }}">Account</a>
                                     <a class="dropdown-item text-white" href="{{ route('user_spots') }}">Spots</a>
                                     <a class="dropdown-item text-white" href="{{ route('user_hitlist') }}">Hitlist</a>
@@ -84,9 +85,10 @@
             </div>
         </nav>
 
-        <main class="section">
+        <main>
             @yield('content')
         </main>
     </div>
+    @yield('footer')
 </body>
 </html>
