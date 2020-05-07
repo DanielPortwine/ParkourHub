@@ -223,6 +223,7 @@ $(document).ready(function() {
         });
     }
 
+    // display the spot markers on the map
     $.ajax({
         url: '/spots/fetch',
         type: 'GET',
@@ -245,7 +246,7 @@ $(document).ready(function() {
             }
         },
     });
-    // prevent loading of too many spots at once
+    // limit the level of zoom that can be achieved
     map.on('movestart', function(e) {
         if (map.getView().getZoom() > 22) {
             map.getView().setZoom(22);
@@ -256,8 +257,10 @@ $(document).ready(function() {
             return feature;
         });
         if (feature) {
+            // the user clicked on a spot marker so show that spot
             showSpot(feature, viewSpotPopup, viewSpotOverlay, urlParams);
         } else {
+            // the user clicked on an empty space so let them create a new spot
             $('.ol-popup').hide();
             $(createSpotPopup).show();
             $('#coordinates').val(e.coordinate[0] + ',' + e.coordinate[1]);
