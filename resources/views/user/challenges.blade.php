@@ -19,31 +19,7 @@
                             <div class="row">
                                 @foreach($chunk as $challenge)
                                     <div class="col-md-4">
-                                        <div class="card">
-                                            <div class="card-header bg-green">
-                                                <div class="row">
-                                                    <span class="col sedgwick">{{ $challenge->name }}</span>
-                                                    <span class="col-auto">
-                                                        <a class="btn text-white" href="{{ route('challenge_edit', $challenge->id) }}"><i class="fa fa-pencil"></i></a>
-                                                        <a class="btn text-white" href="{{ route('challenge_view', $challenge->id) }}"><i class="fa fa-eye"></i></a>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            @if(!empty($challenge->video))
-                                                <div class="video-wrapper">
-                                                    <video controls>
-                                                        <source src="{{ $challenge->video }}" type="video/mp4">
-                                                    </video>
-                                                </div>
-                                            @elseif(!empty($challenge->youtube))
-                                                <div class="video-wrapper">
-                                                    <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/{{ $challenge->youtube }}" frameborder="0" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                                                </div>
-                                            @endif
-                                            <div class="card-body bg-grey text-white">
-                                                {{ $challenge->description }}
-                                            </div>
-                                        </div>
+                                        @include('components.card', ['card' => $challenge, 'type' => 'challenge', 'spot' => $challenge->spot_id])
                                     </div>
                                 @endforeach
                             </div>

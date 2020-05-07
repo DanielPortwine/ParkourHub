@@ -10,10 +10,10 @@
                             <span class="col sedgwick">{{ $challenge->name }}</span>
                             <span class="col-auto">
                                 @if ($challenge->user->id === Auth()->id())
-                                    <a class="btn text-white" href="{{ route('challenge_edit', $challenge->id) }}"><i class="fa fa-pencil"></i></a>
+                                    <a class="btn text-white" href="{{ route('challenge_edit', $challenge->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
                                 @endif
-                                <a class="btn text-white" href="{{ route('spot_view', $challenge->spot_id) }}"><i class="fa fa-eye"></i></a>
-                                <a class="btn text-white" href="{{ route('spots', ['spot' => $challenge->spot_id]) }}"><i class="fa fa-map-marker"></i></a>
+                                <a class="btn text-white" href="{{ route('spot_view', $challenge->spot_id) }}" title="View"><i class="fa fa-eye"></i></a>
+                                <a class="btn text-white" href="{{ route('spots', ['spot' => $challenge->spot_id]) }}" title="Locate"><i class="fa fa-map-marker"></i></a>
                             </span>
                         </div>
                     </div>
@@ -149,7 +149,7 @@
                                                         <span class="col sedgwick">{{ $entry->user->name }}</span>
                                                         <span class="col-auto">
                                                             @if($challenge->user_id === Auth()->id() && !$challenge->won)
-                                                                <a class="btn text-white" href="{{ route('challenge_win', $entry->id) }}"><i class="fa fa-trophy"></i></a>
+                                                                <a class="btn text-white" href="{{ route('challenge_win', $entry->id) }}" title="Select Winner"><i class="fa fa-trophy"></i></a>
                                                             @endif
                                                         </span>
                                                     </div>

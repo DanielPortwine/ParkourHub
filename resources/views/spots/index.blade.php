@@ -7,7 +7,7 @@
                 <div class="input-group w-100">
                     <input type="text" class="form-control" id="map-search-input" placeholder="Search an address or spot" aria-label="from" aria-describedby="from" value="{{ !empty($_GET['search']) ? $_GET['search'] : '' }}">
                     <div class="input-group-append">
-                        <a class="btn btn-green input-group-text" id="map-search-button"><i class="fa fa-search"></i></a>
+                        <a class="btn btn-green input-group-text" id="map-search-button" title="Search"><i class="fa fa-search"></i></a>
                     </div>
                 </div>
             </form>
@@ -15,7 +15,7 @@
             <div class="popup card h-50 d-none" id="map-search-results">
                 <div class="card-header bg-green">
                     <span class="sedgwick">Results</span>
-                    <a class="btn close-popup-button float-right"><i class="fa fa-times"></i></a>
+                    <a class="btn close-popup-button float-right" title="Close"><i class="fa fa-times"></i></a>
                 </div>
                 <div class="card-body bg-grey text-white">
                     <div id="accordion">
@@ -44,7 +44,7 @@
             <div class="card">
                 <div class="card-header bg-green">
                     <span class="sedgwick">Create Spot</span>
-                    <a class="btn close-popup-button float-right"><i class="fa fa-times"></i></a>
+                    <a class="btn close-popup-button float-right" title="Close"><i class="fa fa-times"></i></a>
                 </div>
                 <div class="card-body bg-grey text-white">
                     <form method="POST" action="{{ route('spot_create') }}" enctype="multipart/form-data">
@@ -107,8 +107,8 @@
                     <div class="row">
                         <span class="col sedgwick" id="spot-name"></span>
                         <span class="col-auto">
-                            <a class="btn text-white" id="view-spot-button"><i class="fa fa-eye"></i></a>
-                            <a class="btn close-popup-button"><i class="fa fa-times"></i></a>
+                            <a class="btn text-white" id="view-spot-button" title="View"><i class="fa fa-eye"></i></a>
+                            <a class="btn close-popup-button" title="Close"><i class="fa fa-times"></i></a>
                         </span>
                     </div>
                 </div>

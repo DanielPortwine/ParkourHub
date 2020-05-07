@@ -24,7 +24,7 @@
                                                 <div class="row">
                                                     <span class="col sedgwick">{{ $entry->challenge->name }}</span>
                                                     <span class="col-auto">
-                                                        <a class="btn text-white" href="{{ route('challenge_view', $entry->challenge->id) }}"><i class="fa fa-eye"></i></a>
+                                                        <a class="btn text-white" href="{{ route('challenge_view', $entry->challenge->id) }}" title="View"><i class="fa fa-eye"></i></a>
                                                     </span>
                                                 </div>
                                             </div>

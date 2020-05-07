@@ -4,11 +4,11 @@
             <span class="col sedgwick">{{ $card->name }}</span>
             <span class="col-auto">
                 @if($card->user_id === Auth()->id())
-                    <a class="btn text-white" href="{{ route($type . '_edit', $card->id) }}"><i class="fa fa-pencil"></i></a>
+                    <a class="btn text-white" href="{{ route($type . '_edit', $card->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
                 @endif
-                <a class="btn text-white" href="{{ route($type . '_view', $card->id) }}"><i class="fa fa-eye"></i></a>
+                <a class="btn text-white" href="{{ route($type . '_view', $card->id) }}" title="View"><i class="fa fa-eye"></i></a>
                 @if($type === 'spot')
-                    <a class="btn text-white" href="{{ route('spots', ['spot' => $spot]) }}"><i class="fa fa-map-marker"></i></a>
+                    <a class="btn text-white" href="{{ route('spots', ['spot' => $spot]) }}" title="Locate"><i class="fa fa-map-marker"></i></a>
                 @endif
             </span>
         </div>
