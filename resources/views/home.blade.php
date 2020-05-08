@@ -25,15 +25,11 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col">
-                    <div class="row">
-                        @foreach($recentSpots as $spot)
-                            <div class="col-md-{{ 12/count($recentSpots) }} mb-2">
-                                @include('components.card', ['card' => $spot, 'type' => 'spot', 'spot' => $spot->id])
-                            </div>
-                        @endforeach
+                @foreach($recentSpots as $spot)
+                    <div class="col-md-{{ 12/count($recentSpots) }} mb-2">
+                        @include('components.card', ['card' => $spot, 'type' => 'spot', 'spot' => $spot->id])
                     </div>
-                </div>
+                @endforeach
             </div>
         </div>
     </div>
