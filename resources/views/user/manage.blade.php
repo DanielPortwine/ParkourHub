@@ -52,8 +52,13 @@
                             <div class="form-group row">
                                 <div class="col-md-10 offset-md-2">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="subscribed" id="subscribed" {{ $subscribed ? 'checked' : '' }}>
+                                        <input class="form-check-input @error('subscribed') is-invalid @enderror" type="checkbox" name="subscribed" id="subscribed" value="1" {{ $subscribed ? 'checked' : '' }}>
                                         <label class="form-check-label" for="subscribed">Subscribed to email news</label>
+                                        @error('subscribed')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
                                     </div>
                                 </div>
                             </div>

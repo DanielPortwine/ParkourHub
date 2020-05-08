@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Challenge;
 use App\ChallengeEntry;
+use App\Http\Requests\CreateChallenge;
+use App\Http\Requests\EnterChallenge;
+use App\Http\Requests\UpdateChallenge;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -30,7 +33,7 @@ class ChallengeController extends Controller
         return view('challenges.create', ['spot' => $request['spot']]);
     }
 
-    public function save(Request $request)
+    public function save(CreateChallenge $request)
     {
         $challenge = new Challenge;
         $challenge->spot_id = $request['spot'];
@@ -54,7 +57,7 @@ class ChallengeController extends Controller
         return view('challenges.edit', ['challenge' => $challenge]);
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateChallenge $request, $id)
     {
         $challenge = Challenge::where('id', $id)->first();
         $challenge->name = $request['name'];
@@ -65,6 +68,8 @@ class ChallengeController extends Controller
         } else if (!empty($request['video'])) {
             $challenge->video = Storage::url($request->file('video')->store('videos/challenges', 'public'));
             $challenge->youtube = null;
+        } else if (empty($challenge->video) && empty($challenge->youtube)) {
+            return back()->withErrors(['youtube' => 'You must provide either a Youtube link or video file', 'video' => 'You must provide either a video file or Youtube link']);
         }
         $challenge->save();
 
@@ -81,7 +86,7 @@ class ChallengeController extends Controller
         return redirect()->route('home');
     }
 
-    public function enter(Request $request, $id)
+    public function enter(EnterChallenge $request, $id)
     {
         if (empty(ChallengeEntry::where('challenge_id', $id)->where('user_id', Auth::id())->first())) {
             $entry = new ChallengeEntry;

@@ -16,7 +16,12 @@
                     @csrf
                     <div class="row">
                         <div class="col-7 col-md-10 pr-0">
-                            <input type="email" name="email" placeholder="Email Address" class="w-100">
+                            <input type="email" name="email" placeholder="Email Address" class="w-100 @error('email') is-invalid @enderror">
+                            @error('email')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
                         </div>
                         <div class="col-5 col-md-2">
                             <input type="submit" value="Subscribe" class="btn btn-green">

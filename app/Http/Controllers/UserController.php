@@ -5,10 +5,11 @@ namespace App\Http\Controllers;
 use App\Challenge;
 use App\ChallengeEntry;
 use App\Hit;
+use App\Http\Requests\Subscribe;
+use App\Http\Requests\UpdateUser;
 use App\Spot;
 use App\Subscriber;
 use App\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
@@ -24,7 +25,7 @@ class UserController extends Controller
         ]);
     }
 
-    public function update(Request $request)
+    public function update(UpdateUser $request)
     {
         $user = User::where('id', Auth::id())->first();
         $user->name = $request['name'];
@@ -32,7 +33,7 @@ class UserController extends Controller
         $user->save();
 
         if  ($request['subscribed'] == true) {
-            $this->subscribe($request, false);
+            $this->subscribe(new Subscribe(['email' => $request['email']]), false);
         } else {
             $this->unsubscribe();
         }
@@ -40,7 +41,7 @@ class UserController extends Controller
         return back()->with('status', 'Updated Account Information');
     }
 
-    public function subscribe(Request $request, $return = true)
+    public function subscribe(Subscribe $request, $return = true)
     {
         if (!Subscriber::where('email', $request['email'])->exists()) {
             $subscriber = new Subscriber;

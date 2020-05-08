@@ -97,9 +97,9 @@
                                             </div>
                                         </div>
                                         <div class="form-group row">
-                                            <label class="col-md-2 col-form-label text-md-right">...or .mp4 video</label>
+                                            <label class="col-md-2 col-form-label text-md-right">...or video</label>
                                             <div class="col-8">
-                                                <input type="file" id="video" class="form-control-file" name="video">
+                                                <input type="file" id="video" class="form-control-file @error('video') is-invalid @enderror" name="video">
                                                 @error('video')
                                                 <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>

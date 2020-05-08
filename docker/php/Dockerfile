@@ -24,3 +24,6 @@ RUN docker-php-ext-install pdo_mysql
 RUN docker-php-ext-install xml
 RUN docker-php-ext-install zip
 RUN docker-php-ext-install bcmath
+RUN echo "max_file_uploads=1" >> /usr/local/etc/php/conf.d/docker-php-ext-max_file_uploads.ini
+RUN echo "post_max_size=40M" >> /usr/local/etc/php/conf.d/docker-php-ext-post_max_size.ini
+RUN echo "upload_max_filesize=40M" >> /usr/local/etc/php/conf.d/docker-php-ext-upload_max_filesize.ini

@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Hit;
+use App\Http\Requests\CreateSpot;
+use App\Http\Requests\SearchMap;
+use App\Http\Requests\UpdateSpot;
 use App\Spot;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -33,7 +35,7 @@ class SpotController extends Controller
         return $spots;
     }
 
-    public function create(Request $request)
+    public function create(CreateSpot $request)
     {
         $spot = new Spot;
         $spot->user_id = Auth::id();
@@ -59,7 +61,7 @@ class SpotController extends Controller
         return view('spots.edit', ['spot' => $spot]);
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateSpot $request, $id)
     {
         $spot = Spot::where('id', $id)->first();
         if ($spot->user_id != Auth::id()) {
@@ -68,13 +70,13 @@ class SpotController extends Controller
         $spot->name = $request['name'];
         $spot->description = $request['description'];
         $spot->private = $request['private'] ?: false;
-        if (!empty($request->image)) {
+        if (!empty($request['image'])) {
             Storage::disk('public')->delete($spot->image);
             $spot->image = $request->file('image')->store('images/spots', 'public');
         }
         $spot->save();
 
-        return redirect()->route('spot_view', $spot->id)->with('status', 'Spot updated successfully');
+        return back()->with('status', 'Spot updated successfully');
     }
 
     public function delete($id)
@@ -87,7 +89,7 @@ class SpotController extends Controller
         return redirect()->route('spots');
     }
 
-    public function search(Request $request)
+    public function search(SearchMap $request)
     {
         $search = $request['search'];
         $spots = Spot::with(['user'])

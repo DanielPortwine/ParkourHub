@@ -22,20 +22,20 @@
                                 <div class="col-md-8">
                                     <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" required autocomplete="name" value="{{ $spot->name }}">
                                     @error('name')
-                                    <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
                                     @enderror
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="description" class="col-md-2 col-form-label text-md-right">Description</label>
                                 <div class="col-md-8">
-                                    <textarea id="description" class="form-control" name="description">{{ $spot->description }}</textarea>
+                                    <textarea id="description" class="form-control @error('description') is-invalid @enderror" name="description">{{ $spot->description }}</textarea>
                                     @error('description')
-                                    <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
                                     @enderror
                                 </div>
                             </div>
@@ -45,19 +45,24 @@
                                     @if(!empty($spot->image))
                                         <img class="w-100" src="{{ $spot->image }}">
                                     @endif
-                                    <input type="file" id="image" class="form-control-file" name="image" value="">
+                                    <input type="file" id="image" class="form-control-file @error('image') is-invalid @enderror" name="image" value="">
                                     @error('image')
-                                    <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
                                     @enderror
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <div class="col-md-10 offset-md-2">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="private" id="private" value="1" {{ $spot->private ? 'checked' : '' }}>
+                                        <input class="form-check-input @error('private') is-invalid @enderror" type="checkbox" name="private" id="private" value="1" {{ $spot->private ? 'checked' : '' }}>
                                         <label class="form-check-label" for="private">Private</label>
+                                        @error('private')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
                                     </div>
                                 </div>
                             </div>

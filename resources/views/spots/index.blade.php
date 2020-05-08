@@ -5,13 +5,17 @@
         <div class="position-absolute p-md-3 p-1 map-search">
             <form id="map-search-form">
                 <div class="input-group w-100">
-                    <input type="text" class="form-control" id="map-search-input" placeholder="Search an address or spot" aria-label="from" aria-describedby="from" value="{{ !empty($_GET['search']) ? $_GET['search'] : '' }}">
+                    <input type="text" class="form-control @error('search') is-invalid @enderror" id="map-search-input" placeholder="Search an address or spot" aria-label="from" aria-describedby="from" value="{{ !empty($_GET['search']) ? $_GET['search'] : '' }}">
                     <div class="input-group-append">
                         <a class="btn btn-green input-group-text" id="map-search-button" title="Search"><i class="fa fa-search"></i></a>
                     </div>
                 </div>
             </form>
-            <p class="text-danger">@error('search'){{ $message }}@enderror</p>
+            @error('search')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
             <div class="popup card h-50 d-none" id="map-search-results">
                 <div class="card-header bg-green">
                     <span class="sedgwick">Results</span>
@@ -53,41 +57,46 @@
                         <div class="form-group row">
                             <label for="name" class="col-12 col-form-label">Name</label>
                             <div class="col-12">
-                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" required autocomplete="name">
+                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" required autocomplete="name" maxlength="25">
                                 @error('name')
-                                <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
                                 @enderror
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="description" class="col-12 col-form-label">Description</label>
                             <div class="col-12">
-                                <textarea id="description" class="form-control" name="description"></textarea>
+                                <textarea id="description" class="form-control @error('description') is-invalid @enderror" name="description" required></textarea>
                                 @error('description')
-                                <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
                                 @enderror
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="image" class="col-12 col-form-label">Main Image</label>
                             <div class="col-12">
-                                <input type="file" id="image" class="form-control-file" name="image">
+                                <input type="file" id="image" class="form-control-file @error('image') is-invalid @enderror" name="image">
                                 @error('image')
-                                <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
                                 @enderror
                             </div>
                         </div>
                         <div class="form-group row">
                             <div class="col">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="private" id="private" value="1">
+                                    <input class="form-check-input @error('private') is-invalid @enderror" type="checkbox" name="private" id="private" value="1">
                                     <label class="form-check-label" for="private">Private</label>
+                                    @error('private')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
                                 </div>
                             </div>
                         </div>
