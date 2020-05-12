@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@push('title')Spots | @endpush
+
 @section('content')
     <div class="vh-100-nav">
         <div class="position-absolute p-md-3 p-1 map-search">

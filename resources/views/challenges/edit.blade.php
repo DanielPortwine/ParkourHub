@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@push('title')Edit Challenge | @endpush
+
 @section('content')
     <div class="container py-4">
         <div class="row justify-content-center">

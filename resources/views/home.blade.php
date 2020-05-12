@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@push('title')Home | @endpush
+
 @section('content')
     <div class="pb-md-5 pb-sm-4">
         <div class="container">

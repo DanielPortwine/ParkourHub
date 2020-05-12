@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@push('title'){{ $spot->name }} | @endpush
+
 @section('content')
     <div class="container py-4">
         <div class="row justify-content-center">
