@@ -8,6 +8,7 @@
             <form id="map-search-form">
                 <div class="input-group w-100">
                     <input type="text" class="form-control @error('search') is-invalid @enderror" id="map-search-input" placeholder="Search an address or spot" aria-label="from" aria-describedby="from" value="{{ !empty($_GET['search']) ? $_GET['search'] : '' }}">
+                    <i class="fa fa-times d-none" id="map-search-clear"></i>
                     <div class="input-group-append">
                         <a class="btn btn-green input-group-text" id="map-search-button" title="Search"><i class="fa fa-search"></i></a>
                     </div>

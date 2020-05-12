@@ -124,6 +124,14 @@ function mapSearch(urlParams, search = null) {
     searchSpot(search);
 }
 
+function checkInputClear($input, $clear) {
+    if ($input.val() !== '') {
+        $clear.removeClass('d-none');
+    } else {
+        $clear.addClass('d-none');
+    }
+}
+
 $(document).ready(function() {
     var $window = $(window);
     $window.scroll(function() {
@@ -283,4 +291,15 @@ $(document).ready(function() {
         mapSearch(urlParams);
         e.preventDefault();
     });
+    var $mapSearchInput = $('#map-search-input'),
+        $mapSearchClear = $('#map-search-clear');
+    $mapSearchInput.on('input', function(e) {
+        checkInputClear($mapSearchInput, $mapSearchClear);
+    });
+    $mapSearchClear.click(function() {
+        mapSearch(urlParams, '');
+        $mapSearchInput.val('');
+        $mapSearchClear.addClass('d-none');
+    });
+    checkInputClear($mapSearchInput, $mapSearchClear);
 });
