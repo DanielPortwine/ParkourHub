@@ -41,23 +41,23 @@
                 </div>
             </div>
             <div class="row text-center">
-                <div class="col user-stats">
+                <div class="col user-stats" title="Number Of Spots Created">
                     <i class="fa fa-map-marker text-white"></i>
                     {{ $userStats['spotsCreated'] }}
                 </div>
-                <div class="col user-stats">
+                <div class="col user-stats" title="Number Of Challenges Created">
                     <i class="fa fa-bullseye text-white"></i>
                     {{ $userStats['challengesCreated'] }}
                 </div>
-                <div class="col user-stats">
+                <div class="col user-stats" title="Number Of Spots On Hitlist Not Ticked Off">
                     <i class="fa fa-square-o text-white"></i>
                     {{ $userStats['uncompletedHits'] }}
                 </div>
-                <div class="col user-stats">
+                <div class="col user-stats" title="Number Of Spots On Hitlist Ticked Off">
                     <i class="fa fa-check-square-o text-white"></i>
                     {{ $userStats['completedHits'] }}
                 </div>
-                <div class="col user-stats">
+                <div class="col user-stats" title="Number Of Days Since Registration">
                     <i class="fa fa-clock-o text-white"></i>
                     {{ $userStats['age'] }}
                 </div>
