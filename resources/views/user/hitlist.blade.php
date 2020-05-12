@@ -20,9 +20,9 @@
                         <h3 class="separator sedgwick pb-2 mb-3">Not Ticked Off</h3>
                         @if(count($hitsToTickOff))
                             @foreach($hitsToTickOff->chunk(3) as $chunk)
-                                <div class="row mb-3">
+                                <div class="row">
                                     @foreach($chunk as $hit)
-                                        <div class="col-md-4">
+                                        <div class="col-md-4 mb-3">
                                             @include('components.card', ['card' => $hit->spot, 'type' => 'spot', 'spot' => $hit->spot_id, 'completed' => $hit->completed_at ?: false])
                                         </div>
                                     @endforeach
@@ -38,9 +38,9 @@
                         <h3 class="separator sedgwick pb-2 mb-3">Ticked Off</h3>
                         @if(count($hitsTickedOff))
                             @foreach($hitsTickedOff->chunk(3) as $chunk)
-                                <div class="row mb-3">
+                                <div class="row">
                                     @foreach($chunk as $hit)
-                                        <div class="col-md-4">
+                                        <div class="col-md-4 mb-3">
                                             @include('components.card', ['card' => $hit->spot, 'type' => 'spot', 'spot' => $hit->spot_id, 'completed' => $hit->completed_at])
                                         </div>
                                     @endforeach

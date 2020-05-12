@@ -118,26 +118,16 @@
                 <div class="card-header bg-green">
                     <div class="row">
                         <span class="col sedgwick" id="spot-name"></span>
+                        <small class="d-none" id="spot-private">Private</small>
                         <span class="col-auto">
                             <a class="btn text-white" id="view-spot-button" title="View"><i class="fa fa-eye"></i></a>
                             <a class="btn close-popup-button" title="Close"><i class="fa fa-times"></i></a>
                         </span>
                     </div>
                 </div>
-                <div class="card-body bg-grey text-white">
-                    <div class="row d-none" id="spot-private">
-                        <div class="col">
-                            <small>Private</small>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <img class="w-100" id="spot-image">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col" id="spot-description"></div>
-                    </div>
+                <div class="content-description-container">
+                    <div class="spot-description spot-description-bottom text-white" id="spot-description"></div>
+                    <img class="spot-image w-100" id="spot-image">
                 </div>
             </div>
         </div>

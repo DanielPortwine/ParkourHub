@@ -16,20 +16,21 @@
             </span>
         </div>
     </div>
-    @if(!empty($card->image))
-        <img src="{{ $card->image }}" class="card-image-top w-100">
-    @elseif(!empty($card->video))
-        <div class="video-wrapper">
-            <video controls>
-                <source src="{{ $card->video }}" type="video/mp4">
-            </video>
-        </div>
-    @elseif(!empty($card->youtube))
-        <div class="video-wrapper">
-            <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/{{ $card->youtube }}" frameborder="0" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        </div>
-    @endif
-    <div class="card-body bg-grey text-white">
-        <p class="card-text mt-auto">{{ $card->description }}</p>
+
+    <div class="content-description-container">
+        @if(!empty($card->image))
+            <div class="bg-grey spot-description spot-description-bottom text-white" id="spot-description">{{ strlen($card->description) > 100 ? substr($card->description, 0, 100) . '...' : $card->description }}</div>
+            <img src="{{ $card->image }}" class="card-image-top w-100">
+        @elseif(!empty($card->video))
+            <div class="video-wrapper">
+                <video controls>
+                    <source src="{{ $card->video }}" type="video/mp4">
+                </video>
+            </div>
+        @elseif(!empty($card->youtube))
+            <div class="video-wrapper">
+                <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/{{ $card->youtube }}" frameborder="0" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        @endif
     </div>
 </div>

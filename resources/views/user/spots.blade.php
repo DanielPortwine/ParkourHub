@@ -18,9 +18,9 @@
                             </div>
                         @endif
                         @foreach($spots->chunk(3) as $chunk)
-                            <div class="row mb-3">
+                            <div class="row">
                                 @foreach($chunk as $spot)
-                                    <div class="col-md-4">
+                                    <div class="col-md-4 mb-3">
                                         @include('components.card', ['card' => $spot, 'type' => 'spot', 'spot' => $spot->id])
                                     </div>
                                 @endforeach

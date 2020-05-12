@@ -302,4 +302,10 @@ $(document).ready(function() {
         $mapSearchClear.addClass('d-none');
     });
     checkInputClear($mapSearchInput, $mapSearchClear);
+
+    $('.content-description-container').hover(function() {
+        $(this).children('.spot-description').slideDown('fast');
+    }, function() {
+        $(this).children('.spot-description').slideUp('fast');
+    });
 });
