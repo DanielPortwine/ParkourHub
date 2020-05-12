@@ -16,7 +16,7 @@
                     <strong>{{ $message }}</strong>
                 </span>
             @enderror
-            <div class="popup card h-50 d-none" id="map-search-results">
+            <div class="popup card h-50 d-none mt-3" id="map-search-results">
                 <div class="card-header bg-green">
                     <span class="sedgwick">Results</span>
                     <a class="btn close-popup-button float-right" title="Close"><i class="fa fa-times"></i></a>
