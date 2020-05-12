@@ -38,7 +38,7 @@ class HomeController extends Controller
             'age' => Carbon::parse(User::where('id', Auth::id())->pluck('created_at')[0])->diffInDays(Carbon::now()),
         ];
         $recentChallenges = Challenge::where('user_id', Auth::id())->orderBy('created_at', 'desc')->limit(3)->get();
-        $hits = Hit::where('user_id', Auth::id())->inRandomOrder()->limit(3)->pluck('spot_id')->toArray();
+        $hits = Hit::where('user_id', Auth::id())->whereNull('completed_at')->inRandomOrder()->limit(3)->pluck('spot_id')->toArray();
         $hitlist = Spot::whereIn('id', $hits)->get();
 
         return view('home', [
