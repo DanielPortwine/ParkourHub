@@ -10,6 +10,7 @@ use App\Http\Requests\UpdateUser;
 use App\Spot;
 use App\Subscriber;
 use App\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
@@ -30,6 +31,9 @@ class UserController extends Controller
         $user = User::where('id', Auth::id())->first();
         $user->name = $request['name'];
         $user->email = $request['email'];
+        $hometown = explode('|', $request['hometown']);
+        $user->hometown_name = $hometown[0];
+        $user->hometown_bounding = $hometown[1];
         $user->save();
 
         if  ($request['subscribed'] == true) {
@@ -116,5 +120,16 @@ class UserController extends Controller
         $entries = ChallengeEntry::where('user_id', Auth::id())->get();
 
         return view('user.entries', ['entries' => $entries]);
+    }
+
+    public function fetchHometownBounding(Request $request)
+    {
+        if (!$request->ajax()) {
+            return back();
+        }
+
+        $bounding = explode(',', Auth::user()->hometown_bounding);
+
+        return count($bounding) === 4 ? $bounding : null;
     }
 }

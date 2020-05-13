@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Rules\Checkbox;
+use App\Rules\Hometown;
 use App\Rules\UniqueOrOldEmail;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -28,6 +29,7 @@ class UpdateUser extends FormRequest
         return [
             'name' => 'required|string|max:25',
             'email' => ['required', 'string', 'email', 'max:255', new UniqueOrOldEmail],
+            'hometown' => ['string', 'max:255', new Hometown],
             'subscribed' => new Checkbox,
         ];
     }

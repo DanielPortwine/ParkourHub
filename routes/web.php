@@ -38,6 +38,7 @@ Route::prefix('user')->middleware('verified')->group(function() {
     Route::get('/hitlist', 'UserController@hitlist')->name('user_hitlist');
     Route::get('/challenges', 'UserController@challenges')->name('user_challenges');
     Route::get('/entries', 'UserController@entries')->name('user_entries');
+    Route::get('/fetch_hometown_bounding', 'UserController@fetchHometownBounding');
 });
 
 Route::prefix('spots')->middleware('verified')->group(function() {
@@ -62,6 +63,10 @@ Route::prefix('challenges')->middleware('verified')->group(function() {
     Route::get('/delete/{id}', 'ChallengeController@delete')->name('challenge_delete');
     Route::post('/enter/{id}', 'ChallengeController@enter')->name('challenge_enter');
     Route::get('/win/{id}', 'ChallengeController@win')->name('challenge_win');
+});
+
+Route::prefix('ajax')->group(function() {
+    Route::get('searchHometown/{hometown}', 'AjaxController@searchHometown');
 });
 
 Route::get('/thanks', function() {

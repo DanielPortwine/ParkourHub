@@ -99,6 +99,32 @@ function searchSpot(search) {
     })
 }
 
+function searchHometown(hometown) {
+    if (hometown == null) {
+        $('#hometown-results-container').addClass('d-none');
+    } else {
+        $.ajax({
+            url: '/ajax/searchHometown/' + hometown,
+            type: 'GET',
+            success: function (response) {
+                $('#hometown-results-container').removeClass('d-none');
+                if (response.length > 0) {
+                    var $hometownResults = $('#hometown-results');
+                    $hometownResults.html('');
+                    for (var city in response) {
+                        city = (response[city]);
+                        $hometownResults.append($('<option value="' + city.display_name + '|' + city.boundingbox + '">' + city.display_name + '</option>'));
+                    }
+                    $('#hometown-results-count').text(response.length < 10 ? response.length : '10+');
+                } else {
+                    $('#hometown-results-count').html('No');
+                    $('hometown-results').html('');
+                }
+            }
+        })
+    }
+}
+
 function mapSearch(urlParams, search = null) {
     if (search == null) {
         search = $('#map-search-input').val();
@@ -130,6 +156,15 @@ function checkInputClear($input, $clear) {
     } else {
         $clear.addClass('d-none');
     }
+}
+
+function setBoundingBox(latLonArray, map) {
+    var boundingBox = [fromLonLat([latLonArray[2], latLonArray[1]])];
+    boundingBox.push(fromLonLat([latLonArray[3], latLonArray[0]]));
+    map.getView().fit(boundingExtent(boundingBox), {
+        padding: [20, 20, 20, 20],
+        maxZoom: 20,
+    });
 }
 
 $(document).ready(function() {
@@ -222,14 +257,18 @@ $(document).ready(function() {
     });
 
     if (urlParams.has('bounding')) {
-        var boundingBoxLatLon = urlParams.get('bounding').split(','),
-            boundingBox = [fromLonLat([boundingBoxLatLon[2], boundingBoxLatLon[1]])];
-        boundingBox.push(fromLonLat([boundingBoxLatLon[3], boundingBoxLatLon[0]]));
-        map.getView().fit(boundingExtent(boundingBox), {
-            padding: [20, 20, 20, 20],
-            maxZoom: 20,
-        });
+        var boundingBoxLatLon = urlParams.get('bounding').split(',');
+        setBoundingBox(boundingBoxLatLon, map);
     }
+
+    // set the map bounding box to the user's hometown
+    $.ajax({
+        url: '/user/fetch_hometown_bounding',
+        type: 'GET',
+        success: function(response) {
+            setBoundingBox(response, map);
+        }
+    });
 
     // display the spot markers on the map
     $.ajax({
@@ -260,6 +299,7 @@ $(document).ready(function() {
             map.getView().setZoom(22);
         }
     });
+    // show the create or view popup when the user clicks on the map
     map.on('click', function(e) {
         var feature = map.forEachFeatureAtPixel(e.pixel, function(feature) {
             return feature;
@@ -291,6 +331,7 @@ $(document).ready(function() {
         mapSearch(urlParams);
         e.preventDefault();
     });
+    // decide whether to show or hide the clear search button
     var $mapSearchInput = $('#map-search-input'),
         $mapSearchClear = $('#map-search-clear');
     $mapSearchInput.on('input', function(e) {
@@ -303,6 +344,13 @@ $(document).ready(function() {
     });
     checkInputClear($mapSearchInput, $mapSearchClear);
 
+    // search for a city to use as the user's hometown
+    $('#hometown-form').submit(function(e) {
+        searchHometown($('#hometown').val());
+        e.preventDefault();
+    });
+
+    // show/hide the description on cards such spots
     $('.content-description-container').hover(function() {
         $(this).children('.spot-description').slideDown('fast');
     }, function() {
