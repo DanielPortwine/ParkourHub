@@ -205,6 +205,14 @@ $(document).ready(function() {
                 }
             )
         ),
+        loginRegisterPopup = document.getElementById('login-register-popup'),
+        loginRegisterOverlay = new Overlay(
+            $.extend(popupOptions,
+                {
+                    element: loginRegisterPopup
+                }
+            )
+        ),
         urlParams = new URLSearchParams(window.location.search),
         vectorSource = new VectorSource(),
         startingCoords = [-175394.8171068958, 7317942.661464895],
@@ -247,7 +255,7 @@ $(document).ready(function() {
                 })
             })
         ],
-        overlays: [createSpotOverlay, viewSpotOverlay],
+        overlays: [createSpotOverlay, viewSpotOverlay, loginRegisterOverlay],
         target: 'map',
         view: new View({
             center: startingCoords,
@@ -308,12 +316,26 @@ $(document).ready(function() {
             // the user clicked on a spot marker so show that spot
             showSpot(feature, viewSpotPopup, viewSpotOverlay, urlParams);
         } else {
-            // the user clicked on an empty space so let them create a new spot
-            $('.ol-popup').hide();
-            $(createSpotPopup).show();
-            $('#coordinates').val(e.coordinate[0] + ',' + e.coordinate[1]);
-            createSpotOverlay.setPosition(e.coordinate);
-            $(createSpotPopup).css('margin-top', -parseInt($(createSpotPopup).height()) - 10);
+            // the user clicked on an empty space, now check if they're verified and logged in
+            $.ajax({
+                url: '/ajax/isVerifiedLoggedIn',
+                type: 'GET',
+                success: function(response) {
+                    $('.ol-popup').hide();
+                    if (response) {
+                        // the user is logged in so show Create Spot popup
+                        $(createSpotPopup).show();
+                        $('#coordinates').val(e.coordinate[0] + ',' + e.coordinate[1]);
+                        createSpotOverlay.setPosition(e.coordinate);
+                        $(createSpotPopup).css('margin-top', -parseInt($(createSpotPopup).height()) - 10);
+                    } else {
+                        // the user is not logged in or hasn't verified their email so show Login/Register popup
+                        $(loginRegisterPopup).show();
+                        loginRegisterOverlay.setPosition(e.coordinate);
+                        $(loginRegisterPopup).css('margin-top', -parseInt($(loginRegisterPopup).height()) - 10);
+                    }
+                }
+            });
         }
     });
 

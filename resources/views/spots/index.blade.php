@@ -131,5 +131,31 @@
                 </div>
             </div>
         </div>
+
+        <div class="popup ol-popup" id="login-register-popup">
+            <div class="card">
+                <div class="card-header bg-green">
+                    <div class="row">
+                        <span class="col sedgwick">Unauthorised</span>
+                        <span class="col-auto">
+                            <a class="btn close-popup-button" title="Close"><i class="fa fa-times"></i></a>
+                        </span>
+                    </div>
+                </div>
+                <div class="card-body bg-grey text-white">
+                    @guest
+                        <p class="mb-0">You must <a class="btn-link" href="/login">Login</a> or <a class="btn-link" href="/register">Register</a> to create new spots.</p>
+                    @endguest
+                    @auth
+                        <p class="mb-0">You must verify your email to create new spots.</p>
+                        <p class="mb-0">If you did not receive the email,</p>
+                        <form class="d-inline" method="POST" action="{{ route('verification.resend') }}">
+                            @csrf
+                            <button type="submit" class="btn btn-link p-0 m-0 align-baseline">click here to request another</button>.
+                        </form>
+                    @endauth
+                </div>
+            </div>
+        </div>
     </div>
 @endsection

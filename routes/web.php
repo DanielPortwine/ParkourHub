@@ -41,10 +41,10 @@ Route::prefix('user')->middleware('verified')->group(function() {
     Route::get('/fetch_hometown_bounding', 'UserController@fetchHometownBounding');
 });
 
+Route::get('/spots', 'SpotController@index')->name('spots');
+Route::get('/spots/fetch', 'SpotController@fetch')->name('spot_fetch');
 Route::prefix('spots')->middleware('verified')->group(function() {
-    Route::get('/', 'SpotController@index')->name('spots');
     Route::get('/spot/{id}', 'SpotController@view')->name('spot_view');
-    Route::get('/fetch', 'SpotController@fetch')->name('spot_fetch');
     Route::post('/create', 'SpotController@create')->name('spot_create');
     Route::get('/edit/{id}', 'SpotController@edit')->name('spot_edit');
     Route::post('/edit/{id}', 'SpotController@update')->name('spot_update');
@@ -67,6 +67,7 @@ Route::prefix('challenges')->middleware('verified')->group(function() {
 
 Route::prefix('ajax')->group(function() {
     Route::get('searchHometown/{hometown}', 'AjaxController@searchHometown');
+    Route::get('/isVerifiedLoggedIn', 'AjaxController@isVerifiedLoggedIn');
 });
 
 Route::get('/thanks', function() {

@@ -44,6 +44,9 @@
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ml-auto">
                         <!-- Authentication Links -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('spots') }}"><i class="fa fa-map-marker nav-icon"></i>Spots</a>
+                        </li>
                         @guest
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('login') }}"><i class="fa fa-user nav-icon"></i>{{ __('Login') }}</a>
@@ -54,9 +57,6 @@
                                 </li>
                             @endif
                         @else
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('spots') }}"><i class="fa fa-map-marker nav-icon"></i>Spots</a>
-                            </li>
                             <li class="nav-item dropdown">
                                 <a id="user-dropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     <i class="fa fa-user nav-icon"></i>{{ Auth::user()->name }} <span class="caret"></span>
