@@ -37,6 +37,9 @@ class HomeController extends Controller
         $hitlist = Spot::whereIn('id', $hits)->get();
         $hometownBoundaries = explode(',', Auth::user()->hometown_bounding);
         $hometownName = explode(',', Auth::user()->hometown_name)[0];
+        if (count($hometownBoundaries) !== 4) {
+            $hometownBoundaries = [0, 0, 0, 0];
+        }
         $hometownSpots = Spot::whereBetween('latitude', [$hometownBoundaries[0], $hometownBoundaries[1]])
             ->whereBetween('longitude', [$hometownBoundaries[2], $hometownBoundaries[3]])
             ->orderBy('created_at', 'DESC')
