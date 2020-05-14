@@ -57,6 +57,7 @@
                     <form method="POST" action="{{ route('spot_create') }}" enctype="multipart/form-data">
                         @csrf
                         <input type="hidden" name="coordinates" id="coordinates">
+                        <input type="hidden" name="lat_lon" id="lat-lon">
                         <div class="form-group row">
                             <label for="name" class="col-12 col-form-label">Name</label>
                             <div class="col-12">

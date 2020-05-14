@@ -20,7 +20,7 @@
                         @foreach($spots->chunk(3) as $chunk)
                             <div class="row">
                                 @foreach($chunk as $spot)
-                                    <div class="col-md-4 mb-3">
+                                    <div class="col-md-4 mb-4">
                                         @include('components.card', ['card' => $spot, 'type' => 'spot', 'spot' => $spot->id])
                                     </div>
                                 @endforeach

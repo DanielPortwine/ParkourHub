@@ -43,6 +43,9 @@ class SpotController extends Controller
         $spot->description = $request['description'];
         $spot->private = $request['private'] ?: false;
         $spot->coordinates = $request['coordinates'];
+        $latLon = explode(',', $request['lat_lon']);
+        $spot->latitude = $latLon[0];
+        $spot->longitude = $latLon[1];
         if (!empty($request['image'])) {
             $spot->image = Storage::url($request->file('image')->store('images/spots', 'public'));
         }

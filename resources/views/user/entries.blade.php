@@ -20,7 +20,7 @@
                         @foreach($entries->chunk(3) as $chunk)
                             <div class="row">
                                 @foreach($chunk as $entry)
-                                    <div class="col-md-4 mb-3">
+                                    <div class="col-md-4 mb-4">
                                         <div class="card">
                                             <div class="card-header bg-green">
                                                 <div class="row">

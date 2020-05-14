@@ -65,6 +65,11 @@ Route::prefix('challenges')->middleware('verified')->group(function() {
     Route::get('/win/{id}', 'ChallengeController@win')->name('challenge_win');
 });
 
+Route::prefix('hometown')->middleware('verified')->group(function() {
+    Route::get('/spots', 'HometownController@spots')->name('hometown_spots');
+    Route::get('/challenges', 'HometownController@challenges')->name('hometown_challenges');
+});
+
 Route::prefix('ajax')->group(function() {
     Route::get('searchHometown/{hometown}', 'AjaxController@searchHometown');
     Route::get('/isVerifiedLoggedIn', 'AjaxController@isVerifiedLoggedIn');

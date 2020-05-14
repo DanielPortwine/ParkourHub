@@ -10,7 +10,7 @@ import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
 import VectorSource from 'ol/source/Vector';
 import {Circle as CircleStyle, Fill, Icon, Stroke, Style} from 'ol/style';
-import {fromLonLat} from 'ol/proj';
+import {fromLonLat, toLonLat} from 'ol/proj';
 import {boundingExtent} from 'ol/extent';
 
 function showSpot(feature, viewSpotPopup, viewSpotOverlay, urlParams, map = null)
@@ -326,6 +326,8 @@ $(document).ready(function() {
                         // the user is logged in so show Create Spot popup
                         $(createSpotPopup).show();
                         $('#coordinates').val(e.coordinate[0] + ',' + e.coordinate[1]);
+                        var lonLat = toLonLat(e.coordinate);
+                        $('#lat-lon').val(lonLat[1] + ',' + lonLat[0]);
                         createSpotOverlay.setPosition(e.coordinate);
                         $(createSpotPopup).css('margin-top', -parseInt($(createSpotPopup).height()) - 10);
                     } else {
@@ -377,5 +379,15 @@ $(document).ready(function() {
         $(this).children('.spot-description').slideDown('fast');
     }, function() {
         $(this).children('.spot-description').slideUp('fast');
+    });
+
+    $('#hometown-nav-item').on('click', function(e) {
+        var $navItems = $('#hometown-nav-items');
+        if ($navItems.css('display') == 'none') {
+            $navItems.slideDown('fast');
+        } else {
+            $navItems.slideUp('fast');
+        }
+        e.stopPropagation();
     });
 });

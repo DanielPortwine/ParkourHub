@@ -61,13 +61,18 @@
                                 <a id="user-dropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     <i class="fa fa-user nav-icon"></i>{{ Auth::user()->name }} <span class="caret"></span>
                                 </a>
-                                <div class="dropdown-menu dropdown-menu-right bg-grey" aria-labelledby="user-dropdown">
+                                <div class="dropdown-menu dropdown-menu-right bg-grey" id="user-menu" aria-labelledby="user-dropdown">
                                     <a class="dropdown-item text-white" href="{{ route('home') }}"><i class="fa fa-home nav-icon"></i>Home</a>
                                     <a class="dropdown-item text-white" href="{{ route('user_manage') }}"><i class="fa fa-user nav-icon"></i>Account</a>
                                     <a class="dropdown-item text-white" href="{{ route('user_spots') }}"><i class="fa fa-map-marker nav-icon"></i>Spots</a>
                                     <a class="dropdown-item text-white" href="{{ route('user_hitlist') }}"><i class="fa fa-check-square-o nav-icon"></i>Hitlist</a>
                                     <a class="dropdown-item text-white" href="{{ route('user_challenges') }}"><i class="fa fa-bullseye nav-icon"></i>Challenges</a>
                                     <a class="dropdown-item text-white" href="{{ route('user_entries') }}"><i class="fa fa-bullseye nav-icon"></i>Challenge Entries</a>
+                                    <a class="dropdown-item text-white dropdown-toggle" id="hometown-nav-item"><i class="fa fa-street-view nav-icon"></i>Hometown <span class="caret"></span></a>
+                                    <div id="hometown-nav-items">
+                                        <a class="dropdown-item text-white" href="{{ route('hometown_spots') }}"><i class="fa fa-map-marker nav-icon nav-spacer"></i>Spots</a>
+                                        <a class="dropdown-item text-white" href="{{ route('hometown_challenges') }}"><i class="fa fa-bullseye nav-icon nav-spacer"></i>Challenges</a>
+                                    </div>
                                     <a class="dropdown-item text-white" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">

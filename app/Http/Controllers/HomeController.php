@@ -7,7 +7,6 @@ use App\Hit;
 use App\Spot;
 use App\User;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
@@ -29,7 +28,20 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $recentSpots = Spot::where('user_id', Auth::id())->orderBy('created_at', 'desc')->limit(3)->get();
+        $hits = Hit::where('user_id', Auth::id())
+            ->whereNull('completed_at')
+            ->inRandomOrder()
+            ->limit(2)
+            ->pluck('spot_id')
+            ->toArray();
+        $hitlist = Spot::whereIn('id', $hits)->get();
+        $hometownBoundaries = explode(',', Auth::user()->hometown_bounding);
+        $hometownName = explode(',', Auth::user()->hometown_name)[0];
+        $hometownSpots = Spot::whereBetween('latitude', [$hometownBoundaries[0], $hometownBoundaries[1]])
+            ->whereBetween('longitude', [$hometownBoundaries[2], $hometownBoundaries[3]])
+            ->orderBy('created_at', 'DESC')
+            ->limit(4)
+            ->get();
         $userStats = [
             'spotsCreated' => count(Spot::where('user_id', Auth::id())->get()),
             'challengesCreated' => count(Challenge::where('user_id', Auth::id())->get()),
@@ -37,15 +49,22 @@ class HomeController extends Controller
             'completedHits' => count(Hit::where('user_id', Auth::id())->whereNotNull('completed_at')->get()),
             'age' => Carbon::parse(User::where('id', Auth::id())->pluck('created_at')[0])->diffInDays(Carbon::now()),
         ];
-        $recentChallenges = Challenge::where('user_id', Auth::id())->orderBy('created_at', 'desc')->limit(3)->get();
-        $hits = Hit::where('user_id', Auth::id())->whereNull('completed_at')->inRandomOrder()->limit(3)->pluck('spot_id')->toArray();
-        $hitlist = Spot::whereIn('id', $hits)->get();
+        $recentChallenges = Challenge::with(['spot'])
+            ->where('user_id', Auth::id())
+            ->whereHas('spot', function($q) use ($hometownBoundaries) {
+                $q->whereBetween('latitude', [$hometownBoundaries[0], $hometownBoundaries[1]])
+                    ->whereBetween('longitude', [$hometownBoundaries[2], $hometownBoundaries[3]]);
+            })
+            ->orderBy('created_at', 'desc')
+            ->limit(4)
+            ->get();
 
         return view('home', [
-            'recentSpots' => $recentSpots,
+            'hitlist' => $hitlist,
+            'hometownName' => $hometownName,
+            'hometownSpots' => $hometownSpots,
             'userStats' => $userStats,
             'recentChallenges' => $recentChallenges,
-            'hitlist' => $hitlist,
         ]);
     }
 }

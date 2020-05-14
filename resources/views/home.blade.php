@@ -12,7 +12,7 @@
             </div>
             <div class="row">
                 @foreach($hitlist as $spot)
-                    <div class="col-md-{{ 12/count($hitlist) }} mb-2">
+                    <div class="col-md-{{ 12/count($hitlist) }} mb-4">
                         @include('components.card', ['card' => $spot, 'type' => 'spot', 'spot' => $spot->spot_id])
                     </div>
                 @endforeach
@@ -23,15 +23,26 @@
         <div class="container">
             <div class="row my-3">
                 <div class="col">
-                    <h1 class="text-center sedgwick">Recent Spots</h1>
+                    <h1 class="text-center sedgwick">Latest Spots From {{ $hometownName }}</h1>
                 </div>
             </div>
+            @foreach($hometownSpots->chunk(2) as $chunk)
+                <div class="row">
+                    @foreach($chunk as $spot)
+                        <div class="col-md-{{ 12/count($chunk) }} mb-4">
+                            @include('components.card', ['card' => $spot, 'type' => 'spot', 'spot' => $spot->id])
+                        </div>
+                    @endforeach
+                </div>
+            @endforeach
             <div class="row">
-                @foreach($recentSpots as $spot)
-                    <div class="col-md-{{ 12/count($recentSpots) }} mb-2">
-                        @include('components.card', ['card' => $spot, 'type' => 'spot', 'spot' => $spot->id])
-                    </div>
-                @endforeach
+                <div class="col text-center">
+                    @if(count($hometownSpots) > 0)
+                        <a class="btn btn-green w-75 mb-4" href="{{ route('hometown_spots') }}">View All</a>
+                    @else
+                        There are no spots in your hometown yet.
+                    @endif
+                </div>
             </div>
         </div>
     </div>
@@ -70,15 +81,26 @@
         <div class="container">
             <div class="row my-3">
                 <div class="col">
-                    <h1 class="text-center subtitle sedgwick">Recent Challenges</h1>
+                    <h1 class="text-center subtitle sedgwick">Latest Challenges From {{ $hometownName }}</h1>
                 </div>
             </div>
+            @foreach($recentChallenges->chunk(2) as $chunk)
+                <div class="row">
+                    @foreach($chunk as $challenge)
+                        <div class="col-md-{{ 12/count($recentChallenges) }} mb-4">
+                            @include('components.card', ['card' => $challenge, 'type' => 'challenge', 'spot' => $challenge->spot_id])
+                        </div>
+                    @endforeach
+                </div>
+            @endforeach
             <div class="row">
-                @foreach($recentChallenges as $challenge)
-                    <div class="col-md-{{ 12/count($recentChallenges) }} mb-2">
-                        @include('components.card', ['card' => $challenge, 'type' => 'challenge', 'spot' => $challenge->spot_id])
-                    </div>
-                @endforeach
+                <div class="col text-center">
+                    @if(count($recentChallenges) > 0)
+                        <a class="btn btn-green w-75 mb-4" href="{{ route('hometown_challenges') }}">View All</a>
+                    @else
+                        There are no challenges in your hometown yet.
+                    @endif
+                </div>
             </div>
         </div>
     </div>
