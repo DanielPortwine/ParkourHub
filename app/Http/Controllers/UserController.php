@@ -31,9 +31,14 @@ class UserController extends Controller
         $user = User::where('id', Auth::id())->first();
         $user->name = $request['name'];
         $user->email = $request['email'];
-        $hometown = explode('|', $request['hometown']);
-        $user->hometown_name = $hometown[0];
-        $user->hometown_bounding = $hometown[1];
+        if (!empty($request['hometown'])) {
+            $hometown = explode('|', $request['hometown']);
+            $user->hometown_name = $hometown[0];
+            $user->hometown_bounding = $hometown[1];
+        } else {
+            $user->hometown_name = null;
+            $user->hometown_bounding = null;
+        }
         $user->save();
 
         if  ($request['subscribed'] == true) {

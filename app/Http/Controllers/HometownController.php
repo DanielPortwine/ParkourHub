@@ -12,6 +12,9 @@ class HometownController extends Controller
     {
         $boundaries = explode(',', Auth::user()->hometown_bounding);
         $name = explode(',', Auth::user()->hometown_name)[0];
+        if (count($boundaries) !== 4) {
+            return redirect()->route('user_manage')->with('status', 'You must have a hometown to view Hometown spots');
+        }
 
         $spots = Spot::where('user_id', Auth::id())
             ->whereBetween('latitude', [$boundaries[0], $boundaries[1]])
@@ -26,6 +29,9 @@ class HometownController extends Controller
     {
         $boundaries = explode(',', Auth::user()->hometown_bounding);
         $name = explode(',', Auth::user()->hometown_name)[0];
+        if (count($boundaries) !== 4) {
+            return redirect()->route('user_manage')->with('status', 'You must have a hometown to view Hometown challenges');
+        }
 
         $challenges = Challenge::with(['spot'])
             ->where('user_id', Auth::id())

@@ -49,7 +49,6 @@
                             <div class="col-md-2">
                                 <a class="btn btn-danger require-confirmation">Obfuscate</a>
                                 <a href="{{ route('obfuscate', 'email') }}" class="btn btn-danger d-none confirmation-button">Confirm</a>
-                                <p class="mb-0 d-none text-danger confirmation-text">We will no longer be able to contact you and you won't receive notifications.</p>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -57,7 +56,7 @@
                             <div class="col-md-8">
                                 <form id="hometown-form">
                                     <div class="input-group w-100">
-                                        <input id="hometown" type="text" class="form-control @error('hometown') is-invalid @enderror" value="{{ $user->hometown_name }}" required autocomplete="hometown">
+                                        <input id="hometown" type="text" class="form-control @error('hometown') is-invalid @enderror" value="{{ $user->hometown_name }}" autocomplete="hometown">
                                         <div class="input-group-append">
                                             <button type="submit" class="btn btn-green input-group-text" id="hometown-search-button" title="Search"><i class="fa fa-search"></i></button>
                                         </div>
@@ -72,7 +71,6 @@
                             <div class="col-md-2">
                                 <a class="btn btn-danger require-confirmation">Remove</a>
                                 <a class="btn btn-danger d-none confirmation-button" id="remove-hometown-button">Confirm</a>
-                                <p class="mb-0 d-none text-danger confirmation-text position-absolute">You will no longer be able to see nearby content and the spots map will load at the default location.</p>
                             </div>
                         </div>
                         <div class="form-group row d-none" id="hometown-results-container">

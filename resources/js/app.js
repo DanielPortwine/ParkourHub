@@ -381,6 +381,7 @@ $(document).ready(function() {
         $(this).children('.spot-description').slideUp('fast');
     });
 
+    // have a dropdown for hometown content in the user nav dropdown
     $('#hometown-nav-item').on('click', function(e) {
         var $navItems = $('#hometown-nav-items');
         if ($navItems.css('display') == 'none') {
@@ -389,5 +390,11 @@ $(document).ready(function() {
             $navItems.slideUp('fast');
         }
         e.stopPropagation();
+    });
+
+    // clear the user's hometown
+    $('#remove-hometown-button').click(function() {
+        $('#hometown').val('');
+        $('#account-form').submit();
     });
 });
