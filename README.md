@@ -11,3 +11,4 @@ Run "ALTER USER 'parkourhub' IDENTIFIED WITH mysql_native_password BY '{password
 Exit mysql container
 Run ./dartisan migrate
 Run ./dartisan storage:link
+Run npm install
