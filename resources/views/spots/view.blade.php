@@ -55,10 +55,10 @@
                                 <a class="btn btn-green" href="{{ route('challenge_create', ['spot' => $spot->id]) }}" title="Create New Challenge"><i class="fa fa-plus"></i></a>
                             </div>
                         </div>
-                        @foreach($spot->challenges->chunk(3) as $chunk)
+                        @foreach($spot->challenges->chunk(2) as $chunk)
                             <div class="row">
                                 @foreach($chunk as $challenge)
-                                    <div class="col-md-4 mb-4">
+                                    <div class="col-md-6 mb-4">
                                         @include('components.card', ['card' => $challenge, 'type' => 'challenge', 'spot' => $challenge->spot_id])
                                     </div>
                                 @endforeach

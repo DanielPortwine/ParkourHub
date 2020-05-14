@@ -123,10 +123,10 @@
                                 </div>
                             </div>
                         @endif
-                        @foreach($challenge->entries->chunk(3) as $chunk)
+                        @foreach($challenge->entries->chunk(2) as $chunk)
                             <div class="row">
                                 @foreach($chunk as $entry)
-                                    <div class="col-md-4 mb-4">
+                                    <div class="col-md-6 mb-4">
                                         <div class="card">
                                             @if(!empty($entry->video))
                                                 <div class="video-wrapper">

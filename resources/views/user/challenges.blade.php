@@ -17,10 +17,10 @@
                                 </button>
                             </div>
                         @endif
-                        @foreach($challenges->chunk(3) as $chunk)
+                        @foreach($challenges->chunk(2) as $chunk)
                             <div class="row">
                                 @foreach($chunk as $challenge)
-                                    <div class="col-md-4 mb-4">
+                                    <div class="col-md-6 mb-4">
                                         @include('components.card', ['card' => $challenge, 'type' => 'challenge', 'spot' => $challenge->spot_id])
                                     </div>
                                 @endforeach
