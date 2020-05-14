@@ -56,7 +56,7 @@ function showSpot(feature, viewSpotPopup, viewSpotOverlay, urlParams, map = null
 
 function searchAddress(search) {
     $.ajax({
-        url: 'https://nominatim.openstreetmap.org/search?q=' + search + '&format=json&addressdetails=1&limit=20',
+        url: '/ajax/searchAddress/' + search,
         type: 'GET',
         success: function(response) {
             if (response.length > 0) {

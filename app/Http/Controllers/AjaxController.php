@@ -9,6 +9,22 @@ use Illuminate\Support\Facades\Http;
 
 class AjaxController extends Controller
 {
+    public function searchAddress(Request $request, $search)
+    {
+        if (!$request->ajax()) {
+            return back();
+        }
+
+        if (Cache::has('address_' . $search)) {
+            $results = Cache::get('address' . $search);
+        } else {
+            $response = Http::get('https://nominatim.openstreetmap.org/search?q=' . $search . '&format=json&addressdetails=1&limit=20');
+            $results = $response->json();
+            Cache::add('address' . $search, $results, 2419200); // cache results for 28 days
+        }
+
+        return $results;
+    }
     public function searchHometown(Request $request, $hometown)
     {
         if (!$request->ajax()) {

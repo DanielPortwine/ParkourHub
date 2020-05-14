@@ -71,6 +71,7 @@ Route::prefix('hometown')->middleware('verified')->group(function() {
 });
 
 Route::prefix('ajax')->group(function() {
+    Route::get('searchAddress/{search}', 'AjaxController@searchAddress');
     Route::get('searchHometown/{hometown}', 'AjaxController@searchHometown');
     Route::get('/isVerifiedLoggedIn', 'AjaxController@isVerifiedLoggedIn');
 });
