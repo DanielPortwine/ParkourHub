@@ -47,6 +47,7 @@ services:
       - MYSQL_ROOT_PASSWORD=
     # note you must run "ALTER USER 'parkourhub' IDENTIFIED WITH mysql_native_password BY '{password}';" as root
   maildev:
+    restart: unless-stopped
     container_name: maildev
     image: djfarrelly/maildev
     ports:
@@ -54,6 +55,7 @@ services:
     networks:
       - laravel
   composer:
+    restart: unless-stopped
     container_name: composer
     image: composer
     volumes:
