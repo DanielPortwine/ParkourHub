@@ -58,17 +58,17 @@ function searchAddress(search) {
     $.ajax({
         url: 'https://nominatim.openstreetmap.org/search?q=' + search + '&format=json&addressdetails=1&limit=20',
         type: 'GET',
-        success: function(result) {
-            if (result.length > 0) {
+        success: function(response) {
+            if (response.length > 0) {
                 var $addressResults = $('#address-results');
                 $addressResults.html('');
-                for (var address in result) {
-                    address = (result[address]);
+                for (var address in response) {
+                    address = (response[address]);
                     $addressResults.append($('<div class="row btn text-white w-100 text-left" onclick="window.location = `/spots?search=' + search + '&bounding=' + address.boundingbox + '`"><div class="col">' + address.display_name + '</div></div>'));
                 }
                 $('#map-search-results').removeClass('d-none').show();
                 $('#map-search-results-addresses').removeClass('d-none');
-                $('#map-search-results-addresses-count').text(result.length);
+                $('#map-search-results-addresses-count').text(response.length);
             } else {
                 $('#map-search-results-addresses').addClass('d-none');
             }
@@ -81,17 +81,17 @@ function searchSpot(search) {
         url: '/spots/search',
         type: 'GET',
         data: 'search=' + search,
-        success: function(result) {
-            if (result.length > 0) {
+        success: function(response) {
+            if (response.length > 0) {
                 var $spotResults = $('#spot-results');
                 $spotResults.html('');
-                for (var spot in result) {
-                    spot = (result[spot]);
+                for (var spot in response) {
+                    spot = (response[spot]);
                     $spotResults.append($('<div class="row btn text-white w-100 text-left" onclick="window.location = `/spots?search=' + search + '&spot=' + spot.id + '`"><div class="col">' + spot.name + ' by ' + spot.user.name + '</div></div>'));
                 }
                 $('#map-search-results').removeClass('d-none').show();
                 $('#map-search-results-spots').removeClass('d-none');
-                $('#map-search-results-spots-count').text(result.length);
+                $('#map-search-results-spots-count').text(response.length);
             } else {
                 $('#map-search-results-spots').addClass('d-none');
             }
@@ -282,9 +282,9 @@ $(document).ready(function() {
     $.ajax({
         url: '/spots/fetch',
         type: 'GET',
-        success: function(result) {
-            for (var spot in result) {
-                spot = (result[spot]);
+        success: function(response) {
+            for (var spot in response) {
+                spot = (response[spot]);
                 var feature = new Feature({
                     type: 'spot',
                     geometry: new Point(spot.coordinates.split(',')),
