@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Challenge;
 use App\ChallengeEntry;
+use App\ChallengeView;
 use App\Http\Requests\CreateChallenge;
 use App\Http\Requests\EnterChallenge;
 use App\Http\Requests\UpdateChallenge;
@@ -20,6 +21,13 @@ class ChallengeController extends Controller
             ChallengeEntry::where('challenge_id', $id)->where('user_id', Auth::id())->first()
         );
         $winner = ChallengeEntry::with(['user'])->where('challenge_id', $id)->where('winner', true)->first();
+        $usersViewed = ChallengeView::where('challenge_id', $id)->pluck('user_id')->toArray();
+        if (!in_array(Auth::id(), $usersViewed) && Auth::id() !== $challenge->user_id) {
+            $view = new ChallengeView;
+            $view->challenge_id = $id;
+            $view->user_id = Auth::id();
+            $view->save();
+        }
 
         return view('challenges.view', [
             'challenge' => $challenge,

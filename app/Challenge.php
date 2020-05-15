@@ -30,4 +30,9 @@ class Challenge extends Model
     {
         return $this->belongsTo('App\User');
     }
+
+    public function views()
+    {
+        return $this->belongsTo('App\ChallengeView');
+    }
 }

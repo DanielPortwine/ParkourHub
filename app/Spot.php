@@ -29,4 +29,9 @@ class Spot extends Model
     {
         return $this->hasMany('App\Challenge');
     }
+
+    public function views()
+    {
+        return $this->hasMany('App\SpotView');
+    }
 }
