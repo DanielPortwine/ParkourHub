@@ -21,7 +21,7 @@
     <link rel="icon" href="/favicon.png" type="image/png">
 </head>
 <body>
-    <div class="flex-center full-height section title-section">
+    <div class="flex-center full-height section">
         <div class="text-center">
             <div class="page-title sedgwick">
                 Thank you for subscribing.

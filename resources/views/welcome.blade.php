@@ -21,7 +21,7 @@
     <link rel="icon" href="/favicon.png" type="image/png">
 </head>
 <body>
-    <div class="flex-center full-height section title-section">
+    <div class="flex-center full-height section">
         <div class="top-right links">
             <a href="{{ url('/spots') }}">Spots</a>
             @auth

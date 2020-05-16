@@ -30,8 +30,13 @@ class SpotController extends Controller
             $view->user_id = Auth::id();
             $view->save();
         }
+        $views = count($spot->views);
 
-        return view('spots.view', ['spot' => $spot, 'hitlist' => $hitlist]);
+        return view('spots.view', [
+            'spot' => $spot,
+            'hitlist' => $hitlist,
+            'views' => $views,
+        ]);
     }
 
     public function fetch()

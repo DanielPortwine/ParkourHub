@@ -56,8 +56,7 @@ Route::prefix('spots')->middleware('verified')->group(function() {
 
 Route::prefix('challenges')->middleware('verified')->group(function() {
     Route::get('/challenge/{id}', 'ChallengeController@view')->name('challenge_view');
-    Route::get('/create', 'ChallengeController@create')->name('challenge_create');
-    Route::post('/create', 'ChallengeController@save')->name('challenge_save');
+    Route::post('/create', 'ChallengeController@create')->name('challenge_create');
     Route::get('/edit/{id}', 'ChallengeController@edit')->name('challenge_edit');
     Route::post('/edit/{id}', 'ChallengeController@update')->name('challenge_update');
     Route::get('/delete/{id}', 'ChallengeController@delete')->name('challenge_delete');

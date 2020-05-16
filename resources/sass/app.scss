@@ -12,6 +12,7 @@ html, body {
     color: $white;
     font-family: 'Nunito', sans-serif;
     margin: 0;
+    font-size: 1rem;
 }
 
 .navbar {
@@ -40,6 +41,11 @@ html, body {
     justify-content: center;
 }
 
+.vertical-center {
+    display: flex;
+    align-items: center;
+}
+
 .top-right {
     position: absolute;
     right: 10px;
@@ -52,7 +58,7 @@ html, body {
 }
 
 .page-title {
-    font-size: 84px;
+    font-size: 8vw;
 }
 
 .sedgwick {
@@ -86,6 +92,32 @@ html, body {
     border-top: 3px solid $green;
 }
 
+.full-content-section {
+    height: calc(100vh - 59px);
+    min-height: 32vw;
+    max-height: calc(100vh - 59px);
+    width: 100%;
+}
+
+.full-content-content {
+    max-height: calc(100vh - 59px);
+    width: 100%;
+    object-fit: contain;
+}
+
+#description-box {
+    max-height: 55px;
+    overflow: hidden;
+}
+
+#description-box.more {
+    max-height: 100%;
+}
+
+#description-more {
+    display: none;
+}
+
 .grey-section {
     background-color: $grey;
 }
@@ -98,6 +130,10 @@ html, body {
     width: 100px;
     border: 3px solid $green;
     border-radius: 5px;
+}
+
+.border-subtle {
+    border-bottom: 1px solid $grey3;
 }
 
 .separator {
@@ -129,6 +165,10 @@ html, body {
     color: $green;
 }
 
+.subtitle {
+    font-size: 40px;
+}
+
 .footer-links {
     list-style: none;
     padding: 0;
@@ -142,6 +182,10 @@ html, body {
 
 .text-white {
     color: $white;
+}
+
+.title-shadow {
+    text-shadow: 0 0 10px $black;
 }
 
 .bg-grey {
@@ -173,6 +217,14 @@ html, body {
 .card-header {
     font-size: 25px;
     font-weight: 600;
+}
+
+.card-hidden-body {
+    cursor: pointer;
+}
+
+.card-hidden-body + .card-body {
+    display: none;
 }
 
 .form-check {

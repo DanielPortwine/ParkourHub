@@ -10941,6 +10941,7 @@ body {
   color: #f0f5f0;
   font-family: "Nunito", sans-serif;
   margin: 0;
+  font-size: 1rem;
 }
 
 .navbar {
@@ -10969,6 +10970,11 @@ body {
   justify-content: center;
 }
 
+.vertical-center {
+  display: flex;
+  align-items: center;
+}
+
 .top-right {
   position: absolute;
   right: 10px;
@@ -10981,7 +10987,7 @@ body {
 }
 
 .page-title {
-  font-size: 84px;
+  font-size: 8vw;
 }
 
 .sedgwick {
@@ -11015,8 +11021,35 @@ body {
   border-top: 3px solid #73c979;
 }
 
+.full-content-section {
+  height: calc(100vh - 59px);
+  min-height: 32vw;
+  max-height: calc(100vh - 59px);
+  width: 100%;
+}
+
+.full-content-content {
+  max-height: calc(100vh - 59px);
+  width: 100%;
+  -o-object-fit: contain;
+     object-fit: contain;
+}
+
+#description-box {
+  max-height: 55px;
+  overflow: hidden;
+}
+
+#description-box.more {
+  max-height: 100%;
+}
+
+#description-more {
+  display: none;
+}
+
 .grey-section {
-  background-color: #454545;
+  background-color: #2b2b2b;
 }
 
 .green-section {
@@ -11027,6 +11060,10 @@ body {
   width: 100px;
   border: 3px solid #73c979;
   border-radius: 5px;
+}
+
+.border-subtle {
+  border-bottom: 1px solid #363636;
 }
 
 .separator {
@@ -11058,6 +11095,10 @@ body {
   color: #73c979;
 }
 
+.subtitle {
+  font-size: 40px;
+}
+
 .footer-links {
   list-style: none;
   padding: 0;
@@ -11073,8 +11114,12 @@ body {
   color: #f0f5f0;
 }
 
+.title-shadow {
+  text-shadow: 0 0 10px #000000;
+}
+
 .bg-grey {
-  background-color: #454545;
+  background-color: #2b2b2b;
 }
 
 .bg-grey .dropdown-item:hover {
@@ -11102,6 +11147,14 @@ body {
 .card-header {
   font-size: 25px;
   font-weight: 600;
+}
+
+.card-hidden-body {
+  cursor: pointer;
+}
+
+.card-hidden-body + .card-body {
+  display: none;
 }
 
 .form-check {
@@ -11222,7 +11275,7 @@ input[type=checkbox]:checked + label:after {
   margin: auto;
   font-size: 14px;
   cursor: pointer;
-  color: #454545;
+  color: #2b2b2b;
   z-index: 5;
 }
 

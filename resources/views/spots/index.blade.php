@@ -81,9 +81,9 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="image" class="col-12 col-form-label">Main Image</label>
+                            <label for="image" class="col-12 col-form-label">Thumbnail</label>
                             <div class="col-12">
-                                <input type="file" id="image" class="form-control-file @error('image') is-invalid @enderror" name="image">
+                                <input type="file" id="image" class="form-control-file @error('image') is-invalid @enderror" name="image" required>
                                 @error('image')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>

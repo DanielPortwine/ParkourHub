@@ -28,20 +28,17 @@ class ChallengeController extends Controller
             $view->user_id = Auth::id();
             $view->save();
         }
+        $views = count($challenge->views);
 
         return view('challenges.view', [
             'challenge' => $challenge,
             'entered' => $entered,
             'winner' => $winner,
+            'views' => $views,
         ]);
     }
 
-    public function create(Request $request)
-    {
-        return view('challenges.create', ['spot' => $request['spot']]);
-    }
-
-    public function save(CreateChallenge $request)
+    public function create(CreateChallenge $request)
     {
         $challenge = new Challenge;
         $challenge->spot_id = $request['spot'];
@@ -53,6 +50,7 @@ class ChallengeController extends Controller
         } else if (!empty($request['video'])) {
             $challenge->video = Storage::url($request->file('video')->store('videos/challenges', 'public'));
         }
+        $challenge->thumbnail = Storage::url($request->file('thumbnail')->store('images/challenges', 'public'));
         $challenge->save();
 
         return redirect()->route('spot_view', $challenge->spot_id);

@@ -3,70 +3,166 @@
 @push('title'){{ $spot->name }} | @endpush
 
 @section('content')
-    <div class="container py-4">
-        <div class="row justify-content-center">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-header bg-green">
-                        <div class="row">
-                            <span class="col sedgwick">{{ $spot->name }}</span>
-                            <span class="col-auto">
-                                @if ($spot->user->id === Auth()->id())
-                                    <a class="btn text-white" href="{{ route('spot_edit', $spot->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
-                                @endif
-                                @if(in_array($spot->id, array_keys($hitlist)))
-                                    @if(empty($hitlist[$spot->id]))
-                                        <a class="btn text-white" href="{{ route('tick_off_hitlist', $spot->id) }}" title="Tick Off Hitlist"><i class="fa fa-check"></i></a>
-                                    @endif
-                                @else
-                                    <a class="btn text-white" href="{{ route('add_to_hitlist', $spot->id) }}" title="Add To Hitlist"><i class="fa fa-crosshairs"></i></a>
-                                @endif
-                                <a class="btn text-white" href="{{ route('spots', ['spot' => $spot->id]) }}" title="Locate"><i class="fa fa-map-marker"></i></a>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="card-body bg-grey text-white">
-                        @if (session('status'))
-                            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                {{ session('status') }}
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
+    <div class="flex-center">
+        <div class="text-center position-absolute">
+            <h1 class="page-title sedgwick title-shadow">{{ $spot->name }}</h1>
+        </div>
+        <div class="text-center bottom-centre title-shadow" id="scroll-arrow">
+            <i class="fa fa-angle-double-down"></i>
+        </div>
+        <div class="full-content-section">
+            @if(!empty($spot->image))
+                <img class="full-content-content" src="{{ $spot->image }}" alt="Image of the {{ $spot->name }} spot.">
+            @endif
+        </div>
+    </div>
+    <div class="section grey-section">
+        <div class="container">
+            <div class="row py-3 border-subtle">
+                <div class="col vertical-center">
+                    <span>{{ $views . ($views === 1 ? ' view' : ' views') }} | {{ $spot->created_at->format('jS M, Y') }}</span>
+                </div>
+                <div class="col-auto">
+                    @if(in_array($spot->id, array_keys($hitlist)))
+                        @if(empty($hitlist[$spot->id]))
+                            <a class="btn text-white" href="{{ route('tick_off_hitlist', $spot->id) }}" title="Tick Off Hitlist"><i class="fa fa-check"></i></a>
                         @endif
-                        <small>{{ $spot->private ? 'Private' : '' }}</small>
-                        @if(!empty($spot->image))
+                    @else
+                        <a class="btn text-white" href="{{ route('add_to_hitlist', $spot->id) }}" title="Add To Hitlist"><i class="fa fa-crosshairs"></i></a>
+                    @endif
+                    <a class="btn text-white" href="{{ route('spots', ['spot' => $spot->id]) }}" title="Locate"><i class="fa fa-map-marker"></i></a>
+                </div>
+            </div>
+            <div class="row py-3">
+                <div class="col vertical-center">
+                    <span class="large-text sedgwick">{{ $spot->user->name }}</span>
+                </div>
+                <div class="col-auto">
+                    @if ($spot->user->id === Auth()->id())
+                        <a class="btn text-white" href="{{ route('spot_edit', $spot->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
+                    @endif
+                </div>
+            </div>
+            <div class="pb-4">
+                <div id="description-box">
+                    <p class="mb-0" id="description-content">{!! nl2br(e($spot->description)) !!}</p>
+                </div>
+                <a class="btn btn-link" id="description-more">More</a>
+            </div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="container">
+            <div class="row py-4">
+                <div class="col">
+                    <h2 class="sedgwick subtitle mb-0">Challenges</h2>
+                </div>
+            </div>
+            <div class="row mb-4">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-header bg-green sedgwick card-hidden-body">
                             <div class="row">
                                 <div class="col">
-                                    <img class="w-100" src="{{ $spot->image }}">
+                                    Create Challenge
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fa fa-caret-down"></i>
                                 </div>
                             </div>
-                        @endif
-                        <div class="row">
-                            <div class="col">
-                                {{ $spot->description }}
-                            </div>
                         </div>
-                        <div class="row py-4">
-                            <div class="col">
-                                <h2 class="sedgwick">Challenges ({{ count($spot->challenges) }})</h2>
-                            </div>
-                            <div class="col-auto">
-                                <a class="btn btn-green" href="{{ route('challenge_create', ['spot' => $spot->id]) }}" title="Create New Challenge"><i class="fa fa-plus"></i></a>
-                            </div>
-                        </div>
-                        @foreach($spot->challenges->chunk(2) as $chunk)
-                            <div class="row">
-                                @foreach($chunk as $challenge)
-                                    <div class="col-md-6 mb-4">
-                                        @include('components.card', ['card' => $challenge, 'type' => 'challenge', 'spot' => $challenge->spot_id])
+                        <div class="card-body bg-grey text-white">
+                            @if (session('status'))
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    {{ session('status') }}
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            @endif
+                            <form method="POST" action="{{ route('challenge_create') }}" enctype="multipart/form-data">
+                                @csrf
+                                <input type="hidden" name="spot" value="{{ $spot->id }}">
+                                <div class="form-group row">
+                                    <label for="name" class="col-md-2 col-form-label text-md-right">Name</label>
+                                    <div class="col-md-8">
+                                        <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" required autocomplete="name" maxlength="25" value="{{ old('name') }}">
+                                        @error('name')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                        @enderror
                                     </div>
-                                @endforeach
-                            </div>
-                        @endforeach
+                                </div>
+                                <div class="form-group row">
+                                    <label for="description" class="col-md-2 col-form-label text-md-right">Description</label>
+                                    <div class="col-md-8">
+                                        <textarea id="description" class="form-control @error('description') is-invalid @enderror" name="description" maxlength="255">{{ old('description') }}</textarea>
+                                        @error('description')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-2 col-form-label text-md-right">Youtube or Video</label>
+                                    <div class="col-md-4">
+                                        <input type="text" id="youtube" class="form-control @error('youtube') is-invalid @enderror" name="youtube" autocomplete="youtube" placeholder="e.g. https://youtu.be/QDIVrf2ZW0s" value="{{ old('youtube') }}">
+                                        @error('youtube')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-4">
+                                        <input type="file" id="video" class="form-control-file @error('video') is-invalid @enderror" name="video">
+                                        @error('video')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="thumbnail" class="col-md-2 col-form-label text-md-right">Thumbnail</label>
+                                    <div class="col-md-8">
+                                        <input type="file" id="thumbnail" class="form-control-file @error('thumbnail') is-invalid @enderror" name="thumbnail" required>
+                                        @error('thumbnail')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-md-8 offset-md-2">
+                                        <button type="submit" class="btn btn-green">Create</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="container">
+            @foreach($spot->challenges->sortByDesc('created_at')->chunk(2) as $chunk)
+                <div class="row">
+                    @foreach($chunk as $challenge)
+                        <div class="col-md-6 mb-4">
+                            @include('components.card', ['card' => $challenge, 'type' => 'challenge', 'spot' => $challenge->spot_id])
+                        </div>
+                    @endforeach
+                </div>
+            @endforeach
+            @if (count($spot->challenges) === 0)
+                <p>This spot has no challenges yet. Create one by clicking 'Create Challenge' above.</p>
+            @endif
+        </div>
     </div>
+@endsection
+
+@section('footer')
+    @include('components.footer')
 @endsection

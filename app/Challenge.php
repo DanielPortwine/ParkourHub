@@ -33,6 +33,6 @@ class Challenge extends Model
 
     public function views()
     {
-        return $this->belongsTo('App\ChallengeView');
+        return $this->hasMany('App\ChallengeView');
     }
 }

@@ -397,4 +397,33 @@ $(document).ready(function() {
         $('#hometown').val('');
         $('#account-form').submit();
     });
+
+    // toggle the card-body
+    $('.card-hidden-body').click(function() {
+        var $cardBody = $(this).siblings('.card-body');
+        if ($cardBody.css('display') === 'none') {
+            $cardBody.slideDown();
+        } else {
+            $cardBody.slideUp();
+        }
+    });
+
+    // handle descriptions being taller than 50px
+    var $descriptionMore = $('#description-more');
+    if ($('#description-content').height() > 55) {
+        $descriptionMore.show();
+    }
+    $descriptionMore.click(function() {
+        var more = $descriptionMore.text() === 'More';
+        $('#description-box').toggleClass('more');
+        $descriptionMore.text(more ? 'Less' : 'More');
+    });
+
+    // switch challenge image title and video
+    $('#switch-title-button').click(function() {
+        $('#full-content-title').toggleClass('d-none');
+        $('#full-content-video').toggleClass('d-none');
+        $(this).children('.fa').toggleClass('fa-film');
+        $(this).children('.fa').toggleClass('fa-eye-slash');
+    });
 });
