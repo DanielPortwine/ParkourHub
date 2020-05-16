@@ -53,7 +53,7 @@ class ChallengeController extends Controller
         $challenge->thumbnail = Storage::url($request->file('thumbnail')->store('images/challenges', 'public'));
         $challenge->save();
 
-        return redirect()->route('spot_view', $challenge->spot_id);
+        return redirect()->back()->with('status', 'Successfully created challenge');
     }
 
     public function edit($id)
@@ -105,10 +105,10 @@ class ChallengeController extends Controller
             }
             $entry->save();
 
-            return redirect()->route('challenge_view', $id);
+            return redirect()->back()->with('status', 'Successfully entered challenge ' . $entry->challenge->name);
         }
 
-        return redirect()->route('home')->with('status', 'You have already entered this challenge');
+        return redirect()->back()->with('status', 'You have already entered this challenge');
     }
 
     public function win($id)
@@ -125,6 +125,6 @@ class ChallengeController extends Controller
             return back()->with('status', 'Successfully appointed the winner of this challenge');
         }
 
-        return redirect()->route('home')->with('status', 'This challenge has already been won');
+        return redirect()->back()->with('status', 'This challenge has already been won');
     }
 }

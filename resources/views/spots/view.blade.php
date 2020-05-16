@@ -3,6 +3,14 @@
 @push('title'){{ $spot->name }} | @endpush
 
 @section('content')
+    @if (session('status'))
+        <div class="alert alert-success alert-dismissible fade show position-absolute w-100" role="alert">
+            {{ session('status') }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    @endif
     <div class="flex-center">
         <div class="text-center position-absolute">
             <h1 class="page-title sedgwick title-shadow">{{ $spot->name }}</h1>
@@ -80,7 +88,7 @@
             </div>
             <div class="row mb-4">
                 <div class="col">
-                    <div class="card">
+                    <div class="card @error('rating') border-danger @enderror @error('title') border-danger @enderror @error('review') border-danger @enderror">
                         <div class="card-header bg-green sedgwick card-hidden-body">
                             <div class="row">
                                 <div class="col">
@@ -99,18 +107,20 @@
                                 <div class="form-group row">
                                     <label class="col-md-2 col-form-label text-md-right">Rating</label>
                                     <div class="col-md-8 vertical-center">
-                                        <div class="rating-stars @error('rating') is-invalid @enderror">
-                                            <i class="rating-star editable fa fa-star-o" id="rating-star-1"></i>
-                                            <i class="rating-star editable fa fa-star-o" id="rating-star-2"></i>
-                                            <i class="rating-star editable fa fa-star-o" id="rating-star-3"></i>
-                                            <i class="rating-star editable fa fa-star-o" id="rating-star-4"></i>
-                                            <i class="rating-star editable fa fa-star-o" id="rating-star-5"></i>
+                                        <div>
+                                            <div class="rating-stars w-100 @error('rating') is-invalid @enderror">
+                                                <i class="rating-star editable fa fa-star-o" id="rating-star-1"></i>
+                                                <i class="rating-star editable fa fa-star-o" id="rating-star-2"></i>
+                                                <i class="rating-star editable fa fa-star-o" id="rating-star-3"></i>
+                                                <i class="rating-star editable fa fa-star-o" id="rating-star-4"></i>
+                                                <i class="rating-star editable fa fa-star-o" id="rating-star-5"></i>
+                                            </div>
+                                            @error('rating')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                            @enderror
                                         </div>
-                                        @error('rating')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                        @enderror
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -210,7 +220,7 @@
             </div>
             <div class="row mb-4">
                 <div class="col">
-                    <div class="card">
+                    <div class="card @error('name') border-danger @enderror @error('description') border-danger @enderror @error('youtube') border-danger @enderror @error('video') border-danger @enderror @error('thumbnail') border-danger @enderror">
                         <div class="card-header bg-green sedgwick card-hidden-body">
                             <div class="row">
                                 <div class="col">
@@ -222,14 +232,6 @@
                             </div>
                         </div>
                         <div class="card-body bg-grey text-white">
-                            @if (session('status'))
-                                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                    {{ session('status') }}
-                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                            @endif
                             <form method="POST" action="{{ route('challenge_create') }}" enctype="multipart/form-data">
                                 @csrf
                                 <input type="hidden" name="spot" value="{{ $spot->id }}">
@@ -247,7 +249,7 @@
                                 <div class="form-group row">
                                     <label for="description" class="col-md-2 col-form-label text-md-right">Description</label>
                                     <div class="col-md-8">
-                                        <textarea id="description" class="form-control @error('description') is-invalid @enderror" name="description" maxlength="255">{{ old('description') }}</textarea>
+                                        <textarea id="description" class="form-control @error('description') is-invalid @enderror" name="description" maxlength="255" required>{{ old('description') }}</textarea>
                                         @error('description')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>

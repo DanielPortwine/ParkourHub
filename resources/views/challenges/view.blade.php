@@ -3,6 +3,14 @@
 @push('title'){{ $challenge->name }} | @endpush
 
 @section('content')
+    @if (session('status'))
+        <div class="alert alert-success alert-dismissible fade show position-absolute w-100" role="alert">
+            {{ session('status') }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    @endif
     <div class="flex-center" id="full-content-title">
         <div class="text-center position-absolute">
             <h1 class="page-title sedgwick title-shadow">{{ $challenge->name }}</h1>
@@ -103,14 +111,6 @@
                             </div>
                         </div>
                         <div class="card-body bg-grey text-white">
-                            @if (session('status'))
-                                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                    {{ session('status') }}
-                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                            @endif
                             @if ($entered)
                                 <p class="mb-0">You have already entered this challenge.</p>
                             @else
