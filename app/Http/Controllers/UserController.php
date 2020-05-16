@@ -104,7 +104,7 @@ class UserController extends Controller
 
     public function hitlist()
     {
-        $hits = Hit::with(['spot'])->where('user_id', Auth::id())->get();
+        $hits = Hit::whereHas('spot')->where('user_id', Auth::id())->get();
         $hitsToTickOff = $hits->whereNull('completed_at')->sortByDesc('created_at');
         $hitsTickedOff = $hits->whereNotNull('completed_at')->sortByDesc('completed_at');
 
