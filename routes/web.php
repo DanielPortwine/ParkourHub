@@ -36,6 +36,7 @@ Route::prefix('user')->middleware('verified')->group(function() {
     Route::get('delete', 'UserController@delete')->name('user_delete');
     Route::get('/spots', 'UserController@spots')->name('user_spots');
     Route::get('/hitlist', 'UserController@hitlist')->name('user_hitlist');
+    Route::get('/reviews', 'UserController@reviews')->name('user_reviews');
     Route::get('/challenges', 'UserController@challenges')->name('user_challenges');
     Route::get('/entries', 'UserController@entries')->name('user_entries');
     Route::get('/fetch_hometown_bounding', 'UserController@fetchHometownBounding');
@@ -52,6 +53,14 @@ Route::prefix('spots')->middleware('verified')->group(function() {
     Route::get('/search', 'SpotController@search')->name('spot_search');
     Route::get('/add_to_hitlist/{id}', 'SpotController@addToHitlist')->name('add_to_hitlist');
     Route::get('/tick_off_hitlist/{id}', 'SpotController@tickOffHitlist')->name('tick_off_hitlist');
+});
+
+Route::prefix('/reviews')->middleware('verified')->group(function() {
+    Route::get('/review/{id}', 'ReviewController@view')->name('review_view');
+    Route::post('/create', 'ReviewController@create')->name('review_create');
+    Route::get('/edit/{id}', 'ReviewController@edit')->name('review_edit');
+    Route::post('/edit/{id}', 'ReviewController@update')->name('review_update');
+    Route::get('/delete/{id}', 'ReviewController@delete')->name('review_delete');
 });
 
 Route::prefix('challenges')->middleware('verified')->group(function() {

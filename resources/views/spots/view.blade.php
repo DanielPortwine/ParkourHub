@@ -7,7 +7,7 @@
         <div class="text-center position-absolute">
             <h1 class="page-title sedgwick title-shadow">{{ $spot->name }}</h1>
         </div>
-        <div class="text-center bottom-centre title-shadow" id="scroll-arrow">
+        <div class="text-center bottom-centre title-shadow d-md-block d-none" id="scroll-arrow">
             <i class="fa fa-angle-double-down"></i>
         </div>
         <div class="full-content-section">
@@ -18,10 +18,20 @@
     </div>
     <div class="section grey-section">
         <div class="container">
-            <div class="row py-3 border-subtle">
+            <div class="row pt-3">
                 <div class="col vertical-center">
                     <span>{{ $views . ($views === 1 ? ' view' : ' views') }} | {{ $spot->created_at->format('jS M, Y') }}</span>
                 </div>
+                @if(count($spot->reviews))
+                    <div class="col-auto vertical-center d-md-flex d-none">
+                        <div>
+                            @for($star = 1; $star <= 5; $star++)
+                                <i class="rating-star pl-1 fa {{ $star <= $spotRating ? 'fa-star' : 'fa-star-o' }}"></i>
+                            @endfor
+                            <span>({{ count($spot->reviews) }})</span>
+                        </div>
+                    </div>
+                @endif
                 <div class="col-auto">
                     @if(in_array($spot->id, array_keys($hitlist)))
                         @if(empty($hitlist[$spot->id]))
@@ -32,6 +42,16 @@
                     @endif
                     <a class="btn text-white" href="{{ route('spots', ['spot' => $spot->id]) }}" title="Locate"><i class="fa fa-map-marker"></i></a>
                 </div>
+            </div>
+            <div class="row pb-3 border-subtle">
+                @if(count($spot->reviews))
+                    <div class="col vertical-center d-md-none d-flex">
+                        @for($star = 1; $star <= 5; $star++)
+                            <i class="rating-star pl-1 fa {{ $star <= $spotRating ? 'fa-star' : 'fa-star-o' }}"></i>
+                        @endfor
+                        <span>({{ count($spot->reviews) }})</span>
+                    </div>
+                @endif
             </div>
             <div class="row py-3">
                 <div class="col vertical-center">
@@ -49,6 +69,136 @@
                 </div>
                 <a class="btn btn-link" id="description-more">More</a>
             </div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="container">
+            <div class="row py-4">
+                <div class="col">
+                    <h2 class="sedgwick subtitle mb-0">Reviews</h2>
+                </div>
+            </div>
+            <div class="row mb-4">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-header bg-green sedgwick card-hidden-body">
+                            <div class="row">
+                                <div class="col">
+                                    Submit Review
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fa fa-caret-down"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body bg-grey text-white">
+                            <form method="POST" action="{{ route('review_create') }}" enctype="multipart/form-data">
+                                @csrf
+                                <input type="hidden" name="spot" value="{{ $spot->id }}">
+                                <input type="hidden" id="rating" name="rating" value="{{ old('rating') ?: 0 }}">
+                                <div class="form-group row">
+                                    <label class="col-md-2 col-form-label text-md-right">Rating</label>
+                                    <div class="col-md-8 vertical-center">
+                                        <div class="rating-stars @error('rating') is-invalid @enderror">
+                                            <i class="rating-star editable fa fa-star-o" id="rating-star-1"></i>
+                                            <i class="rating-star editable fa fa-star-o" id="rating-star-2"></i>
+                                            <i class="rating-star editable fa fa-star-o" id="rating-star-3"></i>
+                                            <i class="rating-star editable fa fa-star-o" id="rating-star-4"></i>
+                                            <i class="rating-star editable fa fa-star-o" id="rating-star-5"></i>
+                                        </div>
+                                        @error('rating')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="title" class="col-md-2 col-form-label text-md-right">Title</label>
+                                    <div class="col-md-8">
+                                        <input id="title" type="text" class="form-control @error('title') is-invalid @enderror" name="title" autocomplete="title" maxlength="25" value="{{ old('title') }}">
+                                        @error('title')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="review" class="col-md-2 col-form-label text-md-right">Review</label>
+                                    <div class="col-md-8">
+                                        <textarea id="review" class="form-control @error('review') is-invalid @enderror" name="review" maxlength="255">{{ old('review') }}</textarea>
+                                        @error('review')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-md-8 offset-md-2">
+                                        <button type="submit" class="btn btn-green">Submit</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            @foreach($spot->reviews->whereNotNull('title')->sortByDesc('created_at')->chunk(2) as $chunk)
+                <div class="row">
+                    @foreach($chunk as $review)
+                        <div class="col-md-6 mb-4">
+                            <div class="card">
+                                <div class="card-header bg-grey card-hidden-body">
+                                    <div class="row">
+                                        <span class="col sedgwick">{{ $review->title }}</span>
+                                        <div class="col-auto d-md-block d-none">
+                                            <div class="rating-stars">
+                                                @for($star = 1; $star <= 5; $star++)
+                                                    <i class="rating-star fa {{ $star <= $review->rating ? 'fa-star' : 'fa-star-o' }}"></i>
+                                                @endfor
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fa fa-caret-down"></i>
+                                        </div>
+                                    </div>
+                                    <div class="d-md-none d-block row">
+                                        <div class="col">
+                                            <div class="rating-stars">
+                                                @for($star = 1; $star <= 5; $star++)
+                                                    <i class="rating-star fa {{ $star <= $review->rating ? 'fa-star' : 'fa-star-o' }}"></i>
+                                                @endfor
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body bg-grey">
+                                    <div class="row">
+                                        <span class="col h4 sedgwick">{{ $review->user->name }}</span>
+                                        <div class="col-auto">
+                                            @if($review->user_id === Auth()->id())
+                                                <a class="btn text-white" href="{{ route('review_edit', $review->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            {!! nl2br(e($review->review)) !!}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @endforeach
+            @if (count($spot->reviews) === 0)
+                <p>This spot has no reviews yet. Create one by clicking 'Submit Review' above.</p>
+            @endif
         </div>
     </div>
     <div class="section">

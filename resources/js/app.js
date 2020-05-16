@@ -167,6 +167,30 @@ function setBoundingBox(latLonArray, map) {
     });
 }
 
+function setRating(rating) {
+    var $rating = $('#rating-star-' + rating),
+        star;
+    $('#rating').val(rating);
+    // if the selected star is the highest previously selected, unselect it, otherwise select it
+    if ($rating.hasClass('fa-star') && $('#rating-star-' + (rating < 5 ? (rating + 1) : rating)).hasClass('fa-star-o')) {
+        $rating.addClass('fa-star-o').removeClass('fa-star');
+    } else {
+        $rating.addClass('fa-star').removeClass('fa-star-o');
+    }
+    // update the rest of the stars
+    for (star = 1; star <= 5; star++) {
+        if (star === rating) {
+            continue;
+        }
+        var $star = $('#rating-star-' + star);
+        if (star < rating) {
+            $star.addClass('fa-star').removeClass('fa-star-o');
+        } else {
+            $star.addClass('fa-star-o').removeClass('fa-star');
+        }
+    }
+}
+
 $(document).ready(function() {
     var $window = $(window);
     $window.scroll(function() {
@@ -426,4 +450,10 @@ $(document).ready(function() {
         $(this).children('.fa').toggleClass('fa-film');
         $(this).children('.fa').toggleClass('fa-eye-slash');
     });
+
+    // select a star rating
+    $('.rating-star.editable').click(function() {
+        setRating(parseInt($(this).attr('id').split('-')[2]));
+    })
+    setRating(parseInt($('#rating').val()));
 });

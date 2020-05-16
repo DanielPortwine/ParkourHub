@@ -31,11 +31,13 @@ class SpotController extends Controller
             $view->save();
         }
         $views = count($spot->views);
+        $spotRating = round($spot->reviews->sum('rating') / count($spot->reviews));
 
         return view('spots.view', [
             'spot' => $spot,
             'hitlist' => $hitlist,
             'views' => $views,
+            'spotRating' => $spotRating,
         ]);
     }
 

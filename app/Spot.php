@@ -25,6 +25,11 @@ class Spot extends Model
         return $this->hasMany('App\Hit');
     }
 
+    public function reviews()
+    {
+        return $this->hasMany('App\Review');
+    }
+
     public function challenges()
     {
         return $this->hasMany('App\Challenge');

@@ -7,6 +7,7 @@ use App\ChallengeEntry;
 use App\Hit;
 use App\Http\Requests\Subscribe;
 use App\Http\Requests\UpdateUser;
+use App\Review;
 use App\Spot;
 use App\Subscriber;
 use App\User;
@@ -111,6 +112,13 @@ class UserController extends Controller
             'hitsToTickOff' => $hitsToTickOff,
             'hitsTickedOff' => $hitsTickedOff,
         ]);
+    }
+
+    public function reviews()
+    {
+        $reviews = Review::where('user_id', Auth::id())->orderByDesc('updated_at')->get();
+
+        return view('user.reviews', ['reviews' => $reviews]);
     }
 
     public function challenges()

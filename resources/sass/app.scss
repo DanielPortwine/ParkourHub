@@ -93,7 +93,7 @@ html, body {
 }
 
 .full-content-section {
-    height: calc(100vh - 59px);
+    height: 56.25%;
     min-height: 32vw;
     max-height: calc(100vh - 59px);
     width: 100%;
@@ -255,6 +255,18 @@ input[type="checkbox"]:checked + label:before {
 }
 input[type="checkbox"]:checked + label:after {
     font-weight: bold;
+}
+
+.fa.rating-star {
+    font-size: 1.5rem;
+}
+
+.fa.rating-star.editable {
+    cursor: pointer;
+}
+
+.rating-star.fa-star {
+    color: $green;
 }
 
 .vh-100-nav {
