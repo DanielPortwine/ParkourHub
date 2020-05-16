@@ -24,7 +24,7 @@
                                         <div class="card">
                                             <div class="card-header bg-grey card-hidden-body">
                                                 <div class="row">
-                                                    <span class="col sedgwick">{{ $review->title }}</span>
+                                                    <span class="col sedgwick">{{ $review->spot->name }}</span>
                                                     <div class="col-auto d-md-block d-none">
                                                         <div class="rating-stars">
                                                             @for($star = 1; $star <= 5; $star++)
@@ -48,7 +48,7 @@
                                             </div>
                                             <div class="card-body bg-grey">
                                                 <div class="row">
-                                                    <span class="col h4 sedgwick">{{ $review->user->name }}</span>
+                                                    <span class="col h4 sedgwick">{{ $review->title }}</span>
                                                     <div class="col-auto">
                                                         @if($review->user_id === Auth()->id())
                                                             <a class="btn text-white" href="{{ route('review_edit', $review->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
