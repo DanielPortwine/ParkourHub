@@ -28,13 +28,11 @@ class ChallengeController extends Controller
             $view->user_id = Auth::id();
             $view->save();
         }
-        $views = count($challenge->views);
 
         return view('challenges.view', [
             'challenge' => $challenge,
             'entered' => $entered,
             'winner' => $winner,
-            'views' => $views,
         ]);
     }
 
@@ -48,7 +46,9 @@ class ChallengeController extends Controller
         if (!empty($request['youtube'])){
             $challenge->youtube = substr($request->youtube, -11);
         } else if (!empty($request['video'])) {
-            $challenge->video = Storage::url($request->file('video')->store('videos/challenges', 'public'));
+            $video = $request->file('video');
+            $challenge->video = Storage::url($video->store('videos/challenges', 'public'));
+            $challenge->video_type = $video->extension();
         }
         $challenge->thumbnail = Storage::url($request->file('thumbnail')->store('images/challenges', 'public'));
         $challenge->save();
@@ -72,7 +72,9 @@ class ChallengeController extends Controller
             $challenge->youtube = substr($request->youtube, -11);
             $challenge->video = null;
         } else if (!empty($request['video'])) {
-            $challenge->video = Storage::url($request->file('video')->store('videos/challenges', 'public'));
+            $video = $request->file('video');
+            $challenge->video = Storage::url($video->store('videos/challenges', 'public'));
+            $challenge->video_type = $video->extension();
             $challenge->youtube = null;
         } else if (empty($challenge->video) && empty($challenge->youtube)) {
             return back()->withErrors(['youtube' => 'You must provide either a Youtube link or video file', 'video' => 'You must provide either a video file or Youtube link']);
@@ -101,7 +103,9 @@ class ChallengeController extends Controller
             if (!empty($request['youtube'])) {
                 $entry->youtube = substr($request->youtube, -11);
             } else if (!empty($request['video'])) {
-                $entry->video = Storage::url($request->file('video')->store('videos/challenge_entries', 'public'));
+                $video = $request->file('video');
+                $entry->video = Storage::url($video->store('videos/challenge_entries', 'public'));
+                $entry->video_type = $video->extension();
             }
             $entry->save();
 

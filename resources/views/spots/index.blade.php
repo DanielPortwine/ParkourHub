@@ -51,7 +51,6 @@
             <div class="card">
                 <div class="card-header bg-green">
                     <span class="sedgwick">Create Spot</span>
-                    <a class="btn close-popup-button float-right" title="Close"><i class="fa fa-times"></i></a>
                 </div>
                 <div class="card-body bg-grey text-white">
                     <form method="POST" action="{{ route('spot_create') }}" enctype="multipart/form-data">
@@ -114,24 +113,7 @@
             </div>
         </div>
 
-        <div class="popup ol-popup" id="view-spot-popup">
-            <div class="card">
-                <div class="card-header bg-green">
-                    <div class="row">
-                        <span class="col sedgwick" id="spot-name"></span>
-                        <small class="d-none" id="spot-private">Private</small>
-                        <span class="col-auto">
-                            <a class="btn text-white" id="view-spot-button" title="View"><i class="fa fa-eye"></i></a>
-                            <a class="btn close-popup-button" title="Close"><i class="fa fa-times"></i></a>
-                        </span>
-                    </div>
-                </div>
-                <div class="content-description-container">
-                    <div class="spot-description spot-description-bottom text-white" id="spot-description"></div>
-                    <img class="spot-image w-100" id="spot-image">
-                </div>
-            </div>
-        </div>
+        <div class="popup ol-popup" id="view-spot-popup"></div>
 
         <div class="popup ol-popup" id="login-register-popup">
             <div class="card">

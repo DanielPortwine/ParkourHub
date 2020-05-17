@@ -4,74 +4,83 @@
 
 @section('content')
     @if (session('status'))
-        <div class="alert alert-success alert-dismissible fade show position-absolute w-100" role="alert">
+        <div class="alert alert-success alert-dismissible fade show position-absolute w-100 z-10" role="alert">
             {{ session('status') }}
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
     @endif
-    <div class="flex-center">
-        <div class="text-center position-absolute">
-            <h1 class="page-title sedgwick title-shadow">{{ $spot->name }}</h1>
-        </div>
-        <div class="text-center bottom-centre title-shadow d-md-block d-none" id="scroll-arrow">
-            <i class="fa fa-angle-double-down"></i>
-        </div>
-        <div class="full-content-section">
-            @if(!empty($spot->image))
-                <img class="full-content-content" src="{{ $spot->image }}" alt="Image of the {{ $spot->name }} spot.">
-            @endif
-        </div>
+    <div class="container p-0">
+        @if(!empty($spot->image))
+            <div class="content-wrapper">
+                <img class="full-content-content" src="{{ $spot->image }}" alt="Image of the {{ $spot->name }} challenge.">
+            </div>
+        @endif
     </div>
     <div class="section grey-section">
         <div class="container">
-            <div class="row pt-3">
+            <div class="row pt-4">
                 <div class="col vertical-center">
-                    <span>{{ $views . ($views === 1 ? ' view' : ' views') }} | {{ $spot->created_at->format('jS M, Y') }}</span>
+                    <h1 class="sedgwick mb-0">{{ $spot->name }}</h1>
                 </div>
                 @if(count($spot->reviews))
                     <div class="col-auto vertical-center d-md-flex d-none">
                         <div>
                             @for($star = 1; $star <= 5; $star++)
-                                <i class="rating-star pl-1 fa {{ $star <= $spotRating ? 'fa-star' : 'fa-star-o' }}"></i>
+                                <i class="rating-star pr-1 fa {{ $star <= round($spot->reviews->sum('rating') / count($spot->reviews)) ? 'fa-star' : 'fa-star-o' }}"></i>
                             @endfor
                             <span>({{ count($spot->reviews) }})</span>
                         </div>
                     </div>
+                @else
+                    <div class="col-auto vertical-center d-md-flex d-none">
+                        No reviews
+                    </div>
                 @endif
-                <div class="col-auto">
-                    @if(in_array($spot->id, array_keys($hitlist)))
-                        @if(empty($hitlist[$spot->id]))
-                            <a class="btn text-white" href="{{ route('tick_off_hitlist', $spot->id) }}" title="Tick Off Hitlist"><i class="fa fa-check"></i></a>
+                <div class="col-auto vertical-center">
+                    <div>
+                        @if(in_array($spot->id, array_keys($hitlist)))
+                            @if(empty($hitlist[$spot->id]))
+                                <a class="btn text-white" href="{{ route('tick_off_hitlist', $spot->id) }}" title="Tick Off Hitlist"><i class="fa fa-check"></i></a>
+                            @endif
+                        @else
+                            <a class="btn text-white" href="{{ route('add_to_hitlist', $spot->id) }}" title="Add To Hitlist"><i class="fa fa-crosshairs"></i></a>
                         @endif
-                    @else
-                        <a class="btn text-white" href="{{ route('add_to_hitlist', $spot->id) }}" title="Add To Hitlist"><i class="fa fa-crosshairs"></i></a>
-                    @endif
-                    <a class="btn text-white" href="{{ route('spots', ['spot' => $spot->id]) }}" title="Locate"><i class="fa fa-map-marker"></i></a>
+                        <a class="btn text-white" href="{{ route('spots', ['spot' => $spot->id]) }}" title="Locate"><i class="fa fa-map-marker"></i></a>
+                    </div>
                 </div>
             </div>
             <div class="row pb-3 border-subtle">
                 @if(count($spot->reviews))
                     <div class="col vertical-center d-md-none d-flex">
                         @for($star = 1; $star <= 5; $star++)
-                            <i class="rating-star pl-1 fa {{ $star <= $spotRating ? 'fa-star' : 'fa-star-o' }}"></i>
+                            <i class="rating-star pr-1 fa {{ $star <= round($spot->reviews->sum('rating') / count($spot->reviews)) ? 'fa-star' : 'fa-star-o' }}"></i>
                         @endfor
                         <span>({{ count($spot->reviews) }})</span>
                     </div>
+                @else
+                    <div class="col-auto vertical-center d-md-none d-flex">
+                        No reviews
+                    </div>
                 @endif
             </div>
-            <div class="row py-3">
+            <div class="row pt-2">
                 <div class="col vertical-center">
                     <span class="large-text sedgwick">{{ $spot->user->name }}</span>
                 </div>
-                <div class="col-auto">
-                    @if ($spot->user->id === Auth()->id())
+                @if ($spot->user->id === Auth()->id())
+                    <div class="col-auto">
                         <a class="btn text-white" href="{{ route('spot_edit', $spot->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
-                    @endif
+                    </div>
+                @endif
+            </div>
+            <div class="row pb-2 border-subtle">
+                <div class="col">
+                    <span>{{ count($spot->views) . (count($spot->views) === 1 ? ' view' : ' views') }} | {{ $spot->created_at->format('jS M, Y') }}</span>
                 </div>
             </div>
-            <div class="pb-4">
+            <div class="py-3">
                 <div id="description-box">
                     <p class="mb-0" id="description-content">{!! nl2br(e($spot->description)) !!}</p>
                 </div>
@@ -161,47 +170,7 @@
                 <div class="row">
                     @foreach($chunk as $review)
                         <div class="col-md-6 mb-4">
-                            <div class="card">
-                                <div class="card-header bg-grey card-hidden-body">
-                                    <div class="row">
-                                        <span class="col sedgwick">{{ $review->title }}</span>
-                                        <div class="col-auto d-md-block d-none">
-                                            <div class="rating-stars">
-                                                @for($star = 1; $star <= 5; $star++)
-                                                    <i class="rating-star fa {{ $star <= $review->rating ? 'fa-star' : 'fa-star-o' }}"></i>
-                                                @endfor
-                                            </div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fa fa-caret-down"></i>
-                                        </div>
-                                    </div>
-                                    <div class="d-md-none d-block row">
-                                        <div class="col">
-                                            <div class="rating-stars">
-                                                @for($star = 1; $star <= 5; $star++)
-                                                    <i class="rating-star fa {{ $star <= $review->rating ? 'fa-star' : 'fa-star-o' }}"></i>
-                                                @endfor
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card-body bg-grey">
-                                    <div class="row">
-                                        <span class="col h4 sedgwick">{{ $review->user->name }}</span>
-                                        <div class="col-auto">
-                                            @if($review->user_id === Auth()->id())
-                                                <a class="btn text-white" href="{{ route('review_edit', $review->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
-                                            @endif
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col">
-                                            {!! nl2br(e($review->review)) !!}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            @include('components.review')
                         </div>
                     @endforeach
                 </div>
@@ -303,7 +272,7 @@
                 <div class="row">
                     @foreach($chunk as $challenge)
                         <div class="col-md-6 mb-4">
-                            @include('components.card', ['card' => $challenge, 'type' => 'challenge', 'spot' => $challenge->spot_id])
+                            @include('components.challenge')
                         </div>
                     @endforeach
                 </div>

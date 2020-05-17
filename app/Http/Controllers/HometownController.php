@@ -22,7 +22,12 @@ class HometownController extends Controller
             ->orderBy('created_at', 'DESC')
             ->get();
 
-        return view('hometown.spots', ['name' => $name, 'spots' => $spots]);
+        return view('content_listings', [
+            'page' => 'Spots In ' . $name,
+            'title' => 'Spots In ' . $name,
+            'content' => $spots,
+            'component' => 'spot',
+        ]);
     }
 
     public function challenges()
@@ -42,6 +47,11 @@ class HometownController extends Controller
             ->orderBy('created_at', 'DESC')
             ->get();
 
-        return view('hometown.challenges', ['name' => $name, 'challenges' => $challenges]);
+        return view('content_listings', [
+            'page' => 'Challenges In ' . $name,
+            'title' => 'Challenges In ' . $name,
+            'content' => $challenges,
+            'component' => 'challenge',
+        ]);
     }
 }

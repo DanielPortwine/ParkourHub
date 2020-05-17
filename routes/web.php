@@ -36,6 +36,7 @@ Route::prefix('user')->middleware('verified')->group(function() {
     Route::get('delete', 'UserController@delete')->name('user_delete');
     Route::get('/spots', 'UserController@spots')->name('user_spots');
     Route::get('/hitlist', 'UserController@hitlist')->name('user_hitlist');
+    Route::get('/hitlist/completed', 'UserController@hitlistCompleted')->name('user_hitlist_completed');
     Route::get('/reviews', 'UserController@reviews')->name('user_reviews');
     Route::get('/challenges', 'UserController@challenges')->name('user_challenges');
     Route::get('/entries', 'UserController@entries')->name('user_entries');

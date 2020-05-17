@@ -9,6 +9,7 @@ use App\Http\Requests\UpdateSpot;
 use App\Spot;
 use App\SpotView;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -19,26 +20,29 @@ class SpotController extends Controller
         return view('spots.index');
     }
 
-    public function view($id)
+    public function view(Request $request, $id)
     {
         $spot = Spot::with(['user'])->where('id', $id)->first();
-        $hitlist = Hit::where('user_id', Auth::id())->pluck('completed_at', 'spot_id')->toArray();
-        $usersViewed = SpotView::where('spot_id', $id)->pluck('user_id')->toArray();
-        if (!in_array(Auth::id(), $usersViewed) && Auth::id() !== $spot->user_id) {
-            $view = new SpotView;
-            $view->spot_id = $id;
-            $view->user_id = Auth::id();
-            $view->save();
-        }
-        $views = count($spot->views);
-        $spotRating = round($spot->reviews->sum('rating') / count($spot->reviews));
 
-        return view('spots.view', [
-            'spot' => $spot,
-            'hitlist' => $hitlist,
-            'views' => $views,
-            'spotRating' => $spotRating,
-        ]);
+        if ($request->ajax()){
+            return view('components.spot', [
+                'spot' => $spot,
+            ])->render();
+        } else {
+            $hitlist = Hit::where('user_id', Auth::id())->pluck('completed_at', 'spot_id')->toArray();
+            $usersViewed = SpotView::where('spot_id', $id)->pluck('user_id')->toArray();
+            if (!in_array(Auth::id(), $usersViewed) && Auth::id() !== $spot->user_id) {
+                $view = new SpotView;
+                $view->spot_id = $id;
+                $view->user_id = Auth::id();
+                $view->save();
+            }
+
+            return view('spots.view', [
+                'spot' => $spot,
+                'hitlist' => $hitlist,
+            ]);
+        }
     }
 
     public function fetch()

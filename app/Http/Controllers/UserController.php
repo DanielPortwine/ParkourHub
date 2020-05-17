@@ -99,18 +99,29 @@ class UserController extends Controller
     {
         $spots = Spot::where('user_id', Auth::id())->orderBy('updated_at', 'desc')->get();
 
-        return view('user.spots', ['spots' => $spots]);
+        return view('content_listings', [
+            'page' => Auth::user()->name . '\'s Spots',
+            'title' => 'Your Spots',
+            'content' => $spots,
+            'component' => 'spot',
+        ]);
     }
 
     public function hitlist()
     {
-        $hits = Hit::whereHas('spot')->where('user_id', Auth::id())->get();
-        $hitsToTickOff = $hits->whereNull('completed_at')->sortByDesc('created_at');
-        $hitsTickedOff = $hits->whereNotNull('completed_at')->sortByDesc('completed_at');
+        $hits = Hit::whereHas('spot')->where('user_id', Auth::id())->whereNull('completed_at')->orderByDesc('created_at')->get();
 
         return view('user.hitlist', [
-            'hitsToTickOff' => $hitsToTickOff,
-            'hitsTickedOff' => $hitsTickedOff,
+            'hits' => $hits,
+        ]);
+    }
+
+    public function hitlistCompleted()
+    {
+        $hits = Hit::whereHas('spot')->where('user_id', Auth::id())->whereNotNull('completed_at')->orderByDesc('completed_at')->get();
+
+        return view('user.hitlist', [
+            'hits' => $hits,
         ]);
     }
 
@@ -118,21 +129,37 @@ class UserController extends Controller
     {
         $reviews = Review::where('user_id', Auth::id())->orderByDesc('updated_at')->get();
 
-        return view('user.reviews', ['reviews' => $reviews]);
+        return view('content_listings', [
+            'page' => Auth::user()->name . '\'s Reviews',
+            'title' => 'Your Reviews',
+            'content' => $reviews,
+            'component' => 'review',
+            'options' => ['user' => true],
+        ]);
     }
 
     public function challenges()
     {
-        $challenges = Challenge::where('user_id', Auth::id())->get();
+        $challenges = Challenge::where('user_id', Auth::id())->orderByDesc('updated_at')->get();
 
-        return view('user.challenges', ['challenges' => $challenges]);
+        return view('content_listings', [
+            'page' => Auth::user()->name . '\'s Challenges',
+            'title' => 'Your Challenges',
+            'content' => $challenges,
+            'component' => 'challenge',
+        ]);
     }
 
     public function entries()
     {
         $entries = ChallengeEntry::where('user_id', Auth::id())->get();
 
-        return view('user.entries', ['entries' => $entries]);
+        return view('content_listings', [
+            'page' => Auth::user()->name . '\'s Challenge Entries',
+            'title' => 'Your Challenge Entries',
+            'content' => $entries,
+            'component' => 'entry',
+        ]);
     }
 
     public function fetchHometownBounding(Request $request)

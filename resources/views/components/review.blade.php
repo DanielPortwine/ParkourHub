@@ -1,0 +1,47 @@
+<div class="card">
+    <div class="card-header bg-grey card-hidden-body">
+        <div class="row">
+            <div class="col sedgwick">
+                @if(isset($user) && $user === true)
+                    <a class="btn-link" href="{{ route('spot_view', $review->spot_id) }}">{{ $review->spot->name }}</a>
+                @else
+                    <span>{{ $review->title }}</span>
+                @endif
+            </div>
+            <div class="col-auto d-md-block d-none">
+                <div class="rating-stars">
+                    @for($star = 1; $star <= 5; $star++)
+                        <i class="rating-star fa {{ $star <= $review->rating ? 'fa-star' : 'fa-star-o' }}"></i>
+                    @endfor
+                </div>
+            </div>
+            <div class="col-auto">
+                <i class="fa fa-caret-down"></i>
+            </div>
+        </div>
+        <div class="d-md-none d-block row">
+            <div class="col">
+                <div class="rating-stars">
+                    @for($star = 1; $star <= 5; $star++)
+                        <i class="rating-star fa {{ $star <= $review->rating ? 'fa-star' : 'fa-star-o' }}"></i>
+                    @endfor
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body bg-grey">
+        <div class="row">
+            <span class="col h4 sedgwick">{{ (isset($user) && $user === true) ? $review->title : $review->user->name }}</span>
+            <div class="col-auto">
+                @if($review->user_id === Auth()->id())
+                    <a class="btn text-white" href="{{ route('review_edit', $review->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
+                @endif
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                {!! nl2br(e($review->review)) !!}
+            </div>
+        </div>
+    </div>
+</div>

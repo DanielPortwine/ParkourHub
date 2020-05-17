@@ -31,7 +31,7 @@ class HomeController extends Controller
         $hits = Hit::where('user_id', Auth::id())
             ->whereNull('completed_at')
             ->inRandomOrder()
-            ->limit(2)
+            ->limit(4)
             ->pluck('spot_id')
             ->toArray();
         $hitlist = Spot::whereIn('id', $hits)->get();

@@ -17,23 +17,16 @@ function showSpot(feature, viewSpotPopup, viewSpotOverlay, urlParams, map = null
 {
     $('.ol-popup').hide();
     var coordinates = feature.getGeometry().getCoordinates();
-    if (feature.get('private') == true) {
-        $('#spot-private').removeClass('d-none');
-    } else {
-        $('#spot-private').addClass('d-none');
-    }
-    if (feature.get('image') != null) {
-        $('#spot-image').attr('src', feature.get('image'));
-        $('#spot-image').closest('.row').show();
-    } else {
-        $('#spot-image').closest('.row').hide();
-    }
-    $('#spot-name').text(feature.get('name'));
-    $('#spot-description').text(feature.get('description'));
-    $('#view-spot-button').attr('href', '/spots/spot/' + feature.get('id'));
-    $(viewSpotPopup).show();
-    viewSpotOverlay.setPosition(coordinates);
-    $(viewSpotPopup).css('top', -10);
+    $.ajax({
+        url: '/spots/spot/' + feature.get('id'),
+        type: 'GET',
+        success: function(response) {
+            $('#view-spot-popup').html(response);
+            $(viewSpotPopup).show();
+            viewSpotOverlay.setPosition(coordinates);
+            $(viewSpotPopup).css('top', -10);
+        }
+    })
     if (map != null) {
         map.getView().setCenter(coordinates);
     }
@@ -340,33 +333,40 @@ $(document).ready(function() {
             // the user clicked on a spot marker so show that spot
             showSpot(feature, viewSpotPopup, viewSpotOverlay, urlParams);
         } else {
-            // the user clicked on an empty space, now check if they're verified and logged in
-            $.ajax({
-                url: '/ajax/isVerifiedLoggedIn',
-                type: 'GET',
-                success: function(response) {
-                    $('.ol-popup').hide();
-                    if (response) {
-                        // the user is logged in so show Create Spot popup
-                        $(createSpotPopup).show();
-                        $('#coordinates').val(e.coordinate[0] + ',' + e.coordinate[1]);
-                        var lonLat = toLonLat(e.coordinate);
-                        $('#lat-lon').val(lonLat[1] + ',' + lonLat[0]);
-                        createSpotOverlay.setPosition(e.coordinate);
-                        $(createSpotPopup).css('margin-top', -parseInt($(createSpotPopup).height()) - 10);
-                    } else {
-                        // the user is not logged in or hasn't verified their email so show Login/Register popup
-                        $(loginRegisterPopup).show();
-                        loginRegisterOverlay.setPosition(e.coordinate);
-                        $(loginRegisterPopup).css('margin-top', -parseInt($(loginRegisterPopup).height()) - 10);
+            if ($('#create-spot-popup').css('display') == 'block' || $('#view-spot-popup').css('display') == 'block') {
+                // the user clicked away from an open popup so close it
+                $('.ol-popup').fadeOut('fast');
+                urlParams.delete('spot');
+                window.history.pushState('obj', '', window.location.protocol + "//" + window.location.host + window.location.pathname);
+            } else {
+                // the user clicked on an empty space, now check if they're verified and logged in
+                $.ajax({
+                    url: '/ajax/isVerifiedLoggedIn',
+                    type: 'GET',
+                    success: function (response) {
+                        $('.ol-popup').hide();
+                        if (response) {
+                            // the user is logged in so show Create Spot popup
+                            $(createSpotPopup).show();
+                            $('#coordinates').val(e.coordinate[0] + ',' + e.coordinate[1]);
+                            var lonLat = toLonLat(e.coordinate);
+                            $('#lat-lon').val(lonLat[1] + ',' + lonLat[0]);
+                            createSpotOverlay.setPosition(e.coordinate);
+                            $(createSpotPopup).css('margin-top', -parseInt($(createSpotPopup).height()) - 10);
+                        } else {
+                            // the user is not logged in or hasn't verified their email so show Login/Register popup
+                            $(loginRegisterPopup).show();
+                            loginRegisterOverlay.setPosition(e.coordinate);
+                            $(loginRegisterPopup).css('margin-top', -parseInt($(loginRegisterPopup).height()) - 10);
+                        }
                     }
-                }
-            });
+                });
+            }
         }
     });
 
     $('.close-popup-button').click(function() {
-        $(this).closest('.popup').fadeOut();
+        $(this).closest('.popup').fadeOut('fast');
         if ($(this).closest('.popup').attr('id') == 'view-spot-popup') {
             window.history.pushState('obj', '', window.location.protocol + "//" + window.location.host + window.location.pathname);
         }

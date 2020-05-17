@@ -47,7 +47,7 @@
                                     @if(!empty($challenge->youtube))
                                         <div class="row">
                                             <div class="col">
-                                                <div class="video-wrapper">
+                                                <div class="content-wrapper">
                                                     <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/{{ $challenge->youtube }}" frameborder="0" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                                                 </div>
                                             </div>
@@ -67,9 +67,9 @@
                                     @if(!empty($challenge->video))
                                         <div class="row">
                                             <div class="col">
-                                                <div class="video-wrapper">
+                                                <div class="content-wrapper">
                                                     <video controls>
-                                                        <source src="{{ $challenge->video }}" type="video/mp4">
+                                                        <source src="{{ $challenge->video }}" type="video/{{ $challenge->video_type }}">
                                                     </video>
                                                 </div>
                                             </div>
