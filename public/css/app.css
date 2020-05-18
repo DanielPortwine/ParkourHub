@@ -10994,10 +10994,6 @@ body {
   font-size: 6rem;
 }
 
-.z-5 {
-  z-index: 5;
-}
-
 .z-10 {
   z-index: 10;
 }
@@ -11241,30 +11237,12 @@ input[type=checkbox]:checked + label:after {
   word-wrap: normal;
 }
 
-.spot-description {
-  background: rgba(0, 0, 0, 0.7);
-  position: absolute;
-  width: 100%;
-  padding: 10px;
-  display: none;
-  z-index: 100;
-  max-height: 100%;
-}
-
-.spot-description-bottom {
-  bottom: 0;
-}
-
 .spot-icons {
   right: 15px;
   top: 10px;
   font-size: 1.5rem;
   z-index: 5;
   position: absolute;
-}
-
-.card-header-bottom {
-  font-size: 25px;
 }
 
 .content-wrapper {
