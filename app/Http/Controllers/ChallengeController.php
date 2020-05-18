@@ -87,7 +87,7 @@ class ChallengeController extends Controller
     public function delete($id)
     {
         $challenge = Challenge::where('id', $id)->first();
-        if ($challenge->user_id === Auth()::id()) {
+        if ($challenge->user_id === Auth::id()) {
             $challenge->delete();
         }
 

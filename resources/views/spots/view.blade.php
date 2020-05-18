@@ -180,6 +180,86 @@
             @endif
         </div>
     </div>
+    <div class="section grey-section">
+        <div class="container">
+            <div class="row py-4">
+                <div class="col">
+                    <h2 class="sedgwick subtitle mb-0">Comments & Media</h2>
+                </div>
+            </div>
+            <div class="row mb-4">
+                <div class="col">
+                    <div class="card @error('comment') border-danger @enderror @error('image') border-danger @enderror @error('youtube') border-danger @enderror @error('video') border-danger @enderror">
+                        <div class="card-header bg-green sedgwick card-hidden-body">
+                            <div class="row">
+                                <div class="col">
+                                    Submit Comment
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fa fa-caret-down"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body bg-grey text-white">
+                            <form method="POST" action="{{ route('spot_comment_create') }}" enctype="multipart/form-data">
+                                @csrf
+                                <input type="hidden" name="spot" value="{{ $spot->id }}">
+                                <div class="form-group row">
+                                    <label for="comment" class="col-md-2 col-form-label text-md-right">Comment</label>
+                                    <div class="col-md-8">
+                                        <textarea id="comment" class="form-control @error('comment') is-invalid @enderror" name="comment" maxlength="255">{{ old('comment') }}</textarea>
+                                        @error('comment')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-2 col-form-label text-md-right">Youtube or Video/Image</label>
+                                    <div class="col-md-4">
+                                        <input type="text" id="youtube" class="form-control @error('youtube') is-invalid @enderror" name="youtube" autocomplete="youtube" placeholder="e.g. https://youtu.be/QDIVrf2ZW0s" value="{{ old('youtube') }}">
+                                        @error('youtube')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-4">
+                                        <input type="file" id="video_image" class="form-control-file @error('video_image') is-invalid @enderror" name="video_image">
+                                        @error('video_image')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-md-8 offset-md-2">
+                                        <button type="submit" class="btn btn-green">Submit</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            @foreach($spot->comments->sortByDesc('created_at')->chunk(2) as $chunk)
+                <div class="row">
+                    @foreach($chunk as $comment)
+                        <div class="col-md-6 mb-4">
+                            @include('components.comment')
+                        </div>
+                    @endforeach
+                </div>
+            @endforeach
+            @if (count($spot->comments) === 0)
+                <p class="mb-0 pb-3">This spot has no comments yet. Create one by clicking 'Submit Comment' above.</p>
+            @endif
+        </div>
+    </div>
     <div class="section">
         <div class="container">
             <div class="row py-4">

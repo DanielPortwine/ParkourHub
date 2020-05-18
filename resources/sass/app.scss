@@ -100,6 +100,14 @@ html, body {
     border-top: 3px solid $green;
 }
 
+.grey-section {
+    background-color: $grey;
+}
+
+.green-section {
+    background-color: $green;
+}
+
 #description-box {
     max-height: 55px;
     overflow: hidden;
@@ -111,14 +119,6 @@ html, body {
 
 #description-more {
     display: none;
-}
-
-.grey-section {
-    background-color: $grey;
-}
-
-.green-section {
-    background-color: $green;
 }
 
 .subtitle-line {

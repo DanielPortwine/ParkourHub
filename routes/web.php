@@ -57,11 +57,19 @@ Route::prefix('spots')->middleware('verified')->group(function() {
 });
 
 Route::prefix('/reviews')->middleware('verified')->group(function() {
-    Route::get('/review/{id}', 'ReviewController@view')->name('review_view');
     Route::post('/create', 'ReviewController@create')->name('review_create');
     Route::get('/edit/{id}', 'ReviewController@edit')->name('review_edit');
     Route::post('/edit/{id}', 'ReviewController@update')->name('review_update');
     Route::get('/delete/{id}', 'ReviewController@delete')->name('review_delete');
+});
+
+Route::prefix('/spot_comments')->middleware('verified')->group(function() {
+    Route::post('/create', 'SpotCommentController@create')->name('spot_comment_create');
+    Route::get('/edit/{id}', 'SpotCommentController@edit')->name('spot_comment_edit');
+    Route::post('/edit/{id}', 'SpotCommentController@update')->name('spot_comment_update');
+    Route::get('/delete/{id}', 'SpotCommentController@delete')->name('spot_comment_delete');
+    Route::get('/like/{id}', 'SpotCommentController@like')->name('spot_comment_like');
+    Route::get('/unlike/{id}', 'SpotCommentController@unlike')->name('spot_comment_unlike');
 });
 
 Route::prefix('challenges')->middleware('verified')->group(function() {

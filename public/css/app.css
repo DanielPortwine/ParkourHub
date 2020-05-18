@@ -11029,6 +11029,14 @@ body {
   border-top: 3px solid #73c979;
 }
 
+.grey-section {
+  background-color: #2b2b2b;
+}
+
+.green-section {
+  background-color: #73c979;
+}
+
 #description-box {
   max-height: 55px;
   overflow: hidden;
@@ -11040,14 +11048,6 @@ body {
 
 #description-more {
   display: none;
-}
-
-.grey-section {
-  background-color: #2b2b2b;
-}
-
-.green-section {
-  background-color: #73c979;
 }
 
 .subtitle-line {

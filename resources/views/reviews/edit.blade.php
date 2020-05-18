@@ -62,6 +62,8 @@
                             <div class="form-group row">
                                 <div class="col-md-8 offset-md-2">
                                     <button type="submit" class="btn btn-green">Submit</button>
+                                    <a class="btn btn-danger require-confirmation float-right">Delete</a>
+                                    <a class="btn btn-danger d-none confirmation-button float-right" href="{{ route('review_delete', $review->id) }}">Confirm</a>
                                 </div>
                             </div>
                         </form>

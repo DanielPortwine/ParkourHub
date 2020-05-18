@@ -30,6 +30,11 @@ class Spot extends Model
         return $this->hasMany('App\Review');
     }
 
+    public function comments()
+    {
+        return $this->hasMany('App\SpotComment');
+    }
+
     public function challenges()
     {
         return $this->hasMany('App\Challenge');

@@ -456,4 +456,33 @@ $(document).ready(function() {
         setRating(parseInt($(this).attr('id').split('-')[2]));
     })
     setRating(parseInt($('#rating').val()));
+
+    // like a spot comment
+    $('.like-spot-comment').click(function() {
+        var id = $(this).attr('id').split('-')[3];
+        $.ajax({
+            url: '/spot_comments/like/' + id,
+            type: 'GET',
+            success: function(likes) {
+                $('#like-spot-comment-' + id).addClass('d-none');
+                $('#unlike-spot-comment-' + id).removeClass('d-none');
+                var $likes = $('#spot-comment-likes-' + id);
+                $likes.html(parseInt(likes) === 1 ? '1 like' : (likes + ' likes'));
+            }
+        });
+    });
+    // unlike a spot comment
+    $('.unlike-spot-comment').click(function() {
+        var id = $(this).attr('id').split('-')[3];
+        $.ajax({
+            url: '/spot_comments/unlike/' + id,
+            type: 'GET',
+            success: function(likes) {
+                $('#unlike-spot-comment-' + id).addClass('d-none');
+                $('#like-spot-comment-' + id).removeClass('d-none');
+                var $likes = $('#spot-comment-likes-' + id);
+                $likes.html(parseInt(likes) === 1 ? '1 like' : (likes + ' likes'));
+            }
+        });
+    });
 });

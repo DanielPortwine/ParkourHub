@@ -1,0 +1,48 @@
+<?php
+
+namespace App\Http\Requests;
+
+use App\Rules\YoutubeLink;
+use Illuminate\Foundation\Http\FormRequest;
+
+class UpdateSpotComment extends FormRequest
+{
+    /**
+     * Determine if the user is authorized to make this request.
+     *
+     * @return bool
+     */
+    public function authorize()
+    {
+        return true;
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array
+     */
+    public function rules()
+    {
+        return [
+            'comment' => 'required_without_all:youtube,video_image|nullable|string|max:255',
+            'youtube' => ['required_without_all:comment,video_image', 'nullable', 'active_url', new YoutubeLink],
+            'video_image' => 'required_without_all:comment,youtube|nullable|mimes:mp4,mov,mpg,mpeg,jpg,jpeg,png|max:40000',
+        ];
+    }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'video_image.max' => 'The video or image must be less than 40MB',
+            'comment.required_without_all' => 'You must enter at least one of the fields',
+            'youtube.required_without_all' => 'You must enter at least one of the fields',
+            'video_image.required_without_all' => 'You must enter at least one of the fields',
+        ];
+    }
+}
