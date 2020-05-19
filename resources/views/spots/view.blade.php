@@ -269,7 +269,7 @@
             </div>
             <div class="row mb-4">
                 <div class="col">
-                    <div class="card @error('name') border-danger @enderror @error('description') border-danger @enderror @error('youtube') border-danger @enderror @error('video') border-danger @enderror @error('thumbnail') border-danger @enderror">
+                    <div class="card @error('name') border-danger @enderror @error('description') border-danger @enderror @error('difficulty') border-danger @enderror @error('youtube') border-danger @enderror @error('video') border-danger @enderror @error('thumbnail') border-danger @enderror">
                         <div class="card-header bg-green sedgwick card-hidden-body">
                             <div class="row">
                                 <div class="col">
@@ -304,6 +304,26 @@
                                             <strong>{{ $message }}</strong>
                                         </span>
                                         @enderror
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <input type="hidden" id="difficulty" name="difficulty" value="{{ old('difficulty') }}">
+                                    <label class="col-md-2 col-form-label text-md-right">Difficulty</label>
+                                    <div class="col-md-8 vertical-center">
+                                        <div>
+                                            <div class="rating-buttons w-100 @error('difficulty') is-invalid @enderror">
+                                                <i class="rating-circle editable fa fa-circle-o" id="rating-circle-1"></i>
+                                                <i class="rating-circle editable fa fa-circle-o" id="rating-circle-2"></i>
+                                                <i class="rating-circle editable fa fa-circle-o" id="rating-circle-3"></i>
+                                                <i class="rating-circle editable fa fa-circle-o" id="rating-circle-4"></i>
+                                                <i class="rating-circle editable fa fa-circle-o" id="rating-circle-5"></i>
+                                            </div>
+                                            @error('difficulty')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                            @enderror
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="form-group row">

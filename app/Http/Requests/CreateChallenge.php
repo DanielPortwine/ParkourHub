@@ -28,6 +28,7 @@ class CreateChallenge extends FormRequest
             'spot' => 'required|integer|exists:App\Spot,id',
             'name' => 'required|string|max:25',
             'description' => 'required|string|max:255',
+            'difficulty' => 'required|integer|between:1,5',
             'youtube' => ['required_without:video', 'nullable', 'active_url', new YoutubeLink],
             'video' => 'required_without:youtube|mimes:mp4,mov,mpg,mpeg|max:40000',
             'thumbnail' => 'mimes:jpg,jpeg,png|max:300',

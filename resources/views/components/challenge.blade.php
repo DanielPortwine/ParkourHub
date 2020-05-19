@@ -22,10 +22,17 @@
             <div class="col-md vertical-center">
                 <span class="large-text sedgwick">{{ $challenge->user->name }}</span>
             </div>
+            <div class="col-md-auto vertical-center">
+                <div>
+                    @for($circle = 1; $circle <= 5; $circle++)
+                        <i class="rating-circle pr-1 fa {{ $circle <= $challenge->difficulty ? 'fa-circle' : 'fa-circle-o' }}"></i>
+                    @endfor
+                </div>
+            </div>
         </div>
         <div class="row">
             <div class="col-md vertical-center">
-                <span>{{ count($challenge->views) . (count($challenge->views) === 1 ? ' view' : ' views') }} | {{ $challenge->created_at->diffForHumans() }}</span>
+                <span>{{ count($challenge->views) . (count($challenge->views) === 1 ? ' view' : ' views') }} | {{ count($challenge->entries) . (count($challenge->entries) === 1 ? ' entry' : ' entries') }} | {{ $challenge->created_at->diffForHumans() }}</span>
             </div>
         </div>
     </div>

@@ -42,8 +42,28 @@
                                 </div>
                             </div>
                             <div class="form-group row">
+                                <input type="hidden" id="difficulty" name="difficulty"  value="{{ $challenge->difficulty }}">
+                                <label class="col-md-2 col-form-label text-md-right">Difficulty</label>
+                                <div class="col-md-8 vertical-center">
+                                    <div>
+                                        <div class="rating-buttons w-100 @error('difficulty') is-invalid @enderror">
+                                            <i class="rating-circle editable fa fa-circle-o" id="rating-circle-1"></i>
+                                            <i class="rating-circle editable fa fa-circle-o" id="rating-circle-2"></i>
+                                            <i class="rating-circle editable fa fa-circle-o" id="rating-circle-3"></i>
+                                            <i class="rating-circle editable fa fa-circle-o" id="rating-circle-4"></i>
+                                            <i class="rating-circle editable fa fa-circle-o" id="rating-circle-5"></i>
+                                        </div>
+                                        @error('difficulty')
+                                        <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
                                 <label class="col-md-2 col-form-label text-md-right">Youtube link...</label>
-                                <div class="col-8">
+                                <div class="col-md-8">
                                     @if(!empty($challenge->youtube))
                                         <div class="row">
                                             <div class="col">
@@ -63,7 +83,7 @@
                             </div>
                             <div class="form-group row">
                                 <label class="col-md-2 col-form-label text-md-right">...or video</label>
-                                <div class="col-8">
+                                <div class="col-md-8">
                                     @if(!empty($challenge->video))
                                         <div class="row">
                                             <div class="col">

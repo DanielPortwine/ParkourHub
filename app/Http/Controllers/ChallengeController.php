@@ -43,6 +43,7 @@ class ChallengeController extends Controller
         $challenge->user_id = Auth::id();
         $challenge->name = $request['name'];
         $challenge->description = $request['description'];
+        $challenge->difficulty = empty($request['difficulty']) ? '0' : $request['difficulty'];
         if (!empty($request['youtube'])){
             $challenge->youtube = substr($request->youtube, -11);
         } else if (!empty($request['video'])) {
@@ -68,6 +69,7 @@ class ChallengeController extends Controller
         $challenge = Challenge::where('id', $id)->first();
         $challenge->name = $request['name'];
         $challenge->description = $request['description'];
+        $challenge->difficulty = empty($request['difficulty']) ? '3' : $request['difficulty'];
         if (!empty($request['youtube'])){
             $challenge->youtube = substr($request->youtube, -11);
             $challenge->video = null;

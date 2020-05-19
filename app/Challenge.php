@@ -12,6 +12,7 @@ class Challenge extends Model
     protected $fillable = [
         'name',
         'description',
+        'difficulty',
         'video',
         'youtube',
     ];

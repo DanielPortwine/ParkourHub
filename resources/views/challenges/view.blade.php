@@ -35,13 +35,29 @@
     </div>
     <div class="section grey-section">
         <div class="container">
-            <div class="row pt-4 pb-2 border-subtle">
+            <div class="row pt-4 pb-2">
                 <div class="col vertical-center">
                     <h1 class="sedgwick mb-0">{{ $challenge->name }}</h1>
                 </div>
-                <div class="col-auto">
+                <div class="col-auto vertical-center d-md-flex d-none">
+                    <div>
+                        @for($circle = 1; $circle <= 5; $circle++)
+                            <i class="rating-circle pr-1 fa {{ $circle <= $challenge->difficulty ? 'fa-circle' : 'fa-circle-o' }}"></i>
+                        @endfor
+                    </div>
+                </div>
+                <div class="col-auto verical-center">
                     <a class="btn text-white" id="switch-title-button" title="Watch Video"><i class="fa fa-film"></i></a>
                     <a class="btn text-white" href="{{ route('spots', ['spot' => $challenge->spot->id]) }}" title="Locate Spot"><i class="fa fa-map-marker"></i></a>
+                </div>
+            </div>
+            <div class="row pb-3 border-subtle">
+                <div class="col-auto vertical-center d-md-none d-flex">
+                    <div>
+                        @for($circle = 1; $circle <= 5; $circle++)
+                            <i class="rating-circle pr-1 fa {{ $circle <= $challenge->difficulty ? 'fa-circle' : 'fa-circle-o' }}"></i>
+                        @endfor
+                    </div>
                 </div>
             </div>
             <div class="row pt-2">
@@ -56,10 +72,10 @@
             </div>
             <div class="row pb-2 border-subtle">
                 <div class="col">
-                    <span>{{ count($challenge->views) . (count($challenge->views) === 1 ? ' view' : ' views') }} | {{ $challenge->created_at->format('jS M, Y') }}</span>
+                    <span>{{ count($challenge->views) . (count($challenge->views) === 1 ? ' view' : ' views') }} | {{ count($challenge->entries) . (count($challenge->entries) === 1 ? ' entry' : ' entries') }} | {{ $challenge->created_at->format('jS M, Y') }}</span>
                 </div>
             </div>
-            <div class="py-2">
+            <div class="py-3">
                 <div id="description-box">
                     <p class="mb-0" id="description-content">{!! nl2br(e($challenge->description)) !!}</p>
                 </div>

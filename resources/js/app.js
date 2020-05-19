@@ -160,26 +160,31 @@ function setBoundingBox(latLonArray, map) {
     });
 }
 
-function setRating(rating) {
-    var $rating = $('#rating-star-' + rating),
-        star;
-    $('#rating').val(rating);
-    // if the selected star is the highest previously selected, unselect it, otherwise select it
-    if ($rating.hasClass('fa-star') && $('#rating-star-' + (rating < 5 ? (rating + 1) : rating)).hasClass('fa-star-o')) {
-        $rating.addClass('fa-star-o').removeClass('fa-star');
-    } else {
-        $rating.addClass('fa-star').removeClass('fa-star-o');
+function setRating(rating, shape) {
+    var $rating = $('#rating-' + shape + '-' + rating),
+        selected = 'fa-' + shape,
+        unselected = 'fa-' + shape + '-o';
+    if (shape === 'star') {
+        $('#rating').val(rating);
+    } else if (shape === 'circle') {
+        $('#difficulty').val(rating);
     }
-    // update the rest of the stars
-    for (star = 1; star <= 5; star++) {
-        if (star === rating) {
+    // if the selected shape is the highest previously selected, unselect it, otherwise select it
+    if ($rating.hasClass(selected) && $('#rating-' + shape + '-' + (rating < 5 ? (rating + 1) : rating)).hasClass(unselected)) {
+        $rating.addClass(unselected).removeClass(selected);
+    } else {
+        $rating.addClass(selected).removeClass(unselected);
+    }
+    // update the rest of the shapes
+    for (var value = 1; value <= 5; value++) {
+        if (value === rating) {
             continue;
         }
-        var $star = $('#rating-star-' + star);
-        if (star < rating) {
-            $star.addClass('fa-star').removeClass('fa-star-o');
+        var $value = $('#rating-' + shape + '-' + value);
+        if (value < rating) {
+            $value.addClass(selected).removeClass(unselected);
         } else {
-            $star.addClass('fa-star-o').removeClass('fa-star');
+            $value.addClass(unselected).removeClass(selected);
         }
     }
 }
@@ -451,11 +456,15 @@ $(document).ready(function() {
         $(this).children('.fa').toggleClass('fa-eye-slash');
     });
 
-    // select a star rating
+    // select a rating
     $('.rating-star.editable').click(function() {
-        setRating(parseInt($(this).attr('id').split('-')[2]));
-    })
-    setRating(parseInt($('#rating').val()));
+        setRating(parseInt($(this).attr('id').split('-')[2]), 'star');
+    });
+    setRating(parseInt($('#rating').val()), 'star');
+    $('.rating-circle.editable').click(function() {
+        setRating(parseInt($(this).attr('id').split('-')[2]), 'circle');
+    });
+    setRating(parseInt($('#difficulty').val()), 'circle');
 
     // like a spot comment
     $('.like-spot-comment').click(function() {
