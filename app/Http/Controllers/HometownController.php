@@ -20,7 +20,7 @@ class HometownController extends Controller
             ->whereBetween('latitude', [$boundaries[0], $boundaries[1]])
             ->whereBetween('longitude', [$boundaries[2], $boundaries[3]])
             ->orderBy('created_at', 'DESC')
-            ->get();
+            ->paginate(20);
 
         return view('content_listings', [
             'page' => 'Spots In ' . $name,
@@ -45,7 +45,7 @@ class HometownController extends Controller
                     ->whereBetween('longitude', [$boundaries[2], $boundaries[3]]);
             })
             ->orderBy('created_at', 'DESC')
-            ->get();
+            ->paginate(20);
 
         return view('content_listings', [
             'page' => 'Challenges In ' . $name,

@@ -28,6 +28,7 @@
             </ul>
         </div>
         <div class="card-body">
+            {{ $hits->links() }}
             @foreach($hits->chunk(4) as $chunk)
                 <div class="row">
                     @foreach($chunk as $hit)
@@ -44,6 +45,7 @@
                     You haven't ticked off any spots from your Hitlist yet
                 @endif
             @endif
+            {{ $hits->links() }}
         </div>
     </div>
 @endsection

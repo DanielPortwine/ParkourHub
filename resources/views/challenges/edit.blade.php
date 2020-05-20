@@ -68,7 +68,9 @@
                                         <div class="row">
                                             <div class="col">
                                                 <div class="content-wrapper">
-                                                    <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/{{ $challenge->youtube }}" frameborder="0" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                                    <div class="youtube" data-id="{{ $challenge->youtube }}">
+                                                        <span class="h-100 flex-center"><i class="fa fa-youtube-play text-shadow z-10"></i></span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>

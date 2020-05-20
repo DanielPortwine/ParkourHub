@@ -494,4 +494,21 @@ $(document).ready(function() {
             }
         });
     });
+
+    // youtube lazyload
+    $.each($('.youtube'), function() {
+        var image = $('<img>', {
+            src: 'https://img.youtube.com/vi/' + $(this).attr('data-id') + '/maxresdefault.jpg',
+        });
+        $(this).append(image);
+        $(this).click(function() {
+            var iframe = $('<iframe>', {
+                frameborder: '0',
+                allowfullscreen: '',
+                src: 'https://www.youtube.com/embed/' + $(this).attr('data-id') + '?rel=0&showinfo=0&autoplay=1'
+            });
+            $(this).html('');
+            $(this).append(iframe);
+        });
+    })
 });

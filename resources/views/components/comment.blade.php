@@ -15,9 +15,11 @@ $like = Auth()->user()->spotCommentLikes->where('spot_comment_id', $comment->id)
                 <source src="{{ $comment->video }}" type="video/{{ $comment->video_type }}">
             </video>
         </div>
-    @elseif(!empty($omment->youtube))
+    @elseif(!empty($comment->youtube))
         <div class="content-wrapper">
-            <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/{{ $comment->youtube }}" frameborder="0" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <div class="youtube" data-id="{{ $comment->youtube }}">
+                <span class="h-100 flex-center"><i class="fa fa-youtube-play text-shadow z-10"></i></span>
+            </div>
         </div>
     @endif
     <div class="py-3 px-4">

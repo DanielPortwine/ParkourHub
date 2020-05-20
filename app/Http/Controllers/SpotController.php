@@ -30,6 +30,21 @@ class SpotController extends Controller
             ])->render();
         } else {
             $hitlist = Hit::where('user_id', Auth::id())->pluck('completed_at', 'spot_id')->toArray();
+            if (!empty($request['reviews'])) {
+                $reviews = $spot->reviews()->whereNotNull('title')->orderByDesc('created_at')->paginate(20, ['*'], 'reviews')->fragment('reviews');
+            } else {
+                $reviews = $spot->reviews()->whereNotNull('title')->orderByDesc('created_at')->limit(4)->get();
+            }
+            if (!empty($request['comments'])) {
+                $comments = $spot->comments()->orderByDesc('created_at')->paginate(20, ['*'], 'comments')->fragment('comments');
+            } else {
+                $comments = $spot->comments()->orderByDesc('created_at')->limit(4)->get();
+            }
+            if (!empty($request['challenges'])) {
+                $challenges = $spot->challenges()->orderByDesc('created_at')->paginate(20, ['*'], 'challenges')->fragment('challenges');
+            } else {
+                $challenges = $spot->challenges()->orderByDesc('created_at')->limit(4)->get();
+            }
             $usersViewed = SpotView::where('spot_id', $id)->pluck('user_id')->toArray();
             if (!in_array(Auth::id(), $usersViewed) && Auth::id() !== $spot->user_id) {
                 $view = new SpotView;
@@ -40,7 +55,11 @@ class SpotController extends Controller
 
             return view('spots.view', [
                 'spot' => $spot,
+                'request' => $request,
                 'hitlist' => $hitlist,
+                'reviews' => $reviews,
+                'comments' => $comments,
+                'challenges' => $challenges,
             ]);
         }
     }

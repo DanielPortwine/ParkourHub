@@ -88,6 +88,7 @@
             </div>
         </div>
     </div>
+    <div class="fragment-link" id="reviews"></div>
     <div class="section">
         <div class="container">
             <div class="row py-4">
@@ -166,7 +167,10 @@
             </div>
         </div>
         <div class="container">
-            @foreach($spot->reviews->whereNotNull('title')->sortByDesc('created_at')->chunk(2) as $chunk)
+            @if(!empty($request['reviews']))
+                {{ $reviews->links() }}
+            @endif
+            @foreach($reviews->chunk(2) as $chunk)
                 <div class="row">
                     @foreach($chunk as $review)
                         <div class="col-md-6 mb-4">
@@ -175,11 +179,23 @@
                     @endforeach
                 </div>
             @endforeach
+            @if(!empty($request['reviews']))
+                {{ $reviews->links() }}
+            @endif
             @if (count($spot->reviews) === 0)
                 <p>This spot has no reviews yet. Create one by clicking 'Submit Review' above.</p>
+            @elseif(count($spot->reviews) > 4)
+                <div class="col text-center mb-4">
+                    @if(empty($request['reviews']))
+                        <a class="btn btn-green w-75" href="?reviews=1#reviews">More</a>
+                    @else
+                        <a class="btn btn-green w-75" href="{{ route('spot_view', $spot->id) }}#reviews">Less</a>
+                    @endif
+                </div>
             @endif
         </div>
     </div>
+    <div class="fragment-link" id="comments"></div>
     <div class="section grey-section">
         <div class="container">
             <div class="row py-4">
@@ -245,8 +261,11 @@
                 </div>
             </div>
         </div>
-        <div class="container">
-            @foreach($spot->comments->sortByDesc('created_at')->chunk(2) as $chunk)
+        <div class="container pb-3">
+            @if(!empty($request['comments']))
+                {{ $comments->links() }}
+            @endif
+            @foreach($comments->chunk(2) as $chunk)
                 <div class="row">
                     @foreach($chunk as $comment)
                         <div class="col-md-6 mb-4">
@@ -255,11 +274,23 @@
                     @endforeach
                 </div>
             @endforeach
+            @if(!empty($request['comments']))
+                {{ $comments->links() }}
+            @endif
             @if (count($spot->comments) === 0)
-                <p class="mb-0 pb-3">This spot has no comments yet. Create one by clicking 'Submit Comment' above.</p>
+                <p class="mb-0">This spot has no comments yet. Create one by clicking 'Submit Comment' above.</p>
+            @elseif(count($spot->comments) > 4)
+                <div class="col text-center mb-4">
+                    @if(empty($request['comments']))
+                        <a class="btn btn-green w-75" href="?comments=1#comments">More</a>
+                    @else
+                        <a class="btn btn-green w-75" href="{{ route('spot_view', $spot->id) }}#comments">Less</a>
+                    @endif
+                </div>
             @endif
         </div>
     </div>
+    <div class="fragment-link" id="challenges"></div>
     <div class="section">
         <div class="container">
             <div class="row py-4">
@@ -368,7 +399,10 @@
             </div>
         </div>
         <div class="container">
-            @foreach($spot->challenges->sortByDesc('created_at')->chunk(2) as $chunk)
+            @if(!empty($request['challenges']))
+                {{ $challenges->links() }}
+            @endif
+            @foreach($challenges->chunk(2) as $chunk)
                 <div class="row">
                     @foreach($chunk as $challenge)
                         <div class="col-md-6 mb-4">
@@ -377,8 +411,19 @@
                     @endforeach
                 </div>
             @endforeach
+            @if(!empty($request['challenges']))
+                {{ $challenges->links() }}
+            @endif
             @if (count($spot->challenges) === 0)
-                <p>This spot has no challenges yet. Create one by clicking 'Create Challenge' above.</p>
+                <p class="mb-0">This spot has no challenges yet. Create one by clicking 'Create Challenge' above.</p>
+            @elseif(count($spot->challenges) > 4)
+                <div class="col text-center mb-4">
+                    @if(empty($request['challenges']))
+                        <a class="btn btn-green w-75" href="?challenges=1#challenges">More</a>
+                    @else
+                        <a class="btn btn-green w-75" href="{{ route('spot_view', $spot->id) }}#challenges">Less</a>
+                    @endif
+                </div>
             @endif
         </div>
     </div>

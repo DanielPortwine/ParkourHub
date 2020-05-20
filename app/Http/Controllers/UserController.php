@@ -97,7 +97,7 @@ class UserController extends Controller
 
     public function spots()
     {
-        $spots = Spot::where('user_id', Auth::id())->orderBy('updated_at', 'desc')->get();
+        $spots = Spot::where('user_id', Auth::id())->orderBy('updated_at', 'desc')->paginate(20);
 
         return view('content_listings', [
             'page' => Auth::user()->name . '\'s Spots',
@@ -109,7 +109,7 @@ class UserController extends Controller
 
     public function hitlist()
     {
-        $hits = Hit::whereHas('spot')->where('user_id', Auth::id())->whereNull('completed_at')->orderByDesc('created_at')->get();
+        $hits = Hit::whereHas('spot')->where('user_id', Auth::id())->whereNull('completed_at')->orderByDesc('created_at')->paginate(20);
 
         return view('user.hitlist', [
             'hits' => $hits,
@@ -118,7 +118,7 @@ class UserController extends Controller
 
     public function hitlistCompleted()
     {
-        $hits = Hit::whereHas('spot')->where('user_id', Auth::id())->whereNotNull('completed_at')->orderByDesc('completed_at')->get();
+        $hits = Hit::whereHas('spot')->where('user_id', Auth::id())->whereNotNull('completed_at')->orderByDesc('completed_at')->paginate(20);
 
         return view('user.hitlist', [
             'hits' => $hits,
@@ -127,7 +127,7 @@ class UserController extends Controller
 
     public function reviews()
     {
-        $reviews = Review::where('user_id', Auth::id())->orderByDesc('updated_at')->get();
+        $reviews = Review::where('user_id', Auth::id())->orderByDesc('updated_at')->paginate(40);
 
         return view('content_listings', [
             'page' => Auth::user()->name . '\'s Reviews',
@@ -140,7 +140,7 @@ class UserController extends Controller
 
     public function challenges()
     {
-        $challenges = Challenge::where('user_id', Auth::id())->orderByDesc('updated_at')->get();
+        $challenges = Challenge::where('user_id', Auth::id())->orderByDesc('updated_at')->paginate(20);
 
         return view('content_listings', [
             'page' => Auth::user()->name . '\'s Challenges',
@@ -152,7 +152,7 @@ class UserController extends Controller
 
     public function entries()
     {
-        $entries = ChallengeEntry::where('user_id', Auth::id())->get();
+        $entries = ChallengeEntry::where('user_id', Auth::id())->paginate(20);
 
         return view('content_listings', [
             'page' => Auth::user()->name . '\'s Challenge Entries',

@@ -6,14 +6,12 @@
     @endif
     <div class="content-wrapper">
         @if(!empty($entry->video))
-            <div class="content-wrapper">
-                <video controls>
-                    <source src="{{ $entry->video }}" type="video/{{ $entry->video_type }}">
-                </video>
-            </div>
+            <video controls>
+                <source src="{{ $entry->video }}" type="video/{{ $entry->video_type }}">
+            </video>
         @elseif(!empty($entry->youtube))
-            <div class="content-wrapper">
-                <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/{{ $entry->youtube }}" frameborder="0" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <div class="youtube" data-id="{{ $entry->youtube }}">
+                <span class="h-100 flex-center"><i class="fa fa-youtube-play text-shadow z-10"></i></span>
             </div>
         @endif
     </div>

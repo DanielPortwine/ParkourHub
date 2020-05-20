@@ -11155,6 +11155,21 @@ body {
   display: none;
 }
 
+.page-item .page-link {
+  background-color: #2b2b2b;
+  color: #f0f5f0;
+}
+
+.page-item.disabled .page-link {
+  background-color: #000000;
+  color: #2b2b2b;
+}
+
+.page-item.active .page-link {
+  background-color: #73c979;
+  border-color: #f0f5f0;
+}
+
 .form-check {
   margin-left: -16px;
 }
@@ -11227,6 +11242,11 @@ input[type=checkbox]:checked + label:after {
   height: calc(100vh - 60px);
 }
 
+.fragment-link {
+  position: absolute;
+  margin-top: -57px;
+}
+
 #map {
   height: 100%;
 }
@@ -11277,7 +11297,8 @@ input[type=checkbox]:checked + label:after {
 
 .content-wrapper iframe,
 .content-wrapper video,
-.content-wrapper img {
+.content-wrapper img,
+.content-wrapper .youtube {
   position: absolute;
   top: 0;
   left: 0;
@@ -11285,6 +11306,14 @@ input[type=checkbox]:checked + label:after {
   height: 100%;
   -o-object-fit: contain;
      object-fit: contain;
+}
+
+.youtube {
+  cursor: pointer;
+}
+
+.youtube .fa-youtube-play {
+  font-size: 50px;
 }
 
 .map-search {

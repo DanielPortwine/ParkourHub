@@ -17,6 +17,7 @@
                 <h1 class="sedgwick text-center pb-3">{{ $title }}</h1>
             </div>
         </div>
+        {{ $content->links() }}
         @foreach($content->chunk(4) as $chunk)
             <div class="row">
                 @foreach($chunk as $card)
@@ -26,5 +27,6 @@
                 @endforeach
             </div>
         @endforeach
+        {{ $content->links() }}
     </div>
 @endsection

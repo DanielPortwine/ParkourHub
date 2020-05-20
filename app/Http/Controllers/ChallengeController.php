@@ -16,11 +16,12 @@ class ChallengeController extends Controller
 {
     public function view($id)
     {
-        $challenge = Challenge::with(['spot', 'user', 'entries'])->where('id', $id)->first();
+        $challenge = Challenge::where('id', $id)->first();
+        $entries = $challenge->entries()->orderByDesc('created_at')->paginate(10, ['*'], 'entries')->fragment('entries');
         $entered = !empty(
             ChallengeEntry::where('challenge_id', $id)->where('user_id', Auth::id())->first()
         );
-        $winner = ChallengeEntry::with(['user'])->where('challenge_id', $id)->where('winner', true)->first();
+        $winner = ChallengeEntry::where('challenge_id', $id)->where('winner', true)->first();
         $usersViewed = ChallengeView::where('challenge_id', $id)->pluck('user_id')->toArray();
         if (!in_array(Auth::id(), $usersViewed) && Auth::id() !== $challenge->user_id) {
             $view = new ChallengeView;
@@ -31,6 +32,7 @@ class ChallengeController extends Controller
 
         return view('challenges.view', [
             'challenge' => $challenge,
+            'entries' => $entries,
             'entered' => $entered,
             'winner' => $winner,
         ]);

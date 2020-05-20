@@ -20,17 +20,17 @@
             @endif
         </div>
         <div class="d-none" id="full-content-video">
-            @if(!empty($challenge->video))
-                <div class="content-wrapper">
+            <div class="content-wrapper">
+                @if(!empty($challenge->video))
                     <video controls>
                         <source src="{{ $challenge->video }}" type="video/{{ $challenge->video_type }}">
                     </video>
-                </div>
-            @elseif(!empty($challenge->youtube))
-                <div class="content-wrapper">
-                    <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/{{ $challenge->youtube }}" frameborder="0" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                </div>
-            @endif
+                @elseif(!empty($challenge->youtube))
+                    <div class="youtube" data-id="{{ $challenge->youtube }}">
+                        <span class="h-100 flex-center"><i class="fa fa-youtube-play text-shadow z-10"></i></span>
+                    </div>
+                @endif
+            </div>
         </div>
     </div>
     <div class="section grey-section">
@@ -83,6 +83,7 @@
             </div>
         </div>
     </div>
+    <div class="fragment-link" id="entries"></div>
     <div class="section">
         <div class="container">
             <div class="row py-4">
@@ -153,7 +154,8 @@
             </div>
         </div>
         <div class="container">
-            @foreach($challenge->entries->sortByDesc('created_at')->chunk(2) as $chunk)
+            {{ $entries->links() }}
+            @foreach($entries->chunk(2) as $chunk)
                 <div class="row">
                     @foreach($chunk as $entry)
                         <div class="col-md-6 mb-4">
@@ -165,6 +167,7 @@
             @if (count($challenge->entries) === 0)
                 <p>This challenge has no entries yet. Create one by clicking 'Enter Challenge' above.</p>
             @endif
+            {{ $entries->links() }}
         </div>
     </div>
 @endsection
