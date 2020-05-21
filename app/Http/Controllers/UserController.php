@@ -95,9 +95,30 @@ class UserController extends Controller
         return redirect()->route('welcome');
     }
 
-    public function spots()
+    public function spots(Request $request)
     {
-        $spots = Spot::where('user_id', Auth::id())->orderBy('updated_at', 'desc')->paginate(20);
+        $sort = ['created_at', 'desc'];
+        if (!empty($request['sort'])) {
+            $fieldMapping = [
+                'date' => 'created_at',
+                'rating' => 'rating',
+                'views' => 'views_count',
+            ];
+            $sortParams = explode('_', $request['sort']);
+            $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
+        }
+
+        $spots = Spot::withCount('views')
+            ->where('user_id', Auth::id())
+            ->hitlist(!empty($request['on_hitlist']) ? true : false)
+            ->ticked(!empty($request['ticked_hitlist']) ? true : false)
+            ->rating($request['rating'] ?? null)
+            ->dateBetween([
+                'from' => $request['date_from'] ?? null,
+                'to' => $request['date_to'] ?? null
+            ])
+            ->orderBy($sort[0], $sort[1])
+            ->paginate(20);
 
         return view('content_listings', [
             'page' => Auth::user()->name . '\'s Spots',
@@ -107,27 +128,59 @@ class UserController extends Controller
         ]);
     }
 
-    public function hitlist()
+    public function hitlist(Request $request)
     {
-        $hits = Hit::whereHas('spot')->where('user_id', Auth::id())->whereNull('completed_at')->orderByDesc('created_at')->paginate(20);
+        $sort = ['created_at', 'desc'];
+        if (!empty($request['sort'])) {
+            $fieldMapping = [
+                'date' => 'created_at',
+                'rating' => 'rating',
+                'views' => 'views_count',
+            ];
+            $sortParams = explode('_', $request['sort']);
+            $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
+        }
 
-        return view('user.hitlist', [
-            'hits' => $hits,
+        $spots = Spot::withCount('views')
+            ->hitlist(true)
+            ->ticked(!empty($request['ticked_hitlist']) ? true : false)
+            ->rating($request['rating'] ?? null)
+            ->dateBetween([
+                'from' => $request['date_from'] ?? null,
+                'to' => $request['date_to'] ?? null
+            ])
+            ->orderBy($sort[0], $sort[1])
+            ->paginate(20);
+
+        return view('content_listings', [
+            'page' => Auth::user()->name . '\'s Hitlist',
+            'title' => 'Your Hitlist',
+            'content' => $spots,
+            'component' => 'spot',
+            'hitlist' => true,
         ]);
     }
 
-    public function hitlistCompleted()
+    public function reviews(Request $request)
     {
-        $hits = Hit::whereHas('spot')->where('user_id', Auth::id())->whereNotNull('completed_at')->orderByDesc('completed_at')->paginate(20);
+        $sort = ['created_at', 'desc'];
+        if (!empty($request['sort'])) {
+            $fieldMapping = [
+                'date' => 'created_at',
+                'rating' => 'rating',
+            ];
+            $sortParams = explode('_', $request['sort']);
+            $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
+        }
 
-        return view('user.hitlist', [
-            'hits' => $hits,
-        ]);
-    }
-
-    public function reviews()
-    {
-        $reviews = Review::where('user_id', Auth::id())->orderByDesc('updated_at')->paginate(40);
+        $reviews = Review::where('user_id', Auth::id())
+            ->rating($request['rating'] ?? null)
+            ->dateBetween([
+                'from' => $request['date_from'] ?? null,
+                'to' => $request['date_to'] ?? null
+            ])
+            ->orderBy($sort[0], $sort[1])
+            ->paginate(20);
 
         return view('content_listings', [
             'page' => Auth::user()->name . '\'s Reviews',
@@ -138,9 +191,29 @@ class UserController extends Controller
         ]);
     }
 
-    public function challenges()
+    public function challenges(Request $request)
     {
-        $challenges = Challenge::where('user_id', Auth::id())->orderByDesc('updated_at')->paginate(20);
+        $sort = ['created_at', 'desc'];
+        if (!empty($request['sort'])) {
+            $fieldMapping = [
+                'date' => 'created_at',
+                'difficulty' => 'difficulty',
+                'entries' => 'entries_count',
+            ];
+            $sortParams = explode('_', $request['sort']);
+            $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
+        }
+
+        $challenges = Challenge::withCount('entries')
+            ->where('user_id', Auth::id())
+            ->entered(!empty($request['entered']) ? true : false)
+            ->difficulty($request['difficulty'] ?? null)
+            ->dateBetween([
+                'from' => $request['date_from'] ?? null,
+                'to' => $request['date_to'] ?? null
+            ])
+            ->orderBy($sort[0], $sort[1])
+            ->paginate(20);
 
         return view('content_listings', [
             'page' => Auth::user()->name . '\'s Challenges',
@@ -150,9 +223,24 @@ class UserController extends Controller
         ]);
     }
 
-    public function entries()
+    public function entries(Request $request)
     {
-        $entries = ChallengeEntry::where('user_id', Auth::id())->paginate(20);
+        $sort = ['created_at', 'desc'];
+        if (!empty($request['sort'])) {
+            $fieldMapping = [
+                'date' => 'created_at',
+            ];
+            $sortParams = explode('_', $request['sort']);
+            $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
+        }
+        $entries = ChallengeEntry::where('user_id', Auth::id())
+            ->winner(!empty($request['winner']) ? true : false)
+            ->dateBetween([
+                'from' => $request['date_from'] ?? null,
+                'to' => $request['date_to'] ?? null
+            ])
+            ->orderBy($sort[0], $sort[1])
+            ->paginate(20);
 
         return view('content_listings', [
             'page' => Auth::user()->name . '\'s Challenge Entries',

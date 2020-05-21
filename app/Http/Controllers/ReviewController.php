@@ -5,19 +5,25 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateReview;
 use App\Http\Requests\UpdateReview;
 use App\Review;
+use App\Spot;
 use Illuminate\Support\Facades\Auth;
 
 class ReviewController extends Controller
 {
     public function create(CreateReview $request)
     {
-        $review = new Review;
-        $review->spot_id = $request['spot'];
-        $review->user_id = Auth::id();
-        $review->rating = empty($request['rating']) ? '0' : $request['rating'];
-        $review->title = !empty($request['title']) ? $request['title'] : null;
-        $review->review = !empty($request['review']) ? $request['review'] : null;
-        $review->save();
+        $review = Review::updateOrCreate(
+            ['spot_id' => $request['spot'], 'user_id' => Auth::id()],
+            [
+                'rating' => empty($request['rating']) ? '0' : $request['rating'],
+                'title' => !empty($request['title']) ? $request['title'] : null,
+                'review' => !empty($request['review']) ? $request['review'] : null,
+            ]
+        );
+
+        $spot = Spot::where('id', $request['spot'])->first();
+        $spot->rating = round($spot->reviews->sum('rating') / count($spot->reviews));
+        $spot->save();
 
         return back()->with('status', 'Successfully submitted a review');
     }
@@ -37,15 +43,23 @@ class ReviewController extends Controller
         $review->review = !empty($request['review']) ? $request['review'] : null;
         $review->save();
 
+        $spot = Spot::where('id', $request['spot'])->first();
+        $spot->rating = round($spot->reviews->sum('rating') / count($spot->reviews));
+        $spot->save();
+
         return back()->with('status', 'Successfully updated review');
     }
 
     public function delete($id)
     {
         $review = Review::where('id', $id)->first();
+        $spot = Spot::where('id', $review->spot_id)->first();
         if ($review->user_id === Auth::id()) {
             $review->delete();
         }
+
+        $spot->rating = round($spot->reviews->sum('rating') / count($spot->reviews));
+        $spot->save();
 
         return redirect()->route('home');
     }

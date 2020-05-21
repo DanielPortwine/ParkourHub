@@ -45,7 +45,7 @@ $hit = Auth()->user()->hits->where('spot_id', $spot->id)->first()
                 <div class="col-md-auto vertical-center">
                     <div>
                         @for($star = 1; $star <= 5; $star++)
-                            <i class="rating-star pr-1 fa {{ $star <= (round($spot->reviews->sum('rating')) / count($spot->reviews)) ? 'fa-star' : 'fa-star-o' }}"></i>
+                            <i class="rating-star pr-1 fa {{ $star <= $spot->rating ? 'fa-star' : 'fa-star-o' }}"></i>
                         @endfor
                         <span>({{ count($spot->reviews) }})</span>
                     </div>

@@ -1,4 +1,21 @@
 <div class="card">
+    <div class="spot-icons">
+        @if(isset($hit) && $hit->completed_at != null)
+            <i class="fa fa-check-square-o text-shadow" title="{{ Carbon\Carbon::parse($hit->completed_at)->diffForHumans() }}"></i>
+        @endif
+        @if($review->spot->private)
+            <i class="fa fa-lock text-shadow" title="Private"></i>
+        @endif
+    </div>
+    @if(isset($user) && $user === true)
+        <div class="content-wrapper">
+            @if(!empty($review->spot->image))
+                <a href="{{ route('spot_view', $review->spot->id) }}">
+                    <img src="{{ $review->spot->image }}">
+                </a>
+            @endif
+        </div>
+    @endif
     <div class="card-header bg-grey card-hidden-body">
         <div class="row">
             <div class="col sedgwick">

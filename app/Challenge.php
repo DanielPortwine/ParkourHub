@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 
 class Challenge extends Model
 {
@@ -16,6 +17,41 @@ class Challenge extends Model
         'video',
         'youtube',
     ];
+
+    public function scopeDifficulty($query, $difficulty = null)
+    {
+        if (!empty($difficulty)) {
+            return $query->where('difficulty', $difficulty);
+        }
+
+        return $query;
+    }
+
+    public function scopeDateBetween($query, $dates = [])
+    {
+        if (!empty($dates['from']) && !empty($dates['to'])) {
+            $query->whereBetween('created_at', [$dates['from'], $dates['to']]);
+        } else if (!empty($dates['from']) && empty($dates['to'])) {
+            $query->where('created_at', '>=', $dates['from']);
+        } else if (empty($dates['from']) && !empty($dates['to'])) {
+            $query->where('created_at', '<=', $dates['to']);
+        }
+
+        return $query;
+    }
+
+    public function scopeEntered($query, $entered = false)
+    {
+        if ($entered) {
+            $entries = ChallengeEntry::whereHas('challenge')
+                ->where('user_id', Auth::id())
+                ->pluck('challenge_id');
+
+            return $query->whereIn('id', $entries);
+        }
+
+        return $query;
+    }
 
     public function entries()
     {

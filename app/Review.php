@@ -10,10 +10,34 @@ class Review extends Model
     use SoftDeletes;
 
     protected $fillable = [
+        'spot_id',
+        'user_id',
         'rating',
         'title',
         'review',
     ];
+
+    public function scopeRating($query, $rating = null)
+    {
+        if (!empty($rating)) {
+            return $query->where('rating', $rating);
+        }
+
+        return $query;
+    }
+
+    public function scopeDateBetween($query, $dates = [])
+    {
+        if (!empty($dates['from']) && !empty($dates['to'])) {
+            $query->whereBetween('created_at', [$dates['from'], $dates['to']]);
+        } else if (!empty($dates['from']) && empty($dates['to'])) {
+            $query->where('created_at', '>=', $dates['from']);
+        } else if (empty($dates['from']) && !empty($dates['to'])) {
+            $query->where('created_at', '<=', $dates['to']);
+        }
+
+        return $query;
+    }
 
     public function user()
     {
