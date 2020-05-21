@@ -9,9 +9,11 @@ import Overlay from 'ol/Overlay';
 import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
 import VectorSource from 'ol/source/Vector';
-import {Circle as CircleStyle, Fill, Icon, Stroke, Style} from 'ol/style';
+import {Fill, Stroke, Style} from 'ol/style';
 import {fromLonLat, toLonLat} from 'ol/proj';
 import {boundingExtent} from 'ol/extent';
+import GeoJSON from 'ol/format/GeoJSON';
+import CircleStyle from "ol/style/Circle";
 
 function showSpot(feature, viewSpotPopup, viewSpotOverlay, urlParams, map = null)
 {
@@ -26,7 +28,7 @@ function showSpot(feature, viewSpotPopup, viewSpotOverlay, urlParams, map = null
             viewSpotOverlay.setPosition(coordinates);
             $(viewSpotPopup).css('top', -10);
         }
-    })
+    });
     if (map != null) {
         map.getView().setCenter(coordinates);
     }
@@ -151,13 +153,41 @@ function checkInputClear($input, $clear) {
     }
 }
 
-function setBoundingBox(latLonArray, map) {
+function setBoundingBox(latLonArray, map, highlight = false) {
     var boundingBox = [fromLonLat([latLonArray[2], latLonArray[1]])];
     boundingBox.push(fromLonLat([latLonArray[3], latLonArray[0]]));
     map.getView().fit(boundingExtent(boundingBox), {
         padding: [20, 20, 20, 20],
         maxZoom: 20,
     });
+    if (highlight) {
+        var geoJsonLayer = new VectorLayer({
+            source: new VectorSource({
+                features: (new GeoJSON()).readFeatures({
+                    'type': 'FeatureCollection',
+                    'features': [{
+                        'type': 'Feature',
+                        'geometry': {
+                            'type': 'Polygon',
+                            'coordinates': [
+                                [boundingBox[0], [boundingBox[0][0], boundingBox[1][1]], boundingBox[1], [boundingBox[1][0], boundingBox[0][1]]]
+                            ]
+                        }
+                    }]
+                })
+            }),
+            style: new Style({
+                stroke: new Stroke({
+                    color: 'black',
+                    width: 1
+                }),
+                fill: new Fill({
+                    color: 'rgba(0, 0, 0, 0.1)'
+                })
+            })
+        });
+        map.addLayer(geoJsonLayer);
+    }
 }
 
 function setRating(rating, shape) {
@@ -245,6 +275,7 @@ $(document).ready(function() {
         searchSpot(urlParams.get('search'));
     }
 
+    var startAtHometown = false;
     if (urlParams.has('latLon')) {
         var latLon = urlParams.get('latLon').split(','),
             lonLat = [latLon[1], latLon[0]];
@@ -255,6 +286,8 @@ $(document).ready(function() {
         startingZoom = 16;
     } else if (urlParams.has('spot')) {
         startingZoom = 18;
+    } else {
+        startAtHometown = true;
     }
     var map = new Map({
         layers: [
@@ -292,13 +325,15 @@ $(document).ready(function() {
     }
 
     // set the map bounding box to the user's hometown
-    $.ajax({
-        url: '/user/fetch_hometown_bounding',
-        type: 'GET',
-        success: function(response) {
-            setBoundingBox(response, map);
-        }
-    });
+    if (startAtHometown) {
+        $.ajax({
+            url: '/user/fetch_hometown_bounding',
+            type: 'GET',
+            success: function (response) {
+                setBoundingBox(response, map, true);
+            }
+        });
+    }
 
     // display the spot markers on the map
     $.ajax({
