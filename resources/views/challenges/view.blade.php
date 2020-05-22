@@ -26,7 +26,7 @@
                         <source src="{{ $challenge->video }}" type="video/{{ $challenge->video_type }}">
                     </video>
                 @elseif(!empty($challenge->youtube))
-                    <div class="youtube" data-id="{{ $challenge->youtube }}">
+                    <div class="youtube" data-id="{{ $challenge->youtube }}" data-start="{{ $challenge->youtube_start }}">
                         <span class="h-100 flex-center"><i class="fa fa-youtube-play text-shadow z-10"></i></span>
                     </div>
                 @endif

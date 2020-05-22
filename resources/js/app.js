@@ -540,7 +540,7 @@ $(document).ready(function() {
             var iframe = $('<iframe>', {
                 frameborder: '0',
                 allowfullscreen: '',
-                src: 'https://www.youtube.com/embed/' + $(this).attr('data-id') + '?rel=0&showinfo=0&autoplay=1'
+                src: 'https://www.youtube.com/embed/' + $(this).attr('data-id') + (($(this).attr('data-start') > 0) ? ('?start=' + $(this).attr('data-start') + '&') : '?') + 'rel=0&showinfo=0&autoplay=1'
             });
             $(this).html('');
             $(this).append(iframe);

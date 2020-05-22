@@ -47,7 +47,9 @@ class ChallengeController extends Controller
         $challenge->description = $request['description'];
         $challenge->difficulty = empty($request['difficulty']) ? '0' : $request['difficulty'];
         if (!empty($request['youtube'])){
-            $challenge->youtube = substr($request->youtube, -11);
+            $youtube = explode('t=', str_replace('https://youtu.be/?', '', str_replace('&', '', str_replace('https://www.youtube.com/watch?v=', '', $request['youtube']))));
+            $challenge->youtube = $youtube[0];
+            $challenge->youtube_start = $youtube[1] ?? null;
         } else if (!empty($request['video'])) {
             $video = $request->file('video');
             $challenge->video = Storage::url($video->store('videos/challenges', 'public'));
@@ -73,7 +75,9 @@ class ChallengeController extends Controller
         $challenge->description = $request['description'];
         $challenge->difficulty = empty($request['difficulty']) ? '3' : $request['difficulty'];
         if (!empty($request['youtube'])){
-            $challenge->youtube = substr($request->youtube, -11);
+            $youtube = explode('t=', str_replace('https://youtu.be/?', '', str_replace('&', '', str_replace('https://www.youtube.com/watch?v=', '', $request['youtube']))));
+            $challenge->youtube = $youtube[0];
+            $challenge->youtube_start = $youtube[1] ?? null;
             $challenge->video = null;
         } else if (!empty($request['video'])) {
             $video = $request->file('video');
@@ -105,7 +109,9 @@ class ChallengeController extends Controller
             $entry->challenge_id = $id;
             $entry->user_id = Auth::id();
             if (!empty($request['youtube'])) {
-                $entry->youtube = substr($request->youtube, -11);
+                $youtube = explode('t=', str_replace('https://youtu.be/?', '', str_replace('&', '', str_replace('https://www.youtube.com/watch?v=', '', $request['youtube']))));
+                $entry->youtube = $youtube[0];
+                $entry->youtube_start = $youtube[1] ?? null;
             } else if (!empty($request['video'])) {
                 $video = $request->file('video');
                 $entry->video = Storage::url($video->store('videos/challenge_entries', 'public'));

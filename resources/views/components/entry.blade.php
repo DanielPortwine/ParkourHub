@@ -10,7 +10,7 @@
                 <source src="{{ $entry->video }}" type="video/{{ $entry->video_type }}">
             </video>
         @elseif(!empty($entry->youtube))
-            <div class="youtube" data-id="{{ $entry->youtube }}">
+            <div class="youtube" data-id="{{ $entry->youtube }}" data-start="{{ $entry->youtube_start }}">
                 <span class="h-100 flex-center"><i class="fa fa-youtube-play text-shadow z-10"></i></span>
             </div>
         @endif

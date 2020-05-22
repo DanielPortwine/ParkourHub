@@ -25,9 +25,9 @@ class YoutubeLink implements Rule
      */
     public function passes($attribute, $value)
     {
-        // https://www.youtube.com/watch?v=0pe6AgrZFBg, https://youtu.be/0pe6AgrZFBg or https://youtu.be/0pe6AgrZFBg?t=32
+        // https://www.youtube.com/watch?v=0pe6AgrZFBg or https://www.youtube.com/watch?v=0pe6AgrZFBg&t=32, https://youtu.be/0pe6AgrZFBg or https://youtu.be/0pe6AgrZFBg?t=32
         $isValidShortForm = substr($value, 0, 17) === 'https://youtu.be/' && ctype_alnum(substr($value, 17, 11)) && (strlen($value) === 28 || substr($value, 28, 3) === '?t=' && is_numeric(substr($value, 31, strlen($value) - 31)));
-        $isValidLongForm = substr($value, 0, 32) === 'https://www.youtube.com/watch?v=' && ctype_alnum(substr($value, 32, 11)) && strlen($value) === 43;
+        $isValidLongForm = substr($value, 0, 32) === 'https://www.youtube.com/watch?v=' && ctype_alnum(substr($value, 32, 11)) && (strlen($value) === 43 || substr($value, 43, 3) === '&t=' && is_numeric(substr($value, 46, strlen($value) - 46)));
 
         return $isValidShortForm || $isValidLongForm;
 }

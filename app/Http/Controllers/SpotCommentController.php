@@ -19,7 +19,9 @@ class SpotCommentController extends Controller
         $comment->user_id = Auth::id();
         $comment->comment = $request['comment'];
         if (!empty($request['youtube'])){
-            $comment->youtube = substr($request->youtube, -11);
+            $youtube = explode('t=', str_replace('https://youtu.be/?', '', str_replace('&', '', str_replace('https://www.youtube.com/watch?v=', '', $request['youtube']))));
+            $comment->youtube = $youtube[0];
+            $comment->youtube_start = $youtube[1] ?? null;
         } else if (!empty($request['video_image'])) {
             $file = $request->file('video_image');
             $extension = $file->extension();
@@ -47,15 +49,23 @@ class SpotCommentController extends Controller
         $comment = SpotComment::where('id', $id)->first();
         $comment->comment = $request['comment'];
         if (!empty($request['youtube'])){
-            $comment->youtube = substr($request->youtube, -11);
+            $youtube = explode('t=', str_replace('https://youtu.be/?', '', str_replace('&', '', str_replace('https://www.youtube.com/watch?v=', '', $request['youtube']))));
+            $comment->youtube = $youtube[0];
+            $comment->youtube_start = $youtube[1] ?? null;
+            $comment->video = null;
+            $comment->image = null;
         } else if (!empty($request['video_image'])) {
             $file = $request->file('video_image');
             $extension = $file->extension();
             if (in_array($extension, ['mp4','mov','mpg','mpeg'])) {
                 $comment->video = Storage::url($file->store('videos/spot_comments', 'public'));
                 $comment->video_type = $extension;
+                $comment->youtube = null;
+                $comment->image = null;
             } else if (in_array($extension, ['jpg','jpeg','png'])) {
                 $comment->image = Storage::url($file->store('images/spot_comments', 'public'));
+                $comment->youtube = null;
+                $comment->video = null;
             }
         }
         $comment->save();
