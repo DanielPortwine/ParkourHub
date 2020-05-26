@@ -33,13 +33,15 @@
                     <div class="card-body bg-grey text-white">
                         <form method="GET">
                             <div class="row">
-                                <div class="col-auto pb-3">
-                                    <label><strong>Created Between: </strong></label>
-                                    <div>
-                                        <input type="date" name="date_from" value="{{ $_GET['date_from'] ?? '' }}">
-                                        <input type="date" name="date_to" value="{{ $_GET['date_to'] ?? '' }}">
+                                @if($component !== 'user')
+                                    <div class="col-auto pb-3">
+                                        <label><strong>Created Between: </strong></label>
+                                        <div>
+                                            <input type="date" name="date_from" value="{{ $_GET['date_from'] ?? '' }}">
+                                            <input type="date" name="date_to" value="{{ $_GET['date_to'] ?? '' }}">
+                                        </div>
                                     </div>
-                                </div>
+                                @endif
                                 @if($component === 'spot')
                                     <div class="col-auto pb-3">
                                         <label><strong>Rating</strong></label>

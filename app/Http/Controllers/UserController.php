@@ -16,6 +16,26 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
+    public function listing(Request $request)
+    {
+        $sort = ['created_at', 'desc'];
+        if (!empty($request['sort'])) {
+            $fieldMapping = [
+                'date' => 'created_at',
+            ];
+            $sortParams = explode('_', $request['sort']);
+            $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
+        }
+
+        $users = User::whereNotNull('email_verified_at')->orderBy($sort[0], $sort[1])->paginate(20);
+
+        return view('content_listings', [
+            'title' => 'Users',
+            'content' => $users,
+            'component' => 'user',
+        ]);
+    }
+
     public function manage()
     {
         $user = Auth::user();

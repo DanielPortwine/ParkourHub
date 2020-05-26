@@ -29,6 +29,7 @@ Route::get('/home', 'HomeController@index')->name('home')->middleware('verified'
 Route::post('/home', 'UserController@update')->name('user_update');
 Route::post('/subscribe', 'UserController@subscribe')->name('user_subscribe');
 
+Route::get('users', 'UserController@listing')->middleware('verified')->name('user_listing');
 Route::prefix('user')->middleware('verified')->group(function() {
     Route::get('manage', 'UserController@manage')->name('user_manage');
     Route::post('manage', 'UserController@update')->name('user_update');
@@ -46,6 +47,7 @@ Route::prefix('user')->middleware('verified')->group(function() {
 Route::get('/spots', 'SpotController@index')->name('spots');
 Route::get('/spots/fetch', 'SpotController@fetch')->name('spot_fetch');
 Route::prefix('spots')->middleware('verified')->group(function() {
+    Route::get('/all', 'SpotController@listing')->name('spot_listing');
     Route::get('/spot/{id}', 'SpotController@view')->name('spot_view');
     Route::post('/create', 'SpotController@create')->name('spot_create');
     Route::get('/edit/{id}', 'SpotController@edit')->name('spot_edit');
@@ -73,6 +75,7 @@ Route::prefix('/spot_comments')->middleware('verified')->group(function() {
 });
 
 Route::prefix('challenges')->middleware('verified')->group(function() {
+    Route::get('/all', 'ChallengeController@listing')->name('challenge_listing');
     Route::get('/challenge/{id}', 'ChallengeController@view')->name('challenge_view');
     Route::post('/create', 'ChallengeController@create')->name('challenge_create');
     Route::get('/edit/{id}', 'ChallengeController@edit')->name('challenge_edit');

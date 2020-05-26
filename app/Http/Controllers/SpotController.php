@@ -20,6 +20,37 @@ class SpotController extends Controller
         return view('spots.index');
     }
 
+    public function listing(Request $request)
+    {
+        $sort = ['created_at', 'desc'];
+        if (!empty($request['sort'])) {
+            $fieldMapping = [
+                'date' => 'created_at',
+                'rating' => 'rating',
+                'views' => 'views_count',
+            ];
+            $sortParams = explode('_', $request['sort']);
+            $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
+        }
+
+        $spots = Spot::withCount('views')
+            ->hitlist(!empty($request['on_hitlist']) ? true : false)
+            ->ticked(!empty($request['ticked_hitlist']) ? true : false)
+            ->rating($request['rating'] ?? null)
+            ->dateBetween([
+                'from' => $request['date_from'] ?? null,
+                'to' => $request['date_to'] ?? null
+            ])
+            ->orderBy($sort[0], $sort[1])
+            ->paginate(20);
+
+        return view('content_listings', [
+            'title' => 'Spots',
+            'content' => $spots,
+            'component' => 'spot',
+        ]);
+    }
+
     public function view(Request $request, $id)
     {
         $spot = Spot::with(['user'])->where('id', $id)->first();

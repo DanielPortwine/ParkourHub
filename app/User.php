@@ -39,6 +39,19 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
 
+    public function scopeDateBetween($query, $dates = [])
+    {
+        if (!empty($dates['from']) && !empty($dates['to'])) {
+            $query->whereBetween('created_at', [$dates['from'], $dates['to']]);
+        } else if (!empty($dates['from']) && empty($dates['to'])) {
+            $query->where('created_at', '>=', $dates['from']);
+        } else if (empty($dates['from']) && !empty($dates['to'])) {
+            $query->where('created_at', '<=', $dates['to']);
+        }
+
+        return $query;
+    }
+
     public function spots()
     {
         return $this->hasMany('App\Spot');

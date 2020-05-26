@@ -14,6 +14,36 @@ use Illuminate\Support\Facades\Storage;
 
 class ChallengeController extends Controller
 {
+    public function listing(Request $requesr)
+    {
+        $sort = ['created_at', 'desc'];
+        if (!empty($request['sort'])) {
+            $fieldMapping = [
+                'date' => 'created_at',
+                'difficulty' => 'difficulty',
+                'entries' => 'entries_count',
+            ];
+            $sortParams = explode('_', $request['sort']);
+            $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
+        }
+
+        $challenges = Challenge::withCount('entries')
+            ->entered(!empty($request['entered']) ? true : false)
+            ->difficulty($request['difficulty'] ?? null)
+            ->dateBetween([
+                'from' => $request['date_from'] ?? null,
+                'to' => $request['date_to'] ?? null
+            ])
+            ->orderBy($sort[0], $sort[1])
+            ->paginate(20);
+
+        return view('content_listings', [
+            'title' => 'Challenges',
+            'content' => $challenges,
+            'component' => 'challenge',
+        ]);
+    }
+
     public function view($id)
     {
         $challenge = Challenge::where('id', $id)->first();
