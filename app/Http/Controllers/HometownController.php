@@ -43,7 +43,6 @@ class HometownController extends Controller
             ->paginate(20);
 
         return view('content_listings', [
-            'page' => 'Spots In ' . $name,
             'title' => 'Spots In ' . $name,
             'content' => $spots,
             'component' => 'spot',
@@ -86,7 +85,6 @@ class HometownController extends Controller
             ->paginate(20);
 
         return view('content_listings', [
-            'page' => 'Challenges In ' . $name,
             'title' => 'Challenges In ' . $name,
             'content' => $challenges,
             'component' => 'challenge',

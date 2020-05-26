@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@push('title'){{ $page }} | @endpush
+@push('title'){{ $title }} | @endpush
 
 @section('content')
     <div class="container-fluid pt-4">

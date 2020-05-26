@@ -121,7 +121,6 @@ class UserController extends Controller
             ->paginate(20);
 
         return view('content_listings', [
-            'page' => Auth::user()->name . '\'s Spots',
             'title' => 'Your Spots',
             'content' => $spots,
             'component' => 'spot',
@@ -153,7 +152,6 @@ class UserController extends Controller
             ->paginate(20);
 
         return view('content_listings', [
-            'page' => Auth::user()->name . '\'s Hitlist',
             'title' => 'Your Hitlist',
             'content' => $spots,
             'component' => 'spot',
@@ -183,7 +181,6 @@ class UserController extends Controller
             ->paginate(20);
 
         return view('content_listings', [
-            'page' => Auth::user()->name . '\'s Reviews',
             'title' => 'Your Reviews',
             'content' => $reviews,
             'component' => 'review',
@@ -216,7 +213,6 @@ class UserController extends Controller
             ->paginate(20);
 
         return view('content_listings', [
-            'page' => Auth::user()->name . '\'s Challenges',
             'title' => 'Your Challenges',
             'content' => $challenges,
             'component' => 'challenge',
@@ -243,7 +239,6 @@ class UserController extends Controller
             ->paginate(20);
 
         return view('content_listings', [
-            'page' => Auth::user()->name . '\'s Challenge Entries',
             'title' => 'Your Challenge Entries',
             'content' => $entries,
             'component' => 'entry',
