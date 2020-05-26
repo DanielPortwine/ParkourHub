@@ -545,5 +545,31 @@ $(document).ready(function() {
             $(this).html('');
             $(this).append(iframe);
         });
-    })
+    });
+
+    // add a spot to hitlist
+    $('.add-to-hitlist-button').click(function(){
+        var $button = $(this),
+            spot = $button.attr('id').split('-')[2];
+        $.ajax({
+            url: '/spots/add_to_hitlist/' + spot,
+            type: 'GET',
+            success: function(response) {
+                $button.siblings('.tick-off-hitlist-button').removeClass('d-none');
+                $button.addClass('d-none');
+            }
+        })
+    });
+    // tick a spot off hitlist
+    $('.tick-off-hitlist-button').click(function(){
+        var $button = $(this),
+            spot = $button.attr('id').split('-')[2];
+        $.ajax({
+            url: '/spots/tick_off_hitlist/' + spot,
+            type: 'GET',
+            success: function(response) {
+                $button.addClass('d-none');
+            }
+        })
+    });
 });

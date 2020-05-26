@@ -60,7 +60,6 @@ class SpotController extends Controller
                 'spot' => $spot,
             ])->render();
         } else {
-            $hitlist = Hit::where('user_id', Auth::id())->pluck('completed_at', 'spot_id')->toArray();
             if (!empty($request['reviews'])) {
                 $reviews = $spot->reviews()->whereNotNull('title')->orderByDesc('created_at')->paginate(20, ['*'], 'reviews')->fragment('reviews');
             } else {
@@ -87,7 +86,6 @@ class SpotController extends Controller
             return view('spots.view', [
                 'spot' => $spot,
                 'request' => $request,
-                'hitlist' => $hitlist,
                 'reviews' => $reviews,
                 'comments' => $comments,
                 'challenges' => $challenges,
@@ -179,22 +177,30 @@ class SpotController extends Controller
         return $spots;
     }
 
-    public function addToHitlist($id)
+    public function addToHitlist(Request $request, $id)
     {
+        if (!$request->ajax()) {
+            return back();
+        }
+
         $hit = new Hit;
         $hit->user_id = Auth::id();
         $hit->spot_id = $id;
         $hit->save();
 
-        return back()->with('status', 'Successfully added spot to your hitlist');
+        return false;
     }
 
-    public function tickOffHitlist($id)
+    public function tickOffHitlist(Request $request, $id)
     {
+        if (!$request->ajax()) {
+            return back();
+        }
+
         $hit = Hit::where('user_id', Auth::id())->where('spot_id', $id)->first();
         $hit->completed_at = Carbon::now();
         $hit->save();
 
-        return back()->with('status', 'Successfully ticked off this spot from your hitlist');
+        return false;
     }
 }

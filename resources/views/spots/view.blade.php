@@ -2,6 +2,10 @@
 
 @push('title'){{ $spot->name }} | @endpush
 
+@php
+    $hit = Auth()->user()->hits->where('spot_id', $spot->id)->first()
+@endphp
+
 @section('content')
     @if (session('status'))
         <div class="alert alert-success alert-dismissible fade show position-absolute w-100 z-10" role="alert">
@@ -40,13 +44,8 @@
                 @endif
                 <div class="col-auto vertical-center">
                     <div>
-                        @if(in_array($spot->id, array_keys($hitlist)))
-                            @if(empty($hitlist[$spot->id]))
-                                <a class="btn text-white" href="{{ route('tick_off_hitlist', $spot->id) }}" title="Tick Off Hitlist"><i class="fa fa-check"></i></a>
-                            @endif
-                        @else
-                            <a class="btn text-white" href="{{ route('add_to_hitlist', $spot->id) }}" title="Add To Hitlist"><i class="fa fa-crosshairs"></i></a>
-                        @endif
+                        <a class="btn text-white tick-off-hitlist-button @if(!(!empty($hit) && $hit->completed_at == null))d-none @endif" id="hitlist-spot-{{ $spot->id }}-add" title="Tick Off Hitlist"><i class="fa fa-check"></i></a>
+                        <a class="btn text-white add-to-hitlist-button @if(!empty($hit))d-none @endif" id="hitlist-spot-{{ $spot->id }}-tick" title="Add To Hitlist"><i class="fa fa-crosshairs"></i></a>
                         <a class="btn text-white" href="{{ route('spots', ['spot' => $spot->id]) }}" title="Locate"><i class="fa fa-map-marker"></i></a>
                     </div>
                 </div>
