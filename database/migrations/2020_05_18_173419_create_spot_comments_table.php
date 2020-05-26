@@ -20,6 +20,7 @@ class CreateSpotCommentsTable extends Migration
             $table->string('comment')->nullable();
             $table->string('image')->nullable();
             $table->string('youtube')->nullable();
+            $table->integer('youtube_start')->nullable();
             $table->string('video')->nullable();
             $table->string('video_type')->nullable();
             $table->timestamps();

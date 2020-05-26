@@ -18,7 +18,9 @@ class CreateChallengeEntriesTable extends Migration
             $table->unsignedBigInteger('challenge_id');
             $table->unsignedBigInteger('user_id');
             $table->string('youtube')->nullable();
+            $table->integer('youtube_start')->nullable();
             $table->string('video')->nullable();
+            $table->string('video_type')->nullable();
             $table->boolean('winner')->default(false);
             $table->timestamps();
             $table->softDeletes();

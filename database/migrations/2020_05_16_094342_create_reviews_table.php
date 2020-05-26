@@ -22,6 +22,9 @@ class CreateReviewsTable extends Migration
             $table->string('review')->nullable();
             $table->timestamps();
             $table->softDeletes();
+
+            $table->foreign('spot_id')->references('id')->on('spots');
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 

@@ -19,6 +19,9 @@ class CreateHitsTable extends Migration
             $table->unsignedBigInteger('spot_id');
             $table->timestamp('completed_at')->nullable();
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('spot_id')->references('id')->on('spots');
         });
     }
 
