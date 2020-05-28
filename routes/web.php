@@ -48,7 +48,7 @@ Route::get('/spots', 'SpotController@index')->name('spots');
 Route::get('/spots/fetch', 'SpotController@fetch')->name('spot_fetch');
 Route::prefix('spots')->middleware('verified')->group(function() {
     Route::get('/all', 'SpotController@listing')->name('spot_listing');
-    Route::get('/spot/{id}', 'SpotController@view')->name('spot_view');
+    Route::get('/spot/{id}/{tab?}', 'SpotController@view')->name('spot_view');
     Route::post('/create', 'SpotController@create')->name('spot_create');
     Route::get('/edit/{id}', 'SpotController@edit')->name('spot_edit');
     Route::post('/edit/{id}', 'SpotController@update')->name('spot_update');

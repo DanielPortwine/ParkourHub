@@ -51,7 +51,7 @@ class SpotController extends Controller
         ]);
     }
 
-    public function view(Request $request, $id)
+    public function view(Request $request, $id, $tab = null)
     {
         $spot = Spot::with(['user'])->where('id', $id)->first();
 
@@ -60,19 +60,22 @@ class SpotController extends Controller
                 'spot' => $spot,
             ])->render();
         } else {
-            if (!empty($request['reviews'])) {
-                $reviews = $spot->reviews()->whereNotNull('title')->orderByDesc('created_at')->paginate(20, ['*'], 'reviews')->fragment('reviews');
-            } else {
+            $reviews = null;
+            $comments = null;
+            $challenges = null;
+            if (!empty($request['reviews']) && ($tab == null || $tab === 'reviews')) {
+                $reviews = $spot->reviews()->whereNotNull('title')->orderByDesc('created_at')->paginate(20, ['*'], 'reviews')->fragment('content');
+            } else if ($tab == null || $tab === 'reviews') {
                 $reviews = $spot->reviews()->whereNotNull('title')->orderByDesc('created_at')->limit(4)->get();
             }
-            if (!empty($request['comments'])) {
-                $comments = $spot->comments()->orderByDesc('created_at')->paginate(20, ['*'], 'comments')->fragment('comments');
-            } else {
+            if (!empty($request['comments']) && $tab === 'comments') {
+                $comments = $spot->comments()->orderByDesc('created_at')->paginate(20, ['*'], 'comments')->fragment('content');
+            } else if ($tab === 'comments') {
                 $comments = $spot->comments()->orderByDesc('created_at')->limit(4)->get();
             }
-            if (!empty($request['challenges'])) {
-                $challenges = $spot->challenges()->orderByDesc('created_at')->paginate(20, ['*'], 'challenges')->fragment('challenges');
-            } else {
+            if (!empty($request['challenges']) && $tab === 'challenges') {
+                $challenges = $spot->challenges()->orderByDesc('created_at')->paginate(20, ['*'], 'challenges')->fragment('content');
+            } else if ($tab === 'challenges') {
                 $challenges = $spot->challenges()->orderByDesc('created_at')->limit(4)->get();
             }
             $usersViewed = SpotView::where('spot_id', $id)->pluck('user_id')->toArray();
@@ -89,6 +92,7 @@ class SpotController extends Controller
                 'reviews' => $reviews,
                 'comments' => $comments,
                 'challenges' => $challenges,
+                'tab' => $tab,
             ]);
         }
     }

@@ -87,343 +87,337 @@
             </div>
         </div>
     </div>
-    <div class="fragment-link" id="reviews"></div>
+    <div class="fragment-link" id="content"></div>
     <div class="section">
         <div class="container">
-            <div class="row py-4">
-                <div class="col">
-                    <h2 class="sedgwick subtitle mb-0">Reviews</h2>
+            <div class="card bg-black border-0">
+                <div class="card-header card-header-black">
+                    <ul class="nav nav-tabs card-header-tabs">
+                        <li class="nav-item">
+                            <a class="nav-link btn-link @if($tab == null || $tab === 'reviews')active @endif" href="{{ route('spot_view', ['id' => $spot->id, 'tab' => null]) }}#content">Reviews</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn-link @if($tab === 'comments')active @endif" href="{{ route('spot_view', ['id' => $spot->id, 'tab' => 'comments']) }}#content">Comments</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn-link @if($tab === 'challenges')active @endif" href="{{ route('spot_view', ['id' => $spot->id, 'tab' => 'challenges']) }}#content">Challenges</a>
+                        </li>
+                    </ul>
                 </div>
-            </div>
-            <div class="row mb-4">
-                <div class="col">
-                    <div class="card @error('rating') border-danger @enderror @error('title') border-danger @enderror @error('review') border-danger @enderror">
-                        <div class="card-header bg-green sedgwick card-hidden-body">
-                            <div class="row">
-                                <div class="col">
-                                    Submit Review
-                                </div>
-                                <div class="col-auto">
-                                    <i class="fa fa-caret-down"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body bg-grey text-white">
-                            <form method="POST" action="{{ route('review_create') }}" enctype="multipart/form-data">
-                                @csrf
-                                <input type="hidden" name="spot" value="{{ $spot->id }}">
-                                <input type="hidden" id="rating" name="rating" value="{{ old('rating') ?: 0 }}">
-                                <div class="form-group row">
-                                    <label class="col-md-2 col-form-label text-md-right">Rating</label>
-                                    <div class="col-md-8 vertical-center">
-                                        <div>
-                                            <div class="rating-stars w-100 @error('rating') is-invalid @enderror">
-                                                <i class="rating-star editable fa fa-star-o" id="rating-star-1"></i>
-                                                <i class="rating-star editable fa fa-star-o" id="rating-star-2"></i>
-                                                <i class="rating-star editable fa fa-star-o" id="rating-star-3"></i>
-                                                <i class="rating-star editable fa fa-star-o" id="rating-star-4"></i>
-                                                <i class="rating-star editable fa fa-star-o" id="rating-star-5"></i>
+                @if($tab == null || $tab === 'reviews')
+                    <div class="card-body bg-black">
+                        <div class="row mb-4">
+                            <div class="col">
+                                <div class="card @error('rating') border-danger @enderror @error('title') border-danger @enderror @error('review') border-danger @enderror">
+                                    <div class="card-header bg-green sedgwick card-hidden-body">
+                                        <div class="row">
+                                            <div class="col">
+                                                Submit Review
                                             </div>
-                                            @error('rating')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                            @enderror
+                                            <div class="col-auto">
+                                                <i class="fa fa-caret-down"></i>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="title" class="col-md-2 col-form-label text-md-right">Title</label>
-                                    <div class="col-md-8">
-                                        <input id="title" type="text" class="form-control @error('title') is-invalid @enderror" name="title" autocomplete="title" maxlength="25" value="{{ old('title') }}">
-                                        @error('title')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="review" class="col-md-2 col-form-label text-md-right">Review</label>
-                                    <div class="col-md-8">
-                                        <textarea id="review" class="form-control @error('review') is-invalid @enderror" name="review" maxlength="255">{{ old('review') }}</textarea>
-                                        @error('review')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-md-8 offset-md-2">
-                                        <button type="submit" class="btn btn-green">Submit</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="container">
-            @if(!empty($request['reviews']))
-                {{ $reviews->links() }}
-            @endif
-            @foreach($reviews->chunk(2) as $chunk)
-                <div class="row">
-                    @foreach($chunk as $review)
-                        <div class="col-md-6 mb-4">
-                            @include('components.review')
-                        </div>
-                    @endforeach
-                </div>
-            @endforeach
-            @if(!empty($request['reviews']))
-                {{ $reviews->links() }}
-            @endif
-            @if (count($spot->reviews) === 0)
-                <p>This spot has no reviews yet. Create one by clicking 'Submit Review' above.</p>
-            @elseif(count($spot->reviews) > 4)
-                <div class="col text-center mb-4">
-                    @if(empty($request['reviews']))
-                        <a class="btn btn-green w-75" href="?reviews=1#reviews">More</a>
-                    @else
-                        <a class="btn btn-green w-75" href="{{ route('spot_view', $spot->id) }}#reviews">Less</a>
-                    @endif
-                </div>
-            @endif
-        </div>
-    </div>
-    <div class="fragment-link" id="comments"></div>
-    <div class="section grey-section">
-        <div class="container">
-            <div class="row py-4">
-                <div class="col">
-                    <h2 class="sedgwick subtitle mb-0">Comments & Media</h2>
-                </div>
-            </div>
-            <div class="row mb-4">
-                <div class="col">
-                    <div class="card @error('comment') border-danger @enderror @error('image') border-danger @enderror @error('youtube') border-danger @enderror @error('video') border-danger @enderror">
-                        <div class="card-header bg-green sedgwick card-hidden-body">
-                            <div class="row">
-                                <div class="col">
-                                    Submit Comment
-                                </div>
-                                <div class="col-auto">
-                                    <i class="fa fa-caret-down"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body bg-grey text-white">
-                            <form method="POST" action="{{ route('spot_comment_create') }}" enctype="multipart/form-data">
-                                @csrf
-                                <input type="hidden" name="spot" value="{{ $spot->id }}">
-                                <div class="form-group row">
-                                    <label for="comment" class="col-md-2 col-form-label text-md-right">Comment</label>
-                                    <div class="col-md-8">
-                                        <textarea id="comment" class="form-control @error('comment') is-invalid @enderror" name="comment" maxlength="255">{{ old('comment') }}</textarea>
-                                        @error('comment')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-2 col-form-label text-md-right">Youtube or Video/Image</label>
-                                    <div class="col-md-4">
-                                        <input type="text" id="youtube" class="form-control @error('youtube') is-invalid @enderror" name="youtube" autocomplete="youtube" placeholder="e.g. https://youtu.be/QDIVrf2ZW0s" value="{{ old('youtube') }}">
-                                        @error('youtube')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                        @enderror
-                                    </div>
-                                    <div class="col-md-4">
-                                        <input type="file" id="video_image" class="form-control-file @error('video_image') is-invalid @enderror" name="video_image">
-                                        @error('video_image')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-md-8 offset-md-2">
-                                        <button type="submit" class="btn btn-green">Submit</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="container pb-3">
-            @if(!empty($request['comments']))
-                {{ $comments->links() }}
-            @endif
-            @foreach($comments->chunk(2) as $chunk)
-                <div class="row">
-                    @foreach($chunk as $comment)
-                        <div class="col-md-6 mb-4">
-                            @include('components.comment')
-                        </div>
-                    @endforeach
-                </div>
-            @endforeach
-            @if(!empty($request['comments']))
-                {{ $comments->links() }}
-            @endif
-            @if (count($spot->comments) === 0)
-                <p class="mb-0">This spot has no comments yet. Create one by clicking 'Submit Comment' above.</p>
-            @elseif(count($spot->comments) > 4)
-                <div class="col text-center mb-4">
-                    @if(empty($request['comments']))
-                        <a class="btn btn-green w-75" href="?comments=1#comments">More</a>
-                    @else
-                        <a class="btn btn-green w-75" href="{{ route('spot_view', $spot->id) }}#comments">Less</a>
-                    @endif
-                </div>
-            @endif
-        </div>
-    </div>
-    <div class="fragment-link" id="challenges"></div>
-    <div class="section">
-        <div class="container">
-            <div class="row py-4">
-                <div class="col">
-                    <h2 class="sedgwick subtitle mb-0">Challenges</h2>
-                </div>
-            </div>
-            <div class="row mb-4">
-                <div class="col">
-                    <div class="card @error('name') border-danger @enderror @error('description') border-danger @enderror @error('difficulty') border-danger @enderror @error('youtube') border-danger @enderror @error('video') border-danger @enderror @error('thumbnail') border-danger @enderror">
-                        <div class="card-header bg-green sedgwick card-hidden-body">
-                            <div class="row">
-                                <div class="col">
-                                    Create Challenge
-                                </div>
-                                <div class="col-auto">
-                                    <i class="fa fa-caret-down"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body bg-grey text-white">
-                            <form method="POST" action="{{ route('challenge_create') }}" enctype="multipart/form-data">
-                                @csrf
-                                <input type="hidden" name="spot" value="{{ $spot->id }}">
-                                <div class="form-group row">
-                                    <label for="name" class="col-md-2 col-form-label text-md-right">Name</label>
-                                    <div class="col-md-8">
-                                        <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" required autocomplete="name" maxlength="25" value="{{ old('name') }}">
-                                        @error('name')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="description" class="col-md-2 col-form-label text-md-right">Description</label>
-                                    <div class="col-md-8">
-                                        <textarea id="description" class="form-control @error('description') is-invalid @enderror" name="description" maxlength="255" required>{{ old('description') }}</textarea>
-                                        @error('description')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <input type="hidden" id="difficulty" name="difficulty" value="{{ old('difficulty') }}">
-                                    <label class="col-md-2 col-form-label text-md-right">Difficulty</label>
-                                    <div class="col-md-8 vertical-center">
-                                        <div>
-                                            <div class="rating-buttons w-100 @error('difficulty') is-invalid @enderror">
-                                                <i class="rating-circle editable fa fa-circle-o" id="rating-circle-1"></i>
-                                                <i class="rating-circle editable fa fa-circle-o" id="rating-circle-2"></i>
-                                                <i class="rating-circle editable fa fa-circle-o" id="rating-circle-3"></i>
-                                                <i class="rating-circle editable fa fa-circle-o" id="rating-circle-4"></i>
-                                                <i class="rating-circle editable fa fa-circle-o" id="rating-circle-5"></i>
+                                    <div class="card-body bg-grey text-white">
+                                        <form method="POST" action="{{ route('review_create') }}" enctype="multipart/form-data">
+                                            @csrf
+                                            <input type="hidden" name="spot" value="{{ $spot->id }}">
+                                            <input type="hidden" id="rating" name="rating" value="{{ old('rating') ?: 0 }}">
+                                            <div class="form-group row">
+                                                <label class="col-md-2 col-form-label text-md-right">Rating</label>
+                                                <div class="col-md-8 vertical-center">
+                                                    <div>
+                                                        <div class="rating-stars w-100 @error('rating') is-invalid @enderror">
+                                                            <i class="rating-star editable fa fa-star-o" id="rating-star-1"></i>
+                                                            <i class="rating-star editable fa fa-star-o" id="rating-star-2"></i>
+                                                            <i class="rating-star editable fa fa-star-o" id="rating-star-3"></i>
+                                                            <i class="rating-star editable fa fa-star-o" id="rating-star-4"></i>
+                                                            <i class="rating-star editable fa fa-star-o" id="rating-star-5"></i>
+                                                        </div>
+                                                        @error('rating')
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                        @enderror
+                                                    </div>
+                                                </div>
                                             </div>
-                                            @error('difficulty')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                            @enderror
+                                            <div class="form-group row">
+                                                <label for="title" class="col-md-2 col-form-label text-md-right">Title</label>
+                                                <div class="col-md-8">
+                                                    <input id="title" type="text" class="form-control @error('title') is-invalid @enderror" name="title" autocomplete="title" maxlength="25" value="{{ old('title') }}">
+                                                    @error('title')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="review" class="col-md-2 col-form-label text-md-right">Review</label>
+                                                <div class="col-md-8">
+                                                    <textarea id="review" class="form-control @error('review') is-invalid @enderror" name="review" maxlength="255">{{ old('review') }}</textarea>
+                                                    @error('review')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <div class="col-md-8 offset-md-2">
+                                                    <button type="submit" class="btn btn-green">Submit</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @if(!empty($request['reviews']))
+                            {{ $reviews->links() }}
+                        @endif
+                        @foreach($reviews->chunk(2) as $chunk)
+                            <div class="row">
+                                @foreach($chunk as $review)
+                                    <div class="col-md-6 mb-4">
+                                        @include('components.review')
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endforeach
+                        @if(!empty($request['reviews']))
+                            {{ $reviews->links() }}
+                        @endif
+                        @if (count($spot->reviews) === 0)
+                            <p class="mb-0">This spot has no reviews yet. Create one by clicking 'Submit Review' above.</p>
+                        @elseif(count($spot->reviews) > 4)
+                            <div class="col text-center mb-4">
+                                @if(empty($request['reviews']))
+                                    <a class="btn btn-green w-75" href="?reviews=1#content">More</a>
+                                @else
+                                    <a class="btn btn-green w-75" href="{{ route('spot_view', $spot->id) }}#content">Less</a>
+                                @endif
+                            </div>
+                        @endif
+                    </div>
+                @elseif($tab === 'comments')
+                    <div class="card-body bg-black">
+                        <div class="row mb-4">
+                            <div class="col">
+                                <div class="card @error('comment') border-danger @enderror @error('image') border-danger @enderror @error('youtube') border-danger @enderror @error('video') border-danger @enderror">
+                                    <div class="card-header bg-green sedgwick card-hidden-body">
+                                        <div class="row">
+                                            <div class="col">
+                                                Submit Comment
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="fa fa-caret-down"></i>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-2 col-form-label text-md-right">Youtube or Video</label>
-                                    <div class="col-md-4">
-                                        <input type="text" id="youtube" class="form-control @error('youtube') is-invalid @enderror" name="youtube" autocomplete="youtube" placeholder="e.g. https://youtu.be/QDIVrf2ZW0s" value="{{ old('youtube') }}">
-                                        @error('youtube')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                        @enderror
+                                    <div class="card-body bg-grey text-white">
+                                        <form method="POST" action="{{ route('spot_comment_create') }}" enctype="multipart/form-data">
+                                            @csrf
+                                            <input type="hidden" name="spot" value="{{ $spot->id }}">
+                                            <div class="form-group row">
+                                                <label for="comment" class="col-md-2 col-form-label text-md-right">Comment</label>
+                                                <div class="col-md-8">
+                                                    <textarea id="comment" class="form-control @error('comment') is-invalid @enderror" name="comment" maxlength="255">{{ old('comment') }}</textarea>
+                                                    @error('comment')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="col-md-2 col-form-label text-md-right">Youtube or Video/Image</label>
+                                                <div class="col-md-4">
+                                                    <input type="text" id="youtube" class="form-control @error('youtube') is-invalid @enderror" name="youtube" autocomplete="youtube" placeholder="e.g. https://youtu.be/QDIVrf2ZW0s" value="{{ old('youtube') }}">
+                                                    @error('youtube')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                    @enderror
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <input type="file" id="video_image" class="form-control-file @error('video_image') is-invalid @enderror" name="video_image">
+                                                    @error('video_image')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <div class="col-md-8 offset-md-2">
+                                                    <button type="submit" class="btn btn-green">Submit</button>
+                                                </div>
+                                            </div>
+                                        </form>
                                     </div>
-                                    <div class="col-md-4">
-                                        <input type="file" id="video" class="form-control-file @error('video') is-invalid @enderror" name="video">
-                                        @error('video')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                        @enderror
-                                    </div>
                                 </div>
-                                <div class="form-group row">
-                                    <label for="thumbnail" class="col-md-2 col-form-label text-md-right">Thumbnail</label>
-                                    <div class="col-md-8">
-                                        <input type="file" id="thumbnail" class="form-control-file @error('thumbnail') is-invalid @enderror" name="thumbnail" required>
-                                        @error('thumbnail')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-md-8 offset-md-2">
-                                        <button type="submit" class="btn btn-green">Create</button>
-                                    </div>
-                                </div>
-                            </form>
+                            </div>
                         </div>
+                        @if(!empty($request['comments']))
+                            {{ $comments->links() }}
+                        @endif
+                        @foreach($comments->chunk(2) as $chunk)
+                            <div class="row">
+                                @foreach($chunk as $comment)
+                                    <div class="col-md-6 mb-4">
+                                        @include('components.comment')
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endforeach
+                        @if(!empty($request['comments']))
+                            {{ $comments->links() }}
+                        @endif
+                        @if (count($spot->comments) === 0)
+                            <p class="mb-0">This spot has no comments yet. Create one by clicking 'Submit Comment' above.</p>
+                        @elseif(count($spot->comments) > 4)
+                            <div class="col text-center mb-4">
+                                @if(empty($request['comments']))
+                                    <a class="btn btn-green w-75" href="?comments=1#content">More</a>
+                                @else
+                                    <a class="btn btn-green w-75" href="{{ route('spot_view', $spot->id) }}#content">Less</a>
+                                @endif
+                            </div>
+                        @endif
                     </div>
-                </div>
-            </div>
-        </div>
-        <div class="container">
-            @if(!empty($request['challenges']))
-                {{ $challenges->links() }}
-            @endif
-            @foreach($challenges->chunk(2) as $chunk)
-                <div class="row">
-                    @foreach($chunk as $challenge)
-                        <div class="col-md-6 mb-4">
-                            @include('components.challenge')
+                @elseif($tab === 'challenges')
+                    <div class="card-body bg-black">
+                        <div class="row mb-4">
+                            <div class="col">
+                                <div class="card @error('name') border-danger @enderror @error('description') border-danger @enderror @error('difficulty') border-danger @enderror @error('youtube') border-danger @enderror @error('video') border-danger @enderror @error('thumbnail') border-danger @enderror">
+                                    <div class="card-header bg-green sedgwick card-hidden-body">
+                                        <div class="row">
+                                            <div class="col">
+                                                Create Challenge
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="fa fa-caret-down"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body bg-grey text-white">
+                                        <form method="POST" action="{{ route('challenge_create') }}" enctype="multipart/form-data">
+                                            @csrf
+                                            <input type="hidden" name="spot" value="{{ $spot->id }}">
+                                            <div class="form-group row">
+                                                <label for="name" class="col-md-2 col-form-label text-md-right">Name</label>
+                                                <div class="col-md-8">
+                                                    <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" required autocomplete="name" maxlength="25" value="{{ old('name') }}">
+                                                    @error('name')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="description" class="col-md-2 col-form-label text-md-right">Description</label>
+                                                <div class="col-md-8">
+                                                    <textarea id="description" class="form-control @error('description') is-invalid @enderror" name="description" maxlength="255" required>{{ old('description') }}</textarea>
+                                                    @error('description')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <input type="hidden" id="difficulty" name="difficulty" value="{{ old('difficulty') }}">
+                                                <label class="col-md-2 col-form-label text-md-right">Difficulty</label>
+                                                <div class="col-md-8 vertical-center">
+                                                    <div>
+                                                        <div class="rating-buttons w-100 @error('difficulty') is-invalid @enderror">
+                                                            <i class="rating-circle editable fa fa-circle-o" id="rating-circle-1"></i>
+                                                            <i class="rating-circle editable fa fa-circle-o" id="rating-circle-2"></i>
+                                                            <i class="rating-circle editable fa fa-circle-o" id="rating-circle-3"></i>
+                                                            <i class="rating-circle editable fa fa-circle-o" id="rating-circle-4"></i>
+                                                            <i class="rating-circle editable fa fa-circle-o" id="rating-circle-5"></i>
+                                                        </div>
+                                                        @error('difficulty')
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                        @enderror
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="col-md-2 col-form-label text-md-right">Youtube or Video</label>
+                                                <div class="col-md-4">
+                                                    <input type="text" id="youtube" class="form-control @error('youtube') is-invalid @enderror" name="youtube" autocomplete="youtube" placeholder="e.g. https://youtu.be/QDIVrf2ZW0s" value="{{ old('youtube') }}">
+                                                    @error('youtube')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                    @enderror
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <input type="file" id="video" class="form-control-file @error('video') is-invalid @enderror" name="video">
+                                                    @error('video')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="thumbnail" class="col-md-2 col-form-label text-md-right">Thumbnail</label>
+                                                <div class="col-md-8">
+                                                    <input type="file" id="thumbnail" class="form-control-file @error('thumbnail') is-invalid @enderror" name="thumbnail" required>
+                                                    @error('thumbnail')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <div class="col-md-8 offset-md-2">
+                                                    <button type="submit" class="btn btn-green">Create</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    @endforeach
-                </div>
-            @endforeach
-            @if(!empty($request['challenges']))
-                {{ $challenges->links() }}
-            @endif
-            @if (count($spot->challenges) === 0)
-                <p class="mb-0">This spot has no challenges yet. Create one by clicking 'Create Challenge' above.</p>
-            @elseif(count($spot->challenges) > 4)
-                <div class="col text-center mb-4">
-                    @if(empty($request['challenges']))
-                        <a class="btn btn-green w-75" href="?challenges=1#challenges">More</a>
-                    @else
-                        <a class="btn btn-green w-75" href="{{ route('spot_view', $spot->id) }}#challenges">Less</a>
-                    @endif
-                </div>
-            @endif
+                        @if(!empty($request['challenges']))
+                            {{ $challenges->links() }}
+                        @endif
+                        @foreach($challenges->chunk(2) as $chunk)
+                            <div class="row">
+                                @foreach($chunk as $challenge)
+                                    <div class="col-md-6 mb-4">
+                                        @include('components.challenge')
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endforeach
+                        @if(!empty($request['challenges']))
+                            {{ $challenges->links() }}
+                        @endif
+                        @if (count($spot->challenges) === 0)
+                            <p class="mb-0">This spot has no challenges yet. Create one by clicking 'Create Challenge' above.</p>
+                        @elseif(count($spot->challenges) > 4)
+                            <div class="col text-center mb-4">
+                                @if(empty($request['challenges']))
+                                    <a class="btn btn-green w-75" href="?challenges=1#content">More</a>
+                                @else
+                                    <a class="btn btn-green w-75" href="{{ route('spot_view', $spot->id) }}#content">Less</a>
+                                @endif
+                            </div>
+                        @endif
+                    </div>
+                @endif
+            </div>
         </div>
     </div>
 @endsection

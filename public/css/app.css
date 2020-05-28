@@ -11124,6 +11124,10 @@ body {
   background-color: #73c979;
 }
 
+.bg-black {
+  background-color: #000000;
+}
+
 .btn-green {
   background-color: #73c979;
   color: #f0f5f0;
