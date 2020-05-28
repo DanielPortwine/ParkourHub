@@ -9,8 +9,17 @@
             </div>
         </div>
         <div class="row">
-            <div class="col vertical-center">
-                <span>{{ count($user->spots) . (count($user->spots) === 1 ? ' spot' : ' spots') }} | {{ count($user->challenges) . (count($user->challenges) === 1 ? ' challenge' : ' challenges') }} | {{ 'Joined ' . Carbon\Carbon::parse($user->email_verified_at)->diffForHumans() }}</span>
+            <div class="col-auto" title="Number Of Spots Created">
+                <i class="fa fa-map-marker text-white"></i>
+                {{ count($user->spots) }}
+            </div>
+            <div class="col-auto" title="Number Of Challenges Created">
+                <i class="fa fa-bullseye text-white"></i>
+                {{ count($user->challenges) }}
+            </div>
+            <div class="col-auto" title="Number Of Days Since Registration">
+                <i class="fa fa-clock-o text-white"></i>
+                {{ Carbon\Carbon::parse($user->email_verified_at)->diffInDays() }}
             </div>
         </div>
     </div>
