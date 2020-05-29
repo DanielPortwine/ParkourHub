@@ -32,10 +32,10 @@ Route::post('/subscribe', 'UserController@subscribe')->name('user_subscribe');
 Route::get('users', 'UserController@listing')->middleware('verified')->name('user_listing');
 Route::prefix('user')->middleware('verified')->group(function() {
     Route::get('/view/{id}/{tab?}', 'UserController@view')->name('user_view');
-    Route::get('manage', 'UserController@manage')->name('user_manage');
-    Route::post('manage', 'UserController@update')->name('user_update');
-    Route::get('obfuscate/{field}', 'UserController@obfuscate')->name('obfuscate');
-    Route::get('delete', 'UserController@delete')->name('user_delete');
+    Route::get('/manage', 'UserController@manage')->name('user_manage');
+    Route::post('/manage', 'UserController@update')->name('user_update');
+    Route::get('/obfuscate/{field}', 'UserController@obfuscate')->name('obfuscate');
+    Route::get('/delete', 'UserController@delete')->name('user_delete');
     Route::get('/spots', 'UserController@spots')->name('user_spots');
     Route::get('/hitlist', 'UserController@hitlist')->name('user_hitlist');
     Route::get('/hitlist/completed', 'UserController@hitlistCompleted')->name('user_hitlist_completed');
@@ -43,6 +43,9 @@ Route::prefix('user')->middleware('verified')->group(function() {
     Route::get('/challenges', 'UserController@challenges')->name('user_challenges');
     Route::get('/entries', 'UserController@entries')->name('user_entries');
     Route::get('/fetch_hometown_bounding', 'UserController@fetchHometownBounding');
+    Route::get('/follow/{id}', 'UserController@follow')->name('user_follow');
+    Route::get('/unfollow/{id}', 'UserController@unfollow')->name('user_unfollow');
+    Route::get('/followers', 'UserController@followers')->name('user_followers');
 });
 
 Route::get('/spots', 'SpotController@index')->name('spots');

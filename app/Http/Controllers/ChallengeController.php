@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Storage;
 
 class ChallengeController extends Controller
 {
-    public function listing(Request $requesr)
+    public function listing(Request $request)
     {
         $sort = ['created_at', 'desc'];
         if (!empty($request['sort'])) {
@@ -34,6 +34,7 @@ class ChallengeController extends Controller
                 'from' => $request['date_from'] ?? null,
                 'to' => $request['date_to'] ?? null
             ])
+            ->following(!empty($request['following']) ? true : false)
             ->orderBy($sort[0], $sort[1])
             ->paginate(20);
 

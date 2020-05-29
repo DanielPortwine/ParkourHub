@@ -572,4 +572,31 @@ $(document).ready(function() {
             }
         })
     });
+
+    // follow a user
+    $('.follow-user-button').click(function(){
+        var $button = $(this),
+            spot = $button.attr('id').split('-')[2];
+        $.ajax({
+            url: '/user/follow/' + spot,
+            type: 'GET',
+            success: function(response) {
+                $button.siblings('.unfollow-user-button').removeClass('d-none');
+                $button.addClass('d-none');
+            }
+        })
+    });
+    // unfollow a user
+    $('.unfollow-user-button').click(function(){
+        var $button = $(this),
+            spot = $button.attr('id').split('-')[2];
+        $.ajax({
+            url: '/user/unfollow/' + spot,
+            type: 'GET',
+            success: function(response) {
+                $button.siblings('.follow-user-button').removeClass('d-none');
+                $button.addClass('d-none');
+            }
+        })
+    });
 });

@@ -42,6 +42,15 @@
                                         </div>
                                     </div>
                                 @endif
+                                @if($component === 'spot' || $component === 'challenge')
+                                    <div class="col-auto pb-3">
+                                        <label><strong>Following</strong></label>
+                                        <div class="form-check text-center">
+                                            <input class="form-check-input" type="checkbox" name="following" id="following" {{ !empty($_GET['following']) ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="following"></label>
+                                        </div>
+                                    </div>
+                                @endif
                                 @if($component === 'spot')
                                     <div class="col-auto pb-3">
                                         <label><strong>Rating</strong></label>

@@ -65,6 +65,17 @@ class Spot extends Model
         return $query;
     }
 
+    public function scopeFollowing($query, $following = false)
+    {
+        if ($following) {
+            $followedUsers = Follower::where('follower_id', Auth::id())->pluck('user_id');
+
+            return $query->whereIn('user_id', $followedUsers);
+        }
+
+        return $query;
+    }
+
     public function user()
     {
         return $this->belongsTo('App\User');

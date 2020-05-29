@@ -86,4 +86,9 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany('App\ChallengeEntry');
     }
+
+    public function followers()
+    {
+        return $this->hasMany('App\Follower');
+    }
 }

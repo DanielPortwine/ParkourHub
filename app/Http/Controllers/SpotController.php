@@ -41,6 +41,7 @@ class SpotController extends Controller
                 'from' => $request['date_from'] ?? null,
                 'to' => $request['date_to'] ?? null
             ])
+            ->following(!empty($request['following']) ? true : false)
             ->orderBy($sort[0], $sort[1])
             ->paginate(20);
 

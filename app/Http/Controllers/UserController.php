@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Challenge;
 use App\ChallengeEntry;
+use App\Follower;
 use App\Hit;
 use App\Http\Requests\Subscribe;
 use App\Http\Requests\UpdateUser;
@@ -311,5 +312,70 @@ class UserController extends Controller
         $bounding = explode(',', Auth::user()->hometown_bounding);
 
         return count($bounding) === 4 ? $bounding : null;
+    }
+
+    public function follow(Request $request, $id)
+    {
+        if (!$request->ajax()) {
+            return back();
+        }
+
+        if (!empty(Follower::where('user_id', $id)->where('follower_id', Auth::id())->first())) {
+            return back();
+        }
+
+        $follower = new Follower;
+        $follower->user_id = $id;
+        $follower->follower_id = Auth::id();
+        $follower->save();
+
+        $user = User::with(['followers'])->where('id', $id)->first();
+        $followers = $user->followers()->count();
+        $user->followers = quantify_number($followers);
+        $user->save();
+
+        return false;
+    }
+
+    public function unfollow(Request $request, $id)
+    {
+        if (!$request->ajax()) {
+            return back();
+        }
+
+        $follower = Follower::where('user_id', $id)->where('follower_id', Auth::id())->first();
+        $follower->delete();
+
+        $user = User::with(['followers'])->where('id', $id)->first();
+        $followers = $user->followers()->count();
+        $user->followers = quantify_number($followers);
+        $user->save();
+
+        return false;
+    }
+
+    public function followers(Request $request)
+    {
+        $sort = ['created_at', 'desc'];
+        if (!empty($request['sort'])) {
+            $fieldMapping = [
+                'date' => 'created_at',
+            ];
+            $sortParams = explode('_', $request['sort']);
+            $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
+        }
+
+        $followers = Follower::where('user_id', Auth::id())->pluck('follower_id');
+
+        $users = User::whereNotNull('email_verified_at')
+            ->whereIn('id', $followers)
+            ->orderBy($sort[0], $sort[1])
+            ->paginate(20);
+
+        return view('content_listings', [
+            'title' => 'Users',
+            'content' => $users,
+            'component' => 'user',
+        ]);
     }
 }
