@@ -1,12 +1,14 @@
 <div class="card">
-    <div class="spot-icons">
-        @if(isset($hit) && $hit->completed_at != null)
-            <i class="fa fa-check-square-o text-shadow" title="{{ Carbon\Carbon::parse($hit->completed_at)->diffForHumans() }}"></i>
-        @endif
-        @if($review->spot->private)
-            <i class="fa fa-lock text-shadow" title="Private"></i>
-        @endif
-    </div>
+    @if(isset($user))
+        <div class="spot-icons">
+            @if(isset($hit) && $hit->completed_at != null)
+                <i class="fa fa-check-square-o text-shadow" title="{{ Carbon\Carbon::parse($hit->completed_at)->diffForHumans() }}"></i>
+            @endif
+            @if($review->spot->private)
+                <i class="fa fa-lock text-shadow" title="Private"></i>
+            @endif
+        </div>
+    @endif
     @if(isset($user) && $user === true)
         <div class="content-wrapper">
             @if(!empty($review->spot->image))
@@ -48,7 +50,11 @@
     </div>
     <div class="card-body bg-grey">
         <div class="row">
-            <span class="col h4 sedgwick">{{ (isset($user) && $user === true) ? $review->title : $review->user->name }}</span>
+            @if(isset($user))
+                <span class="col h4 sedgwick">{{ $review->title }}</span>
+            @else
+                <a class="col h4 sedgwick btn-link" href="{{ route('user_view', $review->user->id) }}">{{ $review->user->name }}</a>
+            @endif
             <div class="col-auto">
                 @if($review->user_id === Auth()->id())
                     <a class="btn text-white" href="{{ route('review_edit', $review->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>

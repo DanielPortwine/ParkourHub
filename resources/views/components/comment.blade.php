@@ -25,7 +25,7 @@ $like = Auth()->user()->spotCommentLikes->where('spot_comment_id', $comment->id)
     <div class="py-3 px-4">
         <div class="row">
             <div class="col-md vertical-center">
-                <span class="large-text sedgwick">{{ $comment->user->name }}</span>
+                <a class="btn-link large-text sedgwick" href="{{ route('user_view', $comment->user->id) }}">{{ $comment->user->name }}</a>
             </div>
             <div class="col-md-auto">
                 @if($comment->user_id === Auth()->id())

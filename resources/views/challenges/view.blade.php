@@ -62,7 +62,7 @@
             </div>
             <div class="row pt-2">
                 <div class="col vertical-center">
-                    <span class="large-text sedgwick">{{ $challenge->user->name }}</span>
+                    <a class="btn-link large-text sedgwick" href="{{ route('user_view', $challenge->user->id) }}">{{ $challenge->user->name }}</a>
                 </div>
                 @if ($challenge->user->id === Auth()->id())
                     <div class="col-auto">

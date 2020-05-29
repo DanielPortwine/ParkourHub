@@ -34,7 +34,7 @@ $hit = Auth()->user()->hits->where('spot_id', $spot->id)->first()
         </div>
         <div class="row">
             <div class="col-md vertical-center">
-                <span class="large-text sedgwick">{{ $spot->user->name }}</span>
+                <a class="btn-link large-text sedgwick" href="{{ route('user_view', $spot->user->id) }}">{{ $spot->user->name }}</a>
             </div>
             @if(count($spot->reviews))
                 <div class="col-md-auto vertical-center">

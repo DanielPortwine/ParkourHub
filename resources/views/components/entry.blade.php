@@ -36,7 +36,7 @@
         </div>
         <div class="row">
             <div class="col vertical-center">
-                <p class="mb-0"><span class="large-text sedgwick">{{ $entry->user->name }} </span> | {{ $entry->created_at->diffForHumans() }}</p>
+                <a class="btn-link large-text sedgwick" href="{{ route('user_view', $entry->user->id) }}">{{ $entry->user->name }}</a> | {{ $entry->created_at->diffForHumans() }}
             </div>
             <div class="col-auto">
                 <a class="btn text-white d-md-none d-inline-block" href="{{ route('spots', ['spot' => $entry->challenge->spot_id]) }}" title="Locate Spot"><i class="fa fa-map-marker"></i></a>

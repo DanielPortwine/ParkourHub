@@ -20,7 +20,7 @@
         </div>
         <div class="row">
             <div class="col-md vertical-center">
-                <span class="large-text sedgwick">{{ $challenge->user->name }}</span>
+                <a class="btn-link large-text sedgwick" href="{{ route('user_view', $challenge->user->id) }}">{{ $challenge->user->name }}</a>
             </div>
             <div class="col-md-auto vertical-center">
                 <div>

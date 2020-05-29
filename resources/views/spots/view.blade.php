@@ -66,7 +66,7 @@
             </div>
             <div class="row pt-2">
                 <div class="col vertical-center">
-                    <span class="large-text sedgwick">{{ $spot->user->name }}</span>
+                    <a class="btn-link large-text sedgwick" href="{{ route('user_view', $spot->user->id) }}">{{ $spot->user->name }}</a>
                 </div>
                 @if ($spot->user->id === Auth()->id())
                     <div class="col-auto">

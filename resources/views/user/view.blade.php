@@ -1,0 +1,199 @@
+@extends('layouts.app')
+
+@push('title'){{ $user->name }} | @endpush
+
+@section('content')
+    @if (session('status'))
+        <div class="alert alert-success alert-dismissible fade show position-absolute w-100 z-10" role="alert">
+            {{ session('status') }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    @endif
+    <div class="container p-0">
+        @if(!empty($user->image))
+            <div class="content-wrapper">
+                <img class="full-content-content" src="{{ $user->image }}" alt="Image of the user named {{ $user->name }}.">
+            </div>
+        @endif
+    </div>
+    <div class="section grey-section">
+        <div class="container">
+            <div class="row pt-4 py-3 border-subtle">
+                <div class="col vertical-center">
+                    <h1 class="sedgwick mb-0">{{ $user->name }}</h1>
+                </div>
+                <div class="col-auto vertical-center">
+                    <div>
+                        @if ($user->id === Auth()->id())
+                            <a class="btn text-white" href="{{ route('user_manage') }}" title="Manage"><i class="fa fa-pencil"></i></a>
+                        @endif
+                    </div>
+                </div>
+            </div>
+            <div class="row text-center user-stats py-3">
+                <div class="col" title="Number Of Spots Created">
+                    <i class="fa fa-map-marker text-white"></i>
+                    {{ count($user->spots) }}
+                </div>
+                <div class="col" title="Number Of Challenges Created">
+                    <i class="fa fa-bullseye text-white"></i>
+                    {{ count($user->challenges) }}
+                </div>
+                <div class="col" title="Number Of Spots Reviewed">
+                    <i class="fa fa-star text-white"></i>
+                    {{ count($user->reviews) }}
+                </div>
+                <div class="col" title="Number Of Comments On Spots">
+                    <i class="fa fa-comment text-white"></i>
+                    {{ count($user->spotComments) }}
+                </div>
+                <div class="col" title="Number Of Days Since Registration">
+                    <i class="fa fa-clock-o text-white"></i>
+                    {{ Carbon\Carbon::parse($user->email_verified_at)->diffInDays() }}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="fragment-link" id="content"></div>
+    <div class="section">
+        <div class="container">
+            <div class="card bg-black border-0">
+                <div class="card-header card-header-black">
+                    <ul class="nav nav-tabs card-header-tabs">
+                        <li class="nav-item">
+                            <a class="nav-link btn-link @if($tab == null || $tab === 'spots')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => null]) }}#content">Spots</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn-link @if($tab === 'challenges')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'challenges']) }}#content">Challenges</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn-link @if($tab === 'reviews')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'reviews']) }}#content">Reviews</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn-link @if($tab === 'comments')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'comments']) }}#content">Comments</a>
+                        </li>
+                    </ul>
+                </div>
+                @if($tab == null || $tab === 'spots')
+                    <div class="card-body bg-black">
+                        @if(!empty($request['spots']))
+                            {{ $spots->links() }}
+                        @endif
+                        @foreach($spots->chunk(2) as $chunk)
+                            <div class="row">
+                                @foreach($chunk as $spot)
+                                    <div class="col-md-6 mb-4">
+                                        @include('components.spot')
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endforeach
+                        @if(!empty($request['spots']))
+                            {{ $spots->links() }}
+                        @endif
+                        @if (count($user->spots) === 0)
+                            <p class="mb-0">This user has no spots.</p>
+                        @elseif(count($user->spots) > 4)
+                            <div class="col text-center mb-4">
+                                @if(empty($request['spots']))
+                                    <a class="btn btn-green w-75" href="?spots=1#content">More</a>
+                                @else
+                                    <a class="btn btn-green w-75" href="{{ route('user_view', $user->id) }}#content">Less</a>
+                                @endif
+                            </div>
+                        @endif
+                    </div>
+                @elseif($tab === 'reviews')
+                    <div class="card-body bg-black">
+                        @if(!empty($request['reviews']))
+                            {{ $reviews->links() }}
+                        @endif
+                        @foreach($reviews->chunk(2) as $chunk)
+                            <div class="row">
+                                @foreach($chunk as $review)
+                                    <div class="col-md-6 mb-4">
+                                        @include('components.review')
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endforeach
+                        @if(!empty($request['reviews']))
+                            {{ $reviews->links() }}
+                        @endif
+                        @if (count($user->reviews) === 0)
+                            <p class="mb-0">This user has no reviews.</p>
+                        @elseif(count($user->reviews) > 4)
+                            <div class="col text-center mb-4">
+                                @if(empty($request['reviews']))
+                                    <a class="btn btn-green w-75" href="?reviews=1#content">More</a>
+                                @else
+                                    <a class="btn btn-green w-75" href="{{ route('user_view', $user->id) }}#content">Less</a>
+                                @endif
+                            </div>
+                        @endif
+                    </div>
+                @elseif($tab === 'comments')
+                    <div class="card-body bg-black">
+                        @if(!empty($request['comments']))
+                            {{ $comments->links() }}
+                        @endif
+                        @foreach($comments->chunk(2) as $chunk)
+                            <div class="row">
+                                @foreach($chunk as $comment)
+                                    <div class="col-md-6 mb-4">
+                                        @include('components.comment')
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endforeach
+                        @if(!empty($request['comments']))
+                            {{ $comments->links() }}
+                        @endif
+                        @if (count($user->spotComments) === 0)
+                            <p class="mb-0">This user has no comments.</p>
+                        @elseif(count($user->spotComments) > 4)
+                            <div class="col text-center mb-4">
+                                @if(empty($request['comments']))
+                                    <a class="btn btn-green w-75" href="?comments=1#content">More</a>
+                                @else
+                                    <a class="btn btn-green w-75" href="{{ route('user_view', $user->id) }}#content">Less</a>
+                                @endif
+                            </div>
+                        @endif
+                    </div>
+                @elseif($tab === 'challenges')
+                    <div class="card-body bg-black">
+                        @if(!empty($request['challenges']))
+                            {{ $challenges->links() }}
+                        @endif
+                        @foreach($challenges->chunk(2) as $chunk)
+                            <div class="row">
+                                @foreach($chunk as $challenge)
+                                    <div class="col-md-6 mb-4">
+                                        @include('components.challenge')
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endforeach
+                        @if(!empty($request['challenges']))
+                            {{ $challenges->links() }}
+                        @endif
+                        @if (count($user->challenges) === 0)
+                            <p class="mb-0">This user has no challenges.</p>
+                        @elseif(count($user->challenges) > 4)
+                            <div class="col text-center mb-4">
+                                @if(empty($request['challenges']))
+                                    <a class="btn btn-green w-75" href="?challenges=1#content">More</a>
+                                @else
+                                    <a class="btn btn-green w-75" href="{{ route('user_view', $user->id) }}#content">Less</a>
+                                @endif
+                            </div>
+                        @endif
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
+@endsection

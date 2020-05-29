@@ -36,6 +36,43 @@ class UserController extends Controller
         ]);
     }
 
+    public function view(Request $request, $id, $tab = null)
+    {
+        $user = User::where('id', $id)->first();
+
+        $spots = $reviews = $comments = $challenges = null;
+        if (!empty($request['spots']) && ($tab == null || $tab === 'spots')) {
+            $spots = $user->spots()->where('private', false)->orderByDesc('rating')->paginate(20, ['*'], 'spots')->fragment('content');
+        } else if ($tab == null || $tab === 'spots') {
+            $spots = $user->spots()->where('private', false)->orderByDesc('rating')->limit(4)->get();
+        }
+        if (!empty($request['reviews']) && $tab === 'reviews') {
+            $reviews = $user->reviews()->whereNotNull('title')->orderByDesc('created_at')->paginate(20, ['*'], 'reviews')->fragment('content');
+        } else if ($tab == null || $tab === 'reviews') {
+            $reviews = $user->reviews()->whereNotNull('title')->orderByDesc('created_at')->limit(4)->get();
+        }
+        if (!empty($request['comments']) && $tab === 'comments') {
+            $comments = $user->spotComments()->orderByDesc('created_at')->paginate(20, ['*'], 'comments')->fragment('content');
+        } else if ($tab === 'comments') {
+            $comments = $user->spotComments()->orderByDesc('created_at')->limit(4)->get();
+        }
+        if (!empty($request['challenges']) && $tab === 'challenges') {
+            $challenges = $user->challenges()->orderByDesc('created_at')->paginate(20, ['*'], 'challenges')->fragment('content');
+        } else if ($tab === 'challenges') {
+            $challenges = $user->challenges()->orderByDesc('created_at')->limit(4)->get();
+        }
+
+        return view('user.view', [
+            'user' => $user,
+            'request' => $request,
+            'spots' => $spots,
+            'challenges' => $challenges,
+            'reviews' => $reviews,
+            'comments' => $comments,
+            'tab' => $tab,
+        ]);
+    }
+
     public function manage()
     {
         $user = Auth::user();
