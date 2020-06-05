@@ -22,6 +22,7 @@ class CreateUsersTable extends Migration
             $table->string('hometown_name')->nullable();
             $table->string('hometown_bounding')->nullable();
             $table->string('password');
+            $table->text('settings')->default('{}');
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

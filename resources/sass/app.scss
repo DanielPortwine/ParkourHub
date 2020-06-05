@@ -23,6 +23,10 @@ html, body {
     margin-right: 5px;
 }
 
+.no-hover:hover {
+    pointer-events: none;
+}
+
 .nav-spacer {
     margin-left: 15px;
 }

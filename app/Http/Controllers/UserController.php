@@ -8,10 +8,12 @@ use App\Follower;
 use App\Hit;
 use App\Http\Requests\Subscribe;
 use App\Http\Requests\UpdateUser;
+use App\Notifications\UserFollowed;
 use App\Review;
 use App\Spot;
 use App\Subscriber;
 use App\User;
+use Grimthorr\LaravelUserSettings\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -78,32 +80,39 @@ class UserController extends Controller
     {
         $user = Auth::user();
         $subscribed = Subscriber::where('email', $user->email)->exists();
+        $settings = setting()->all();
 
         return view('user.manage', [
             'user' => Auth::user(),
             'subscribed' => $subscribed,
+            'settings' => $settings,
         ]);
     }
 
     public function update(UpdateUser $request)
     {
-        $user = User::where('id', Auth::id())->first();
-        $user->name = $request['name'];
-        $user->email = $request['email'];
-        if (!empty($request['hometown'])) {
-            $hometown = explode('|', $request['hometown']);
-            $user->hometown_name = $hometown[0];
-            $user->hometown_bounding = $hometown[1];
-        } else {
-            $user->hometown_name = null;
-            $user->hometown_bounding = null;
-        }
-        $user->save();
+        if (!empty($request['account-form'])) {
+            $user = User::where('id', Auth::id())->first();
+            $user->name = $request['name'];
+            $user->email = $request['email'];
+            if (!empty($request['hometown'])) {
+                $hometown = explode('|', $request['hometown']);
+                $user->hometown_name = $hometown[0];
+                $user->hometown_bounding = $hometown[1];
+            } else {
+                $user->hometown_name = null;
+                $user->hometown_bounding = null;
+            }
+            $user->save();
 
-        if  ($request['subscribed'] == true) {
-            $this->subscribe(new Subscribe(['email' => $request['email']]), false);
-        } else {
-            $this->unsubscribe();
+            if  ($request['subscribed'] == true) {
+                $this->subscribe(new Subscribe(['email' => $request['email']]), false);
+            } else {
+                $this->unsubscribe();
+            }
+        } else if (!empty($request['notification-form'])) {
+            setting()->set($request['notifications']);
+            setting()->save();
         }
 
         return back()->with('status', 'Updated Account Information');
@@ -333,6 +342,11 @@ class UserController extends Controller
         $followers = $user->followers()->count();
         $user->followers = quantify_number($followers);
         $user->save();
+
+        // notify the user that someone started following them
+        if ($user->id != Auth::id() && in_array(setting('follower', null, $user->id), ['on-site', 'email', 'email-site'])) {
+            $user->notify(new UserFollowed($follower));
+        }
 
         return false;
     }

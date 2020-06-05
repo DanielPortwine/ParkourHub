@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateReview;
 use App\Http\Requests\UpdateReview;
+use App\Notifications\SpotReviewed;
 use App\Review;
 use App\Spot;
+use App\User;
 use Illuminate\Support\Facades\Auth;
 
 class ReviewController extends Controller
@@ -24,6 +26,12 @@ class ReviewController extends Controller
         $spot = Spot::where('id', $request['spot'])->first();
         $spot->rating = round($spot->reviews->sum('rating') / count($spot->reviews));
         $spot->save();
+
+        // notify the spot creator that someone created a review
+        $creator = User::where('id', $review->spot->user_id)->first();
+        if ($creator->id != Auth::id() && in_array(setting('review', null, $creator->id), ['on-site', 'email', 'email-site'])) {
+            $creator->notify(new SpotReviewed($review));
+        }
 
         return back()->with('status', 'Successfully submitted a review');
     }

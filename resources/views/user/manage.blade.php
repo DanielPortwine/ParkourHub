@@ -20,6 +20,7 @@
                         <h3 class="separator sedgwick pb-2 mb-3">Account Details</h3>
                         <form id="account-form" method="POST">
                             @csrf
+                            <input type="hidden" name="account-form" value="true">
                         </form>
                         <div class="form-group row">
                             <label for="name" class="col-md-2 col-form-label text-md-right">Username</label>
@@ -95,6 +96,35 @@
                         <div class="form-group row mb-0">
                             <div class="col-md-10 offset-md-2">
                                 <input type="submit" class="btn btn-green" value="Save" form="account-form">
+                            </div>
+                        </div>
+                        <br>
+                        <h3 class="separator sedgwick pb-2 mb-3">Notifications</h3>
+                        <form id="notification-form" method="POST">
+                            @csrf
+                            <input type="hidden" name="notification-form" value="true">
+                        </form>
+                        @foreach(config('notifications.notifications') as $notificationKey => $notification)
+                            <div class="form-group row">
+                                <label for="{{ $notificationKey }}" class="col-md-2 col-form-label text-md-right">{{ $notification['title'] }}</label>
+                                <div class="col-md-8">
+                                    <select id="{{ $notificationKey }}" class="form-control @error($notificationKey) is-invalid @enderror" name="notifications[{{ $notificationKey }}]" required form="notification-form">
+                                        @foreach(config('notifications.channels') as $key => $name)
+                                            <option value="{{ $key }}" @if(!empty($settings[$notificationKey]) && $settings[$notificationKey] === $key)selected @endif>{{ $name }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error($notificationKey)
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
+                                    <small>Decide how you would like to be notified when {{ $notification['description'] }}</small>
+                                </div>
+                            </div>
+                        @endforeach
+                        <div class="form-group row mb-0">
+                            <div class="col-md-10 offset-md-2">
+                                <input type="submit" class="btn btn-green" value="Save" form="notification-form">
                             </div>
                         </div>
                         <br>

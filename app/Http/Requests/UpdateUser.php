@@ -27,8 +27,8 @@ class UpdateUser extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:25',
-            'email' => ['required', 'string', 'email', 'max:255', new UniqueOrOldEmail],
+            'name' => 'required_with:account-form|string|max:25',
+            'email' => ['required_with:account_form', 'string', 'email', 'max:255', new UniqueOrOldEmail],
             'hometown' => ['string', 'max:255', new Hometown],
             'subscribed' => new Checkbox,
         ];

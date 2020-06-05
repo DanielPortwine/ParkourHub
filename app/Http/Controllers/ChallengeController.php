@@ -8,6 +8,11 @@ use App\ChallengeView;
 use App\Http\Requests\CreateChallenge;
 use App\Http\Requests\EnterChallenge;
 use App\Http\Requests\UpdateChallenge;
+use App\Notifications\ChallengeCreated;
+use App\Notifications\ChallengeEntered;
+use App\Notifications\ChallengeWon;
+use App\Notifications\SpotChallenged;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -45,8 +50,19 @@ class ChallengeController extends Controller
         ]);
     }
 
-    public function view($id)
+    public function view(Request $request, $id)
     {
+        // if coming from a notification, set the notification as read
+        if (!empty($request['notification'])) {
+            foreach (Auth::user()->unreadNotifications as $notification) {
+                if ($notification->id === $request['notification']) {
+                    $notification->markAsRead();
+                    break;
+                }
+            }
+
+            return redirect()->route('challenge_view', $id);
+        }
         $challenge = Challenge::where('id', $id)->first();
         $entries = $challenge->entries()->orderByDesc('created_at')->paginate(10, ['*'], 'entries')->fragment('entries');
         $entered = !empty(
@@ -88,6 +104,20 @@ class ChallengeController extends Controller
         }
         $challenge->thumbnail = Storage::url($request->file('thumbnail')->store('images/challenges', 'public'));
         $challenge->save();
+
+        // notify the spot creator that someone created a challenge
+        $creator = User::where('id', $challenge->spot->user_id)->first();
+        if ($creator->id != Auth::id() && in_array(setting('challenge', null, $creator->id), ['on-site', 'email', 'email-site'])) {
+            $creator->notify(new SpotChallenged($challenge));
+        }
+
+        // notify followers that user created a challenge
+        $followers = Auth::user()->followers()->get();
+        foreach ($followers as $follower) {
+            if (in_array(setting('new_challenge', null, $follower->id), ['on-site', 'email', 'email-site'])) {
+                $follower->notify(new ChallengeCreated($challenge));
+            }
+        }
 
         return redirect()->back()->with('status', 'Successfully created challenge');
     }
@@ -150,6 +180,12 @@ class ChallengeController extends Controller
             }
             $entry->save();
 
+            // notify the challenge creator that someone enters a challenge
+            $creator = User::where('id', $entry->challenge->user_id)->first();
+            if ($creator->id != Auth::id() && in_array(setting('entry', null, $creator->id), ['on-site', 'email', 'email-site'])) {
+                $creator->notify(new ChallengeEntered($entry));
+            }
+
             return redirect()->back()->with('status', 'Successfully entered challenge ' . $entry->challenge->name);
         }
 
@@ -162,6 +198,12 @@ class ChallengeController extends Controller
         if (empty($entry->winner)) {
             $entry->winner = true;
             $entry->save();
+
+            // notify the challenge winner that they won
+            $winner = User::where('id', $entry->user_id)->first();
+            if ($winner->id != Auth::id() && in_array(setting('challenge_won', null, $winner->id), ['on-site', 'email', 'email-site'])) {
+                $winner->notify(new ChallengeWon($entry));
+            }
 
             $challenge = Challenge::where('id', $entry->challenge_id)->first();
             $challenge->won = true;

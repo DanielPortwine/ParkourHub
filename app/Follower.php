@@ -12,4 +12,9 @@ class Follower extends Model
     {
         return $this->belongsTo('App\User');
     }
+
+    public function follower()
+    {
+        return $this->belongsTo('App\User');
+    }
 }

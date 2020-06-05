@@ -67,6 +67,33 @@
                                 <a class="nav-link" href="{{ route('user_listing') }}"><i class="fa fa-users nav-icon"></i>Users</a>
                             </li>
                             <li class="nav-item dropdown">
+                                <a id="notification-dropdown" class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                    <i class="fa {{ count(Auth()->user()->unreadNotifications) > 0 ? 'fa-bell' : 'fa-bell-o' }} nav-icon"></i><span class="d-md-none">Notifications</span>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right bg-grey" id="notification-menu" aria-labelledby="notification-dropdown">
+                                    @if(count(Auth()->user()->unreadNotifications) == 0)
+                                        <a class="dropdown-item text-white no-hover">No new notifications</a>
+                                    @endif
+                                    @foreach(Auth()->user()->unreadNotifications as $notification)
+                                        @if(!empty($notification->data['review']))
+                                            <a class="dropdown-item text-white" href="{{ route('spot_view', ['id' => $notification->data['review']['spot_id'], 'notification' => $notification->id]) }}">New review on {{ $notification->data['review']['spot']['name'] }}</a>
+                                        @elseif(!empty($notification->data['comment']))
+                                            <a class="dropdown-item text-white" href="{{ route('spot_view', ['id' => $notification->data['comment']['spot_id'], 'notification' => $notification->id]) }}">New comment on {{ $notification->data['comment']['spot']['name'] }}</a>
+                                        @elseif(!empty($notification->data['challenge']))
+                                            <a class="dropdown-item text-white" href="{{ route('challenge_view', ['id' => $notification->data['challenge']['id'], 'notification' => $notification->id]) }}">New challenge on {{ $notification->data['challenge']['spot']['name'] }}</a>
+                                        @elseif(!empty($notification->data['entry']))
+                                            <a class="dropdown-item text-white" href="{{ route('challenge_view', ['id' => $notification->data['entry']['challenge_id'], 'notification' => $notification->id]) }}">New entry on {{ $notification->data['entry']['challenge']['name'] }}</a>
+                                        @elseif(!empty($notification->data['challenge_winner']))
+                                            <a class="dropdown-item text-white" href="{{ route('challenge_view', ['id' => $notification->data['challenge_winner']['challenge_id'], 'notification' => $notification->id]) }}">You won challenge {{ $notification->data['challenge_winner_challenge']['name'] }}</a>
+                                        @elseif(!empty($notification->data['new_spot']))
+                                            <a class="dropdown-item text-white" href="{{ route('spot_view', ['id' => $notification->data['new_spot']['id'], 'notification' => $notification->id]) }}">New spot {{ $notification->data['new_spot']['name'] }} from {{ $notification->data['user']['name'] }}</a>
+                                        @elseif(!empty($notification->data['new_challenge']))
+                                            <a class="dropdown-item text-white" href="{{ route('challenge_view', ['id' => $notification->data['new_challenge']['id'], 'notification' => $notification->id]) }}">New challenge {{ $notification->data['new_challenge']['name'] }} from {{ $notification->data['user']['name'] }}</a>
+                                        @endif
+                                    @endforeach
+                                </div>
+                            </li>
+                            <li class="nav-item dropdown">
                                 <a id="user-dropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     <i class="fa fa-user nav-icon"></i>{{ Auth::user()->name }} <span class="caret"></span>
                                 </a>

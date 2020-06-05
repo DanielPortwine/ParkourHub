@@ -6,6 +6,7 @@ use App\Hit;
 use App\Http\Requests\CreateSpot;
 use App\Http\Requests\SearchMap;
 use App\Http\Requests\UpdateSpot;
+use App\Notifications\SpotCreated;
 use App\Spot;
 use App\SpotView;
 use Carbon\Carbon;
@@ -54,6 +55,18 @@ class SpotController extends Controller
 
     public function view(Request $request, $id, $tab = null)
     {
+        // if coming from a notification, set the notification as read
+        if (!empty($request['notification'])) {
+            foreach (Auth::user()->unreadNotifications as $notification) {
+                if ($notification->id === $request['notification']) {
+                    $notification->markAsRead();
+                    break;
+                }
+            }
+
+            return redirect()->route('spot_view', $id);
+        }
+
         $spot = Spot::with(['user'])->where('id', $id)->first();
 
         if ($request->ajax()){
@@ -122,6 +135,14 @@ class SpotController extends Controller
             $spot->image = Storage::url($request->file('image')->store('images/spots', 'public'));
         }
         $spot->save();
+
+        // notify followers that user created a spot
+        $followers = Auth::user()->followers()->get();
+        foreach ($followers as $follower) {
+            if (in_array(setting('new_spot', null, $follower->id), ['on-site', 'email', 'email-site'])) {
+                $follower->notify(new SpotCreated($spot));
+            }
+        }
 
         return redirect()->route('spots', ['spot' => $spot->id]);
     }

@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateSpotComment;
 use App\Http\Requests\UpdateSpotComment;
+use App\Notifications\SpotCommented;
 use App\SpotComment;
 use App\SpotCommentLike;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -33,6 +35,12 @@ class SpotCommentController extends Controller
             }
         }
         $comment->save();
+
+        // notify the spot creator that someone created a comment
+        $creator = User::where('id', $comment->spot->user_id)->first();
+        if ($creator->id != Auth::id() && in_array(setting('comment', null, $creator->id), ['on-site', 'email', 'email-site'])) {
+            $creator->notify(new SpotCommented($comment));
+        }
 
         return back()->with('status', 'Successfully commented on spot');
     }
