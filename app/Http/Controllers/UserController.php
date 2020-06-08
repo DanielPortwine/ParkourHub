@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Challenge;
 use App\ChallengeEntry;
 use App\Follower;
-use App\Hit;
 use App\Http\Requests\Subscribe;
 use App\Http\Requests\UpdateUser;
 use App\Notifications\UserFollowed;
@@ -13,7 +12,6 @@ use App\Review;
 use App\Spot;
 use App\Subscriber;
 use App\User;
-use Grimthorr\LaravelUserSettings\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -43,11 +41,16 @@ class UserController extends Controller
     {
         $user = User::where('id', $id)->first();
 
-        $spots = $reviews = $comments = $challenges = null;
+        $spots = $reviews = $comments = $challenges = $followers = $following = null;
         if (!empty($request['spots']) && ($tab == null || $tab === 'spots')) {
             $spots = $user->spots()->where('private', false)->orderByDesc('rating')->paginate(20, ['*'], 'spots')->fragment('content');
         } else if ($tab == null || $tab === 'spots') {
             $spots = $user->spots()->where('private', false)->orderByDesc('rating')->limit(4)->get();
+        }
+        if (!empty($request['challenges']) && $tab === 'challenges') {
+            $challenges = $user->challenges()->orderByDesc('created_at')->paginate(20, ['*'], 'challenges')->fragment('content');
+        } else if ($tab === 'challenges') {
+            $challenges = $user->challenges()->orderByDesc('created_at')->limit(4)->get();
         }
         if (!empty($request['reviews']) && $tab === 'reviews') {
             $reviews = $user->reviews()->whereNotNull('title')->orderByDesc('created_at')->paginate(20, ['*'], 'reviews')->fragment('content');
@@ -59,10 +62,15 @@ class UserController extends Controller
         } else if ($tab === 'comments') {
             $comments = $user->spotComments()->orderByDesc('created_at')->limit(4)->get();
         }
-        if (!empty($request['challenges']) && $tab === 'challenges') {
-            $challenges = $user->challenges()->orderByDesc('created_at')->paginate(20, ['*'], 'challenges')->fragment('content');
-        } else if ($tab === 'challenges') {
-            $challenges = $user->challenges()->orderByDesc('created_at')->limit(4)->get();
+        if (!empty($request['followers']) && $tab === 'followers') {
+            $followers = $user->followers()->orderByDesc('created_at')->paginate(20, ['*'], 'followers')->fragment('content');
+        } else if ($tab === 'followers') {
+            $followers = $user->followers()->orderByDesc('created_at')->limit(4)->get();
+        }
+        if (!empty($request['following']) && $tab === 'following') {
+            $following = $user->following()->orderByDesc('created_at')->paginate(20, ['*'], 'following')->fragment('content');
+        } else if ($tab === 'following') {
+            $following = $user->following()->orderByDesc('created_at')->limit(4)->get();
         }
 
         return view('user.view', [
@@ -72,6 +80,8 @@ class UserController extends Controller
             'challenges' => $challenges,
             'reviews' => $reviews,
             'comments' => $comments,
+            'followers' => $followers,
+            'following' => $following,
             'tab' => $tab,
         ]);
     }
@@ -340,7 +350,7 @@ class UserController extends Controller
 
         $user = User::with(['followers'])->where('id', $id)->first();
         $followers = $user->followers()->count();
-        $user->followers = quantify_number($followers);
+        $user->followers_quantified = quantify_number($followers);
         $user->save();
 
         // notify the user that someone started following them
@@ -362,7 +372,7 @@ class UserController extends Controller
 
         $user = User::with(['followers'])->where('id', $id)->first();
         $followers = $user->followers()->count();
-        $user->followers = quantify_number($followers);
+        $user->followers_quantified = quantify_number($followers);
         $user->save();
 
         return false;

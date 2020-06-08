@@ -55,7 +55,11 @@
                 </div>
                 <div class="col" title="Followers">
                     <i class="fa fa-group text-white"></i>
-                    {{ $user->followers }}
+                    {{ $user->followers_quantified }}
+                </div>
+                <div class="col" title="Following">
+                    <i class="fa fa-group text-white"></i>
+                    {{ count($user->following) }}
                 </div>
                 <div class="col" title="Number Of Days Since Registration">
                     <i class="fa fa-clock-o text-white"></i>
@@ -81,6 +85,12 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link btn-link @if($tab === 'comments')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'comments']) }}#content">Comments</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn-link @if($tab === 'followers')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'followers']) }}#content">Followers</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn-link @if($tab === 'following')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'following']) }}#content">Following</a>
                         </li>
                     </ul>
                 </div>
@@ -108,7 +118,7 @@
                                 @if(empty($request['spots']))
                                     <a class="btn btn-green w-75" href="?spots=1#content">More</a>
                                 @else
-                                    <a class="btn btn-green w-75" href="{{ route('user_view', $user->id) }}#content">Less</a>
+                                    <a class="btn btn-green w-75" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'spots']) }}#content">Less</a>
                                 @endif
                             </div>
                         @endif
@@ -137,7 +147,7 @@
                                 @if(empty($request['reviews']))
                                     <a class="btn btn-green w-75" href="?reviews=1#content">More</a>
                                 @else
-                                    <a class="btn btn-green w-75" href="{{ route('user_view', $user->id) }}#content">Less</a>
+                                    <a class="btn btn-green w-75" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'reviews']) }}#content">Less</a>
                                 @endif
                             </div>
                         @endif
@@ -166,7 +176,7 @@
                                 @if(empty($request['comments']))
                                     <a class="btn btn-green w-75" href="?comments=1#content">More</a>
                                 @else
-                                    <a class="btn btn-green w-75" href="{{ route('user_view', $user->id) }}#content">Less</a>
+                                    <a class="btn btn-green w-75" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'comments']) }}#content">Less</a>
                                 @endif
                             </div>
                         @endif
@@ -195,7 +205,65 @@
                                 @if(empty($request['challenges']))
                                     <a class="btn btn-green w-75" href="?challenges=1#content">More</a>
                                 @else
-                                    <a class="btn btn-green w-75" href="{{ route('user_view', $user->id) }}#content">Less</a>
+                                    <a class="btn btn-green w-75" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'challenges']) }}#content">Less</a>
+                                @endif
+                            </div>
+                        @endif
+                    </div>
+                @elseif($tab === 'followers')
+                    <div class="card-body bg-black">
+                        @if(!empty($request['followers']))
+                            {{ $followers->links() }}
+                        @endif
+                        @foreach($followers->chunk(2) as $chunk)
+                            <div class="row">
+                                @foreach($chunk as $user)
+                                    <div class="col-md-6 mb-4">
+                                        @include('components.user')
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endforeach
+                        @if(!empty($request['followers']))
+                            {{ $followers->links() }}
+                        @endif
+                        @if (count($user->followers) === 0)
+                            <p class="mb-0">This user has no followers.</p>
+                        @elseif(count($user->followers) > 4)
+                            <div class="col text-center mb-4">
+                                @if(empty($request['followers']))
+                                    <a class="btn btn-green w-75" href="?followers=1#content">More</a>
+                                @else
+                                    <a class="btn btn-green w-75" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'followers']) }}#content">Less</a>
+                                @endif
+                            </div>
+                        @endif
+                    </div>
+                @elseif($tab === 'following')
+                    <div class="card-body bg-black">
+                        @if(!empty($request['following']))
+                            {{ $following->links() }}
+                        @endif
+                        @foreach($following->chunk(2) as $chunk)
+                            <div class="row">
+                                @foreach($chunk as $user)
+                                    <div class="col-md-6 mb-4">
+                                        @include('components.user')
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endforeach
+                        @if(!empty($request['following']))
+                            {{ $following->links() }}
+                        @endif
+                        @if (count($user->following) === 0)
+                            <p class="mb-0">This user has no followers.</p>
+                        @elseif(count($user->following) > 4)
+                            <div class="col text-center mb-4">
+                                @if(empty($request['following']))
+                                    <a class="btn btn-green w-75" href="?following=1#content">More</a>
+                                @else
+                                    <a class="btn btn-green w-75" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'following']) }}#content">Less</a>
                                 @endif
                             </div>
                         @endif
