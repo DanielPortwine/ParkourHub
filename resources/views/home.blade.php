@@ -84,6 +84,7 @@
             </div>
         </div>
     </div>
+    @if(!empty(Auth()->user()->hometown))
     <div class="container-fluid section">
         <div class="row my-3">
             <div class="col">
@@ -136,6 +137,7 @@
             </div>
         </div>
     </div>
+    @endif
     <div class="container-fluid section">
         <div class="row my-3">
             <div class="col">
