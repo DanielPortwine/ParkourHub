@@ -17,6 +17,8 @@ class CreateUserFollowersTable extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('follower_id');
+            $table->boolean('accepted')->default(false);
+            $table->boolean('rejected')->default(false);
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');

@@ -38,7 +38,7 @@ class SpotCommentController extends Controller
 
         // notify the spot creator that someone created a comment
         $creator = User::where('id', $comment->spot->user_id)->first();
-        if ($creator->id != Auth::id() && in_array(setting('comment', null, $creator->id), ['on-site', 'email', 'email-site'])) {
+        if ($creator->id != Auth::id() && in_array(setting('notifications_comment', null, $creator->id), ['on-site', 'email', 'email-site'])) {
             $creator->notify(new SpotCommented($comment));
         }
 

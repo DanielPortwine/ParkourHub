@@ -31,7 +31,7 @@ class SpotChallenged extends Notification
      */
     public function via($notifiable)
     {
-        switch (setting('challenge', 'none', $notifiable->id)) {
+        switch (setting('notifications_challenge', 'none', $notifiable->id)) {
             case 'on-site':
                 $channels = ['database'];
                 break;

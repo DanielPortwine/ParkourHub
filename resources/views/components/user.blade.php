@@ -9,6 +9,10 @@
                     @if ($user->id === Auth()->id())
                         <a class="btn text-white" href="{{ route('user_manage') }}" title="Manage"><i class="fa fa-pencil"></i></a>
                     @else
+                        @if(!empty($title) && $title === 'Follow Requests')
+                            <a class="accept-follower-button btn text-white" href="{{ route('user_accept_follower', $user->id) }}" title="Accept Follower"><i class="fa fa-check"></i></a>
+                            <a class="reject-follower-button btn text-white" href="{{ route('user_reject_follower', $user->id) }}" title="Reject Follower"><i class="fa fa-times"></i></a>
+                        @endif
                         @php $followers = $user->followers()->pluck('follower_id')->toArray(); @endphp
                         <a class="follow-user-button btn text-white @if(in_array(Auth()->id(), $followers))d-none @endif" id="follow-user-{{ $user->id }}" title="Follow"><i class="fa fa-user-plus"></i></a>
                         <a class="unfollow-user-button btn text-white @if(!in_array(Auth()->id(), $followers))d-none @endif" id="unfollow-user-{{ $user->id }}" title="Unfollow"><i class="fa fa-user-times"></i></a>
@@ -17,8 +21,16 @@
             </div>
         </div>
         <div class="row border-subtle pb-1 mb-2">
-            @if(!empty($user->hometown_name))
-                <div class="col-md">
+            @if(!empty($user->hometown_name) && (
+                    (
+                        setting('privacy_hometown', null, $user->id) === 'anybody' || (
+                            setting('privacy_hometown', null, $user->id) === 'follower' &&
+                            !empty($user->followers->firstWhere('id', Auth()->id()))
+                        )
+                    ) ||
+                    $user->id === Auth()->id()
+                ))
+                <div class="col">
                     {{ explode(',', $user->hometown_name)[0] . ', ' . explode(',', $user->hometown_name)[1] }}
                 </div>
             @endif

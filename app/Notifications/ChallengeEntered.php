@@ -31,7 +31,7 @@ class ChallengeEntered extends Notification
      */
     public function via($notifiable)
     {
-        switch (setting('entry', 'none', $notifiable->id)) {
+        switch (setting('notifications_entry', 'none', $notifiable->id)) {
             case 'on-site':
                 $channels = ['database'];
                 break;

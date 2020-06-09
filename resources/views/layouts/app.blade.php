@@ -89,6 +89,10 @@
                                             <a class="dropdown-item text-white" href="{{ route('spot_view', ['id' => $notification->data['new_spot']['id'], 'notification' => $notification->id]) }}">New spot {{ $notification->data['new_spot']['name'] }} from {{ $notification->data['user']['name'] }}</a>
                                         @elseif(!empty($notification->data['new_challenge']))
                                             <a class="dropdown-item text-white" href="{{ route('challenge_view', ['id' => $notification->data['new_challenge']['id'], 'notification' => $notification->id]) }}">New challenge {{ $notification->data['new_challenge']['name'] }} from {{ $notification->data['user']['name'] }}</a>
+                                        @elseif(!empty($notification->data['follower']))
+                                            <a class="dropdown-item text-white" href="{{ route('user_view', ['id' => $notification->data['follower']['follower_id'], 'notification' => $notification->id]) }}">New follower {{ $notification->data['follower']['name'] }}</a>
+                                        @elseif(!empty($notification->data['follow_requester']))
+                                            <a class="dropdown-item text-white" href="{{ route('user_follow_requests', ['notification' => $notification->id]) }}">New follow request</a>
                                         @endif
                                     @endforeach
                                 </div>
@@ -99,8 +103,9 @@
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right bg-grey" id="user-menu" aria-labelledby="user-dropdown">
                                     <a class="dropdown-item text-white" href="{{ route('home') }}"><i class="fa fa-home nav-icon"></i>Home</a>
-                                    <a class="dropdown-item text-white" href="{{ route('user_followers') }}"><i class="fa fa-group nav-icon"></i>Followers</a>
                                     <a class="dropdown-item text-white" href="{{ route('user_manage') }}"><i class="fa fa-user nav-icon"></i>Account</a>
+                                    <a class="dropdown-item text-white" href="{{ route('user_followers') }}"><i class="fa fa-group nav-icon"></i>Followers</a>
+                                    <a class="dropdown-item text-white" href="{{ route('user_follow_requests') }}"><i class="fa fa-user-plus nav-icon"></i>Follow requests</a>
                                     <a class="dropdown-item text-white" href="{{ route('user_spots') }}"><i class="fa fa-map-marker nav-icon"></i>Spots</a>
                                     <a class="dropdown-item text-white" href="{{ route('user_hitlist') }}"><i class="fa fa-check-square-o nav-icon"></i>Hitlist</a>
                                     <a class="dropdown-item text-white" href="{{ route('user_reviews') }}"><i class="fa fa-star nav-icon"></i>Reviews</a>

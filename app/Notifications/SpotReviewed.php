@@ -31,7 +31,7 @@ class SpotReviewed extends Notification
      */
     public function via($notifiable)
     {
-        switch (setting('review', 'none', $notifiable->id)) {
+        switch (setting('notifications_review', 'none', $notifiable->id)) {
             case 'on-site':
                 $channels = ['database'];
                 break;

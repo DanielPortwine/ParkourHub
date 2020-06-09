@@ -33,7 +33,7 @@ class ChallengeCreated extends Notification
      */
     public function via($notifiable)
     {
-        switch (setting('new_challenge', 'none', $notifiable->id)) {
+        switch (setting('notifications_new_challenge', 'none', $notifiable->id)) {
             case 'on-site':
                 $channels = ['database'];
                 break;

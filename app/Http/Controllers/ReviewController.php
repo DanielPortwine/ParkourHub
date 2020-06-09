@@ -29,7 +29,7 @@ class ReviewController extends Controller
 
         // notify the spot creator that someone created a review
         $creator = User::where('id', $review->spot->user_id)->first();
-        if ($creator->id != Auth::id() && in_array(setting('review', null, $creator->id), ['on-site', 'email', 'email-site'])) {
+        if ($creator->id != Auth::id() && in_array(setting('notifications_review', null, $creator->id), ['on-site', 'email', 'email-site'])) {
             $creator->notify(new SpotReviewed($review));
         }
 

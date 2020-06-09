@@ -31,7 +31,7 @@ class UserFollowed extends Notification
      */
     public function via($notifiable)
     {
-        switch (setting('follower', 'none', $notifiable->id)) {
+        switch (setting('notifications_follower', 'none', $notifiable->id)) {
             case 'on-site':
                 $channels = ['database'];
                 break;
@@ -69,6 +69,7 @@ class UserFollowed extends Notification
      */
     public function toArray($notifiable)
     {
+        $this->follower->name = $this->follower->name;
         return [
             'follower' => $this->follower
         ];

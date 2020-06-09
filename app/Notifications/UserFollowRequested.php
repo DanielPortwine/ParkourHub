@@ -6,22 +6,21 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Facades\Auth;
 
-class SpotCommented extends Notification
+class UserFollowRequested extends Notification
 {
     use Queueable;
 
-    protected $comment;
+    protected $follower;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($comment)
+    public function __construct($follower)
     {
-        $this->comment = $comment;
+        $this->follower = $follower;
     }
 
     /**
@@ -32,7 +31,7 @@ class SpotCommented extends Notification
      */
     public function via($notifiable)
     {
-        switch (setting('notifications_comment', 'none', $notifiable->id)) {
+        switch (setting('notifications_follower', 'none', $notifiable->id)) {
             case 'on-site':
                 $channels = ['database'];
                 break;
@@ -58,8 +57,8 @@ class SpotCommented extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('New Comment on ' . $this->comment->spot->name)
-            ->markdown('mail.notifications.comment', ['comment' => $this->comment]);
+            ->subject('New Follow Request')
+            ->markdown('mail.notifications.follow_request', ['follower' => $this->follower]);
     }
 
     /**
@@ -71,7 +70,7 @@ class SpotCommented extends Notification
     public function toArray($notifiable)
     {
         return [
-            'comment' => $this->comment
+            'follow_requester' => $this->follower
         ];
     }
 }

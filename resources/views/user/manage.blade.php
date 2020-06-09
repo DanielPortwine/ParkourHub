@@ -104,27 +104,56 @@
                             @csrf
                             <input type="hidden" name="notification-form" value="true">
                         </form>
-                        @foreach(config('notifications.notifications') as $notificationKey => $notification)
+                        @foreach(config('settings.notifications') as $settingKey => $setting)
                             <div class="form-group row">
-                                <label for="{{ $notificationKey }}" class="col-md-2 col-form-label text-md-right">{{ $notification['title'] }}</label>
+                                <label for="{{ $settingKey }}" class="col-md-2 col-form-label text-md-right">{{ $setting['title'] }}</label>
                                 <div class="col-md-8">
-                                    <select id="{{ $notificationKey }}" class="form-control @error($notificationKey) is-invalid @enderror" name="notifications[{{ $notificationKey }}]" required form="notification-form">
-                                        @foreach(config('notifications.channels') as $key => $name)
-                                            <option value="{{ $key }}" @if(!empty($settings[$notificationKey]) && $settings[$notificationKey] === $key)selected @endif>{{ $name }}</option>
+                                    <select id="{{ $settingKey }}" class="form-control @error($settingKey) is-invalid @enderror" name="notifications[{{ $settingKey }}]" required form="notification-form">
+                                        @foreach(config('settings.notification_channels') as $key => $name)
+                                            <option value="{{ $key }}" @if(!empty($settings[$settingKey]) && $settings[$settingKey] === $key)selected @endif>{{ $name }}</option>
                                         @endforeach
                                     </select>
-                                    @error($notificationKey)
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
+                                    @error($settingKey)
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
                                     @enderror
-                                    <small>Decide how you would like to be notified when {{ $notification['description'] }}</small>
+                                    <small>Decide how you would like to be notified when {{ $setting['description'] }}</small>
                                 </div>
                             </div>
                         @endforeach
                         <div class="form-group row mb-0">
                             <div class="col-md-10 offset-md-2">
                                 <input type="submit" class="btn btn-green" value="Save" form="notification-form">
+                            </div>
+                        </div>
+                        <br>
+                        <h3 class="separator sedgwick pb-2 mb-3">Privacy</h3>
+                        <form id="privacy-form" method="POST">
+                            @csrf
+                            <input type="hidden" name="privacy-form" value="true">
+                        </form>
+                        @foreach(config('settings.privacy') as $settingKey => $setting)
+                            <div class="form-group row">
+                                <label for="{{ $settingKey }}" class="col-md-2 col-form-label text-md-right">{{ $setting['title'] }}</label>
+                                <div class="col-md-8">
+                                    <select id="{{ $settingKey }}" class="form-control @error($settingKey) is-invalid @enderror" name="privacy[{{ $settingKey }}]" required form="privacy-form">
+                                        @foreach($setting['options'] as $key => $name)
+                                            <option value="{{ $key }}" @if(!empty($settings[$settingKey]) && $settings[$settingKey] === $key)selected @endif>{{ $name }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error($settingKey)
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                    <small>Decide who can {{ $setting['description'] }}</small>
+                                </div>
+                            </div>
+                        @endforeach
+                        <div class="form-group row mb-0">
+                            <div class="col-md-10 offset-md-2">
+                                <input type="submit" class="btn btn-green" value="Save" form="privacy-form">
                             </div>
                         </div>
                         <br>

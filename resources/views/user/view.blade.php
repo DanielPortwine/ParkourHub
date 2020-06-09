@@ -20,7 +20,7 @@
     </div>
     <div class="section grey-section">
         <div class="container">
-            <div class="row pt-4 py-3 border-subtle">
+            <div class="row pt-4">
                 <div class="col vertical-center">
                     <h1 class="sedgwick mb-0">{{ $user->name }}</h1>
                 </div>
@@ -35,6 +35,21 @@
                         @endif
                     </div>
                 </div>
+            </div>
+            <div class="row border-subtle pb-1 mb-2">
+                @if(!empty($user->hometown_name) && (
+                        (
+                            setting('privacy_hometown', null, $user->id) === 'anybody' || (
+                                setting('privacy_hometown', null, $user->id) === 'follower' &&
+                                !empty($user->followers->firstWhere('id', Auth()->id()))
+                            )
+                        ) ||
+                        $user->id === Auth()->id()
+                    ))
+                    <div class="col">
+                        {{ explode(',', $user->hometown_name)[0] . ', ' . explode(',', $user->hometown_name)[1] }}
+                    </div>
+                @endif
             </div>
             <div class="row text-center user-stats py-3">
                 <div class="col" title="Number Of Spots Created">
@@ -211,6 +226,7 @@
                         @endif
                     </div>
                 @elseif($tab === 'followers')
+                    @php $pageUser = $user @endphp
                     <div class="card-body bg-black">
                         @if(!empty($request['followers']))
                             {{ $followers->links() }}
@@ -227,6 +243,7 @@
                         @if(!empty($request['followers']))
                             {{ $followers->links() }}
                         @endif
+                        @php $user = $pageUser @endphp
                         @if (count($user->followers) === 0)
                             <p class="mb-0">This user has no followers.</p>
                         @elseif(count($user->followers) > 4)
@@ -240,6 +257,7 @@
                         @endif
                     </div>
                 @elseif($tab === 'following')
+                    @php $pageUser = $user @endphp
                     <div class="card-body bg-black">
                         @if(!empty($request['following']))
                             {{ $following->links() }}
@@ -256,8 +274,9 @@
                         @if(!empty($request['following']))
                             {{ $following->links() }}
                         @endif
+                        @php $user = $pageUser @endphp
                         @if (count($user->following) === 0)
-                            <p class="mb-0">This user has no followers.</p>
+                            <p class="mb-0">This user is not following anyone.</p>
                         @elseif(count($user->following) > 4)
                             <div class="col text-center mb-4">
                                 @if(empty($request['following']))

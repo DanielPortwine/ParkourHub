@@ -139,7 +139,7 @@ class SpotController extends Controller
         // notify followers that user created a spot
         $followers = Auth::user()->followers()->get();
         foreach ($followers as $follower) {
-            if (in_array(setting('new_spot', null, $follower->id), ['on-site', 'email', 'email-site'])) {
+            if (in_array(setting('notifications_new_spot', null, $follower->id), ['on-site', 'email', 'email-site'])) {
                 $follower->notify(new SpotCreated($spot));
             }
         }
