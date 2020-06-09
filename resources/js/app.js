@@ -268,7 +268,8 @@ $(document).ready(function() {
         urlParams = new URLSearchParams(window.location.search),
         vectorSource = new VectorSource(),
         startingCoords = [-175394.8171068958, 7317942.661464895],
-        startingZoom = 10;
+        startingZoom = 10,
+        hometownLayer;
 
     if (urlParams.has('search')) {
         searchAddress(urlParams.get('search'));
@@ -332,6 +333,7 @@ $(document).ready(function() {
             success: function (response) {
                 if (response != false) {
                     setBoundingBox(response, map, true);
+                    hometownLayer = map.getLayers().pop();
                 }
             }
         });
@@ -550,7 +552,7 @@ $(document).ready(function() {
     });
 
     // add a spot to hitlist
-    $('.add-to-hitlist-button').click(function(){
+    $('.add-to-hitlist-button').click(function() {
         var $button = $(this),
             spot = $button.attr('id').split('-')[2];
         $.ajax({
@@ -563,7 +565,7 @@ $(document).ready(function() {
         })
     });
     // tick a spot off hitlist
-    $('.tick-off-hitlist-button').click(function(){
+    $('.tick-off-hitlist-button').click(function() {
         var $button = $(this),
             spot = $button.attr('id').split('-')[2];
         $.ajax({
@@ -576,7 +578,7 @@ $(document).ready(function() {
     });
 
     // follow a user
-    $('.follow-user-button').click(function(){
+    $('.follow-user-button').click(function() {
         var $button = $(this),
             spot = $button.attr('id').split('-')[2];
         $.ajax({
@@ -589,7 +591,7 @@ $(document).ready(function() {
         })
     });
     // unfollow a user
-    $('.unfollow-user-button').click(function(){
+    $('.unfollow-user-button').click(function() {
         var $button = $(this),
             spot = $button.attr('id').split('-')[2];
         $.ajax({
@@ -601,4 +603,15 @@ $(document).ready(function() {
             }
         })
     });
+
+    // toggle the hometown boundary layer
+    $('#toggle-hometown-button').click(function() {
+        if ($(this).hasClass('hidden')) {
+            map.addLayer(hometownLayer);
+            $(this).removeClass('hidden');
+        } else {
+            map.getLayers().pop();
+            $(this).addClass('hidden');
+        }
+    })
 });

@@ -414,6 +414,12 @@ input[type="checkbox"]:checked + label:after {
     overflow: auto;
 }
 
+#toggle-hometown-button {
+    z-index: 100;
+    bottom: 20px;
+    left: 20px;
+}
+
 .user-stats {
     font-size: 30px;
 

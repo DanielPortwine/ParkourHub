@@ -46,6 +46,9 @@
                 </div>
             </div>
         </div>
+        @if(!empty(Auth()->user()->hometown_bounding))
+            <a class="position-absolute btn btn-green hidden" id="toggle-hometown-button"><i class="fa fa-home"></i></a>
+        @endif
         <div id="map"></div>
         <div class="popup ol-popup" id="create-spot-popup">
             <div class="card">
