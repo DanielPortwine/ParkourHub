@@ -330,7 +330,9 @@ $(document).ready(function() {
             url: '/user/fetch_hometown_bounding',
             type: 'GET',
             success: function (response) {
-                setBoundingBox(response, map, true);
+                if (response != false) {
+                    setBoundingBox(response, map, true);
+                }
             }
         });
     }

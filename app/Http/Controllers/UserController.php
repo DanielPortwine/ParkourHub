@@ -344,9 +344,9 @@ class UserController extends Controller
             return back();
         }
 
-        $bounding = explode(',', Auth::user()->hometown_bounding);
+        $bounding = explode(',', !empty($userHometown = Auth::user()->hometown_bounding) ? $userHometown : '');
 
-        return count($bounding) === 4 ? $bounding : null;
+        return count($bounding) === 4 ? $bounding : false;
     }
 
     public function follow(Request $request, $id)
