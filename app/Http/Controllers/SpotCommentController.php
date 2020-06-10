@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateSpotComment;
 use App\Http\Requests\UpdateSpotComment;
 use App\Notifications\SpotCommented;
+use App\Report;
 use App\SpotComment;
 use App\SpotCommentLike;
 use App\User;
@@ -119,5 +120,28 @@ class SpotCommentController extends Controller
         SpotCommentLike::where('spot_comment_id', $id)->where('user_id', Auth::id())->delete();
 
         echo count(SpotCommentLike::where('spot_comment_id', $id)->get());
+    }
+
+    public function report($id)
+    {
+        $report = new Report;
+        $report->reportable_id = $id;
+        $report->reportable_type = 'App\SpotComment';
+        $report->user_id = Auth::id();
+        $report->save();
+
+        return back()->with('status', 'Successfully reported Spot Comment.');
+    }
+
+    public function deleteReported($id)
+    {
+        $comment = SpotComment::where('id', $id)->first();
+        $spot = $comment->spot_id;
+        foreach ($comment->likes as $like) {
+            $like->delete();
+        }
+        $comment->forceDelete();
+
+        return redirect()->route('spot_view', $spot)->with('status', 'Successfully deleted Comment.');
     }
 }

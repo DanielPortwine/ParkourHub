@@ -59,6 +59,14 @@
                 @if($review->user_id === Auth()->id())
                     <a class="btn text-white" href="{{ route('review_edit', $review->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
                 @endif
+                @if(Auth()->id() !== 1)
+                    <a class="btn text-white" href="{{ route('review_report', $review->id) }}" title="Report"><i class="fa fa-flag"></i></a>
+                @else
+                    @if(count($review->reports) > 0)
+                        <a class="btn text-white" href="{{ route('report_discard', ['id' => $review->id, 'type' => 'App\Review']) }}" title="Discard Reports"><i class="fa fa-trash"></i></a>
+                    @endif
+                    <a class="btn text-white" href="{{ route('review_report_delete', $review->id) }}" title="Delete Content"><i class="fa fa-ban"></i></a>
+                @endif
             </div>
         </div>
         <div class="row">

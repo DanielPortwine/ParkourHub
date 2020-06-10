@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateReview;
 use App\Http\Requests\UpdateReview;
 use App\Notifications\SpotReviewed;
+use App\Report;
 use App\Review;
 use App\Spot;
 use App\User;
@@ -70,5 +71,28 @@ class ReviewController extends Controller
         $spot->save();
 
         return redirect()->route('home');
+    }
+
+    public function report($id)
+    {
+        $report = new Report;
+        $report->reportable_id = $id;
+        $report->reportable_type = 'App\Review';
+        $report->user_id = Auth::id();
+        $report->save();
+
+        return back()->with('status', 'Successfully reported Review.');
+    }
+
+    public function deleteReported($id)
+    {
+        $review = Review::where('id', $id)->first();
+        $spot = $review->spot_id;
+        foreach($review->reports as $report) {
+            $report->delete();
+        }
+        $review->forceDelete();
+
+        return redirect()->route('spot_view', $spot)->with('status', 'Successfully deleted Review.');
     }
 }

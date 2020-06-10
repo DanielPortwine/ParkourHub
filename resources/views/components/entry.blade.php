@@ -30,6 +30,14 @@
                     @if($entry->challenge->user_id === Auth()->id() && !$entry->challenge->won)
                         <a class="btn text-white" href="{{ route('challenge_win', $entry->id) }}" title="Select Winner"><i class="fa fa-trophy"></i></a>
                     @endif
+                    @if(Auth()->id() !== 1)
+                        <a class="btn text-white" href="{{ route('entry_report', $entry->id) }}" title="Report"><i class="fa fa-flag"></i></a>
+                    @else
+                        @if(count($entry->reports) > 0)
+                            <a class="btn text-white" href="{{ route('report_discard', ['id' => $entry->id, 'type' => 'App\ChallengeEntry']) }}" title="Discard Reports"><i class="fa fa-trash"></i></a>
+                        @endif
+                        <a class="btn text-white" href="{{ route('entry_report_delete', $entry->id) }}" title="Delete Content"><i class="fa fa-ban"></i></a>
+                    @endif
                     <a class="btn text-white d-md-inline-block d-none" href="{{ route('spots', ['spot' => $entry->challenge->spot_id]) }}" title="Locate Spot"><i class="fa fa-map-marker"></i></a>
                 </div>
             </div>

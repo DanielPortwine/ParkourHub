@@ -105,4 +105,9 @@ class Spot extends Model
     {
         return $this->hasMany('App\SpotView');
     }
+
+    public function reports()
+    {
+        return $this->morphMany('App\Report', 'reportable');
+    }
 }

@@ -31,6 +31,14 @@ $like = Auth()->user()->spotCommentLikes->where('spot_comment_id', $comment->id)
                 @if($comment->user_id === Auth()->id())
                     <a class="btn text-white" href="{{ route('spot_comment_edit', $comment->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
                 @endif
+                @if(Auth()->id() !== 1)
+                    <a class="btn text-white" href="{{ route('spot_comment_report', $comment->id) }}" title="Report"><i class="fa fa-flag"></i></a>
+                @else
+                    @if(count($comment->reports) > 0)
+                        <a class="btn text-white" href="{{ route('report_discard', ['id' => $comment->id, 'type' => 'App\SpotComment']) }}" title="Discard Reports"><i class="fa fa-trash"></i></a>
+                    @endif
+                    <a class="btn text-white" href="{{ route('spot_comment_report_delete', $comment->id) }}" title="Delete Content"><i class="fa fa-ban"></i></a>
+                @endif
                 <a class="btn text-white like-spot-comment @if(!empty($like))d-none @endif" id="like-spot-comment-{{ $comment->id }}" title="Like"><i class="fa fa-thumbs-o-up"></i></a>
                 <a class="btn text-white unlike-spot-comment @if(empty($like))d-none @endif" id="unlike-spot-comment-{{ $comment->id }}" title="Unlike"><i class="fa fa-thumbs-up"></i></a>
             </div>

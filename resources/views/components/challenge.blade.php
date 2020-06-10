@@ -15,6 +15,14 @@
                 @if($challenge->user_id === Auth()->id())
                     <a class="btn text-white" href="{{ route('challenge_edit', $challenge->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
                 @endif
+                @if(Auth()->id() !== 1)
+                    <a class="btn text-white" href="{{ route('challenge_report', $challenge->id) }}" title="Report"><i class="fa fa-flag"></i></a>
+                @else
+                    @if(count($challenge->reports) > 0)
+                        <a class="btn text-white" href="{{ route('report_discard', ['id' => $challenge->id, 'type' => 'App\Challenge']) }}" title="Discard Reports"><i class="fa fa-trash"></i></a>
+                    @endif
+                    <a class="btn text-white" href="{{ route('challenge_report_delete', $challenge->id) }}" title="Delete Content"><i class="fa fa-ban"></i></a>
+                @endif
                 <a class="btn text-white" href="{{ route('spots', ['spot' => $challenge->spot_id]) }}" title="Locate Spot"><i class="fa fa-map-marker"></i></a>
             </div>
         </div>

@@ -7,6 +7,7 @@ use App\Http\Requests\CreateSpot;
 use App\Http\Requests\SearchMap;
 use App\Http\Requests\UpdateSpot;
 use App\Notifications\SpotCreated;
+use App\Report;
 use App\Spot;
 use App\SpotView;
 use Carbon\Carbon;
@@ -228,5 +229,51 @@ class SpotController extends Controller
         $hit->save();
 
         return false;
+    }
+
+    public function report($id)
+    {
+        $report = new Report;
+        $report->reportable_id = $id;
+        $report->reportable_type = 'App\Spot';
+        $report->user_id = Auth::id();
+        $report->save();
+
+        return back()->with('status', 'Successfully reported Spot.');
+    }
+
+    public function deleteReported($id)
+    {
+        $spot = Spot::where('id', $id)->first();
+        foreach ($spot->challenges as $challenge) {
+            foreach ($challenge->entries as $entry) {
+                $entry->forceDelete();
+            }
+            foreach ($challenge->views as $view) {
+                $view->delete();
+            }
+            $challenge->forceDelete();
+        }
+        foreach ($spot->reviews as $review) {
+            $review->forceDelete();
+        }
+        foreach ($spot->comments as $comment) {
+            foreach ($comment->likes as $like) {
+                $like->delete();
+            }
+            $comment->forceDelete();
+        }
+        foreach ($spot->views as $view) {
+            $view->delete();
+        }
+        foreach ($spot->hits as $hit) {
+            $hit->delete();
+        }
+        foreach($spot->reports as $report) {
+            $report->delete();
+        }
+        $spot->forceDelete();
+
+        return redirect()->route('spot_listing')->with('status', 'Successfully deleted Spot and its related content.');
     }
 }

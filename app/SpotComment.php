@@ -16,6 +16,19 @@ class SpotComment extends Model
         'video',
     ];
 
+    public function scopeDateBetween($query, $dates = [])
+    {
+        if (!empty($dates['from']) && !empty($dates['to'])) {
+            $query->whereBetween('created_at', [$dates['from'], $dates['to']]);
+        } else if (!empty($dates['from']) && empty($dates['to'])) {
+            $query->where('created_at', '>=', $dates['from']);
+        } else if (empty($dates['from']) && !empty($dates['to'])) {
+            $query->where('created_at', '<=', $dates['to']);
+        }
+
+        return $query;
+    }
+
     public function spot()
     {
         return $this->belongsTo('App\Spot');
@@ -29,5 +42,10 @@ class SpotComment extends Model
     public function likes()
     {
         return $this->hasMany('App\SpotCommentLike');
+    }
+
+    public function reports()
+    {
+        return $this->morphMany('App\Report', 'reportable');
     }
 }

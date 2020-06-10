@@ -83,4 +83,9 @@ class Challenge extends Model
     {
         return $this->hasMany('App\ChallengeView');
     }
+
+    public function reports()
+    {
+        return $this->morphMany('App\Report', 'reportable');
+    }
 }

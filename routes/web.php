@@ -63,6 +63,8 @@ Route::prefix('spots')->middleware('verified')->group(function() {
     Route::get('/search', 'SpotController@search')->name('spot_search');
     Route::get('/add_to_hitlist/{id}', 'SpotController@addToHitlist')->name('add_to_hitlist');
     Route::get('/tick_off_hitlist/{id}', 'SpotController@tickOffHitlist')->name('tick_off_hitlist');
+    Route::get('/report/{id}', 'SpotController@report')->name('spot_report');
+    Route::get('/delete_reported/{id}', 'SpotController@deleteReported')->name('spot_report_delete');
 });
 
 Route::prefix('/reviews')->middleware('verified')->group(function() {
@@ -70,6 +72,8 @@ Route::prefix('/reviews')->middleware('verified')->group(function() {
     Route::get('/edit/{id}', 'ReviewController@edit')->name('review_edit');
     Route::post('/edit/{id}', 'ReviewController@update')->name('review_update');
     Route::get('/delete/{id}', 'ReviewController@delete')->name('review_delete');
+    Route::get('/report/{id}', 'ReviewController@report')->name('review_report');
+    Route::get('/delete_reported/{id}', 'ReviewController@deleteReported')->name('review_report_delete');
 });
 
 Route::prefix('/spot_comments')->middleware('verified')->group(function() {
@@ -79,6 +83,8 @@ Route::prefix('/spot_comments')->middleware('verified')->group(function() {
     Route::get('/delete/{id}', 'SpotCommentController@delete')->name('spot_comment_delete');
     Route::get('/like/{id}', 'SpotCommentController@like')->name('spot_comment_like');
     Route::get('/unlike/{id}', 'SpotCommentController@unlike')->name('spot_comment_unlike');
+    Route::get('/report/{id}', 'SpotCommentController@report')->name('spot_comment_report');
+    Route::get('/delete_reported/{id}', 'SpotCommentController@deleteReported')->name('spot_comment_report_delete');
 });
 
 Route::prefix('challenges')->middleware('verified')->group(function() {
@@ -90,11 +96,20 @@ Route::prefix('challenges')->middleware('verified')->group(function() {
     Route::get('/delete/{id}', 'ChallengeController@delete')->name('challenge_delete');
     Route::post('/enter/{id}', 'ChallengeController@enter')->name('challenge_enter');
     Route::get('/win/{id}', 'ChallengeController@win')->name('challenge_win');
+    Route::get('/report/{id}', 'ChallengeController@report')->name('challenge_report');
+    Route::get('/delete_reported/{id}', 'ChallengeController@deleteReported')->name('challenge_report_delete');
+    Route::get('/entries/report/{id}', 'ChallengeController@reportEntry')->name('entry_report');
+    Route::get('/entries/delete_reported/{id}', 'ChallengeController@deleteReportedEntry')->name('entry_report_delete');
 });
 
 Route::prefix('hometown')->middleware('verified')->group(function() {
     Route::get('/spots', 'HometownController@spots')->name('hometown_spots');
     Route::get('/challenges', 'HometownController@challenges')->name('hometown_challenges');
+});
+
+Route::prefix('admin')->middleware('verified')->group(function() {
+    Route::get('/reports/{type?}', 'ReportController@index')->name('report_listing');
+    Route::get('/reports/discard/{id}/{type}', 'ReportController@discard')->name('report_discard');
 });
 
 Route::prefix('ajax')->group(function() {

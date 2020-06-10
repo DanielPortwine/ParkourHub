@@ -12,6 +12,7 @@ use App\Notifications\ChallengeCreated;
 use App\Notifications\ChallengeEntered;
 use App\Notifications\ChallengeWon;
 use App\Notifications\SpotChallenged;
+use App\Report;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -213,5 +214,55 @@ class ChallengeController extends Controller
         }
 
         return redirect()->back()->with('status', 'This challenge has already been won');
+    }
+
+    public function report($id)
+    {
+        $report = new Report;
+        $report->reportable_id = $id;
+        $report->reportable_type = 'App\Challenge';
+        $report->user_id = Auth::id();
+        $report->save();
+
+        return back()->with('status', 'Successfully reported Challenge.');
+    }
+
+    public function reportEntry($id)
+    {
+        $report = new Report;
+        $report->reportable_id = $id;
+        $report->reportable_type = 'App\ChallengeEntry';
+        $report->user_id = Auth::id();
+        $report->save();
+
+        return back()->with('status', 'Successfully reported Challenge Entry.');
+    }
+
+    public function deleteReported($id)
+    {
+        $challenge = Challenge::where('id', $id)->first();
+        foreach ($challenge->entries as $entry) {
+            $entry->forceDelete();
+        }
+        foreach ($challenge->views as $view) {
+            $view->delete();
+        }
+        foreach($challenge->reports as $report) {
+            $report->delete();
+        }
+        $challenge->forceDelete();
+
+        return redirect()->route('challenge_listing')->with('status', 'Successfully deleted Challenge and its Entries.');
+    }
+
+    public function deleteReportedEntry($id)
+    {
+        $entry = ChallengeEntry::where('id', $id)->first();
+        foreach ($entry->reports as $report) {
+            $report->delete();
+        }
+        $entry->forceDelete();
+
+        return redirect()->route('challenge_listing')->with('status', 'Successfully deleted Entry.');
     }
 }
