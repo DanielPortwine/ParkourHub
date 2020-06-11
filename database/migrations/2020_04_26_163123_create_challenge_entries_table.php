@@ -25,8 +25,8 @@ class CreateChallengeEntriesTable extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign('challenge_id')->references('id')->on('challenges');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('challenge_id')->references('id')->on('challenges')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

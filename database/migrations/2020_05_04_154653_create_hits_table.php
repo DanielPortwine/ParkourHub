@@ -20,8 +20,8 @@ class CreateHitsTable extends Migration
             $table->timestamp('completed_at')->nullable();
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('spot_id')->references('id')->on('spots');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('spot_id')->references('id')->on('spots')->onDelete('cascade');
         });
     }
 

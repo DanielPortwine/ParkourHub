@@ -21,8 +21,8 @@ class CreateUserFollowersTable extends Migration
             $table->boolean('rejected')->default(false);
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('follower_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('follower_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

@@ -18,8 +18,8 @@ class CreateSpotCommentLikesTable extends Migration
             $table->unsignedBigInteger('spot_comment_id');
             $table->unsignedBigInteger('user_id');
 
-            $table->foreign('spot_comment_id')->references('id')->on('spot_comments');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('spot_comment_id')->references('id')->on('spot_comments')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

@@ -137,9 +137,6 @@ class SpotCommentController extends Controller
     {
         $comment = SpotComment::where('id', $id)->first();
         $spot = $comment->spot_id;
-        foreach ($comment->likes as $like) {
-            $like->delete();
-        }
         $comment->forceDelete();
 
         return redirect()->route('spot_view', $spot)->with('status', 'Successfully deleted Comment.');

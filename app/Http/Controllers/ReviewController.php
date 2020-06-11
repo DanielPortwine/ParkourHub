@@ -88,9 +88,6 @@ class ReviewController extends Controller
     {
         $review = Review::where('id', $id)->first();
         $spot = $review->spot_id;
-        foreach($review->reports as $report) {
-            $report->delete();
-        }
         $review->forceDelete();
 
         return redirect()->route('spot_view', $spot)->with('status', 'Successfully deleted Review.');

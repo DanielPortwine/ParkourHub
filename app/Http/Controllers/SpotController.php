@@ -244,35 +244,7 @@ class SpotController extends Controller
 
     public function deleteReported($id)
     {
-        $spot = Spot::where('id', $id)->first();
-        foreach ($spot->challenges as $challenge) {
-            foreach ($challenge->entries as $entry) {
-                $entry->forceDelete();
-            }
-            foreach ($challenge->views as $view) {
-                $view->delete();
-            }
-            $challenge->forceDelete();
-        }
-        foreach ($spot->reviews as $review) {
-            $review->forceDelete();
-        }
-        foreach ($spot->comments as $comment) {
-            foreach ($comment->likes as $like) {
-                $like->delete();
-            }
-            $comment->forceDelete();
-        }
-        foreach ($spot->views as $view) {
-            $view->delete();
-        }
-        foreach ($spot->hits as $hit) {
-            $hit->delete();
-        }
-        foreach($spot->reports as $report) {
-            $report->delete();
-        }
-        $spot->forceDelete();
+        Spot::where('id', $id)->first()->forceDelete();
 
         return redirect()->route('spot_listing')->with('status', 'Successfully deleted Spot and its related content.');
     }

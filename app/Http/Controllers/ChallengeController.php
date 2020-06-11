@@ -240,28 +240,14 @@ class ChallengeController extends Controller
 
     public function deleteReported($id)
     {
-        $challenge = Challenge::where('id', $id)->first();
-        foreach ($challenge->entries as $entry) {
-            $entry->forceDelete();
-        }
-        foreach ($challenge->views as $view) {
-            $view->delete();
-        }
-        foreach($challenge->reports as $report) {
-            $report->delete();
-        }
-        $challenge->forceDelete();
+        Challenge::where('id', $id)->first()->forceDelete();
 
         return redirect()->route('challenge_listing')->with('status', 'Successfully deleted Challenge and its Entries.');
     }
 
     public function deleteReportedEntry($id)
     {
-        $entry = ChallengeEntry::where('id', $id)->first();
-        foreach ($entry->reports as $report) {
-            $report->delete();
-        }
-        $entry->forceDelete();
+        ChallengeEntry::where('id', $id)->first()->forceDelete();
 
         return redirect()->route('challenge_listing')->with('status', 'Successfully deleted Entry.');
     }

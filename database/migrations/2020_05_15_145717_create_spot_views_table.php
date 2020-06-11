@@ -17,9 +17,10 @@ class CreateSpotViewsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('spot_id');
             $table->unsignedBigInteger('user_id');
+            $table->timestamps();
 
-            $table->foreign('spot_id')->references('id')->on('spots');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('spot_id')->references('id')->on('spots')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
