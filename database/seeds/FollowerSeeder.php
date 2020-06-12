@@ -13,8 +13,12 @@ class FollowerSeeder extends Seeder
     public function run()
     {
         foreach (User::pluck('id') as $follower) {
-            foreach (User::inRandomOrder()->limit(50)->pluck('id') as $user) {
-                factory(App\Follower::class)->create(['user_id' => $user, 'follower_id' => $follower]);
+            foreach (User::where('id', '!=', $follower)->inRandomOrder()->limit(50)->get() as $user) {
+                factory(App\Follower::class)->create(['user_id' => $user->id, 'follower_id' => $follower]);
+
+                $followers = $user->followers()->count();
+                $user->followers_quantified = quantify_number($followers);
+                $user->save();
             }
         }
     }
