@@ -15,6 +15,7 @@
         "laravel/framework": "^7.0",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^2.0",
+        "proj4php/proj4php": "^2.0",
         "ricardoboss/laravel-user-settings": "^2.2"
     },
     "require-dev": {

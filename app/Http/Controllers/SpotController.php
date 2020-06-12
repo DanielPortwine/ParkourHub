@@ -169,7 +169,7 @@ class SpotController extends Controller
         $spot->private = $request['private'] ?: false;
         if (!empty($request['image'])) {
             Storage::disk('public')->delete($spot->image);
-            $spot->image = $request->file('image')->store('images/spots', 'public');
+            $spot->image = Storage::url($request->file('image')->store('images/spots', 'public'));
         }
         $spot->save();
 
