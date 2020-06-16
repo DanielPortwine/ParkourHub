@@ -13,7 +13,7 @@ $factory->define(Challenge::class, function (Faker $faker) {
         'user_id' => User::inRandomOrder()->first()->id,
         'name' => $faker->word,
         'description' => $faker->realText(255),
-        'difficulty' => floor($faker->numberBetween(0, 5)),
+        'difficulty' => floor($faker->numberBetween(1, 5)),
         'youtube' => 'Oykjn35X3EY',
         'thumbnail' => '/storage/images/spots/' . $faker->image('public/storage/images/spots', 640, 480, null, false),
     ];

@@ -13,7 +13,7 @@ class SpotSeeder extends Seeder
     public function run()
     {
         foreach (User::pluck('id') as $user) {
-            factory(App\Spot::class, rand(0, 50))->create(['user_id' => $user]);
+            factory(App\Spot::class, rand(0, 25))->create(['user_id' => $user]);
         }
     }
 }

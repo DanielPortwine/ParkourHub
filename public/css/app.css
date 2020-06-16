@@ -11368,5 +11368,10 @@ input[type=checkbox]:checked + label:after {
     max-height: 40vh;
     overflow: auto;
   }
+
+  .nav-tabs .nav-link.active {
+    border: 1px solid #f0f5f0;
+    border-radius: 0.25rem;
+  }
 }
 

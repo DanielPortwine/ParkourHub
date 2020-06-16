@@ -78,6 +78,14 @@
                 <i class="fa fa-check-square-o text-white"></i>
                 {{ $userStats['completedHits'] }}
             </div>
+            <div class="col user-stats" title="Followers">
+                <i class="fa fa-group text-white"></i>
+                {{ $userStats['followers'] }}
+            </div>
+            <div class="col user-stats" title="Following">
+                <i class="fa fa-group text-white"></i>
+                {{ $userStats['following'] }}
+            </div>
             <div class="col user-stats" title="Number Of Days Since Registration">
                 <i class="fa fa-clock-o text-white"></i>
                 {{ $userStats['age'] }}
@@ -144,15 +152,21 @@
                 <h1 class="text-center subtitle sedgwick">From your Hitlist</h1>
             </div>
         </div>
-        <div class="row">
-            @foreach($hitlist as $spot)
+        @foreach($hitlist as $spot)
+            <div class="row">
                 <div class="col-xl-3 col-md-6 mb-4">
                     @include('components.spot')
                 </div>
-            @endforeach
-            @if(count($hitlist) === 0)
-                <span class="mb-4">You haven't added any spots to your Hitlist yet.</span>
-            @endif
+            </div>
+        @endforeach
+        <div class="row pb-4">
+            <div class="col text-center">
+                @if(count($hitlist) > 4)
+                    <a class="btn btn-green w-75" href="{{ route('user_hitlist') }}">View All</a>
+                @elseif(count($hitlist) === 0)
+                    You haven't added any spots to your Hitlist yet.
+                @endif
+            </div>
         </div>
     </div>
 @endsection

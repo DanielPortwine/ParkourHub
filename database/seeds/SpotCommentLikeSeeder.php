@@ -14,7 +14,7 @@ class SpotCommentLikeSeeder extends Seeder
     public function run()
     {
         foreach (User::pluck('id') as $user) {
-            foreach (SpotComment::inRandomOrder()->limit(50)->pluck('id') as $comment) {
+            foreach (SpotComment::inRandomOrder()->limit(25)->pluck('id') as $comment) {
                 factory(App\SpotCommentLike::class)->create(['spot_comment_id' => $comment, 'user_id' => $user]);
             }
         }

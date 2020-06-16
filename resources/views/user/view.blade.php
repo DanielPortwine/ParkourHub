@@ -127,7 +127,7 @@
                             {{ $spots->links() }}
                         @endif
                         @if (count($user->spots) === 0)
-                            <p class="mb-0">This user has no spots.</p>
+                            <p class="mb-0">{{ $user->id === Auth()->id() ? 'You have ' : 'This user has ' }}no spots.</p>
                         @elseif(count($user->spots) > 4)
                             <div class="col text-center mb-4">
                                 @if(empty($request['spots']))
@@ -156,7 +156,7 @@
                             {{ $reviews->links() }}
                         @endif
                         @if (count($user->reviews) === 0)
-                            <p class="mb-0">This user has no reviews.</p>
+                            <p class="mb-0">{{ $user->id === Auth()->id() ? 'You have ' : 'This user has ' }}no reviews.</p>
                         @elseif(count($user->reviews) > 4)
                             <div class="col text-center mb-4">
                                 @if(empty($request['reviews']))
@@ -185,7 +185,7 @@
                             {{ $comments->links() }}
                         @endif
                         @if (count($user->spotComments) === 0)
-                            <p class="mb-0">This user has no comments.</p>
+                            <p class="mb-0">{{ $user->id === Auth()->id() ? 'You have ' : 'This user has ' }}no comments.</p>
                         @elseif(count($user->spotComments) > 4)
                             <div class="col text-center mb-4">
                                 @if(empty($request['comments']))
@@ -214,7 +214,7 @@
                             {{ $challenges->links() }}
                         @endif
                         @if (count($user->challenges) === 0)
-                            <p class="mb-0">This user has no challenges.</p>
+                            <p class="mb-0">{{ $user->id === Auth()->id() ? 'You have ' : 'This user has ' }}no challenges.</p>
                         @elseif(count($user->challenges) > 4)
                             <div class="col text-center mb-4">
                                 @if(empty($request['challenges']))
@@ -245,7 +245,7 @@
                         @endif
                         @php $user = $pageUser @endphp
                         @if (count($user->followers) === 0)
-                            <p class="mb-0">This user has no followers.</p>
+                            <p class="mb-0">{{ $user->id === Auth()->id() ? 'You have ' : 'This user has ' }}no followers.</p>
                         @elseif(count($user->followers) > 4)
                             <div class="col text-center mb-4">
                                 @if(empty($request['followers']))
@@ -276,7 +276,7 @@
                         @endif
                         @php $user = $pageUser @endphp
                         @if (count($user->following) === 0)
-                            <p class="mb-0">This user is not following anyone.</p>
+                            <p class="mb-0">{{ $user->id === Auth()->id() ? 'You are ' : 'This user is ' }}not following anyone.</p>
                         @elseif(count($user->following) > 4)
                             <div class="col text-center mb-4">
                                 @if(empty($request['following']))
@@ -291,4 +291,8 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('footer')
+    @include('components.footer')
 @endsection

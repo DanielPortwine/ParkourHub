@@ -19,7 +19,7 @@ class CreateChallengesTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->string('name');
             $table->string('description')->nullable();
-            $table->enum('difficulty', ['0', '1', '2', '3', '4', '5']);
+            $table->enum('difficulty', ['1', '2', '3', '4', '5']);
             $table->string('video')->nullable();
             $table->string('video_type')->nullable();
             $table->string('youtube')->nullable();

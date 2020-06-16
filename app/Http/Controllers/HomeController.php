@@ -60,6 +60,8 @@ class HomeController extends Controller
             'challengesCreated' => count(Challenge::where('user_id', Auth::id())->get()),
             'uncompletedHits' => count(Hit::where('user_id', Auth::id())->whereNull('completed_at')->get()),
             'completedHits' => count(Hit::where('user_id', Auth::id())->whereNotNull('completed_at')->get()),
+            'followers' => Auth::user()->followers_quantified,
+            'following' => count(Auth::user()->following),
             'age' => Carbon::parse(User::where('id', Auth::id())->pluck('created_at')[0])->diffInDays(Carbon::now()),
         ];
         $hometownChallenges = Challenge::with(['spot'])

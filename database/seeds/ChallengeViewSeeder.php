@@ -14,7 +14,7 @@ class ChallengeViewSeeder extends Seeder
     public function run()
     {
         foreach (User::pluck('id') as $user) {
-            foreach (Challenge::inRandomOrder()->limit(50)->pluck('id') as $challenge) {
+            foreach (Challenge::inRandomOrder()->limit(25)->pluck('id') as $challenge) {
                 factory(App\ChallengeView::class)->create(['challenge_id' => $challenge, 'user_id' => $user]);
             }
         }

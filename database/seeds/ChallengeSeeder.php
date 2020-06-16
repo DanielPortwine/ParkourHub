@@ -13,7 +13,7 @@ class ChallengeSeeder extends Seeder
     public function run()
     {
         foreach (User::pluck('id') as $user) {
-            factory(App\Challenge::class, rand(0, 50))->create(['user_id' => $user]);
+            factory(App\Challenge::class, rand(0, 25))->create(['user_id' => $user]);
         }
     }
 }
