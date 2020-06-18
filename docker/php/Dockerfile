@@ -12,7 +12,10 @@ RUN apt-get update; apt-get install -y \
         default-mysql-client \
         cron \
         libonig-dev \
-        libzip-dev
+        libzip-dev \
+        jpegoptim \
+        optipng \
+        pngquant
 
 COPY --from=composer:1.9.3 /usr/bin/composer /usr/bin/composer
 
