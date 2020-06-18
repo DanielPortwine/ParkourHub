@@ -126,21 +126,13 @@
                                 <form method="POST" action="{{ route('challenge_enter', $challenge->id) }}" enctype="multipart/form-data">
                                     @csrf
                                     <div class="form-group row">
-                                        <label class="col-md-2 col-form-label text-md-right">Youtube or Video</label>
+                                        <label class="col-md-2 col-form-label text-md-right">Youtube</label>
                                         <div class="col-md-4">
                                             <input id="youtube" type="text" class="form-control @error('youtube') is-invalid @enderror" name="youtube" autocomplete="youtube" placeholder="e.g. https://youtu.be/QDIVrf2ZW0s" value="{{ old('youtube') }}">
                                             @error('youtube')
-                                            <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                            @enderror
-                                        </div>
-                                        <div class="col-md-4">
-                                            <input type="file" id="video" class="form-control-file @error('video') is-invalid @enderror" name="video">
-                                            @error('video')
-                                            <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
                                             @enderror
                                         </div>
                                     </div>

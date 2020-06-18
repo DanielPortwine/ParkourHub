@@ -29,8 +29,8 @@ class CreateChallenge extends FormRequest
             'name' => 'required|string|max:25',
             'description' => 'required|string|max:255',
             'difficulty' => 'required|integer|between:1,5',
-            'youtube' => ['required_without:video', 'nullable', 'active_url', new YoutubeLink],
-            'video' => 'required_without:youtube|mimes:mp4,mov,mpg,mpeg|max:40000',
+            'youtube' => ['required', 'active_url', new YoutubeLink],
+            /*'video' => 'required_without:youtube|mimes:mp4,mov,mpg,mpeg|max:40000',*/
             'thumbnail' => 'mimes:jpg,jpeg,png|max:300',
         ];
     }
@@ -43,9 +43,9 @@ class CreateChallenge extends FormRequest
     public function messages()
     {
         return [
-            'youtube.required_without' => 'You must provide either a Youtube link or video file',
+            /*'youtube.required_without' => 'You must provide either a Youtube link or video file',
             'video.required_without' => 'You must provide either a video file or Youtube link',
-            'video.max' => 'The video must be less than 40MB',
+            'video.max' => 'The video must be less than 40MB',*/
         ];
     }
 }

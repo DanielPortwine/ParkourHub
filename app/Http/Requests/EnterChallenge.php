@@ -25,8 +25,8 @@ class EnterChallenge extends FormRequest
     public function rules()
     {
         return [
-            'youtube' => ['required_without:video', 'nullable', 'active_url', new YoutubeLink],
-            'video' => 'required_without:youtube|mimes:mp4,mov,mpg,mpeg|max:40000',
+            'youtube' => ['required', 'active_url', new YoutubeLink],
+            /*'video' => 'required_without:youtube|mimes:mp4,mov,mpg,mpeg|max:40000',*/
         ];
     }
 
@@ -38,9 +38,9 @@ class EnterChallenge extends FormRequest
     public function messages()
     {
         return [
-            'youtube.required_without' => 'You must provide either a Youtube link or video file',
+            /*'youtube.required_without' => 'You must provide either a Youtube link or video file',
             'video.required_without' => 'You must provide either a video file or Youtube link',
-            'video.max' => 'The video must be less than 40MB',
+            'video.max' => 'The video must be less than 40MB',*/
         ];
     }
 }

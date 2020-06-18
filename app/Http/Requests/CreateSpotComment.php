@@ -28,7 +28,7 @@ class CreateSpotComment extends FormRequest
             'spot' => 'required|integer|exists:App\Spot,id',
             'comment' => 'required_without_all:youtube,video_image|nullable|string|max:255',
             'youtube' => ['required_without_all:comment,video_image', 'nullable', 'active_url', new YoutubeLink],
-            'video_image' => 'required_without_all:comment,youtube|nullable|mimes:mp4,mov,mpg,mpeg,jpg,jpeg,png|max:40000',
+            'video_image' => 'required_without_all:comment,youtube|nullable|mimes:jpg,jpeg,png|max:400',
         ];
     }
 
@@ -40,10 +40,10 @@ class CreateSpotComment extends FormRequest
     public function messages()
     {
         return [
-            'video_image.max' => 'The video or image must be less than 40MB',
             'comment.required_without_all' => 'You must enter at least one of the fields',
             'youtube.required_without_all' => 'You must enter at least one of the fields',
             'video_image.required_without_all' => 'You must enter at least one of the fields',
+            'video_image.mimes' => 'The image must be a file of type: jpg, jpeg, png.',
         ];
     }
 }
