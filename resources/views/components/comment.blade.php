@@ -6,7 +6,7 @@ $like = Auth()->user()->spotCommentLikes->where('spot_comment_id', $comment->id)
     @if(!empty($comment->image))
         <div class="content-wrapper">
             <a href="{{ $comment->image }}">
-                <img src="{{ $comment->image }}">
+                <img class="lazyload" data-src="{{ $comment->image }}">
             </a>
         </div>
     @elseif(!empty($comment->video))

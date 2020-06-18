@@ -220,6 +220,7 @@ function setRating(rating, shape) {
 }
 
 $(document).ready(function() {
+    lazyload();
     var $window = $(window);
     $window.scroll(function() {
         if ($window.scrollTop() > 100) {

@@ -14,7 +14,7 @@ $hit = Auth()->user()->hits->where('spot_id', $spot->id)->first()
     <div class="content-wrapper">
         @if(!empty($spot->image))
             <a href="{{ route('spot_view', $spot->id) }}">
-                <img src="{{ $spot->image }}">
+                <img class="lazyload" data-src="{{ $spot->image }}">
             </a>
         @endif
     </div>

@@ -13,7 +13,7 @@
         <div class="content-wrapper">
             @if(!empty($review->spot->image))
                 <a href="{{ route('spot_view', $review->spot->id) }}">
-                    <img src="{{ $review->spot->image }}">
+                    <img class="lazyload" data-src="{{ $review->spot->image }}">
                 </a>
             @endif
         </div>
