@@ -34,6 +34,7 @@ Route::prefix('user')->middleware('verified')->group(function() {
     Route::get('/view/{id}/{tab?}', 'UserController@view')->name('user_view');
     Route::get('/manage', 'UserController@manage')->name('user_manage');
     Route::post('/manage', 'UserController@update')->name('user_update');
+    Route::get('/reset_password', 'UserController@resetPassword')->name('user_reset_password');
     Route::get('/obfuscate/{field}', 'UserController@obfuscate')->name('obfuscate');
     Route::get('/delete', 'UserController@delete')->name('user_delete');
     Route::get('/spots', 'UserController@spots')->name('user_spots');

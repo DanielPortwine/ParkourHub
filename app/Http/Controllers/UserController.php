@@ -487,4 +487,15 @@ class UserController extends Controller
 
         return back()->with('status', 'Rejected follow request');
     }
+
+    public function resetPassword()
+    {
+        $user = Auth::user();
+        $resetToken = app('auth.password.broker')->createToken($user);
+        if (!empty($resetToken)) {
+            return view('auth.passwords.reset')->with(['token' => $resetToken, 'email' => $user->email]);
+        }
+
+        return back();
+    }
 }
