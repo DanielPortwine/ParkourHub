@@ -11033,6 +11033,10 @@ body {
   border-top: 3px solid #73c979;
 }
 
+.premium-section {
+  border-top: 3px solid #ffd700;
+}
+
 .grey-section {
   background-color: #2b2b2b;
 }
@@ -11060,6 +11064,12 @@ body {
   border-radius: 5px;
 }
 
+.subtitle-line-premium {
+  width: 100px;
+  border: 3px solid #ffd700;
+  border-radius: 5px;
+}
+
 .border-subtle {
   border-bottom: 1px solid #363636;
 }
@@ -11083,9 +11093,31 @@ body {
   text-decoration: none;
 }
 
+.premium-button {
+  background-color: #ffd700;
+  color: #000000;
+  font-size: 20px;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 50px;
+}
+
+.premium-button:hover {
+  background-color: #eab500;
+  color: #000000;
+  text-decoration: none;
+}
+
 .feature-icon {
   font-size: 40px !important;
   color: #73c979;
+  margin-bottom: 0.5rem;
+}
+
+.feature-icon-premium {
+  font-size: 40px !important;
+  color: #ffd700;
+  margin-bottom: 0.5rem;
 }
 
 .subtitle,
@@ -11112,6 +11144,10 @@ body {
   color: #f0f5f0;
 }
 
+.text-premium {
+  color: #ffd700;
+}
+
 .text-shadow {
   text-shadow: 0 0 10px #000000;
 }
@@ -11120,7 +11156,7 @@ body {
   background-color: #2b2b2b;
 }
 
-.bg-grey .dropdown-item:hover {
+.bg-grey .dropdown-item:not(.btn-premium):hover {
   background-color: #73c979;
 }
 
@@ -11132,6 +11168,18 @@ body {
   background-color: #000000;
 }
 
+.bg-premium,
+.bg-premium:focus,
+.bg-premium:active {
+  background-color: #ffd700;
+  color: #000000;
+}
+
+a.bg-premium:hover {
+  background-color: #eab500;
+  color: #f0f5f0;
+}
+
 .btn-green {
   background-color: #73c979;
   color: #f0f5f0;
@@ -11140,6 +11188,18 @@ body {
 .btn-green:hover {
   background-color: #529e58;
   color: #f0f5f0;
+}
+
+.btn-premium,
+a.btn-premium {
+  background-color: #ffd700;
+  color: #000000;
+}
+
+.btn-premium:hover,
+a.btn-premium:hover {
+  background-color: #eab500;
+  color: #000000;
 }
 
 .card {
@@ -11356,6 +11416,30 @@ input[type=checkbox]:checked + label:after {
 
 .user-stats {
   font-size: 30px;
+}
+
+.StripeElement {
+  box-sizing: border-box;
+  height: 40px;
+  max-width: 380px;
+  padding: 10px 12px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background-color: white;
+  box-shadow: 0 1px 3px 0 #e6ebf1;
+  transition: box-shadow 150ms ease;
+}
+
+.StripeElement--focus {
+  box-shadow: 0 1px 3px 0 #cfd7df;
+}
+
+.StripeElement--invalid {
+  border-color: #fa755a;
+}
+
+.StripeElement--webkit-autofill {
+  background-color: #fefde5 !important;
 }
 
 @media (max-width: 991.98px) {

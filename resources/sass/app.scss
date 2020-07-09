@@ -104,6 +104,10 @@ html, body {
     border-top: 3px solid $green;
 }
 
+.premium-section {
+    border-top: 3px solid $premium;
+}
+
 .grey-section {
     background-color: $grey;
 }
@@ -131,6 +135,12 @@ html, body {
     border-radius: 5px;
 }
 
+.subtitle-line-premium {
+    width: 100px;
+    border: 3px solid $premium;
+    border-radius: 5px;
+}
+
 .border-subtle {
     border-bottom: 1px solid $grey3;
 }
@@ -154,9 +164,31 @@ html, body {
     text-decoration: none;
 }
 
+.premium-button {
+    background-color: $premium;
+    color: $black;
+    font-size: 20px;
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 50px;
+}
+
+.premium-button:hover {
+    background-color: $premium1;
+    color: $black;
+    text-decoration: none;
+}
+
 .feature-icon {
     font-size: 40px !important;
     color: $green;
+    margin-bottom: 0.5rem;
+}
+
+.feature-icon-premium {
+    font-size: 40px !important;
+    color: $premium;
+    margin-bottom: 0.5rem;
 }
 
 .subtitle,
@@ -183,6 +215,10 @@ html, body {
     color: $white;
 }
 
+.text-premium {
+    color: $premium;
+}
+
 .text-shadow {
     text-shadow: 0 0 10px $black;
 }
@@ -191,7 +227,7 @@ html, body {
     background-color: $grey;
 }
 
-.bg-grey .dropdown-item:hover {
+.bg-grey .dropdown-item:not(.btn-premium):hover {
     background-color: $green;
 }
 
@@ -203,6 +239,18 @@ html, body {
     background-color: $black;
 }
 
+.bg-premium,
+.bg-premium:focus,
+.bg-premium:active {
+    background-color: $premium;
+    color: $black;
+}
+
+a.bg-premium:hover {
+    background-color: $premium1;
+    color: $white;
+}
+
 .btn-green {
     background-color: $green;
     color: $white;
@@ -211,6 +259,18 @@ html, body {
 .btn-green:hover {
     background-color: $green1;
     color: $white;
+}
+
+.btn-premium,
+a.btn-premium {
+    background-color: $premium;
+    color: $black;
+}
+
+.btn-premium:hover,
+a.btn-premium:hover {
+    background-color: $premium1;
+    color: $black;
 }
 
 .card {
@@ -422,7 +482,31 @@ input[type="checkbox"]:checked + label:after {
 
 .user-stats {
     font-size: 30px;
+}
 
+.StripeElement {
+    box-sizing: border-box;
+    height: 40px;
+    max-width: 380px;
+    padding: 10px 12px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    background-color: white;
+    box-shadow: 0 1px 3px 0 #e6ebf1;
+    -webkit-transition: box-shadow 150ms ease;
+    transition: box-shadow 150ms ease;
+}
+
+.StripeElement--focus {
+    box-shadow: 0 1px 3px 0 #cfd7df;
+}
+
+.StripeElement--invalid {
+    border-color: #fa755a;
+}
+
+.StripeElement--webkit-autofill {
+    background-color: #fefde5 !important;
 }
 
 @include media-breakpoint-down(md) {

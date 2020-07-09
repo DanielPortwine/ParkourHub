@@ -8,6 +8,7 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/lazyload@2.0.0-rc.2/lazyload.js"></script>
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
@@ -89,6 +90,11 @@
             </div>
             <div class="row my-md-4">
                 <div class="col-md-4">
+                    <i class="fa fa-map feature-icon"></i>
+                    <h3 class="sedgwick">Spots Map</h3>
+                    <p class="large-text">See spots that other users have created on a global map.</p>
+                </div>
+                <div class="col-md-4">
                     <i class="fa fa-bullseye feature-icon"></i>
                     <h3 class="sedgwick">Challenges</h3>
                     <p class="large-text">Set challenges at your own or others' spots and see if anyone can complete them.</p>
@@ -98,28 +104,65 @@
                     <h3 class="sedgwick">Hitlist</h3>
                     <p class="large-text">Add spots to your Hitlist and tick them off once you complete them.</p>
                 </div>
-                <div class="col-md-4">
-                    <i class="fa fa-calendar feature-icon"></i>
-                    <h3 class="sedgwick">Events</h3>
-                    <p class="large-text">Create an event at a spot to gather other traceurs for a jam or competition.</p>
-                </div>
             </div>
             <div class="row">
                 <div class="col-md-4">
+                    <i class="fa fa-comment feature-icon"></i>
+                    <h3 class="sedgwick">Comments</h3>
+                    <p class="large-text">Comment on a spot with text, image or video to share your experiences at the spot.</p>
+                </div>
+                <div class="col-md-4">
+                    <i class="fa fa-star feature-icon"></i>
+                    <h3 class="sedgwick">Reviews</h3>
+                    <p class="large-text">Review a spot to let others know what you think of it.</p>
+                </div>
+                <div class="col-md-4">
                     <i class="fa fa-youtube-play feature-icon"></i>
-                    <h3 class="sedgwick">Third Party Integrations</h3>
-                    <p class="large-text">Enhance your spots with clips or images from third party platforms such as Instagram or YouTube to showcase the spot or demonstrate a challenge.</p>
+                    <h3 class="sedgwick">YouTube Embed</h3>
+                    <p class="large-text">Link YouTube videos to showcase spots or demonstrate challenges.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="pb-md-3 pb-sm-2 section grey-section">
+        <div class="container">
+            <div class="row my-3">
+                <div class="col">
+                    <h1 class="text-center text-white sedgwick"><i class="fa fa-diamond text-premium"></i> Premium Features <i class="fa fa-diamond text-premium"></i></h1>
+                </div>
+            </div>
+            <div class="row my-md-4">
+                <div class="col-md-4">
+                    <i class="fa fa-calendar feature-icon"></i>
+                    <h3 class="sedgwick">Training Planner</h3>
+                    <p class="large-text">Generate custom training plans based on areas you want to improve on and track your progress.</p>
                 </div>
                 <div class="col-md-4">
-                    <i class="fa fa-edit feature-icon"></i>
-                    <h3 class="sedgwick">Custom Athlete Pages</h3>
-                    <p class="large-text">Create your own landing page with a custom URL to show off your favourite spots, challenges and upcoming events you'll be attending.</p>
+                    <i class="fa fa-file-video-o feature-icon"></i>
+                    <h3 class="sedgwick">Video Upload</h3>
+                    <p class="large-text">Upload videos directly from your device to showcase spots or demonstrate challenges.</p>
                 </div>
                 <div class="col-md-4">
-                    <i class="fa fa-group feature-icon"></i>
-                    <h3 class="sedgwick">Groups</h3>
-                    <p class="large-text">Athletes can join or create groups where each member can create spots, challenges, events etc. on behalf of the group.</p>
+                    <i class="fa fa-user-o feature-icon"></i>
+                    <h3 class="sedgwick">Avatar</h3>
+                    <p class="large-text">Customise an avatar to express your personality and help others identify you.</p>
                 </div>
+            </div>
+        </div>
+    </div>
+    <div class="pb-4 section green-section">
+        <div class="container">
+            <div class="row my-3">
+                <div class="col">
+                    <h1 class="text-center sedgwick">Sign Up For Premium Now</h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col"></div>
+                <div class="col-auto">
+                    <a href="{{ route('premium') }}" class="premium-button">Premium</a>
+                </div>
+                <div class="col"></div>
             </div>
         </div>
     </div>

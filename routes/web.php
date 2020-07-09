@@ -52,6 +52,15 @@ Route::prefix('user')->middleware('verified')->group(function() {
     Route::get('/reject_follower/{id}', 'UserController@rejectFollower')->name('user_reject_follower');
 });
 
+Route::get('/premium', 'PremiumController@index')->name('premium');
+Route::prefix('premium')->middleware('verified')->group(function() {
+    Route::post('/register', 'PremiumController@register')->name('premium_register');
+    Route::post('/update', 'PremiumController@update')->name('premium_update');
+    Route::get('/cancel', 'PremiumController@cancel')->name('premium_cancel');
+    Route::get('/resume', 'PremiumController@resume')->name('premium_resume');
+    Route::get('/restart', 'PremiumController@restart')->name('premium_restart');
+});
+
 Route::get('/spots', 'SpotController@index')->name('spots');
 Route::get('/spots/fetch', 'SpotController@fetch')->name('spot_fetch');
 Route::prefix('spots')->middleware('verified')->group(function() {

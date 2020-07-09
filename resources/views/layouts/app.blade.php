@@ -103,6 +103,7 @@
                                     <i class="fa fa-user nav-icon"></i>{{ Auth::user()->name }} <span class="caret"></span>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right bg-grey" id="user-menu" aria-labelledby="user-dropdown">
+                                    <a class="dropdown-item btn-premium" href="{{ route('premium') }}"><i class="fa fa-diamond nav-icon"></i>Premium</a>
                                     <a class="dropdown-item text-white" href="{{ route('home') }}"><i class="fa fa-home nav-icon"></i>Home</a>
                                     <a class="dropdown-item text-white" href="{{ route('user_view', Auth()->id()) }}"><i class="fa fa-user nav-icon"></i>Profile</a>
                                     <a class="dropdown-item text-white" href="{{ route('user_manage') }}"><i class="fa fa-cog nav-icon"></i>Settings</a>
