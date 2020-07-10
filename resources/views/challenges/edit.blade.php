@@ -87,7 +87,7 @@
                                 <label class="col-md-2 col-form-label text-md-right">...or video</label>
                                 <div class="col-md-8">
                                     @if(!empty($challenge->video))
-                                        <div class="row">
+                                        <div class="form-group row">
                                             <div class="col">
                                                 <div class="content-wrapper">
                                                     <video controls>

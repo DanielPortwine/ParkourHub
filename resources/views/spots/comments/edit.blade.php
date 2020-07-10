@@ -32,10 +32,10 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label class="col-md-2 col-form-label text-md-right">Youtube or Video/Image</label>
-                                <div class="col-md-4">
+                                <label class="col-md-2 col-form-label text-md-right">Youtube, Video or Image</label>
+                                <div class="col-md-8">
                                     @if(!empty($comment->youtube))
-                                        <div class="row">
+                                        <div class="form-group row">
                                             <div class="col">
                                                 <div class="content-wrapper">
                                                     <div class="youtube" data-id="{{ $comment->youtube }}" data-start="{{ $comment->youtube_start }}">
@@ -44,17 +44,8 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    @endif
-                                    <input type="text" id="youtube" class="form-control @error('youtube') is-invalid @enderror" name="youtube" autocomplete="youtube" placeholder="e.g. https://youtu.be/QDIVrf2ZW0s" value="{{ old('youtube') }}">
-                                    @error('youtube')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                    @enderror
-                                </div>
-                                <div class="col-md-4">
-                                    @if(!empty($comment->video))
-                                        <div class="row">
+                                    @elseif(!empty($comment->video))
+                                        <div class="form-group row">
                                             <div class="col">
                                                 <div class="content-wrapper">
                                                     <video controls>
@@ -63,13 +54,33 @@
                                                 </div>
                                             </div>
                                         </div>
+                                    @elseif(!empty($comment->image))
+                                        <div class="form-group row">
+                                            <div class="col">
+                                                <div class="content-wrapper">
+                                                    <img src="{{ $comment->image }}">
+                                                </div>
+                                            </div>
+                                        </div>
                                     @endif
-                                    <input type="file" id="video_image" class="form-control-file @error('video_image') is-invalid @enderror" name="video_image">
-                                    @error('video_image')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                    @enderror
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <input type="text" id="youtube" class="form-control @error('youtube') is-invalid @enderror" name="youtube" autocomplete="youtube" placeholder="e.g. https://youtu.be/QDIVrf2ZW0s" value="{{ old('youtube') }}">
+                                            @error('youtube')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="file" id="video_image" class="form-control-file @error('video_image') is-invalid @enderror" name="video_image">
+                                            @error('video_image')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-group row">

@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\VideoImage;
 use App\Rules\YoutubeLink;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class CreateSpotComment extends FormRequest
 {
@@ -24,12 +26,21 @@ class CreateSpotComment extends FormRequest
      */
     public function rules()
     {
-        return [
+        if (Auth::user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium')) {
+            $videoImage = [
+                'video_image' => ['required_without_all:comment,youtube', 'nullable', 'mimes:jpg,jpeg,png,mp4,mov,mpg,mpeg', new VideoImage],
+            ];
+        } else {
+            $videoImage = [
+                'video_image' => 'required_without_all:comment,youtube|nullable|mimes:jpg,jpeg,png|max:500',
+            ];
+        }
+
+        return array_merge([
             'spot' => 'required|integer|exists:App\Spot,id',
             'comment' => 'required_without_all:youtube,video_image|nullable|string|max:255',
             'youtube' => ['required_without_all:comment,video_image', 'nullable', 'active_url', new YoutubeLink],
-            'video_image' => 'required_without_all:comment,youtube|nullable|mimes:jpg,jpeg,png|max:400',
-        ];
+        ], $videoImage);
     }
 
     /**
@@ -43,7 +54,7 @@ class CreateSpotComment extends FormRequest
             'comment.required_without_all' => 'You must enter at least one of the fields',
             'youtube.required_without_all' => 'You must enter at least one of the fields',
             'video_image.required_without_all' => 'You must enter at least one of the fields',
-            'video_image.mimes' => 'The image must be a file of type: jpg, jpeg, png.',
+            'video_image.mimes' => 'The file must be a file of type: jpg, jpeg, png, mp4, mov, mpg, mpeg.',
         ];
     }
 }

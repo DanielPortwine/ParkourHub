@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Rules\Checkbox;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class CreateSpot extends FormRequest
 {
@@ -24,13 +25,30 @@ class CreateSpot extends FormRequest
      */
     public function rules()
     {
+        $imageMax = Auth::user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium') ? '5000' : '500';
         return [
             'coordinates' => 'required|string',
             'lat_lon' => 'required|string',
             'name' => 'required|string|max:25',
             'description' => 'required|string|max:255',
-            'image' => 'mimes:jpg,jpeg,png|max:500',
+            'image' => 'mimes:jpg,jpeg,png|max:' . $imageMax,
             'private' => new Checkbox,
         ];
+    }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        $messages = [];
+        if (Auth::user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium')) {
+            $messages = [
+                'image.max' => 'The image must be less than 5MB',
+            ];
+        }
+        return $messages;
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Rules\YoutubeLink;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class EnterChallenge extends FormRequest
 {
@@ -24,10 +25,18 @@ class EnterChallenge extends FormRequest
      */
     public function rules()
     {
-        return [
-            'youtube' => ['required', 'active_url', new YoutubeLink],
-            /*'video' => 'required_without:youtube|mimes:mp4,mov,mpg,mpeg|max:40000',*/
-        ];
+        if (Auth::user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium')) {
+            $rules = [
+                'youtube' => ['required_without:video', 'nullable', 'active_url', new YoutubeLink],
+                'video' => 'required_without:youtube|mimes:mp4,mov,mpg,mpeg|max:500000',
+            ];
+        } else {
+            $rules = [
+                'youtube' => ['required', 'active_url', new YoutubeLink],
+            ];
+        }
+
+        return $rules;
     }
 
     /**
@@ -37,10 +46,14 @@ class EnterChallenge extends FormRequest
      */
     public function messages()
     {
-        return [
-            /*'youtube.required_without' => 'You must provide either a Youtube link or video file',
-            'video.required_without' => 'You must provide either a video file or Youtube link',
-            'video.max' => 'The video must be less than 40MB',*/
-        ];
+        if (Auth::user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium')) {
+            return [
+                'youtube.required_without' => 'You must provide either a Youtube link or video file',
+                'video.required_without' => 'You must provide either a video file or Youtube link',
+                'video.max' => 'The video must be less than 500MB',
+            ];
+        }
+
+        return [];
     }
 }

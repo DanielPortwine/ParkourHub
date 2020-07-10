@@ -240,25 +240,47 @@
                                                     @enderror
                                                 </div>
                                             </div>
-                                            <div class="form-group row">
-                                                <label class="col-md-2 col-form-label text-md-right">Youtube or Image</label>
-                                                <div class="col-md-4">
-                                                    <input type="text" id="youtube" class="form-control @error('youtube') is-invalid @enderror" name="youtube" autocomplete="youtube" placeholder="e.g. https://youtu.be/QDIVrf2ZW0s" value="{{ old('youtube') }}">
-                                                    @error('youtube')
-                                                    <span class="invalid-feedback" role="alert">
+                                            @if(Auth()->user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium'))
+                                                <div class="form-group row">
+                                                    <label class="col-md-2 col-form-label text-md-right">Youtube, Video or Image</label>
+                                                    <div class="col-md-4">
+                                                        <input type="text" id="youtube" class="form-control @error('youtube') is-invalid @enderror" name="youtube" autocomplete="youtube" placeholder="e.g. https://youtu.be/QDIVrf2ZW0s" value="{{ old('youtube') }}">
+                                                        @error('youtube')
+                                                        <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
                                                     </span>
-                                                    @enderror
+                                                        @enderror
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <input type="file" id="video_image" class="form-control-file @error('video_image') is-invalid @enderror" name="video_image">
+                                                        @error('video_image')
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                        @enderror
+                                                    </div>
                                                 </div>
-                                                <div class="col-md-4">
-                                                    <input type="file" id="video_image" class="form-control-file @error('video_image') is-invalid @enderror" name="video_image">
-                                                    @error('video_image')
-                                                    <span class="invalid-feedback" role="alert">
-                                                        <strong>{{ $message }}</strong>
-                                                    </span>
-                                                    @enderror
+                                            @else
+                                                <div class="form-group row">
+                                                    <label class="col-md-2 col-form-label text-md-right">Youtube or Image</label>
+                                                    <div class="col-md-4">
+                                                        <input type="text" id="youtube" class="form-control @error('youtube') is-invalid @enderror" name="youtube" autocomplete="youtube" placeholder="e.g. https://youtu.be/QDIVrf2ZW0s" value="{{ old('youtube') }}">
+                                                        @error('youtube')
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                        @enderror
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <input type="file" id="video_image" class="form-control-file @error('video_image') is-invalid @enderror" name="video_image">
+                                                        @error('video_image')
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                        @enderror
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            @endif
                                             <div class="form-group row">
                                                 <div class="col-md-8 offset-md-2">
                                                     <button type="submit" class="btn btn-green">Submit</button>
@@ -357,17 +379,39 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="form-group row">
-                                                <label class="col-md-2 col-form-label text-md-right">Youtube</label>
-                                                <div class="col-md-4">
-                                                    <input type="text" id="youtube" class="form-control @error('youtube') is-invalid @enderror" name="youtube" autocomplete="youtube" placeholder="e.g. https://youtu.be/QDIVrf2ZW0s" value="{{ old('youtube') }}">
-                                                    @error('youtube')
-                                                    <span class="invalid-feedback" role="alert">
+                                            @if(Auth()->user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium'))
+                                                <div class="form-group row">
+                                                    <label class="col-md-2 col-form-label text-md-right">Youtube or Video</label>
+                                                    <div class="col-md-4">
+                                                        <input type="text" id="youtube" class="form-control @error('youtube') is-invalid @enderror" name="youtube" autocomplete="youtube" placeholder="e.g. https://youtu.be/QDIVrf2ZW0s" value="{{ old('youtube') }}">
+                                                        @error('youtube')
+                                                        <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
                                                     </span>
-                                                    @enderror
+                                                        @enderror
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <input type="file" id="video" class="form-control-file @error('video') is-invalid @enderror" name="video">
+                                                        @error('video')
+                                                        <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                        @enderror
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            @else
+                                                <div class="form-group row">
+                                                    <label class="col-md-2 col-form-label text-md-right">Youtube</label>
+                                                    <div class="col-md-4">
+                                                        <input type="text" id="youtube" class="form-control @error('youtube') is-invalid @enderror" name="youtube" autocomplete="youtube" placeholder="e.g. https://youtu.be/QDIVrf2ZW0s" value="{{ old('youtube') }}">
+                                                        @error('youtube')
+                                                        <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                        @enderror
+                                                    </div>
+                                                </div>
+                                            @endif
                                             <div class="form-group row">
                                                 <label for="thumbnail" class="col-md-2 col-form-label text-md-right">Thumbnail</label>
                                                 <div class="col-md-8">
