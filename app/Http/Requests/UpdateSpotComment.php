@@ -49,11 +49,12 @@ class UpdateSpotComment extends FormRequest
      */
     public function messages()
     {
+        $extraFileTypes = Auth::user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium') ? ', mp4, mov, mpg, mpeg' : '';
         return [
             'comment.required_without_all' => 'You must enter at least one of the fields',
             'youtube.required_without_all' => 'You must enter at least one of the fields',
             'video_image.required_without_all' => 'You must enter at least one of the fields',
-            'video_image.mimes' => 'The file must be a file of type: jpg, jpeg, png, mp4, mov, mpg, mpeg.',
+            'video_image.mimes' => 'The file must be a file of type: jpg, jpeg, png' . $extraFileTypes,
         ];
     }
 }

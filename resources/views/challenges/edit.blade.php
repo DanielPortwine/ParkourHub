@@ -62,10 +62,10 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label class="col-md-2 col-form-label text-md-right">Youtube link...</label>
+                                <label class="col-md-2 col-form-label text-md-right">Youtube</label>
                                 <div class="col-md-8">
                                     @if(!empty($challenge->youtube))
-                                        <div class="row">
+                                        <div class="form-group row">
                                             <div class="col">
                                                 <div class="content-wrapper">
                                                     <div class="youtube" data-id="{{ $challenge->youtube }}" data-start="{{ $challenge->youtube_start }}">
@@ -83,28 +83,30 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="form-group row">
-                                <label class="col-md-2 col-form-label text-md-right">...or video</label>
-                                <div class="col-md-8">
-                                    @if(!empty($challenge->video))
-                                        <div class="form-group row">
-                                            <div class="col">
-                                                <div class="content-wrapper">
-                                                    <video controls>
-                                                        <source src="{{ $challenge->video }}" type="video/{{ $challenge->video_type }}">
-                                                    </video>
+                            @if(Auth()->user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium'))
+                                <div class="form-group row">
+                                    <label class="col-md-2 col-form-label text-md-right">or Video</label>
+                                    <div class="col-md-8">
+                                        @if(!empty($challenge->video))
+                                            <div class="form-group row">
+                                                <div class="col">
+                                                    <div class="content-wrapper">
+                                                        <video controls>
+                                                            <source src="{{ $challenge->video }}" type="video/{{ $challenge->video_type }}">
+                                                        </video>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    @endif
-                                    <input type="file" id="video" class="form-control-file @error('video') is-invalid @enderror" name="video">
-                                    @error('video')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
+                                        @endif
+                                        <input type="file" id="video" class="form-control-file @error('video') is-invalid @enderror" name="video">
+                                        @error('video')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
                                 </div>
-                            </div>
+                            @endif
                             <div class="form-group row">
                                 <div class="col-md-8 offset-2">
                                     <button type="submit" class="btn btn-green">Save</button>
