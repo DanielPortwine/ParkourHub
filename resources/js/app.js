@@ -1,4 +1,5 @@
 require('./bootstrap');
+require('../../node_modules/select2/dist/js/select2.min');
 
 import 'ol/ol.css';
 import Map from 'ol/Map';
@@ -271,6 +272,42 @@ $(document).ready(function() {
         startingCoords = [-175394.8171068958, 7317942.661464895],
         startingZoom = 10,
         hometownLayer;
+    if ($('.select2-movements').length) {
+        var $select2 = $('.select2-movements'),
+            spot = null;
+        if ($select2.attr('id')) {
+            spot = $select2.attr('id').split('-')[1];
+        }
+        $.ajax({
+            url: '/movements/getMovements',
+            data: {
+                spot: spot
+            },
+            success: function (response) {
+                $('.select2-movements').select2({
+                    data: response,
+                    width: '100%',
+                });
+                if (urlParams.has('movement')) {
+                    $('.select2-movements').val(urlParams.get('movement')).trigger('change');
+                }
+            },
+        });
+    }
+    if ($('.select2-movement-category').length) {
+        $.ajax({
+            url: '/movements/getMovementCategories',
+            success: function (response) {
+                $('.select2-movement-category').select2({
+                    data: response,
+                    width: '100%',
+                });
+                if (urlParams.has('category')) {
+                    $('.select2-movement-category').val(urlParams.get('category')).trigger('change');
+                }
+            },
+        });
+    }
 
     if (urlParams.has('search')) {
         searchAddress(urlParams.get('search'));
@@ -614,5 +651,25 @@ $(document).ready(function() {
             map.getLayers().pop();
             $(this).addClass('hidden');
         }
+    });
+
+    // show the show all button if there is more than 1 line of movements
+    if ($('#movements-inner-container').height() > 28) {
+        $('#all-movements-button').show();
+    }
+
+    // show all movements at a spot
+    $('#all-movements-button').click(function() {
+        if ($('#movements-list').height() <= 28) {
+            $('#movements-list').removeClass('movements-list-hidden');
+            $(this).text('Hide...');
+        } else {
+            $('#movements-list').addClass('movements-list-hidden');
+            $(this).text('Show All...');
+        }
+    });
+
+    $('#add-movement-button').click(function() {
+        $('#add-movement-container').slideDown();
     })
 });

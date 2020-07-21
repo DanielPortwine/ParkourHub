@@ -76,6 +76,15 @@ class Spot extends Model
         return $query;
     }
 
+    public function scopeMovement($query, $movement = false)
+    {
+        if ($movement) {
+            $query->whereHas('movements', function($q) use ($movement) {
+                return $q->where('movements.id', $movement);
+            });
+        }
+    }
+
     public function user()
     {
         return $this->belongsTo('App\User');
@@ -109,5 +118,10 @@ class Spot extends Model
     public function reports()
     {
         return $this->morphMany('App\Report', 'reportable');
+    }
+
+    public function movements()
+    {
+        return $this->belongsToMany('App\Movement', 'spots_movements');
     }
 }

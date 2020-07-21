@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Hit;
+use App\Http\Requests\AddMovement;
 use App\Http\Requests\CreateSpot;
 use App\Http\Requests\SearchMap;
 use App\Http\Requests\UpdateSpot;
+use App\Movement;
 use App\Notifications\SpotCreated;
 use App\Report;
 use App\Spot;
+use App\SpotMovement;
 use App\SpotView;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -44,6 +47,7 @@ class SpotController extends Controller
                 'to' => $request['date_to'] ?? null
             ])
             ->following(!empty($request['following']) ? true : false)
+            ->movement($request['movement'])
             ->orderBy($sort[0], $sort[1])
             ->paginate(20);
 
@@ -68,7 +72,7 @@ class SpotController extends Controller
             return redirect()->route('spot_view', $id);
         }
 
-        $spot = Spot::with(['user'])->where('id', $id)->first();
+        $spot = Spot::with(['user', 'movements'])->where('id', $id)->first();
 
         if ($request->ajax()){
             return view('components.spot', [
@@ -108,6 +112,7 @@ class SpotController extends Controller
                 'comments' => $comments,
                 'challenges' => $challenges,
                 'tab' => $tab,
+                'movements' => $spot->movements,
             ]);
         }
     }
@@ -247,5 +252,25 @@ class SpotController extends Controller
         Spot::where('id', $id)->first()->forceDelete();
 
         return redirect()->route('spot_listing')->with('status', 'Successfully deleted Spot and its related content.');
+    }
+
+    public function addMovement(AddMovement $request, $id)
+    {
+        $spot = Spot::where('id', $id)->first();
+        if (empty($spot->movements()->where('movements.id', $request['movement'])->first())) {
+            $spot->movements()->attach($request['movement'], ['user_id' => Auth::id()]);
+        }
+
+        return back()->with('status', 'Successfully added movement to spot.');
+    }
+
+    public function removeMovement($spotID, $movement)
+    {
+        $spot = Spot::where('id', $spotID)->first();
+        if (!empty($spot->movements()->where('movements.id', $movement)->first())) {
+            $spot->movements()->detach([$movement, $spotID]);
+        }
+
+        return back()->with('status', 'Successfully removed movement from spot.');
     }
 }

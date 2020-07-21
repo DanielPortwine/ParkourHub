@@ -93,6 +93,127 @@
                 </div>
                 <a class="btn btn-link" id="description-more">More</a>
             </div>
+            <div class="row">
+                <div class="col">
+                    <small>Movements at this spot:</small>
+                </div>
+            </div>
+            <div class="row vertical-center">
+                <div class="col movements-list movements-list-hidden" id="movements-list">
+                    <div id="movements-inner-container">
+                        @foreach($movements as $movement)
+                            @if($movement->user_id === Auth::id() || $spot->user_id === Auth::id())
+                                <a class="btn btn-feature btn-{{ $movement->category->class_name }}" href="{{ route('movement_view', $movement->id) }}">
+                                    {{ $movement->name }}<a class="btn btn-feature-remove btn-green" href="{{ route('spot_remove_movement', [$spot->id, $movement->id]) }}"><i class="fa fa-times"></i></a>
+                                </a>
+                            @else
+                                <a class="btn btn-feature btn-{{ $movement->category->class_name }}" href="{{ route('movement_view', $movement->id) }}">{{ $movement->name }}</a>
+                            @endif
+                        @endforeach
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <a class="btn btn-sm btn-green" id="add-movement-button"><i class="fa fa-plus"></i></a>
+                </div>
+            </div>
+            <div class="row pb-3">
+                <div class="col">
+                    <a class="btn btn-link" id="all-movements-button">Show All...</a>
+                </div>
+            </div>
+            <div class="row pb-3" id="add-movement-container" style="display:none">
+                <div class="col">
+                    <form method="POST" action="{{ route('spot_add_movement', $spot->id) }}" enctype="multipart/form-data">
+                        @csrf
+                        <div class="form-group row">
+                            <label class="col-md-2 col-form-label text-md-right">Select a Movement</label>
+                            <div class="col-md-8 vertical-center">
+                                <select class="select2-movements" id="spot-{{ $spot->id }}" name="movement"></select>
+                            </div>
+                            <div class="col-md-2"><button type="submit" class="btn btn-green">Add</button></div>
+                        </div>
+                    </form>
+                    <div class="card @error('category') border-danger @enderror @error('name') border-danger @enderror @error('description') border-danger @enderror @error('video') border-danger @enderror @error('youtube') border-danger @enderror">
+                        <div class="card-header bg-green sedgwick card-hidden-body">
+                            <div class="row">
+                                <div class="col">
+                                    Can't find what you're looking for?
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fa fa-caret-down"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body bg-grey text-white">
+                            @if(Auth()->user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium'))
+                                <form method="POST" action="{{ route('movement_create') }}" enctype="multipart/form-data">
+                                    @csrf
+                                    <input type="hidden" name="spot" value="{{ $spot->id }}">
+                                    <div class="form-group row">
+                                        <label class="col-md-2 col-form-label text-md-right">Category</label>
+                                        <div class="col-md-8 vertical-center">
+                                            <select class="select2-movement-category" name="category"></select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="name" class="col-md-2 col-form-label text-md-right">Name</label>
+                                        <div class="col-md-8">
+                                            <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" autocomplete="title" maxlength="25" value="{{ old('name') }}" required>
+                                            @error('name')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="description" class="col-md-2 col-form-label text-md-right">Description</label>
+                                        <div class="col-md-8">
+                                            <textarea id="description" class="form-control @error('description') is-invalid @enderror" name="description" maxlength="255">{{ old('description') }}</textarea>
+                                            @error('description')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <label class="col-md-2 col-form-label text-md-right">YouTube or Video</label>
+                                        <div class="col-md-4">
+                                            <input type="text" id="youtube" class="form-control @error('youtube') is-invalid @enderror" name="youtube" autocomplete="youtube" placeholder="e.g. https://youtu.be/QDIVrf2ZW0s" value="{{ old('youtube') }}">
+                                            @error('youtube')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                            @enderror
+                                        </div>
+                                        <div class="col-md-4">
+                                            <input type="file" id="video" class="form-control-file @error('video') is-invalid @enderror" name="video">
+                                            @error('video')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col offset-md-2">
+                                            <small>The video must contain a demonstration of the movement and nothing else!</small>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-8 offset-md-2">
+                                            <button type="submit" class="btn btn-green">Create</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            @else
+                                Only premium members can create new movements. Sign up <a class="btn-link" href="{{ route('premium') }}">here.</a>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <div class="fragment-link" id="content"></div>
@@ -240,47 +361,29 @@
                                                     @enderror
                                                 </div>
                                             </div>
-                                            @if(Auth()->user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium'))
-                                                <div class="form-group row">
+                                            <div class="form-group row">
+                                                @if(Auth()->user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium'))
                                                     <label class="col-md-2 col-form-label text-md-right">Youtube, Video or Image</label>
-                                                    <div class="col-md-4">
-                                                        <input type="text" id="youtube" class="form-control @error('youtube') is-invalid @enderror" name="youtube" autocomplete="youtube" placeholder="e.g. https://youtu.be/QDIVrf2ZW0s" value="{{ old('youtube') }}">
-                                                        @error('youtube')
-                                                        <span class="invalid-feedback" role="alert">
+                                                @else
+                                                    <label class="col-md-2 col-form-label text-md-right">Youtube or Image</label>
+                                                @endif
+                                                <div class="col-md-4">
+                                                    <input type="text" id="youtube" class="form-control @error('youtube') is-invalid @enderror" name="youtube" autocomplete="youtube" placeholder="e.g. https://youtu.be/QDIVrf2ZW0s" value="{{ old('youtube') }}">
+                                                    @error('youtube')
+                                                    <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
                                                     </span>
-                                                        @enderror
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <input type="file" id="video_image" class="form-control-file @error('video_image') is-invalid @enderror" name="video_image">
-                                                        @error('video_image')
-                                                        <span class="invalid-feedback" role="alert">
-                                                            <strong>{{ $message }}</strong>
-                                                        </span>
-                                                        @enderror
-                                                    </div>
+                                                    @enderror
                                                 </div>
-                                            @else
-                                                <div class="form-group row">
-                                                    <label class="col-md-2 col-form-label text-md-right">Youtube or Image</label>
-                                                    <div class="col-md-4">
-                                                        <input type="text" id="youtube" class="form-control @error('youtube') is-invalid @enderror" name="youtube" autocomplete="youtube" placeholder="e.g. https://youtu.be/QDIVrf2ZW0s" value="{{ old('youtube') }}">
-                                                        @error('youtube')
-                                                        <span class="invalid-feedback" role="alert">
-                                                            <strong>{{ $message }}</strong>
-                                                        </span>
-                                                        @enderror
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <input type="file" id="video_image" class="form-control-file @error('video_image') is-invalid @enderror" name="video_image">
-                                                        @error('video_image')
-                                                        <span class="invalid-feedback" role="alert">
-                                                            <strong>{{ $message }}</strong>
-                                                        </span>
-                                                        @enderror
-                                                    </div>
+                                                <div class="col-md-4">
+                                                    <input type="file" id="video_image" class="form-control-file @error('video_image') is-invalid @enderror" name="video_image">
+                                                    @error('video_image')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                    @enderror
                                                 </div>
-                                            @endif
+                                            </div>
                                             <div class="form-group row">
                                                 <div class="col-md-8 offset-md-2">
                                                     <button type="submit" class="btn btn-green">Submit</button>

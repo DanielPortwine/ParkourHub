@@ -79,6 +79,10 @@
                                             <label class="form-check-label" for="ticked-hitlist"></label>
                                         </div>
                                     </div>
+                                    <div class="col-auto pb-3">
+                                        <label><strong>Movement</strong></label>
+                                        <select class="select2-movements" name="movement"></select>
+                                    </div>
                                 @elseif($component === 'challenge')
                                     <div class="col-auto pb-3">
                                         <label><strong>Entered</strong></label>
@@ -117,6 +121,13 @@
                                             <i class="rating-star editable fa fa-star-o" id="rating-star-4"></i>
                                             <i class="rating-star editable fa fa-star-o" id="rating-star-5"></i>
                                         </div>
+                                    </div>
+                                @elseif($component === 'movement')
+                                    <div class="col-auto pb-3">
+                                        <label><strong>Category</strong></label>
+                                        <select class="select2-movement-category" name="category">
+                                            <option></option>
+                                        </select>
                                     </div>
                                 @endif
                                 <div class="col-auto pb-3">

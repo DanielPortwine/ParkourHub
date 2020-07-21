@@ -65,6 +65,9 @@
                                 <a class="nav-link" href="{{ route('challenge_listing') }}"><i class="fa fa-bullseye nav-icon"></i>Challenges</a>
                             </li>
                             <li class="nav-item">
+                                <a class="nav-link" href="{{ route('movement_listing') }}"><i class="fa fa-child nav-icon"></i>Movements</a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link" href="{{ route('user_listing') }}"><i class="fa fa-users nav-icon"></i>Users</a>
                             </li>
                             <li class="nav-item dropdown">

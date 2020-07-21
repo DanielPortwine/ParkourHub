@@ -7,6 +7,8 @@
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 
+@import '../../node_modules/select2/dist/css/select2.min';
+
 html, body {
     background-color: $body-bg;
     color: $white;
@@ -273,6 +275,113 @@ a.btn-premium:hover {
     color: $black;
 }
 
+.btn-feature {
+    padding: 0 0.75rem;
+    border-radius: 0.35rem 0 0 0.35rem;
+    font-size: 0.8rem;
+    font-weight: 400;
+    text-shadow: 0 0 10px $black;
+}
+
+.btn-feature-remove {
+    padding: 0 0.25rem;
+    border-radius: 0 0.35rem 0.35rem 0;
+    font-size: 0.8rem;
+}
+
+.btn-jump {
+    background-color: $jump;
+    color: $white;
+}
+
+.btn-jump:hover {
+    background-color: $jump1;
+    color: $white;
+}
+
+.btn-vault {
+    background-color: $vault;
+    color: $white;
+}
+
+.btn-vault:hover {
+    background-color: $vault1;
+    color: $white;
+}
+
+.btn-trick {
+    background-color: $trick;
+    color: $white;
+}
+
+.btn-trick:hover {
+    background-color: $trick1;
+    color: $white;
+}
+
+.btn-climb {
+    background-color: $climb;
+    color: $white;
+}
+
+.btn-climb:hover {
+    background-color: $climb1;
+    color: $white;
+}
+
+.btn-slide {
+    background-color: $slide;
+    color: $white;
+}
+
+.btn-slide:hover {
+    background-color: $slide1;
+    color: $white;
+}
+
+.btn-bars {
+    background-color: $bars;
+    color: $white;
+}
+
+.btn-bars:hover {
+    background-color: $bars1;
+    color: $white;
+}
+
+.text-jump {
+    color: $jump;
+}
+
+.text-vault {
+    color: $vault;
+}
+
+.text-trick {
+    color: $trick;
+}
+
+.text-climb {
+    color: $climb;
+}
+
+.text-slide {
+    color: $slide;
+}
+
+.text-bars {
+    color: $bars;
+}
+
+#all-movements-button {
+    display: none;
+}
+
+.movements-list-hidden {
+    overflow: hidden;
+    max-height: 28px;
+}
+
 .card {
     border: 1px solid $green;
 }
@@ -507,6 +616,22 @@ input[type="checkbox"]:checked + label:after {
 
 .StripeElement--webkit-autofill {
     background-color: #fefde5 !important;
+}
+
+.select2-dropdown {
+    background-color: $grey;
+}
+
+.select2-container--default .select2-results__option {
+    background-color: $grey;
+}
+
+.select2-container--default .select2-results__option[aria-selected="true"] {
+    background-color: $grey;
+}
+
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background-color: $green;
 }
 
 @include media-breakpoint-down(md) {

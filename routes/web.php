@@ -75,6 +75,8 @@ Route::prefix('spots')->middleware('verified')->group(function() {
     Route::get('/tick_off_hitlist/{id}', 'SpotController@tickOffHitlist')->name('tick_off_hitlist');
     Route::get('/report/{id}', 'SpotController@report')->name('spot_report');
     Route::get('/delete_reported/{id}', 'SpotController@deleteReported')->name('spot_report_delete');
+    Route::post('/add_movement/{id}', 'SpotController@addMovement')->name('spot_add_movement');
+    Route::get('/remove_movement/{spot}/{movement}', 'SpotController@removeMovement')->name('spot_remove_movement');
 });
 
 Route::prefix('/reviews')->middleware('verified')->group(function() {
@@ -110,6 +112,19 @@ Route::prefix('challenges')->middleware('verified')->group(function() {
     Route::get('/delete_reported/{id}', 'ChallengeController@deleteReported')->name('challenge_report_delete');
     Route::get('/entries/report/{id}', 'ChallengeController@reportEntry')->name('entry_report');
     Route::get('/entries/delete_reported/{id}', 'ChallengeController@deleteReportedEntry')->name('entry_report_delete');
+});
+
+Route::prefix('movements')->middleware('verified')->group(function() {
+    Route::get('/', 'MovementController@listing')->name('movement_listing');
+    Route::get('/view/{id}/{tab?}', 'MovementController@view')->name('movement_view');
+    Route::post('/create', 'MovementController@create')->name('movement_create');
+    Route::get('/edit/{id}', 'MovementController@edit')->name('movement_edit');
+    Route::post('/edit/{id}', 'MovementController@update')->name('movement_update');
+    Route::get('/delete/{id}', 'MovementController@delete')->name('movement_delete');
+    Route::get('/report/{id}', 'MovementController@report')->name('movement_report');
+    Route::get('/delete_reported/{id}', 'MovementController@deleteReported')->name('movement_report_delete');
+    Route::get('/getMovements', 'MovementController@getMovements')->name('movement_search');
+    Route::get('/getMovementCategories', 'MovementController@getMovementCategories')->name('movement_category_search');
 });
 
 Route::prefix('hometown')->middleware('verified')->group(function() {
