@@ -102,7 +102,7 @@
                 <div class="col movements-list movements-list-hidden" id="movements-list">
                     <div id="movements-inner-container">
                         @foreach($movements as $movement)
-                            @if($movement->user_id === Auth::id() || $spot->user_id === Auth::id())
+                            @if($movement->user_id === Auth()->id() || $spot->user_id === Auth()->id())
                                 <a class="btn btn-feature btn-{{ $movement->category->class_name }}" href="{{ route('movement_view', $movement->id) }}">
                                     {{ $movement->name }}<a class="btn btn-feature-remove btn-green" href="{{ route('spot_remove_movement', [$spot->id, $movement->id]) }}"><i class="fa fa-times"></i></a>
                                 </a>

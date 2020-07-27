@@ -108,9 +108,4 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany('App\Movement');
     }
-
-    public function spotMovements()
-    {
-        return $this->hasMany('App\SpotMovement');
-    }
 }

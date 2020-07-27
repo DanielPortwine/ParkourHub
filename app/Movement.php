@@ -12,6 +12,8 @@ class Movement extends Model
     protected $fillable = [
         'name',
         'description',
+        'youtube',
+        'youtube_start',
         'video',
         'video_type',
     ];

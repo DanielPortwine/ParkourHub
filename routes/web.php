@@ -76,7 +76,7 @@ Route::prefix('spots')->middleware('verified')->group(function() {
     Route::get('/report/{id}', 'SpotController@report')->name('spot_report');
     Route::get('/delete_reported/{id}', 'SpotController@deleteReported')->name('spot_report_delete');
     Route::post('/add_movement/{id}', 'SpotController@addMovement')->name('spot_add_movement');
-    Route::get('/remove_movement/{spot}/{movement}', 'SpotController@removeMovement')->name('spot_remove_movement');
+    Route::get('/remove_movement/{spotID}/{movement}', 'SpotController@removeMovement')->name('spot_remove_movement');
 });
 
 Route::prefix('/reviews')->middleware('verified')->group(function() {
