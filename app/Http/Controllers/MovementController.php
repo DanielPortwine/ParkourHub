@@ -47,7 +47,7 @@ class MovementController extends Controller
         $spots = null;
         if (!empty($request['spots']) && ($tab == null || $tab === 'spots')) {
             $spots = $movement->spots()->paginate(20, ['*'], 'spots')->fragment('content');
-        } else if ($tab == null || $tab === 'reviews') {
+        } else if ($tab == null || $tab === 'spots') {
             $spots = $movement->spots()->limit(4)->get();
         }
 

@@ -83,7 +83,7 @@
                                     @enderror
                                 </div>
                             </div>
-                            @if(Auth()->user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium'))
+                            @premium
                                 <div class="form-group row">
                                     <label class="col-md-2 col-form-label text-md-right">or Video</label>
                                     <div class="col-md-8">
@@ -106,7 +106,7 @@
                                         @enderror
                                     </div>
                                 </div>
-                            @endif
+                            @endpremium
                             <div class="form-group row">
                                 <div class="col-md-8 offset-2">
                                     <button type="submit" class="btn btn-green">Save</button>

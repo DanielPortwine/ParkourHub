@@ -21,8 +21,9 @@ class CreateMovementsTable extends Migration
             $table->string('description')->nullable();
             $table->string('youtube')->nullable();
             $table->integer('youtube_start')->nullable();
-            $table->string('video');
-            $table->string('video_type');
+            $table->string('video')->nullable();
+            $table->string('video_type')->nullable();
+            $table->boolean('official')->default(false);
             $table->timestamps();
             $table->softDeletes();
 

@@ -1,10 +1,12 @@
 <div class="card bg-grey">
     <div class="content-wrapper">
         @if(!empty($movement->video))
-            <div class="content-wrapper">
-                <video controls>
-                    <source src="{{ $movement->video }}" type="video/{{ $movement->video_type }}">
-                </video>
+            <video controls>
+                <source src="{{ $movement->video }}" type="video/{{ $movement->video_type }}">
+            </video>
+        @elseif(!empty($movement->youtube))
+            <div class="youtube" data-id="{{ $movement->youtube }}" data-start="{{ $movement->youtube_start }}">
+                <span class="h-100 flex-center"><i class="fa fa-youtube-play text-shadow z-10"></i></span>
             </div>
         @endif
     </div>

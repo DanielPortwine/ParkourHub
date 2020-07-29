@@ -24,12 +24,12 @@
 </head>
 <body>
     <div class="flex-center premium-section">
-        @if(Auth()->user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium'))
+        @premium
             <div class="top-right links">
                 <a href="{{ url('/spots') }}">Spots</a>
                 <a href="{{ url('/home') }}">Home</a>
             </div>
-        @endif
+        @endpremium
         <div class="text-center">
             <div class="page-title sedgwick">
                 Parkour Hub <span class="text-premium">Premium</span>

@@ -126,7 +126,7 @@
                                 <form method="POST" action="{{ route('challenge_enter', $challenge->id) }}" enctype="multipart/form-data">
                                     @csrf
 
-                                    @if(Auth()->user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium'))
+                                    @premium
                                         <div class="form-group row">
                                             <label class="col-md-2 col-form-label text-md-right">Youtube or Video</label>
                                             <div class="col-md-4">
@@ -158,7 +158,7 @@
                                                 @enderror
                                             </div>
                                         </div>
-                                    @endif
+                                    @endpremium
                                     <div class="row">
                                         <div class="col-md-8 offset-2">
                                             <small>You may only enter a challenge once so please make sure you select the correct video.</small>

@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Rules\YoutubeLink;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class CreateMovement extends FormRequest
 {
@@ -14,7 +15,7 @@ class CreateMovement extends FormRequest
      */
     public function authorize()
     {
-        return Auth()->user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium');
+        return Auth::user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium');
     }
 
     /**

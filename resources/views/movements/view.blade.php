@@ -69,7 +69,7 @@
                 <div class="card-header card-header-black">
                     <ul class="nav nav-tabs card-header-tabs">
                         <li class="nav-item">
-                            <a class="nav-link btn-link @if($tab == null || $tab === 'movement')active @endif" href="{{ route('movement_view', ['id' => $movement->id, 'tab' => null]) }}#content">Spots</a>
+                            <a class="nav-link btn-link @if($tab == null || $tab === 'spots')active @endif" href="{{ route('movement_view', ['id' => $movement->id, 'tab' => null]) }}#content">Spots</a>
                         </li>
                     </ul>
                 </div>

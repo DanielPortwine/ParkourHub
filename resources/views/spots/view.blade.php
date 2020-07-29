@@ -145,7 +145,7 @@
                             </div>
                         </div>
                         <div class="card-body bg-grey text-white">
-                            @if(Auth()->user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium'))
+                            @premium
                                 <form method="POST" action="{{ route('movement_create') }}" enctype="multipart/form-data">
                                     @csrf
                                     <input type="hidden" name="spot" value="{{ $spot->id }}">
@@ -209,7 +209,7 @@
                                 </form>
                             @else
                                 Only premium members can create new movements. Sign up <a class="btn-link" href="{{ route('premium') }}">here.</a>
-                            @endif
+                            @endpremium
                         </div>
                     </div>
                 </div>
@@ -362,11 +362,11 @@
                                                 </div>
                                             </div>
                                             <div class="form-group row">
-                                                @if(Auth()->user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium'))
+                                                @premium
                                                     <label class="col-md-2 col-form-label text-md-right">Youtube, Video or Image</label>
                                                 @else
                                                     <label class="col-md-2 col-form-label text-md-right">Youtube or Image</label>
-                                                @endif
+                                                @endpremium
                                                 <div class="col-md-4">
                                                     <input type="text" id="youtube" class="form-control @error('youtube') is-invalid @enderror" name="youtube" autocomplete="youtube" placeholder="e.g. https://youtu.be/QDIVrf2ZW0s" value="{{ old('youtube') }}">
                                                     @error('youtube')
@@ -482,7 +482,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            @if(Auth()->user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium'))
+                                            @premium
                                                 <div class="form-group row">
                                                     <label class="col-md-2 col-form-label text-md-right">Youtube or Video</label>
                                                     <div class="col-md-4">
@@ -514,7 +514,7 @@
                                                         @enderror
                                                     </div>
                                                 </div>
-                                            @endif
+                                            @endpremium
                                             <div class="form-group row">
                                                 <label for="thumbnail" class="col-md-2 col-form-label text-md-right">Thumbnail</label>
                                                 <div class="col-md-8">
