@@ -26,10 +26,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Blade::if('premium', function () {
-            if (Auth::check()) {
-                $condition = Auth::user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium');
-            }
-            return "<?php if ($condition) { ?>";
+            return (Auth::check() && Auth::user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium')) ? true : false;
         });
     }
 }

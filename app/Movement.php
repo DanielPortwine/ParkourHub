@@ -57,4 +57,14 @@ class Movement extends Model
     {
         return $this->morphMany('App\Report', 'reportable');
     }
+
+    public function progressions()
+    {
+        return $this->belongsToMany('App\Movement', 'movements_progressions', 'advancement_id', 'progression_id');
+    }
+
+    public function advancements()
+    {
+        return $this->belongsToMany('App\Movement', 'movements_progressions', 'progression_id', 'advancement_id');
+    }
 }

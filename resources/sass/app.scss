@@ -131,6 +131,14 @@ html, body {
     display: none;
 }
 
+.official-tick {
+    color: $green;
+    top: 10px;
+    right: 10px;
+    position: absolute;
+    z-index: 10;
+}
+
 .subtitle-line {
     width: 100px;
     border: 3px solid $green;
@@ -215,6 +223,10 @@ html, body {
 
 .text-white {
     color: $white;
+}
+
+.text-green {
+    color: $green;
 }
 
 .text-premium {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateMovement;
+use App\Http\Requests\LinkMovements;
 use App\Http\Requests\UpdateMovement;
 use App\Movement;
 use App\MovementCategory;
@@ -45,15 +46,41 @@ class MovementController extends Controller
     {
         $movement = Movement::with(['spots', 'category'])->where('id', $id)->first();
         $spots = null;
+        $progressions = null;
+        $advancements = null;
+        $progressionID = null;
+        $advancementID = null;
         if (!empty($request['spots']) && ($tab == null || $tab === 'spots')) {
             $spots = $movement->spots()->paginate(20, ['*'], 'spots')->fragment('content');
         } else if ($tab == null || $tab === 'spots') {
             $spots = $movement->spots()->limit(4)->get();
         }
+        if (!empty($request['progressions']) && $tab === 'progressions') {
+            $progressions = $movement->progressions()->paginate(20, ['*'], 'progressions')->fragment('content');
+        } else if ($tab === 'progressions') {
+            $progressions = $movement->progressions()->limit(4)->get();
+        }
+        if (!empty($request['advancements']) && $tab === 'advancements') {
+            $advancements = $movement->advancements()->paginate(20, ['*'], 'advancements')->fragment('content');
+        } else if ($tab === 'advancements') {
+            $advancements = $movement->advancements()->limit(4)->get();
+        }
+        switch ($tab) {
+            case 'progressions':
+                $advancementID = $movement->id;
+                break;
+            case 'advancements':
+                $progressionID = $movement->id;
+                break;
+        }
 
         return view('movements.view', [
             'movement' => $movement,
+            'progressionID' => $progressionID,
+            'advancementID' => $advancementID,
             'spots' => $spots,
+            'progressions' => $progressions,
+            'advancements' => $advancements,
             'tab' => $tab,
         ]);
     }
@@ -62,10 +89,10 @@ class MovementController extends Controller
     {
         $movement = new Movement;
         $movement->category_id = $request['category'];
-        $movement->user_id = Auth::id();
+        $movement->user_id = $movement->creator_id = Auth::id();
         $movement->name = $request['name'];
         $movement->description = $request['description'];
-        if (!empty($request['youtube'])){
+        if (!empty($request['youtube'])) {
             $youtube = explode('t=', str_replace('https://youtu.be/?', '', str_replace('&', '', str_replace('https://www.youtube.com/watch?v=', '', $request['youtube']))));
             $movement->youtube = $youtube[0];
             $movement->youtube_start = $youtube[1] ?? null;
@@ -76,9 +103,15 @@ class MovementController extends Controller
         }
         $movement->save();
 
-        $movement->spots()->attach($request['spot'], ['user_id' => Auth::id()]);
+        if (!empty($request['spot'])) {
+            $movement->spots()->attach($request['spot'], ['user_id' => Auth::id()]);
+        } else if (!empty($request['progression'])) {
+            $movement->advancements()->attach($request['progression'], ['user_id' => Auth::id()]);
+        } else if (!empty($request['advancement'])) {
+            $movement->progressions()->attach($request['advancement'], ['user_id' => Auth::id()]);
+        }
 
-        return redirect()->back()->with('status', 'Successfully created movement');
+        return back()->with('status', 'Successfully created movement');
     }
 
     public function edit($id)
@@ -99,7 +132,7 @@ class MovementController extends Controller
         }
         $movement->name = $request['name'];
         $movement->description = $request['description'];
-        if (!empty($request['youtube'])){
+        if (!empty($request['youtube'])) {
             $youtube = explode('t=', str_replace('https://youtu.be/?', '', str_replace('&', '', str_replace('https://www.youtube.com/watch?v=', '', $request['youtube']))));
             $movement->youtube = $youtube[0];
             $movement->youtube_start = $youtube[1] ?? null;
@@ -139,6 +172,59 @@ class MovementController extends Controller
         Movement::where('id', $id)->first()->forceDelete();
 
         return redirect()->route('movement_listing')->with('status', 'Successfully deleted Movement and its related content.');
+    }
+
+    public function link(LinkMovements $request)
+    {
+        if ($request['progression'] === $request['advancement']) {
+            return back()->with('status', 'You can\'t link a movement with itself');
+        }
+        $movement = Movement::where('id', $request['progression'])->first();
+        if (!empty($movement->advancements()->where('advancement_id', $request['advancement'])->first()) || !empty($movement->progressions()->where('progression_id', $request['progression'])->first())) {
+            return back()->with('status', 'Movements already linked');
+        }
+        $movement->advancements()->attach($request['advancement'], ['user_id' => Auth::id()]);
+
+        return back()->with('status', 'Successfully linked movements');
+    }
+
+    public function unlink(LinkMovements $request)
+    {
+        $movement = Movement::where('id', $request['progression'])->first();
+        if (empty($movement->advancements()->where('advancement_id', $request['advancement'])->first())) {
+            return back()->with('status', 'These movements aren\'t linked');
+        }
+        $movement->advancements()->detach($request['advancement']);
+
+        return back()->with('status', 'Successfully unlinked movements');
+    }
+
+    public function officialise($id)
+    {
+        if (Auth::id() !== 1) {
+            return back();
+        }
+
+        $movement = Movement::where('id', $id)->first();
+        $movement->user_id = 1;
+        $movement->official = true;
+        $movement->save();
+
+        return back()->with('status', 'Successfully officialised movement');
+    }
+
+    public function unofficialise($id)
+    {
+        if (Auth::id() !== 1) {
+            return back();
+        }
+
+        $movement = Movement::where('id', $id)->first();
+        $movement->user_id = $movement->creator_id;
+        $movement->official = false;
+        $movement->save();
+
+        return back()->with('status', 'Successfully unofficialised movement');
     }
 
     public function getMovements(Request $request)

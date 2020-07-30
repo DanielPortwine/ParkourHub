@@ -11688,6 +11688,14 @@ body {
   display: none;
 }
 
+.official-tick {
+  color: #73c979;
+  top: 10px;
+  right: 10px;
+  position: absolute;
+  z-index: 10;
+}
+
 .subtitle-line {
   width: 100px;
   border: 3px solid #73c979;
@@ -11772,6 +11780,10 @@ body {
 
 .text-white {
   color: #f0f5f0;
+}
+
+.text-green {
+  color: #73c979;
 }
 
 .text-premium {

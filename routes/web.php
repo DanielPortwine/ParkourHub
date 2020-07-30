@@ -123,6 +123,10 @@ Route::prefix('movements')->middleware('verified')->group(function() {
     Route::get('/delete/{id}', 'MovementController@delete')->name('movement_delete');
     Route::get('/report/{id}', 'MovementController@report')->name('movement_report');
     Route::get('/delete_reported/{id}', 'MovementController@deleteReported')->name('movement_report_delete');
+    Route::post('/link', 'MovementController@link')->name('movements_link');
+    Route::post('/unlink', 'MovementController@unlink')->name('movements_unlink');
+    Route::get('/officialise/{id}', 'MovementController@officialise')->name('movement_officialise');
+    Route::get('/unofficialise/{id}', 'MovementController@unofficialise')->name('movement_unofficialise');
     Route::get('/getMovements', 'MovementController@getMovements')->name('movement_search');
     Route::get('/getMovementCategories', 'MovementController@getMovementCategories')->name('movement_category_search');
 });
