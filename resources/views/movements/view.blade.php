@@ -30,7 +30,7 @@
         <div class="container">
             <div class="row pt-4">
                 <div class="col vertical-center">
-                    <h1 class="sedgwick mb-0 text-green"><span class="text-{{ $movement->category->class_name }}">[{{ $movement->category->name }}]</span> {{ $movement->name }} @if($movement->official)<sup class="text-green" title="Official"><i class="fa fa-gavel"></i></sup> @endif </h1>
+                    <h1 class="sedgwick mb-0"><span class="text-{{ $movement->category->class_name }}">[{{ $movement->category->name }}]</span> {{ $movement->name }} @if($movement->official)<sup class="text-green" title="Official"><i class="fa fa-gavel"></i></sup> @endif </h1>
                 </div>
                 <div class="col-auto vertical-center">
                     <div>
