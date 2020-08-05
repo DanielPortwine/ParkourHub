@@ -31,10 +31,35 @@ class Movement extends Model
         return $query;
     }
 
+    public function scopeType($query, $type = null)
+    {
+        if (!empty($type)) {
+            $query->where('type_id', $type);
+        }
+    }
+
     public function scopeCategory($query, $category = null)
     {
         if (!empty($category)) {
             $query->where('category_id', $category);
+        }
+    }
+
+    public function scopeExercise($query, $exercise = null)
+    {
+        if (!empty($exercise)) {
+            $query->whereHas('exercises', function($q) use($exercise) {
+                $q->where('exercise_id', $exercise);
+            });
+        }
+    }
+
+    public function scopeEquipment($query, $equipment = null)
+    {
+        if (!empty($equipment)) {
+            $query->whereHas('equipment', function($q) use($equipment) {
+                $q->where('equipment_id', $equipment);
+            });
         }
     }
 
@@ -66,5 +91,20 @@ class Movement extends Model
     public function advancements()
     {
         return $this->belongsToMany('App\Movement', 'movements_progressions', 'progression_id', 'advancement_id');
+    }
+
+    public function exercises()
+    {
+        return $this->belongsToMany('App\Movement', 'movements_exercises', 'move_id', 'exercise_id');
+    }
+
+    public function moves()
+    {
+        return $this->belongsToMany('App\Movement', 'movements_exercises', 'exercise_id', 'move_id');
+    }
+
+    public function equipment()
+    {
+        return $this->belongsToMany('App\Equipment', 'movements_equipments', 'movement_id', 'equipment_id');
     }
 }

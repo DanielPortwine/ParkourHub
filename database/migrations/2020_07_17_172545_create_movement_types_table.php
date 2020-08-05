@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateMovementCategoriesTable extends Migration
+class CreateMovementTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,9 @@ class CreateMovementCategoriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('movement_categories', function (Blueprint $table) {
+        Schema::create('movement_types', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('type_id');
             $table->string('name');
-            $table->string('colour');
-            $table->string('description')->nullable();
-
-            $table->foreign('type_id')->references('id')->on('movement_types')->onDelete('cascade');
         });
     }
 
@@ -31,6 +26,6 @@ class CreateMovementCategoriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('movement_categories');
+        Schema::dropIfExists('movement_types');
     }
 }

@@ -301,88 +301,88 @@ a.btn-premium:hover {
     font-size: 0.8rem;
 }
 
-.btn-jump {
-    background-color: $jump;
+.btn-movement-green {
+    background-color: $movementGreen;
     color: $white;
 }
 
-.btn-jump:hover {
-    background-color: $jump1;
+.btn-movement-green:hover {
+    background-color: $movementGreen1;
     color: $white;
 }
 
-.btn-vault {
-    background-color: $vault;
+.btn-movement-pink {
+    background-color: $movementPink;
     color: $white;
 }
 
-.btn-vault:hover {
-    background-color: $vault1;
+.btn-movement-pink:hover {
+    background-color: $movementPink1;
     color: $white;
 }
 
-.btn-trick {
-    background-color: $trick;
+.btn-movement-blue {
+    background-color: $movementBlue;
     color: $white;
 }
 
-.btn-trick:hover {
-    background-color: $trick1;
+.btn-movement-blue:hover {
+    background-color: $movementBlue1;
     color: $white;
 }
 
-.btn-climb {
-    background-color: $climb;
+.btn-movement-orange {
+    background-color: $movementOrange;
     color: $white;
 }
 
-.btn-climb:hover {
-    background-color: $climb1;
+.btn-movement-orange:hover {
+    background-color: $movementOrange1;
     color: $white;
 }
 
-.btn-slide {
-    background-color: $slide;
+.btn-movement-yellow {
+    background-color: $movementYellow;
     color: $white;
 }
 
-.btn-slide:hover {
-    background-color: $slide1;
+.btn-movement-yellow:hover {
+    background-color: $movementYellow1;
     color: $white;
 }
 
-.btn-bars {
-    background-color: $bars;
+.btn-movement-cyan {
+    background-color: $movementCyan;
     color: $white;
 }
 
-.btn-bars:hover {
-    background-color: $bars1;
+.btn-movement-cyan:hover {
+    background-color: $movementCyan1;
     color: $white;
 }
 
-.text-jump {
-    color: $jump;
+.text-movement-green {
+    color: $movementGreen;
 }
 
-.text-vault {
-    color: $vault;
+.text-movement-pink {
+    color: $movementPink;
 }
 
-.text-trick {
-    color: $trick;
+.text-movement-blue {
+    color: $movementBlue;
 }
 
-.text-climb {
-    color: $climb;
+.text-movement-orange {
+    color: $movementOrange;
 }
 
-.text-slide {
-    color: $slide;
+.text-movement-yellow {
+    color: $movementYellow;
 }
 
-.text-bars {
-    color: $bars;
+.text-movement-cyan {
+    color: $movementCyan;
 }
 
 #all-movements-button {
@@ -628,6 +628,10 @@ input[type="checkbox"]:checked + label:after {
 
 .StripeElement--webkit-autofill {
     background-color: #fefde5 !important;
+}
+
+.select2-container {
+    min-width: 50px;
 }
 
 .select2-dropdown {

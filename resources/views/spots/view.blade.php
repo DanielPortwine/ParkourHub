@@ -103,11 +103,11 @@
                     <div id="movements-inner-container">
                         @foreach($movements as $movement)
                             @if($movement->user_id === Auth()->id() || $spot->user_id === Auth()->id())
-                                <a class="btn btn-feature btn-{{ $movement->category->class_name }}" href="{{ route('movement_view', $movement->id) }}">
+                                <a class="btn btn-feature btn-movement-{{ $movement->category->colour }}" href="{{ route('movement_view', $movement->id) }}">
                                     {{ $movement->name }}<a class="btn btn-feature-remove btn-green" href="{{ route('spot_remove_movement', [$spot->id, $movement->id]) }}"><i class="fa fa-times"></i></a>
                                 </a>
                             @else
-                                <a class="btn btn-feature btn-{{ $movement->category->class_name }}" href="{{ route('movement_view', $movement->id) }}">{{ $movement->name }}</a>
+                                <a class="btn btn-feature btn-movement-{{ $movement->category->colour }}" href="{{ route('movement_view', $movement->id) }}">{{ $movement->name }}</a>
                             @endif
                         @endforeach
                     </div>
@@ -148,6 +148,7 @@
                             @premium
                                 <form method="POST" action="{{ route('movement_create') }}" enctype="multipart/form-data">
                                     @csrf
+                                    <input type="hidden" name="type" value="1">
                                     <input type="hidden" name="spot" value="{{ $spot->id }}">
                                     <div class="form-group row">
                                         <label class="col-md-2 col-form-label text-md-right">Category</label>
@@ -572,3 +573,34 @@
 @section('footer')
     @include('components.footer')
 @endsection
+
+@push('scripts')
+    <script defer>
+        var urlParams = new URLSearchParams(window.location.search);
+        $.ajax({
+            url: '/movements/getMovements',
+            data: {
+                link: 'spotMove',
+                id: {{ $spot->id }},
+            },
+            success: function (response) {
+                $('.select2-movements').select2({
+                    data: response,
+                    width: '100%',
+                });
+            },
+        });
+        $.ajax({
+            url: '/movements/getMovementCategories',
+            data: {
+                types: [1]
+            },
+            success: function (response) {
+                $('.select2-movement-category').select2({
+                    data: response,
+                    width: '100%',
+                });
+            },
+        });
+    </script>
+@endpush

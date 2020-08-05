@@ -123,12 +123,27 @@ Route::prefix('movements')->middleware('verified')->group(function() {
     Route::get('/delete/{id}', 'MovementController@delete')->name('movement_delete');
     Route::get('/report/{id}', 'MovementController@report')->name('movement_report');
     Route::get('/delete_reported/{id}', 'MovementController@deleteReported')->name('movement_report_delete');
-    Route::post('/link', 'MovementController@link')->name('movements_link');
-    Route::post('/unlink', 'MovementController@unlink')->name('movements_unlink');
+    Route::post('/link_progression', 'MovementController@linkProgression')->name('movements_link');
+    Route::post('/unlink_progression', 'MovementController@unlinkProgression')->name('movements_unlink');
+    Route::post('/link_exercise', 'MovementController@linkExercise')->name('movement_exercise_link');
+    Route::post('/unlink_exercise', 'MovementController@unlinkExercise')->name('movement_exercise_unlink');
+    Route::post('/link_equipment', 'MovementController@linkEquipment')->name('movement_equipment_link');
+    Route::post('/unlink_equipment', 'MovementController@unlinkEquipment')->name('movement_equipment_unlink');
     Route::get('/officialise/{id}', 'MovementController@officialise')->name('movement_officialise');
     Route::get('/unofficialise/{id}', 'MovementController@unofficialise')->name('movement_unofficialise');
     Route::get('/getMovements', 'MovementController@getMovements')->name('movement_search');
     Route::get('/getMovementCategories', 'MovementController@getMovementCategories')->name('movement_category_search');
+});
+
+Route::prefix('equipment')->middleware('verified')->group(function() {
+    Route::get('/view/{id}', 'EquipmentController@view')->name('equipment_view');
+    Route::post('/create', 'EquipmentController@create')->name('equipment_create');
+    Route::get('/edit/{id}', 'EquipmentController@edit')->name('equipment_edit');
+    Route::post('/edit/{id}', 'EquipmentController@update')->name('equipment_update');
+    Route::get('/delete/{id}', 'EquipmentController@delete')->name('equipment_delete');
+    Route::get('/report/{id}', 'EquipmentController@report')->name('equipment_report');
+    Route::get('/delete_reported/{id}', 'EquipmentController@deleteReported')->name('equipment_report_delete');
+    Route::get('/getEquipment', 'EquipmentController@getEquipment')->name('equipment_search');
 });
 
 Route::prefix('hometown')->middleware('verified')->group(function() {

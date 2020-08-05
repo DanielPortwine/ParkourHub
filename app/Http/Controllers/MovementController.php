@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Equipment;
 use App\Http\Requests\CreateMovement;
+use App\Http\Requests\LinkEquipment;
+use App\Http\Requests\LinkExercise;
 use App\Http\Requests\LinkMovements;
 use App\Http\Requests\UpdateMovement;
 use App\Movement;
@@ -31,7 +34,10 @@ class MovementController extends Controller
                 'from' => $request['date_from'] ?? null,
                 'to' => $request['date_to'] ?? null
             ])
+            ->type($request['type'] ?? null)
             ->category($request['category'] ?? null)
+            ->exercise($request['exercise'] ?? null)
+            ->equipment($request['equipment'] ?? null)
             ->orderBy($sort[0], $sort[1])
             ->paginate(20);
 
@@ -44,15 +50,18 @@ class MovementController extends Controller
 
     public function view($id, $tab = null)
     {
-        $movement = Movement::with(['spots', 'category'])->where('id', $id)->first();
+        $movement = Movement::with(['spots', 'exercises', 'equipment', 'category'])->where('id', $id)->first();
         $spots = null;
         $progressions = null;
         $advancements = null;
+        $exercises = null;
+        $moves = null;
+        $equipment = null;
         $progressionID = null;
         $advancementID = null;
-        if (!empty($request['spots']) && ($tab == null || $tab === 'spots')) {
+        if (!empty($request['spots']) && (($tab == null && $movement->type_id === 1) || $tab === 'spots')) {
             $spots = $movement->spots()->paginate(20, ['*'], 'spots')->fragment('content');
-        } else if ($tab == null || $tab === 'spots') {
+        } else if (($tab == null && $movement->type_id === 1) || $tab === 'spots') {
             $spots = $movement->spots()->limit(4)->get();
         }
         if (!empty($request['progressions']) && $tab === 'progressions') {
@@ -65,6 +74,21 @@ class MovementController extends Controller
         } else if ($tab === 'advancements') {
             $advancements = $movement->advancements()->limit(4)->get();
         }
+        if (!empty($request['exercises']) && $tab === 'exercises') {
+            $exercises = $movement->exercises()->paginate(20, ['*'], 'exercises')->fragment('content');
+        } else if ($tab === 'exercises') {
+            $exercises = $movement->exercises()->limit(4)->get();
+        }
+        if (!empty($request['moves']) && $tab === 'moves') {
+            $moves = $movement->moves()->paginate(20, ['*'], 'moves')->fragment('content');
+        } else if ($tab === 'moves') {
+            $moves = $movement->moves()->limit(4)->get();
+        }
+        if (!empty($request['equipment']) && (($tab == null && $movement->type_id === 2) || $tab === 'equipment')) {
+            $equipment = $movement->equipment()->paginate(20, ['*'], 'equipment')->fragment('content');
+        } else if (($tab == null && $movement->type_id === 2) || $tab === 'equipment') {
+            $equipment = $movement->equipment()->limit(4)->get();
+        }
         switch ($tab) {
             case 'progressions':
                 $advancementID = $movement->id;
@@ -73,14 +97,27 @@ class MovementController extends Controller
                 $progressionID = $movement->id;
                 break;
         }
+        $linkType = '';
+        switch($movement->type_id) {
+            case 1:
+                $linkType = 'move';
+                break;
+            case 2:
+                $linkType = 'exercise';
+                break;
+        }
 
         return view('movements.view', [
-            'movement' => $movement,
+            'originalMovement' => $movement,
+            'linkType' => $linkType,
             'progressionID' => $progressionID,
             'advancementID' => $advancementID,
             'spots' => $spots,
             'progressions' => $progressions,
             'advancements' => $advancements,
+            'exercises' => $exercises,
+            'moves' => $moves,
+            'equipments' => $equipment,
             'tab' => $tab,
         ]);
     }
@@ -90,6 +127,7 @@ class MovementController extends Controller
         $movement = new Movement;
         $movement->category_id = $request['category'];
         $movement->user_id = $movement->creator_id = Auth::id();
+        $movement->type_id = $request['type'];
         $movement->name = $request['name'];
         $movement->description = $request['description'];
         if (!empty($request['youtube'])) {
@@ -109,6 +147,10 @@ class MovementController extends Controller
             $movement->advancements()->attach($request['progression'], ['user_id' => Auth::id()]);
         } else if (!empty($request['advancement'])) {
             $movement->progressions()->attach($request['advancement'], ['user_id' => Auth::id()]);
+        } else if(!empty($request['exercise'])) {
+            $movement->exercises()->attach($request['exercise'], ['user_id' => Auth::id()]);
+        } else if (!empty($request['move'])) {
+            $movement->moves()->attach($request['move'], ['user_id' => Auth::id()]);
         }
 
         return back()->with('status', 'Successfully created movement');
@@ -174,7 +216,7 @@ class MovementController extends Controller
         return redirect()->route('movement_listing')->with('status', 'Successfully deleted Movement and its related content.');
     }
 
-    public function link(LinkMovements $request)
+    public function linkProgression(LinkMovements $request)
     {
         if ($request['progression'] === $request['advancement']) {
             return back()->with('status', 'You can\'t link a movement with itself');
@@ -188,7 +230,7 @@ class MovementController extends Controller
         return back()->with('status', 'Successfully linked movements');
     }
 
-    public function unlink(LinkMovements $request)
+    public function unlinkProgression(LinkMovements $request)
     {
         $movement = Movement::where('id', $request['progression'])->first();
         if (empty($movement->advancements()->where('advancement_id', $request['advancement'])->first())) {
@@ -197,6 +239,53 @@ class MovementController extends Controller
         $movement->advancements()->detach($request['advancement']);
 
         return back()->with('status', 'Successfully unlinked movements');
+    }
+
+    public function linkExercise(LinkExercise $request)
+    {
+        if ($request['move'] === $request['exercise']) {
+            return back()->with('status', 'You can\'t link a movement with itself');
+        }
+        $move = Movement::where('id', $request['move'])->first();
+        if (!empty($move->exercises()->where('exercise_id', $request['exercise'])->first()) || !empty($move->moves()->where('move_id', $request['move'])->first())) {
+            return back()->with('status', 'Movements already linked');
+        }
+        $move->exercises()->attach($request['exercise'], ['user_id' => Auth::id()]);
+
+        return back()->with('status', 'Successfully linked exercise to movement');
+    }
+
+    public function unlinkExercise(LinkExercise $request)
+    {
+        $move = Movement::where('id', $request['move'])->first();
+        if (empty($move->exercises()->where('exercise_id', $request['exercise'])->first())) {
+            return back()->with('status', 'These movements aren\'t linked');
+        }
+        $move->exercises()->detach($request['exercise']);
+
+        return back()->with('status', 'Successfully unlinked exercise from movement');
+    }
+
+    public function linkEquipment(LinkEquipment $request)
+    {
+        $movement = Movement::where('id', $request['movement'])->first();
+        if (!empty($movement->equipment()->where('equipment_id', $request['equipment'])->first())) {
+            return back()->with('status', 'Exercise and equipment already linked');
+        }
+        $movement->equipment()->attach($request['equipment'], ['user_id' => Auth::id()]);
+
+        return back()->with('status', 'Successfully linked equipment to exercise');
+    }
+
+    public function unlinkEquipment(LinkEquipment $request)
+    {
+        $movement = Movement::where('id', $request['movement'])->first();
+        if (empty($movement->equipment()->where('equipment_id', $request['equipment'])->first())) {
+            return back()->with('status', 'This movement and equipment aren\'t linked');
+        }
+        $movement->equipment()->detach($request['equipment']);
+
+        return back()->with('status', 'Successfully unlinked equipment from exercise');
     }
 
     public function officialise($id)
@@ -233,18 +322,93 @@ class MovementController extends Controller
             return back();
         }
 
-        $spot = Spot::with(['movements'])->where('id', $request['spot'])->first();
-        $spotMovements = [];
-        if (!empty($spot)) {
-            $spotMovements = $spot->movements()->orderBy('category_id')->pluck('movements.id')->toArray();
-        }
-        $movements = Movement::with(['category'])->whereNotIn('id', $spotMovements)->get();
         $results = [];
-        foreach ($movements as $movement) {
-            $results[] = [
-                'id' => $movement->id,
-                'text' => '[' . $movement->category->name . '] ' . $movement->name,
-            ];
+        switch ($request['link']) {
+            case 'exerciseEquipment':
+                $exercise = Movement::with(['equipment'])->where('id', $request['id'])->first();
+                $exerciseEquipment = [];
+                if (!empty($exercise)) {
+                    $exerciseEquipment = $exercise->equipment()->pluck('equipment.id')->toArray();
+                }
+                $equipments = Equipment::whereNotIn('id', $exerciseEquipment)->get();
+                foreach ($equipments as $equipment) {
+                    $results[] = [
+                        'id' => $equipment->id,
+                        'text' => $equipment->name,
+                    ];
+                }
+                break;
+            case 'equipmentExercise':
+                $equipment = Equipment::with(['movements'])->where('id', $request['id'])->first();
+                $equipmentExercise = [];
+                if (!empty($equipment)) {
+                    $equipmentExercise = $equipment->movements()->pluck('movements.id')->toArray();
+                }
+                $exercises = Movement::where('type_id', $request['type'])->whereNotIn('id', $equipmentExercise)->get();
+                foreach ($exercises as $exercise) {
+                    $results[] = [
+                        'id' => $exercise->id,
+                        'text' => $exercise->name,
+                    ];
+                }
+                break;
+            case 'progressionAdvancement':
+                $movement = Movement::with(['progressions', 'advancements'])->where('id', $request['id'])->first();
+                $moveProgressions = $moveAdvancements = [];
+                if (!empty($movement)) {
+                    $moveProgressions = $movement->progressions()->orderBy('category_id')->where('type_id', $request['type'])->pluck('movements.id')->toArray();
+                    $moveAdvancements = $movement->advancements()->orderBy('category_id')->where('type_id', $request['type'])->pluck('movements.id')->toArray();
+                }
+                $exercises = Movement::with(['category'])->where('type_id', $request['type'])->where('id', '!=', $request['id'])->whereNotIn('id', array_merge($moveProgressions, $moveAdvancements))->get();
+                foreach ($exercises as $exercise) {
+                    $results[] = [
+                        'id' => $exercise->id,
+                        'text' => '[' . $exercise->category->name . '] ' . $exercise->name,
+                    ];
+                }
+                break;
+            case 'moveExercise':
+                $move = Movement::with(['exercises'])->where('id', $request['id'])->first();
+                $moveExercises = [];
+                if (!empty($move)) {
+                    $moveExercises = $move->exercises()->orderBy('category_id')->where('type_id', 1)->pluck('movements.id')->toArray();
+                }
+                $exercises = Movement::with(['category'])->where('type_id', 1)->whereNotIn('id', $moveExercises)->get();
+                foreach ($exercises as $exercise) {
+                    $results[] = [
+                        'id' => $exercise->id,
+                        'text' => '[' . $exercise->category->name . '] ' . $exercise->name,
+                    ];
+                }
+                break;
+            case 'exerciseMove':
+                $exercise = Movement::with(['moves'])->where('id', $request['id'])->first();
+                $exerciseMoves = [];
+                if (!empty($exercise)) {
+                    $exerciseMoves = $exercise->moves()->orderBy('category_id')->where('type_id', 1)->pluck('movements.id')->toArray();
+                }
+                $moves = Movement::with(['category'])->where('type_id', 1)->whereNotIn('id', $exerciseMoves)->get();
+                foreach ($moves as $move) {
+                    $results[] = [
+                        'id' => $move->id,
+                        'text' => '[' . $move->category->name . '] ' . $move->name,
+                    ];
+                }
+                break;
+            case 'spotMove':
+                $spot = Spot::with(['movements'])->where('id', $request['id'])->first();
+                $spotMovements = [];
+                if (!empty($spot)) {
+                    $spotMovements = $spot->movements()->orderBy('category_id')->where('type_id', 1)->pluck('movements.id')->toArray();
+                }
+                $movements = Movement::with(['category'])->where('type_id', 1)->whereNotIn('id', $spotMovements)->get();
+                foreach ($movements as $movement) {
+                    $results[] = [
+                        'id' => $movement->id,
+                        'text' => '[' . $movement->category->name . '] ' . $movement->name,
+                    ];
+                }
+                break;
         }
 
         if (count($results) > 0) {
@@ -260,8 +424,15 @@ class MovementController extends Controller
             return back();
         }
 
-        $movementCategories = MovementCategory::select(['id', 'name as text'])->get()->toArray();
+        $results = [];
+        $movementCategories = MovementCategory::with(['type'])->whereIn('type_id', (array)$request['types'])->get();
+        foreach ($movementCategories as $category) {
+            $results[] = [
+                'id' => $category->id,
+                'text' => (count($request['types']) > 1 ? '[' . $category->type->name . '] ' : '') . $category->name,
+            ];
+        }
 
-        return $movementCategories;
+        return $results;
     }
 }

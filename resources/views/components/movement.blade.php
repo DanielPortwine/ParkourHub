@@ -32,7 +32,11 @@
                         <a class="btn text-white" href="{{ route('movement_unofficialise', $movement->id) }}" title="Unofficialise"><i class="fa fa-gavel"></i></a>
                     @endif
                 @endif
-                <a class="btn text-white" href="{{ route('spot_listing', ['movement' => $movement->id]) }}" title="View Spots With Movement"><i class="fa fa-map-marker"></i></a>
+                @if($movement->type_id === 1)
+                    <a class="btn text-white" href="{{ route('spot_listing', ['movement' => $movement->id]) }}" title="View Spots With Move"><i class="fa fa-map-marker"></i></a>
+                @elseif($movement->type_id === 2)
+                        <a class="btn text-white" href="{{ route('movement_listing', ['exercise' => $movement->id]) }}" title="View Moves For Exercise"><i class="fa fa-child"></i></a>
+                @endif
                 @if($movement->user_id === Auth()->id())
                     <a class="btn text-white" href="{{ route('movement_edit', $movement->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
                     @if(!empty($progressionID) || !empty($advancementID))
@@ -43,12 +47,24 @@
                             <button type="submit" class="btn text-white" title="Unlink"><i class="fa fa-unlink"></i></button>
                         </form>
                     @endif
+                    @if(!empty($tab) && $tab === 'exercises' && !empty($originalMovement))
+                        <form method="POST" action="{{ route('movement_exercise_unlink') }}" class="d-inline-block">
+                            @csrf
+                            <input type="hidden" name="move" value="{{ $originalMovement->id }}">
+                            <input type="hidden" name="exercise" value="{{ $movement->id }}">
+                            <button type="submit" class="btn text-white" title="Unlink"><i class="fa fa-unlink"></i></button>
+                        </form>
+                    @endif
                 @endif
             </div>
         </div>
         <div class="row">
             <div class="col-md vertical-center">
-                <span>{{ count($movement->spots) . (count($movement->spots) === 1 ? ' spot' : ' spots') }} | {{ $movement->created_at->diffForHumans() }}</span>
+                @if($movement->type_id === 1)
+                    <span>{{ count($movement->spots) . (count($movement->spots) === 1 ? ' spot' : ' spots') }} | {{ $movement->created_at->diffForHumans() }}</span>
+                @elseif($movement->type_id === 2)
+                    <span>{{ count($movement->moves) . (count($movement->moves) === 1 ? ' move' : ' moves') }} | {{ $movement->created_at->diffForHumans() }}</span>
+                @endif
             </div>
         </div>
     </div>

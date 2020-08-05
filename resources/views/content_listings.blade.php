@@ -79,10 +79,6 @@
                                             <label class="form-check-label" for="ticked-hitlist"></label>
                                         </div>
                                     </div>
-                                    <div class="col-auto pb-3">
-                                        <label><strong>Movement</strong></label>
-                                        <select class="select2-movements" name="movement"></select>
-                                    </div>
                                 @elseif($component === 'challenge')
                                     <div class="col-auto pb-3">
                                         <label><strong>Entered</strong></label>
@@ -124,8 +120,20 @@
                                     </div>
                                 @elseif($component === 'movement')
                                     <div class="col-auto pb-3">
+                                        <label><strong>Type</strong></label>
+                                        <select class="select2-movement-type" name="type">
+                                            <option></option>
+                                        </select>
+                                    </div>
+                                    <div class="col-auto pb-3">
                                         <label><strong>Category</strong></label>
                                         <select class="select2-movement-category" name="category">
+                                            <option></option>
+                                        </select>
+                                    </div>
+                                    <div class="col-auto pb-3">
+                                        <label><strong>Equipment</strong></label>
+                                        <select class="select2-movement-equipment" name="equipment">
                                             <option></option>
                                         </select>
                                     </div>
@@ -175,3 +183,58 @@
         {{ $content->links() }}
     </div>
 @endsection
+
+@push('scripts')
+    <script defer>
+        $(document).ready(function() {
+            var urlParams = new URLSearchParams(window.location.search),
+                data = [
+                {
+                    id: 1,
+                    text: 'Move',
+                },
+                {
+                    id: 2,
+                    text: 'Exercise',
+                }
+            ];
+            $('.select2-movement-type').select2({
+                data: data,
+                width: '100%',
+            });
+            if (urlParams.has('type')) {
+                $('.select2-movement-type').val(urlParams.get('type')).trigger('change');
+            }
+
+            $.ajax({
+                url: '/movements/getMovementCategories',
+                data: {
+                    types: [1, 2]
+                },
+                success: function (response) {
+                    console.log(response);
+                    $('.select2-movement-category').select2({
+                        data: response,
+                        width: '100%',
+                    });
+                    if (urlParams.has('category')) {
+                        $('.select2-movement-category').val(urlParams.get('category')).trigger('change');
+                    }
+                },
+            });
+
+            $.ajax({
+                url: '/equipment/getEquipment',
+                success: function (response) {
+                    $('.select2-movement-equipment').select2({
+                        data: response,
+                        width: '100%',
+                    });
+                    if (urlParams.has('equipment')) {
+                        $('.select2-movement-equipment').val(urlParams.get('equipment')).trigger('change');
+                    }
+                },
+            });
+        });
+    </script>
+@endpush

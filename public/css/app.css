@@ -11858,87 +11858,87 @@ a.btn-premium:hover {
   font-size: 0.8rem;
 }
 
-.btn-jump {
+.btn-movement-green {
   background-color: #52d138;
   color: #f0f5f0;
 }
 
-.btn-jump:hover {
+.btn-movement-green:hover {
   background-color: #40a32c;
   color: #f0f5f0;
 }
 
-.btn-vault {
+.btn-movement-pink {
   background-color: #d138ba;
   color: #f0f5f0;
 }
 
-.btn-vault:hover {
+.btn-movement-pink:hover {
   background-color: #a32c93;
   color: #f0f5f0;
 }
 
-.btn-trick {
+.btn-movement-blue {
   background-color: #3847d1;
   color: #f0f5f0;
 }
 
-.btn-trick:hover {
+.btn-movement-blue:hover {
   background-color: #2c3ca3;
   color: #f0f5f0;
 }
 
-.btn-climb {
+.btn-movement-orange {
   background-color: #d18f38;
   color: #f0f5f0;
 }
 
-.btn-climb:hover {
+.btn-movement-orange:hover {
   background-color: #a3712c;
   color: #f0f5f0;
 }
 
-.btn-slide {
+.btn-movement-yellow {
   background-color: #ccd138;
   color: #f0f5f0;
 }
 
-.btn-slide:hover {
+.btn-movement-yellow:hover {
   background-color: #a1a32c;
   color: #f0f5f0;
 }
 
-.btn-bars {
+.btn-movement-cyan {
   background-color: #38d1cc;
   color: #f0f5f0;
 }
 
-.btn-bars:hover {
+.btn-movement-cyan:hover {
   background-color: #2ca399;
   color: #f0f5f0;
 }
 
-.text-jump {
+.text-movement-green {
   color: #52d138;
 }
 
-.text-vault {
+.text-movement-pink {
   color: #d138ba;
 }
 
-.text-trick {
+.text-movement-blue {
   color: #3847d1;
 }
 
-.text-climb {
+.text-movement-orange {
   color: #d18f38;
 }
 
-.text-slide {
+.text-movement-yellow {
   color: #ccd138;
 }
 
-.text-bars {
+.text-movement-cyan {
   color: #38d1cc;
 }
 
@@ -12189,6 +12189,10 @@ input[type=checkbox]:checked + label:after {
 
 .StripeElement--webkit-autofill {
   background-color: #fefde5 !important;
+}
+
+.select2-container {
+  min-width: 50px;
 }
 
 .select2-dropdown {

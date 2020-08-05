@@ -1,0 +1,83 @@
+@extends('layouts.app')
+
+@push('title')Edit Equipment | @endpush
+
+@section('content')
+    <div class="container py-4">
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header bg-green sedgwick">Edit Equipment</div>
+                    <div class="card-body bg-grey text-white">
+                        @if (session('status'))
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                {{ session('status') }}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        @endif
+                        <form method="POST" action="{{ route('equipment_update', $equipment->id) }}" enctype="multipart/form-data">
+                            @csrf
+                            <div class="form-group row">
+                                <label for="name" class="col-md-2 col-form-label text-md-right">Name</label>
+                                <div class="col-md-8">
+                                    <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" autocomplete="name" maxlength="25" value="{{ $equipment->name }}" required>
+                                    @error('name')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="description" class="col-md-2 col-form-label text-md-right">Description</label>
+                                <div class="col-md-8">
+                                    <textarea id="description" class="form-control @error('description') is-invalid @enderror" name="description" maxlength="255">{{ $equipment->description }}</textarea>
+                                    @error('description')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="image" class="col-md-2 col-form-label text-md-right">Image</label>
+                                <div class="col-md-8">
+                                    @if(!empty($equipment->image))
+                                        <img class="w-100 mb-2" src="{{ $equipment->image }}">
+                                    @endif
+                                    <input type="file" id="image" class="form-control-file @error('image') is-invalid @enderror" name="image" required>
+                                    @error('image')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="form-check-label col-md-2 col-form-label text-md-right" for="required">Required</label>
+                                <div class="col-md-8 vertical-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input @error('required') is-invalid @enderror" type="checkbox" name="required" id="required" value="1" {{ $equipment->required ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="required"></label>
+                                        @error('required')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-8 offset-md-2">
+                                    <button type="submit" class="btn btn-green">Update</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection

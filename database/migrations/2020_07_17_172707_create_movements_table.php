@@ -18,6 +18,7 @@ class CreateMovementsTable extends Migration
             $table->unsignedBigInteger('category_id');
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('creator_id')->nullable();
+            $table->unsignedBigInteger('type_id');
             $table->string('name');
             $table->string('description')->nullable();
             $table->string('youtube')->nullable();
@@ -31,6 +32,7 @@ class CreateMovementsTable extends Migration
             $table->foreign('category_id')->references('id')->on('movement_categories')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('creator_id')->references('id')->on('users');
+            $table->foreign('type_id')->references('id')->on('movement_types')->onDelete('cascade');
         });
     }
 
