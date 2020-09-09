@@ -409,6 +409,15 @@ class MovementController extends Controller
                     ];
                 }
                 break;
+            case 'AllMovements':
+                $movements = Movement::with(['category', 'type'])->get();
+                foreach ($movements as $movement) {
+                    $results[] = [
+                        'id' => $movement->id,
+                        'text' => $movement->type->name . ': [' . $movement->category->name . '] ' . $movement->name,
+                    ];
+                }
+                break;
         }
 
         if (count($results) > 0) {

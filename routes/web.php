@@ -146,6 +146,18 @@ Route::prefix('equipment')->middleware('verified')->group(function() {
     Route::get('/getEquipment', 'EquipmentController@getEquipment')->name('equipment_search');
 });
 
+Route::prefix('workout_log')->middleware('verified')->group(function() {
+    Route::get('/', 'WorkoutLogController@index')->name('workout_log_listing');
+    Route::get('/view/{id}', 'WorkoutLogController@view')->name('workout_log_view');
+    Route::get('/create', 'WorkoutLogController@create')->name('workout_log_create');
+    Route::post('/create', 'WorkoutLogController@store')->name('workout_log_store');
+    Route::get('/edit/{id}', 'WorkoutLogController@edit')->name('workout_log_edit');
+    Route::post('/edit/{id}', 'WorkoutLogController@update')->name('workout_log_update');
+    Route::get('/delete/{id}', 'WorkoutLogController@delete')->name('workout_log_delete');
+    Route::get('/getMovementFields', 'WorkoutLogController@getMovementFields')->name('movement_fields_search');
+    Route::get('/deleteMovementEntry/{id}', 'WorkoutLogController@deleteMovementEntry')->name('movement_entry_delete');
+});
+
 Route::prefix('hometown')->middleware('verified')->group(function() {
     Route::get('/spots', 'HometownController@spots')->name('hometown_spots');
     Route::get('/challenges', 'HometownController@challenges')->name('hometown_challenges');

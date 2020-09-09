@@ -68,6 +68,11 @@ class Movement extends Model
         return $this->belongsTo('App\MovementCategory');
     }
 
+    public function type()
+    {
+        return $this->belongsTo('App\MovementType');
+    }
+
     public function user()
     {
         return $this->belongsTo('App\User');
@@ -106,5 +111,10 @@ class Movement extends Model
     public function equipment()
     {
         return $this->belongsToMany('App\Equipment', 'movements_equipments', 'movement_id', 'equipment_id');
+    }
+
+    public function fields()
+    {
+        return $this->belongsToMany('App\MovementField', 'movements_fields');
     }
 }
