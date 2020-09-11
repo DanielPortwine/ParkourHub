@@ -47,30 +47,30 @@
                                 </div>
                                 <div class="movement-entries-container">
                                     @php $count = 1 @endphp
-                                    @foreach($workout->movementEntries as $movementEntry)
-                                        <input type="hidden" name="movementEntries[{{ $count }}][id]" value="{{ $movementEntry->id }}">
+                                    @foreach($workout->movements as $workoutMovement)
+                                        <input type="hidden" name="movements[{{ $count }}][id]" value="{{ $workoutMovement->id }}">
                                         <div class="movement-entry" id="movement-entry-{{ $count }}">
                                             <div class="form-group row">
                                                 <label class="col-md-2 col-form-label text-md-right">Movement</label>
                                                 <div class="col-md-8 vertical-center">
                                                     <input type="text"
                                                            class="form-control"
-                                                           name="movementEntries[{{ $count }}][movement]"
-                                                           value="{{ $movementEntry->movement->type->name . ': [' . $movementEntry->movement->category->name . '] ' . $movementEntry->movement->name }}"
+                                                           name="movements[{{ $count }}][movement]"
+                                                           value="{{ $workoutMovement->movement->type->name . ': [' . $workoutMovement->movement->category->name . '] ' . $workoutMovement->movement->name }}"
                                                            disabled
                                                     >
-                                                    <a class="btn btn-danger" href="{{ route('movement_entry_delete', $movementEntry->id) }}"><i class="fa fa-trash"></i></a>
+                                                    <a class="btn btn-danger" href="{{ route('workout_movement_delete', $workoutMovement->id) }}"><i class="fa fa-trash"></i></a>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <div class="col-md-8 offset-md-2 movement-entry-fields-{{ $count }}">
                                                     <div class="row">
-                                                        @foreach($movementEntry->movement->fields as $field)
+                                                        @foreach($workoutMovement->movement->fields as $field)
                                                             @if(!empty($field->name))
                                                                 @php $fieldName = $field->name @endphp
                                                                 <div class="col-md">
                                                                     <label>{{ $field->label }}</label><br>
-                                                                    <input class="form-control" type="{{ $field->type }}" name="movementEntries[{{ $count }}][{{ $field->name }}]" placeholder="{{ $field->unit }}" value="{{ $movementEntry->$fieldName }}">
+                                                                    <input class="form-control" type="{{ $field->type }}" name="movements[{{ $count }}][{{ $field->name }}]" placeholder="{{ $field->unit }}" value="{{ $workoutMovement->$fieldName }}">
                                                                     <small>{{ $field->small_text }}</small>
                                                                 </div>
                                                             @endif
@@ -87,7 +87,7 @@
                                     <div class="col-md-8 offset-md-2">
                                         <input type="submit" class="btn btn-green" value="Save">
                                         <a class="btn btn-danger require-confirmation float-right">Delete</a>
-                                        <a class="btn btn-danger d-none confirmation-button float-right" href="{{ route('workout_log_delete', $workout->id) }}">Confirm</a>
+                                        <a class="btn btn-danger d-none confirmation-button float-right" href="{{ route('workout_delete', $workout->id) }}">Confirm</a>
                                     </div>
                                 </div>
                             </form>
@@ -101,7 +101,7 @@
 
 @push('scripts')
     <script defer>
-        var count = {{ count($workout->movementEntries) + 1 ?: 1 }},
+        var count = {{ count($workout->movements) + 1 ?: 1 }},
             movements;
         function addMovementSelection(buttonCount = 0) {
             if (buttonCount > 0) {
@@ -113,7 +113,7 @@
                 '    <div class="form-group row">\n' +
                 '        <label class="col-md-2 col-form-label text-md-right">Movement</label>\n' +
                 '        <div class="col-md-8 vertical-center">\n' +
-                '            <select class="select2-movements-' + currentCount + '" name="movementEntries[' + currentCount + '][movement]"></select>\n' +
+                '            <select class="select2-movements-' + currentCount + '" name="movements[' + currentCount + '][movement]"></select>\n' +
                 '        </div>\n' +
                 '    </div>\n' +
                 '    <div class="form-group row">' +
@@ -129,7 +129,7 @@
             .change(function () {
                 var movement = $(this).val();
                 $.ajax({
-                    url: '/workout_log/getMovementFields',
+                    url: '/workout/getMovementFields',
                     data: {
                         movement: movement,
                     },
@@ -144,7 +144,7 @@
                                 $('.movement-entry-fields-' + currentCount + ' .row').append(
                                     '<div class="col-md">\n' +
                                     '    <label>' + field.label + '</label><br>\n' +
-                                    '    <input class="form-control" type="' + field.type + '" name="movementEntries[' + currentCount + '][' + field.name + ']" placeholder="' + field.unit + '">\n' +
+                                    '    <input class="form-control" type="' + field.type + '" name="movements[' + currentCount + '][' + field.name + ']" placeholder="' + field.unit + '">\n' +
                                     '    <small>' + field.smallText + '</small>\n' +
                                     '</div>'
                                 );
@@ -169,8 +169,8 @@
             },
             success: function (response) {
                 movements = response;
-                if ({{ count($workout->movementEntries) }} > 0) {
-                    for (x=1;x<={{ count($workout->movementEntries) }};x++) {
+                if ({{ count($workout->movements) }} > 0) {
+                    for (x=1;x<={{ count($workout->movements) }};x++) {
                         $('.select2-movements-' + x).select2({
                             data: movements,
                             width: '100%',
@@ -179,7 +179,7 @@
                             console.log(x);
                             var movement = $(this).val();
                             $.ajax({
-                                url: '/workout_log/getMovementFields',
+                                url: '/workout/getMovementFields',
                                 data: {
                                     movement: movement,
                                 },
@@ -194,7 +194,7 @@
                                             $('.movement-entry-fields-' + x + ' .row').append(
                                                 '<div class="col-md">\n' +
                                                 '    <label>' + field.label + '</label><br>\n' +
-                                                '    <input class="form-control" type="' + field.type + '" name="movementEntries[' + x + '][' + field.name + ']" placeholder="' + field.unit + '">\n' +
+                                                '    <input class="form-control" type="' + field.type + '" name="movements[' + x + '][' + field.name + ']" placeholder="' + field.unit + '">\n' +
                                                 '    <small>' + field.smallText + '</small>\n' +
                                                 '</div>'
                                             );

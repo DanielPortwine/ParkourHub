@@ -146,16 +146,16 @@ Route::prefix('equipment')->middleware('verified')->group(function() {
     Route::get('/getEquipment', 'EquipmentController@getEquipment')->name('equipment_search');
 });
 
-Route::prefix('workout_log')->middleware('verified')->group(function() {
-    Route::get('/', 'WorkoutLogController@index')->name('workout_log_listing');
-    Route::get('/view/{id}', 'WorkoutLogController@view')->name('workout_log_view');
-    Route::get('/create', 'WorkoutLogController@create')->name('workout_log_create');
-    Route::post('/create', 'WorkoutLogController@store')->name('workout_log_store');
-    Route::get('/edit/{id}', 'WorkoutLogController@edit')->name('workout_log_edit');
-    Route::post('/edit/{id}', 'WorkoutLogController@update')->name('workout_log_update');
-    Route::get('/delete/{id}', 'WorkoutLogController@delete')->name('workout_log_delete');
-    Route::get('/getMovementFields', 'WorkoutLogController@getMovementFields')->name('movement_fields_search');
-    Route::get('/deleteMovementEntry/{id}', 'WorkoutLogController@deleteMovementEntry')->name('movement_entry_delete');
+Route::prefix('workout')->middleware('verified')->group(function() {
+    Route::get('/', 'WorkoutController@index')->name('workout_listing');
+    Route::get('/view/{id}', 'WorkoutController@view')->name('workout_view');
+    Route::get('/create', 'WorkoutController@create')->name('workout_create');
+    Route::post('/create', 'WorkoutController@store')->name('workout_store');
+    Route::get('/edit/{id}', 'WorkoutController@edit')->name('workout_edit');
+    Route::post('/edit/{id}', 'WorkoutController@update')->name('workout_update');
+    Route::get('/delete/{id}', 'WorkoutController@delete')->name('workout_delete');
+    Route::get('/getMovementFields', 'WorkoutController@getMovementFields')->name('movement_fields_search');
+    Route::get('/deleteMovement/{id}', 'WorkoutController@deleteMovement')->name('workout_movement_delete');
 });
 
 Route::prefix('hometown')->middleware('verified')->group(function() {

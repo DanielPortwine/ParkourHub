@@ -18,7 +18,7 @@
             </div>
             @if ($workout->user->id === Auth()->id())
                 <div class="col-auto vertical-center">
-                    <a class="btn text-white" href="{{ route('workout_log_edit', $workout->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
+                    <a class="btn text-white" href="{{ route('workout_edit', $workout->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
                 </div>
             @endif
         </div>
@@ -34,21 +34,21 @@
             <a class="btn btn-link" id="description-more">More</a>
         </div>
     </div>
-    @if(count($workout->movementEntries))
+    @if(count($workout->movements))
         <div class="container mt-3">
-            @foreach($workout->movementEntries as $movementEntry)
+            @foreach($workout->movements as $workoutMovement)
                 <div class="card mb-3">
                     <div class="card-header bg-grey sedgwick">
-                        <a class="btn-link" href="{{ route('movement_view', $movementEntry->movement->id) }}">{{ $movementEntry->movement->name }}</a>
+                        <a class="btn-link" href="{{ route('movement_view', $workoutMovement->movement->id) }}">{{ $workoutMovement->movement->name }}</a>
                     </div>
                     <div class="card-body bg-grey text-white">
                         <div class="row">
-                            @if(isset($movementEntry->reps))<div class="col">{{ $movementEntry->reps }} reps</div> @endif
-                            @if(isset($movementEntry->weight))<div class="col">{{ $movementEntry->weight }}kg</div> @endif
-                            @if(isset($movementEntry->duration))<div class="col">{{ $movementEntry->duration }}s</div> @endif
-                            @if(isset($movementEntry->distance))<div class="col">{{ $movementEntry->distance }}cm</div> @endif
-                            @if(isset($movementEntry->height))<div class="col">{{ $movementEntry->height }}cm</div> @endif
-                            @if(isset($movementEntry->feeling))<div class="col">{{ $movementEntry->feeling }}</div> @endif
+                            @if(isset($workoutMovement->reps))<div class="col">{{ $workoutMovement->reps }} reps</div> @endif
+                            @if(isset($workoutMovement->weight))<div class="col">{{ $workoutMovement->weight }}kg</div> @endif
+                            @if(isset($workoutMovement->duration))<div class="col">{{ $workoutMovement->duration }}s</div> @endif
+                            @if(isset($workoutMovement->distance))<div class="col">{{ $workoutMovement->distance }}cm</div> @endif
+                            @if(isset($workoutMovement->height))<div class="col">{{ $workoutMovement->height }}cm</div> @endif
+                            @if(isset($workoutMovement->feeling))<div class="col">{{ $workoutMovement->feeling }}</div> @endif
                         </div>
                     </div>
                 </div>

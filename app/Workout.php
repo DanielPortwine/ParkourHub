@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class WorkoutEntry extends Model
+class Workout extends Model
 {
     protected $fillable = [
         'name',
@@ -29,8 +29,8 @@ class WorkoutEntry extends Model
         return $this->belongsTo('App\User');
     }
 
-    public function movementEntries()
+    public function movements()
     {
-        return $this->hasMany('App\WorkoutMovementEntry');
+        return $this->hasMany('App\WorkoutMovement');
     }
 }

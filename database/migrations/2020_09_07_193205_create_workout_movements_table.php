@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateWorkoutMovementEntriesTable extends Migration
+class CreateWorkoutMovementsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateWorkoutMovementEntriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('workout_movement_entries', function (Blueprint $table) {
+        Schema::create('workout_movements', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('movement_id');
-            $table->unsignedBigInteger('workout_entry_id');
+            $table->unsignedBigInteger('workout_id');
             $table->integer('reps')->nullable();
             $table->integer('weight')->nullable(); // grams
             $table->integer('duration')->nullable(); // seconds
@@ -28,7 +28,7 @@ class CreateWorkoutMovementEntriesTable extends Migration
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('movement_id')->references('id')->on('movements')->onDelete('cascade');
-            $table->foreign('workout_entry_id')->references('id')->on('workout_entries')->onDelete('cascade');
+            $table->foreign('workout_id')->references('id')->on('workouts')->onDelete('cascade');
         });
     }
 
@@ -39,6 +39,6 @@ class CreateWorkoutMovementEntriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('workout_movement_entries');
+        Schema::dropIfExists('workout_movements');
     }
 }

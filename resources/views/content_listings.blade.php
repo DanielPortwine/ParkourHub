@@ -183,7 +183,7 @@
         {{ $content->links() }}
     </div>
     @if(!empty($create) && $create)
-        <a class="btn btn-green" style="position:fixed;bottom:20px;right:20px" href="{{ route($component . '_create') }}" title="Log New Workout"><i class="fa fa-plus"></i></a>
+        <a class="btn btn-green" style="position:fixed;bottom:20px;right:20px" href="{{ route($component . '_create') }}" title="Create New {{ $title }}"><i class="fa fa-plus"></i></a>
     @endif
 @endsection
 

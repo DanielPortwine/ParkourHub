@@ -45,7 +45,7 @@
                                 <div class="mb-3">
                                     <h3 class="separator sedgwick pb-2 mb-3">Movements</h3>
                                 </div>
-                                <div class="movement-entries-container">
+                                <div class="movements-container">
                                     {{-- dynamic select boxes --}}
                                 </div>
                                 <div class="form-group row mb-0">
@@ -71,16 +71,16 @@
                 $('.btn-' + buttonCount).remove();
             }
             var currentCount = count;
-            $('.movement-entries-container').append(
-                '<div class="movement-entry" id="movement-entry-' + currentCount + '">\n' +
+            $('.movements-container').append(
+                '<div class="movement" id="movement-' + currentCount + '">\n' +
                 '    <div class="form-group row">\n' +
                 '        <label class="col-md-2 col-form-label text-md-right">Movement</label>\n' +
                 '        <div class="col-md-8 vertical-center">\n' +
-                '            <select class="select2-movements-' + currentCount + '" name="movementEntries[' + currentCount + '][movement]"></select>\n' +
+                '            <select class="select2-movements-' + currentCount + '" name="movements[' + currentCount + '][movement]"></select>\n' +
                 '        </div>\n' +
                 '    </div>\n' +
                 '    <div class="form-group row">' +
-                '        <div class="col-md-8 offset-md-2 movement-entry-fields-' + currentCount + '">\n' +
+                '        <div class="col-md-8 offset-md-2 movement-fields-' + currentCount + '">\n' +
                 '        </div>\n' +
                 '    </div>\n' +
                 '</div>'
@@ -92,22 +92,22 @@
             .change(function () {
                 var movement = $(this).val();
                 $.ajax({
-                    url: '/workout_log/getMovementFields',
+                    url: '/workout/getMovementFields',
                     data: {
                         movement: movement,
                     },
                     success: function (response) {
                         if (response) {
-                            $fieldsContainer = $('.movement-entry-fields-' + currentCount)
+                            $fieldsContainer = $('.movement-fields-' + currentCount)
                             $fieldsContainer.append(
                                 '<div class="row"></div>'
                             );
                             for (field in response) {
                                 var field = response[field];
-                                $('.movement-entry-fields-' + currentCount + ' .row').append(
+                                $('.movement-fields-' + currentCount + ' .row').append(
                                     '<div class="col-md">\n' +
                                     '    <label>' + field.label + '</label><br>\n' +
-                                    '    <input class="form-control" type="' + field.type + '" name="movementEntries[' + currentCount + '][' + field.name + ']" placeholder="' + field.unit + '">\n' +
+                                    '    <input class="form-control" type="' + field.type + '" name="movements[' + currentCount + '][' + field.name + ']" placeholder="' + field.unit + '">\n' +
                                     '    <small>' + field.smallText + '</small>\n' +
                                     '</div>'
                                 );
@@ -118,7 +118,7 @@
                                 );
                             }
                         } else {
-                            $('.movement-entry-fields-' + currentCount).html('');
+                            $('.movement-fields-' + currentCount).html('');
                         }
                     },
                 });
