@@ -107,7 +107,7 @@
                                     </div>
                                 </div>
                                 <div class="card-body bg-grey text-white">
-                                    <form method="POST" action="{{ route('movement_create') }}" enctype="multipart/form-data">
+                                    <form method="POST" action="{{ route('movement_store') }}" enctype="multipart/form-data">
                                         @csrf
                                         <input type="hidden" name="equipment" value="{{ $equipment->id }}">
                                         <div class="form-group row">

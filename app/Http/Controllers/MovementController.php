@@ -45,6 +45,7 @@ class MovementController extends Controller
             'title' => 'Movements',
             'content' => $movements,
             'component' => 'movement',
+            'create' => true,
         ]);
     }
 
@@ -122,7 +123,12 @@ class MovementController extends Controller
         ]);
     }
 
-    public function create(CreateMovement $request)
+    public function create()
+    {
+        return view('movements.create');
+    }
+
+    public function store(CreateMovement $request)
     {
         $movement = new Movement;
         $movement->category_id = $request['category'];

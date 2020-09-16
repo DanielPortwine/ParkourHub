@@ -117,7 +117,8 @@ Route::prefix('challenges')->middleware('verified')->group(function() {
 Route::prefix('movements')->middleware('verified')->group(function() {
     Route::get('/', 'MovementController@listing')->name('movement_listing');
     Route::get('/view/{id}/{tab?}', 'MovementController@view')->name('movement_view');
-    Route::post('/create', 'MovementController@create')->name('movement_create');
+    Route::get('/create', 'MovementController@create')->name('movement_create');
+    Route::post('/create', 'MovementController@store')->name('movement_store');
     Route::get('/edit/{id}', 'MovementController@edit')->name('movement_edit');
     Route::post('/edit/{id}', 'MovementController@update')->name('movement_update');
     Route::get('/delete/{id}', 'MovementController@delete')->name('movement_delete');

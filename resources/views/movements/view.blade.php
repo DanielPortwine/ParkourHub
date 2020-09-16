@@ -311,7 +311,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="card-body bg-grey text-white">
-                                                    <form method="POST" action="{{ route('movement_create') }}" enctype="multipart/form-data">
+                                                    <form method="POST" action="{{ route('movement_store') }}" enctype="multipart/form-data">
                                                         @csrf
                                                         <input type="hidden" name="type" value="{{ $originalMovement->type_id }}">
                                                         <input type="hidden" name="progression" value="{{ $originalMovement->id }}">
@@ -455,7 +455,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="card-body bg-grey text-white">
-                                                    <form method="POST" action="{{ route('movement_create') }}" enctype="multipart/form-data">
+                                                    <form method="POST" action="{{ route('movement_store') }}" enctype="multipart/form-data">
                                                         @csrf
                                                         <input type="hidden" name="type" value="{{ $originalMovement->type_id }}">
                                                         <input type="hidden" name="advancement" value="{{ $originalMovement->id }}">
@@ -599,7 +599,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="card-body bg-grey text-white">
-                                                    <form method="POST" action="{{ route('movement_create') }}" enctype="multipart/form-data">
+                                                    <form method="POST" action="{{ route('movement_store') }}" enctype="multipart/form-data">
                                                         @csrf
                                                         <input type="hidden" name="type" value="2">
                                                         <input type="hidden" name="move" value="{{ $originalMovement->id }}">
@@ -743,7 +743,7 @@
                                                 </div>
                                             </div>
                                             <div class="card-body bg-grey text-white">
-                                                <form method="POST" action="{{ route('movement_create') }}" enctype="multipart/form-data">
+                                                <form method="POST" action="{{ route('movement_store') }}" enctype="multipart/form-data">
                                                     @csrf
                                                     <input type="hidden" name="type" value="1">
                                                     <input type="hidden" name="exercise" value="{{ $originalMovement->id }}">
