@@ -10,4 +10,9 @@ class MovementField extends Model
     {
         return $this->belongsToMany('App\Movements', 'movements_fields');
     }
+
+    public function workoutMovementFields()
+    {
+        return $this->hasMany('App\WorkoutMovementField');
+    }
 }

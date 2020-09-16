@@ -146,16 +146,29 @@ Route::prefix('equipment')->middleware('verified')->group(function() {
     Route::get('/getEquipment', 'EquipmentController@getEquipment')->name('equipment_search');
 });
 
-Route::prefix('workout')->middleware('verified')->group(function() {
+Route::prefix('workouts')->middleware('verified')->group(function() {
     Route::get('/', 'WorkoutController@index')->name('workout_listing');
+    Route::get('/my_workouts', 'WorkoutController@myWorkouts')->name('workout_listing_user');
     Route::get('/view/{id}', 'WorkoutController@view')->name('workout_view');
     Route::get('/create', 'WorkoutController@create')->name('workout_create');
     Route::post('/create', 'WorkoutController@store')->name('workout_store');
     Route::get('/edit/{id}', 'WorkoutController@edit')->name('workout_edit');
     Route::post('/edit/{id}', 'WorkoutController@update')->name('workout_update');
     Route::get('/delete/{id}', 'WorkoutController@delete')->name('workout_delete');
+    Route::get('/bookmarks', 'WorkoutController@bookmarks')->name('workout_bookmark_listing');
+    Route::get('/bookmark/{id}', 'WorkoutController@bookmark')->name('workout_bookmark');
+    Route::get('/unbookmark/{id}', 'WorkoutController@unbookmark')->name('workout_unbookmark');
     Route::get('/getMovementFields', 'WorkoutController@getMovementFields')->name('movement_fields_search');
     Route::get('/deleteMovement/{id}', 'WorkoutController@deleteMovement')->name('workout_movement_delete');
+    Route::prefix('recorded')->group(function() {
+        Route::get('/', 'RecordedWorkoutController@index')->name('recorded_workout_listing');
+        Route::get('/view/{id}', 'RecordedWorkoutController@view')->name('recorded_workout_view');
+        Route::get('/create/{id}', 'RecordedWorkoutController@create')->name('recorded_workout_create');
+        Route::post('/create/{id}', 'RecordedWorkoutController@store')->name('recorded_workout_store');
+        Route::get('/edit/{id}', 'RecordedWorkoutController@edit')->name('recorded_workout_edit');
+        Route::post('/edit/{id}', 'RecordedWorkoutController@update')->name('recorded_workout_update');
+        Route::get('/delete/{id}', 'RecordedWorkoutController@delete')->name('recorded_workout_delete');
+    });
 });
 
 Route::prefix('hometown')->middleware('verified')->group(function() {

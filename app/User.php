@@ -108,4 +108,9 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany('App\Movement');
     }
+
+    public function bookmarks()
+    {
+        return $this->belongsToMany('App\Workout', 'workout_bookmarks');
+    }
 }

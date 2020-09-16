@@ -4,14 +4,43 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateWorkout;
 use App\Movement;
+use App\RecordedWorkout;
 use App\Workout;
 use App\WorkoutMovement;
+use App\WorkoutMovementField;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class WorkoutController extends Controller
 {
     public function index(Request $request)
+    {
+        $sort = ['created_at', 'desc'];
+        if (!empty($request['sort'])) {
+            $fieldMapping = [
+                'date' => 'created_at',
+            ];
+            $sortParams = explode('_', $request['sort']);
+            $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
+        }
+
+        $workouts = Workout::withCount('movements')
+            ->where('public', true)
+            ->dateBetween([
+                'from' => $request['date_from'] ?? null,
+                'to' => $request['date_to'] ?? null
+            ])
+            ->orderBy($sort[0], $sort[1])
+            ->paginate(20);
+
+        return view('content_listings', [
+            'title' => 'Workouts',
+            'content' => $workouts,
+            'component' => 'workout',
+            'create' => true,
+        ]);
+    }
+    public function myWorkouts(Request $request)
     {
         $sort = ['created_at', 'desc'];
         if (!empty($request['sort'])) {
@@ -32,19 +61,32 @@ class WorkoutController extends Controller
             ->paginate(20);
 
         return view('content_listings', [
-            'title' => 'Workout',
+            'title' => 'Workouts',
             'content' => $workouts,
             'component' => 'workout',
             'create' => true,
         ]);
     }
 
-    public function view($id)
+    public function view(Request $request, $id)
     {
-        $workout = Workout::with(['movements', 'user'])->where('id', $id)->first();
+        $workout = Workout::with([
+                'user',
+                'movements' => function($q) {
+                    $q->where('recorded_workout_id', null);
+                },
+                'movements.fields',
+                'movements.fields.field',
+            ])
+            ->where('id', $id)
+            ->first();
+
+        $recordedWorkouts = RecordedWorkout::where('workout_id', $id)->where('user_id', Auth::id())->paginate(10);
 
         return view('workouts.view', [
             'workout' => $workout,
+            'recordedWorkouts' => $recordedWorkouts,
+            'request' => $request,
         ]);
     }
 
@@ -60,20 +102,55 @@ class WorkoutController extends Controller
         $workout->user_id = $userId;
         $workout->name = $request['name'] ?: null;
         $workout->description = $request['description'] ?: null;
+        $workout->public = $request['public'] ?: null;
         $workout->save();
 
         foreach ($request['movements'] as $movementRequest) {
+            if (count($movementRequest) === 1) {
+                continue;
+            }
             $movement = new WorkoutMovement;
             $movement->user_id = $userId;
             $movement->movement_id = $movementRequest['movement'];
             $movement->workout_id = $workout->id;
-            $movement->reps = isset($movementRequest['reps']) ? $movementRequest['reps'] : null;
-            $movement->weight = isset($movementRequest['weight']) ? $movementRequest['weight'] : null;
-            $movement->duration = isset($movementRequest['duration']) ? $movementRequest['duration'] : null;
-            $movement->distance = isset($movementRequest['distance']) ? $movementRequest['distance'] : null;
-            $movement->height = isset($movementRequest['height']) ? $movementRequest['height'] : null;
-            $movement->feeling = isset($movementRequest['feeling']) ? $movementRequest['feeling'] : null;
             $movement->save();
+
+            foreach ($movementRequest['fields'] as $id => $value) {
+                $field = new WorkoutMovementField;
+                $field->movement_field_id = $id;
+                $field->workout_movement_id = $movement->id;
+                $field->value = $value;
+                $field->save();
+            }
+        }
+
+        if (!empty($request['create-record'])) {
+            $recordedWorkout = new RecordedWorkout;
+            $recordedWorkout->user_id = $userId;
+            $recordedWorkout->workout_id = $workout->id;
+            $recordedWorkout->save();
+
+            foreach ($request['movements'] as $movementRequest) {
+                if (count($movementRequest) === 1) {
+                    continue;
+                }
+                $movement = new WorkoutMovement;
+                $movement->user_id = $userId;
+                $movement->movement_id = $movementRequest['movement'];
+                $movement->workout_id = $workout->id;
+                if (!empty($request['create-record'])) {
+                    $movement->recorded_workout_id = $recordedWorkout->id;
+                }
+                $movement->save();
+
+                foreach ($movementRequest['fields'] as $id => $value) {
+                    $field = new WorkoutMovementField;
+                    $field->movement_field_id = $id;
+                    $field->workout_movement_id = $movement->id;
+                    $field->value = $value;
+                    $field->save();
+                }
+            }
         }
 
         return redirect()->route('workout_view', $workout->id)->with('status', 'Successfully created workout');
@@ -81,7 +158,14 @@ class WorkoutController extends Controller
 
     public function edit($id)
     {
-        $workout = Workout::with('movements')->where('id', $id)->first();
+        $workout = Workout::with([
+                'movements' => function($q) {
+                    $q->where('recorded_workout_id', null);
+                },
+                'movements.fields',
+            ])
+            ->where('id', $id)
+            ->first();
 
         return view('workouts.edit', [
             'workout' => $workout,
@@ -94,6 +178,7 @@ class WorkoutController extends Controller
         $workout = Workout::where('id', $id)->first();
         $workout->name = $request['name'] ?: null;
         $workout->description = $request['description'] ?: null;
+        $workout->public = $request['public'] ?: null;
         $workout->save();
 
         foreach ($request['movements'] as $movementRequest) {
@@ -101,20 +186,26 @@ class WorkoutController extends Controller
                 continue;
             }
             if (!empty($movementRequest['id'])) {
-                $movement = WorkoutMovement::where('id', $movementRequest['id'])->first();
+                foreach ($movementRequest['fields'] as $id => $value) {
+                    $field = WorkoutMovementField::where('id', $id)->first();
+                    $field->value = $value;
+                    $field->save();
+                }
             } else {
                 $movement = new WorkoutMovement;
                 $movement->user_id = $userId;
                 $movement->movement_id = $movementRequest['movement'];
                 $movement->workout_id = $workout->id;
+                $movement->save();
+
+                foreach ($movementRequest['fields'] as $id => $value) {
+                    $field = new WorkoutMovementField;
+                    $field->movement_field_id = $id;
+                    $field->workout_movement_id = $movement->id;
+                    $field->value = $value;
+                    $field->save();
+                }
             }
-            $movement->reps = isset($movementRequest['reps']) ? $movementRequest['reps'] : null;
-            $movement->weight = isset($movementRequest['weight']) ? $movementRequest['weight'] : null;
-            $movement->duration = isset($movementRequest['duration']) ? $movementRequest['duration'] : null;
-            $movement->distance = isset($movementRequest['distance']) ? $movementRequest['distance'] : null;
-            $movement->height = isset($movementRequest['height']) ? $movementRequest['height'] : null;
-            $movement->feeling = isset($movementRequest['feeling']) ? $movementRequest['feeling'] : null;
-            $movement->save();
         }
 
         return redirect()->route('workout_view', $workout->id)->with('status', 'Successfully updated workout');
@@ -129,6 +220,50 @@ class WorkoutController extends Controller
         }
 
         return redirect()->route('workout_listing')->with('status', 'Successfully deleted workout');
+    }
+
+    public function bookmarks(Request $request)
+    {
+        $sort = ['created_at', 'desc'];
+        if (!empty($request['sort'])) {
+            $fieldMapping = [
+                'date' => 'created_at',
+            ];
+            $sortParams = explode('_', $request['sort']);
+            $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
+        }
+
+        $workouts = Auth::user()
+            ->bookmarks()
+            ->withCount('movements')
+            ->dateBetween([
+                'from' => $request['date_from'] ?? null,
+                'to' => $request['date_to'] ?? null
+            ])
+            ->orderBy($sort[0], $sort[1])
+            ->paginate(20);
+
+        return view('content_listings', [
+            'title' => 'Bookmarked Workouts',
+            'content' => $workouts,
+            'component' => 'workout',
+        ]);
+    }
+
+    public function bookmark($id)
+    {
+        $workout = Workout::where('id', $id)->first();
+        $workout->bookmarks()->attach(Auth::id());
+
+        return back()->with('status', 'Successfully bookmarked workout');
+    }
+
+    public function unbookmark($id)
+    {
+        $workout = Workout::where('id', $id)->first();
+        $workout->bookmarks()->detach(Auth::id());
+
+        return back()->with('status', 'Successfully removed bookmark');
     }
 
     public function getMovementFields(Request $request)
@@ -146,6 +281,7 @@ class WorkoutController extends Controller
 
         foreach ($movement->fields as $field) {
             $fields[] = [
+                'id' => $field->id,
                 'name' => $field->name,
                 'type' => $field->input_type,
                 'label' => $field->label,

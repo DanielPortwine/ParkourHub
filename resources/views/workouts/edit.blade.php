@@ -42,6 +42,19 @@
                                         @enderror
                                     </div>
                                 </div>
+                                <div class="form-group row">
+                                    <div class="col-md-8 offset-md-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input @error('public') is-invalid @enderror" type="checkbox" name="public" id="public" value="1" {{ $workout->public ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="public">Public</label>
+                                            @error('private')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="mb-3">
                                     <h3 class="separator sedgwick pb-2 mb-3">Movements</h3>
                                 </div>
@@ -53,9 +66,9 @@
                                             <div class="form-group row">
                                                 <label class="col-md-2 col-form-label text-md-right">Movement</label>
                                                 <div class="col-md-8 vertical-center">
+                                                    <input type="hidden" name="movements[{{ $count }}][movement]" value="{{ $workoutMovement->movement_id }}">
                                                     <input type="text"
                                                            class="form-control"
-                                                           name="movements[{{ $count }}][movement]"
                                                            value="{{ $workoutMovement->movement->type->name . ': [' . $workoutMovement->movement->category->name . '] ' . $workoutMovement->movement->name }}"
                                                            disabled
                                                     >
@@ -65,13 +78,12 @@
                                             <div class="form-group row">
                                                 <div class="col-md-8 offset-md-2 movement-entry-fields-{{ $count }}">
                                                     <div class="row">
-                                                        @foreach($workoutMovement->movement->fields as $field)
-                                                            @if(!empty($field->name))
-                                                                @php $fieldName = $field->name @endphp
+                                                        @foreach($workoutMovement->fields as $field)
+                                                            @if(!empty($field->field->name))
                                                                 <div class="col-md">
-                                                                    <label>{{ $field->label }}</label><br>
-                                                                    <input class="form-control" type="{{ $field->type }}" name="movements[{{ $count }}][{{ $field->name }}]" placeholder="{{ $field->unit }}" value="{{ $workoutMovement->$fieldName }}">
-                                                                    <small>{{ $field->small_text }}</small>
+                                                                    <label>{{ $field->field->label }}</label><br>
+                                                                    <input class="form-control" type="{{ $field->field->type }}" name="movements[{{ $count }}][fields][{{ $field->id }}]" placeholder="{{ $field->field->unit }}" value="{{ $field->value }}">
+                                                                    <small>{{ $field->field->small_text }}</small>
                                                                 </div>
                                                             @endif
                                                         @endforeach
@@ -85,7 +97,7 @@
                                 </div>
                                 <div class="form-group row mb-0">
                                     <div class="col-md-8 offset-md-2">
-                                        <input type="submit" class="btn btn-green" value="Save">
+                                        <input type="submit" class="btn btn-green" value="Update" title="Update Workout">
                                         <a class="btn btn-danger require-confirmation float-right">Delete</a>
                                         <a class="btn btn-danger d-none confirmation-button float-right" href="{{ route('workout_delete', $workout->id) }}">Confirm</a>
                                     </div>
@@ -129,7 +141,7 @@
             .change(function () {
                 var movement = $(this).val();
                 $.ajax({
-                    url: '/workout/getMovementFields',
+                    url: '/workouts/getMovementFields',
                     data: {
                         movement: movement,
                     },
@@ -144,7 +156,7 @@
                                 $('.movement-entry-fields-' + currentCount + ' .row').append(
                                     '<div class="col-md">\n' +
                                     '    <label>' + field.label + '</label><br>\n' +
-                                    '    <input class="form-control" type="' + field.type + '" name="movements[' + currentCount + '][' + field.name + ']" placeholder="' + field.unit + '">\n' +
+                                    '    <input class="form-control" type="' + field.type + '" name="movements[' + currentCount + '][fields][' + field.id + ']" placeholder="' + field.unit + '">\n' +
                                     '    <small>' + field.smallText + '</small>\n' +
                                     '</div>'
                                 );
@@ -176,10 +188,9 @@
                             width: '100%',
                         })
                         .change(function () {
-                            console.log(x);
                             var movement = $(this).val();
                             $.ajax({
-                                url: '/workout/getMovementFields',
+                                url: '/workouts/getMovementFields',
                                 data: {
                                     movement: movement,
                                 },
@@ -194,7 +205,7 @@
                                             $('.movement-entry-fields-' + x + ' .row').append(
                                                 '<div class="col-md">\n' +
                                                 '    <label>' + field.label + '</label><br>\n' +
-                                                '    <input class="form-control" type="' + field.type + '" name="movements[' + x + '][' + field.name + ']" placeholder="' + field.unit + '">\n' +
+                                                '    <input class="form-control" type="' + field.type + '" name="movements[' + x + '][fields][' + field.id + ']" placeholder="' + field.unit + '">\n' +
                                                 '    <small>' + field.smallText + '</small>\n' +
                                                 '</div>'
                                             );
