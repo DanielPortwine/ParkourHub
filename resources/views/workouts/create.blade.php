@@ -111,6 +111,7 @@
                         movement: movement,
                     },
                     success: function (response) {
+                        $('.movement-fields-' + currentCount).html('');
                         if (response) {
                             $fieldsContainer = $('.movement-fields-' + currentCount)
                             $fieldsContainer.append(
@@ -131,8 +132,6 @@
                                     '<a class="btn btn-sm btn-green btn-' + currentCount + '" title="Add Movement" onclick="addMovementSelection(' + currentCount + ')"><i class="fa fa-plus"></i></a>'
                                 );
                             }
-                        } else {
-                            $('.movement-fields-' + currentCount).html('');
                         }
                     },
                 });

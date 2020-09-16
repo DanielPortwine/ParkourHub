@@ -12206,6 +12206,15 @@ input[type=checkbox]:checked + label:after {
   background-color: #73c979;
 }
 
+.form-group .select2-container.select2-container--default .select2-selection--multiple .select2-selection__choice {
+  background: #73c979;
+  border: 1px solid #73c979;
+}
+
+.form-group .select2-container.select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+  color: #f0f5f0;
+}
+
 @media (max-width: 991.98px) {
   .map-search {
     width: 100%;

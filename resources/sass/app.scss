@@ -650,6 +650,15 @@ input[type="checkbox"]:checked + label:after {
     background-color: $green;
 }
 
+.form-group .select2-container.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background: $green;
+    border: 1px solid $green;
+}
+
+.form-group .select2-container.select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+    color: $white;
+}
+
 @include media-breakpoint-down(md) {
     .map-search {
         width: 100%;

@@ -134,6 +134,8 @@ Route::prefix('movements')->middleware('verified')->group(function() {
     Route::get('/unofficialise/{id}', 'MovementController@unofficialise')->name('movement_unofficialise');
     Route::get('/getMovements', 'MovementController@getMovements')->name('movement_search');
     Route::get('/getMovementCategories', 'MovementController@getMovementCategories')->name('movement_category_search');
+    Route::get('/getMovementFields', 'MovementController@getMovementFields')->name('movement_field_search');
+    Route::get('/getFieldsFromMovement', 'MovementController@getFieldsFromMovement')->name('field_from_movement_search');
 });
 
 Route::prefix('equipment')->middleware('verified')->group(function() {

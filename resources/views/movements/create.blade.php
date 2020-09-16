@@ -73,6 +73,12 @@
                                 </div>
                             </div>
                             <div class="form-group row">
+                                <label class="col-md-2 col-form-label text-md-right">Fields</label>
+                                <div class="col-md-8 vertical-center">
+                                    <select class="select2-movement-fields" name="fields[]" multiple="multiple"></select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
                                 <div class="col-md-8 offset-md-2">
                                     <button type="submit" class="btn btn-green">Create</button>
                                 </div>
@@ -94,6 +100,15 @@
             },
             success: function (response) {
                 $('.select2-movement-category').select2({
+                    data: response,
+                    width: '100%',
+                });
+            },
+        });
+        $.ajax({
+            url: '/movements/getMovementFields',
+            success: function (response) {
+                $('.select2-movement-fields').select2({
                     data: response,
                     width: '100%',
                 });

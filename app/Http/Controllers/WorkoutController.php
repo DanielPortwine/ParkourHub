@@ -279,7 +279,7 @@ class WorkoutController extends Controller
         $fields = [];
         $movement = Movement::with('fields')->where('id', $request['movement'])->first();
 
-        foreach ($movement->fields as $field) {
+        foreach ($movement->fields()->orderBy('id')->get() as $field) {
             $fields[] = [
                 'id' => $field->id,
                 'name' => $field->name,

@@ -10,6 +10,7 @@ use App\Http\Requests\LinkMovements;
 use App\Http\Requests\UpdateMovement;
 use App\Movement;
 use App\MovementCategory;
+use App\MovementField;
 use App\Report;
 use App\Spot;
 use Illuminate\Http\Request;
@@ -147,6 +148,10 @@ class MovementController extends Controller
         }
         $movement->save();
 
+        foreach ($request['fields'] as $field) {
+            $movement->fields()->attach($field);
+        }
+
         if (!empty($request['spot'])) {
             $movement->spots()->attach($request['spot'], ['user_id' => Auth::id()]);
         } else if (!empty($request['progression'])) {
@@ -164,7 +169,7 @@ class MovementController extends Controller
 
     public function edit($id)
     {
-        $movement = Movement::where('id', $id)->first();
+        $movement = Movement::with(['fields'])->where('id', $id)->first();
         if ($movement->user_id != Auth::id()) {
             return redirect()->route('movement_view', $id);
         }
@@ -190,6 +195,18 @@ class MovementController extends Controller
             $movement->video_type = $video->extension();
         }
         $movement->save();
+
+        $movementFields = $movement->fields()->pluck('movement_fields.id')->toArray();
+        foreach ($request['fields'] as $field) {
+            if (!in_array($field, $movementFields)) {
+                $movement->fields()->attach($field);
+            }
+        }
+        foreach ($movementFields as $movementField) {
+            if (!in_array($movementField, $request['fields'])) {
+                $movement->fields()->detach($movementField);
+            }
+        }
 
         return back()->with('status', 'Successfully updated movement.');
     }
@@ -446,6 +463,40 @@ class MovementController extends Controller
                 'id' => $category->id,
                 'text' => (count($request['types']) > 1 ? '[' . $category->type->name . '] ' : '') . $category->name,
             ];
+        }
+
+        return $results;
+    }
+
+    public function getMovementFields(Request $request)
+    {
+        if (!$request->ajax()) {
+            return back();
+        }
+
+        $results = [];
+        $movementFields = MovementField::get();
+        foreach ($movementFields as $field) {
+            $results[] = [
+                'id' => $field->id,
+                'text' => $field->label,
+            ];
+        }
+
+        return $results;
+    }
+
+    public function getFieldsFromMovement(Request $request)
+    {
+        if (!$request->ajax()) {
+            return back();
+        }
+
+        $results = [];
+        $movement = Movement::with('fields')->where('id', $request['id'])->first();
+        $movementFields = $movement->fields;
+        foreach ($movementFields as $field) {
+            $results[] = $field->id;
         }
 
         return $results;
