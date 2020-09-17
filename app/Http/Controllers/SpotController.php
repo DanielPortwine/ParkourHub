@@ -11,6 +11,7 @@ use App\Notifications\SpotCreated;
 use App\Report;
 use App\Spot;
 use App\SpotView;
+use App\Workout;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -80,6 +81,7 @@ class SpotController extends Controller
             $reviews = null;
             $comments = null;
             $challenges = null;
+            $workouts = null;
             if (!empty($request['reviews']) && ($tab == null || $tab === 'reviews')) {
                 $reviews = $spot->reviews()->whereNotNull('title')->orderByDesc('created_at')->paginate(20, ['*'], 'reviews')->fragment('content');
             } else if ($tab == null || $tab === 'reviews') {
@@ -95,6 +97,11 @@ class SpotController extends Controller
             } else if ($tab === 'challenges') {
                 $challenges = $spot->challenges()->orderByDesc('created_at')->limit(4)->get();
             }
+            if (!empty($request['workouts']) && $tab === 'workouts') {
+                $workouts = $spot->workouts()->orderByDesc('created_at')->paginate(20, ['*'], 'workouts')->fragment('content');
+            } else if ($tab === 'workouts') {
+                $workouts = $spot->workouts()->orderByDesc('created_at')->limit(4)->get();
+            }
             $usersViewed = SpotView::where('spot_id', $id)->pluck('user_id')->toArray();
             if (!in_array(Auth::id(), $usersViewed) && Auth::id() !== $spot->user_id) {
                 $view = new SpotView;
@@ -109,6 +116,7 @@ class SpotController extends Controller
                 'reviews' => $reviews,
                 'comments' => $comments,
                 'challenges' => $challenges,
+                'workouts' => $workouts,
                 'tab' => $tab,
                 'movements' => $spot->movements,
             ]);
@@ -270,5 +278,33 @@ class SpotController extends Controller
         }
 
         return back()->with('status', 'Successfully removed movement from spot.');
+    }
+
+    public function linkWorkout(Request $request)
+    {
+        $spot = Spot::where('id', $request['spot'])->first();
+        $spot->workouts()->attach($request['workout']);
+
+        return back()->with('status', 'Successfully linked workout with spot.');
+    }
+
+    public function getSpots(Request $request)
+    {
+        if (!$request->ajax()) {
+            return back();
+        }
+
+        $results = [];
+        $workoutSpots = Workout::where('id', $request['workout'])->first()->spots()->pluck('spots.id')->toArray();
+        $spots = Spot::whereNotIn('id', $workoutSpots)->get();
+
+        foreach ($spots as $spot) {
+            $results[] = [
+                'id' => $spot->id,
+                'text' => $spot->name,
+            ];
+        }
+
+        return $results;
     }
 }

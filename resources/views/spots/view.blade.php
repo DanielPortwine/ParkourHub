@@ -232,6 +232,11 @@
                         <li class="nav-item">
                             <a class="nav-link btn-link @if($tab === 'challenges')active @endif" href="{{ route('spot_view', ['id' => $spot->id, 'tab' => 'challenges']) }}#content">Challenges</a>
                         </li>
+                        @premium
+                            <li class="nav-item">
+                                <a class="nav-link btn-link @if($tab === 'workouts')active @endif" href="{{ route('spot_view', ['id' => $spot->id, 'tab' => 'workouts']) }}#content">Workouts</a>
+                            </li>
+                        @endpremium
                     </ul>
                 </div>
                 @if($tab == null || $tab === 'reviews')
@@ -564,6 +569,72 @@
                             </div>
                         @endif
                     </div>
+                @elseif($tab === 'workouts')
+                    <div class="card-body bg-black">
+                        <div class="row mb-4">
+                            <div class="col">
+                                <div class="card @error('workout') border-danger @enderror">
+                                    <div class="card-header bg-green sedgwick card-hidden-body">
+                                        <div class="row">
+                                            <div class="col">
+                                                Link Workout
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="fa fa-caret-down"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body bg-grey text-white">
+                                        <form method="POST" action="{{ route('spot_workout_link') }}" enctype="multipart/form-data">
+                                            @csrf
+                                            <input type="hidden" name="spot" value="{{ $spot->id }}">
+                                            <div class="form-group row">
+                                                <label for="title" class="col-md-2 col-form-label text-md-right">Workout</label>
+                                                <div class="col-md-8">
+                                                    <select class="select2-workouts" name="workout"></select>
+                                                    <small>Select a workout that can be completed at this spot.</small>
+                                                    @error('workout')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                    @enderror
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <button type="submit" class="btn btn-green">Link</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @if(!empty($request['workouts']))
+                            {{ $workouts->links() }}
+                        @endif
+                        @foreach($workouts->chunk(2) as $chunk)
+                            <div class="row">
+                                @foreach($chunk as $workout)
+                                    <div class="col-md-6 mb-4">
+                                        @include('components.workout')
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endforeach
+                        @if(!empty($request['workouts']))
+                            {{ $workouts->links() }}
+                        @endif
+                        @if (count($spot->workouts) === 0)
+                            <p class="mb-0">This spot has no workouts yet. Link one by selecting it above.</p>
+                        @elseif(count($spot->workouts) > 4)
+                            <div class="col text-center mb-4">
+                                @if(empty($request['workouts']))
+                                    <a class="btn btn-green w-75" href="?workouts=1#content">More</a>
+                                @else
+                                    <a class="btn btn-green w-75" href="{{ route('spot_view', $spot->id) }}#content">Less</a>
+                                @endif
+                            </div>
+                        @endif
+                    </div>
                 @endif
             </div>
         </div>
@@ -597,6 +668,18 @@
             },
             success: function (response) {
                 $('.select2-movement-category').select2({
+                    data: response,
+                    width: '100%',
+                });
+            },
+        });
+        $.ajax({
+            url: '/workouts/getWorkouts',
+            data: {
+                spot: {{ $spot->id }}
+            },
+            success: function (response) {
+                $('.select2-workouts').select2({
                     data: response,
                     width: '100%',
                 });

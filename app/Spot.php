@@ -124,4 +124,9 @@ class Spot extends Model
     {
         return $this->belongsToMany('App\Movement', 'spots_movements');
     }
+
+    public function workouts()
+    {
+        return $this->belongsToMany('App\Workout', 'spots_workouts');
+    }
 }

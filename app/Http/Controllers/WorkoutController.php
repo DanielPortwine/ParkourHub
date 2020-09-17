@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateWorkout;
 use App\Movement;
 use App\RecordedWorkout;
+use App\Spot;
 use App\Workout;
 use App\WorkoutMovement;
 use App\WorkoutMovementField;
@@ -68,7 +69,7 @@ class WorkoutController extends Controller
         ]);
     }
 
-    public function view(Request $request, $id)
+    public function view(Request $request, $id, $tab = null)
     {
         $workout = Workout::with([
                 'user',
@@ -82,11 +83,14 @@ class WorkoutController extends Controller
             ->first();
 
         $recordedWorkouts = RecordedWorkout::where('workout_id', $id)->where('user_id', Auth::id())->paginate(10);
+        $spots = Workout::where('id', $id)->first()->spots()->orderByDesc('created_at')->paginate(20);
 
         return view('workouts.view', [
             'workout' => $workout,
             'recordedWorkouts' => $recordedWorkouts,
+            'spots' => $spots,
             'request' => $request,
+            'tab' => $tab,
         ]);
     }
 
@@ -302,5 +306,25 @@ class WorkoutController extends Controller
         }
 
         return back()->with('status', 'Successfully deleted workout movement');
+    }
+
+    public function getWorkouts(Request $request)
+    {
+        if (!$request->ajax()) {
+            return back();
+        }
+
+        $results = [];
+        $spotWorkouts = Spot::where('id', $request['spot'])->first()->workouts()->pluck('workouts.id')->toArray();
+        $workouts = Workout::whereNotIn('id', $spotWorkouts)->get();
+
+        foreach ($workouts as $workout) {
+            $results[] = [
+                'id' => $workout->id,
+                'text' => $workout->name ?: 'Workout ' . date('d/m/Y', strtotime($workout->created_at)),
+            ];
+        }
+
+        return $results;
     }
 }

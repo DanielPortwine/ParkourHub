@@ -77,6 +77,8 @@ Route::prefix('spots')->middleware('verified')->group(function() {
     Route::get('/delete_reported/{id}', 'SpotController@deleteReported')->name('spot_report_delete');
     Route::post('/add_movement/{id}', 'SpotController@addMovement')->name('spot_add_movement');
     Route::get('/remove_movement/{spotID}/{movement}', 'SpotController@removeMovement')->name('spot_remove_movement');
+    Route::post('/link_workout', 'SpotController@linkWorkout')->name('spot_workout_link');
+    Route::get('/getSpots', 'SpotController@getSpots')->name('spot_search');
 });
 
 Route::prefix('/reviews')->middleware('verified')->group(function() {
@@ -152,7 +154,7 @@ Route::prefix('equipment')->middleware('verified')->group(function() {
 Route::prefix('workouts')->middleware('verified')->group(function() {
     Route::get('/', 'WorkoutController@index')->name('workout_listing');
     Route::get('/my_workouts', 'WorkoutController@myWorkouts')->name('workout_listing_user');
-    Route::get('/view/{id}', 'WorkoutController@view')->name('workout_view');
+    Route::get('/view/{id}/{tab?}', 'WorkoutController@view')->name('workout_view');
     Route::get('/create', 'WorkoutController@create')->name('workout_create');
     Route::post('/create', 'WorkoutController@store')->name('workout_store');
     Route::get('/edit/{id}', 'WorkoutController@edit')->name('workout_edit');
@@ -163,6 +165,7 @@ Route::prefix('workouts')->middleware('verified')->group(function() {
     Route::get('/unbookmark/{id}', 'WorkoutController@unbookmark')->name('workout_unbookmark');
     Route::get('/getMovementFields', 'WorkoutController@getMovementFields')->name('movement_fields_search');
     Route::get('/deleteMovement/{id}', 'WorkoutController@deleteMovement')->name('workout_movement_delete');
+    Route::get('/getWorkouts', 'WorkoutController@getWorkouts')->name('workout_search');
     Route::prefix('recorded')->group(function() {
         Route::get('/', 'RecordedWorkoutController@index')->name('recorded_workout_listing');
         Route::get('/view/{id}', 'RecordedWorkoutController@view')->name('recorded_workout_view');

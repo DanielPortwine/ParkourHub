@@ -38,4 +38,9 @@ class Workout extends Model
     {
         return $this->belongsToMany('App\User', 'workout_bookmarks');
     }
+
+    public function spots()
+    {
+        return $this->belongsToMany('App\Spot', 'spots_workouts');
+    }
 }

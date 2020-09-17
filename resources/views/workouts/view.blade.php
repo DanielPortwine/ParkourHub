@@ -40,45 +40,114 @@
             <a class="btn btn-link" id="description-more">More</a>
         </div>
     </div>
-    @if(count($workout->movements))
-        <div class="container mt-3">
-            @foreach($workout->movements as $workoutMovement)
-                <div class="card mb-3">
-                    <div class="card-header bg-grey sedgwick">
-                        <a class="btn-link" href="{{ route('movement_view', $workoutMovement->movement->id) }}">{{ $workoutMovement->movement->name }}</a>
-                    </div>
-                    <div class="card-body bg-grey text-white">
-                        <div class="row">
-                            @foreach($workoutMovement->fields as $field)
-                                <div class="col">{{ $field->field->label . ': ' . $field->value }}</div>
-                            @endforeach
-                        </div>
-                    </div>
+    <div class="section">
+        <div class="container">
+            <div class="card bg-black border-0">
+                <div class="card-header card-header-black">
+                    <ul class="nav nav-tabs card-header-tabs">
+                        <li class="nav-item">
+                            <a class="nav-link btn-link @if($tab == null || $tab === 'movements')active @endif" href="{{ route('workout_view', ['id' => $workout->id, 'tab' => null]) }}">Movements</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn-link @if($tab === 'recorded')active @endif" href="{{ route('workout_view', ['id' => $workout->id, 'tab' => 'recorded']) }}">Recorded Workouts</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn-link @if($tab === 'spots')active @endif" href="{{ route('workout_view', ['id' => $workout->id, 'tab' => 'spots']) }}">Spots</a>
+                        </li>
+                    </ul>
                 </div>
-            @endforeach
-        </div>
-    @endif
-    <div class="container my-3">
-        <div class="row pt-4">
-            <div class="col vertical-center">
-                <h3 class="sedgwick">Recorded Workouts</h3>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                {{ $recordedWorkouts->links() }}
-                @foreach($recordedWorkouts->chunk(2) as $chunk)
-                    <div class="row">
-                        @foreach($chunk as $recorded_workout)
-                            <div class="col-md-6 mb-4">
-                                @include('components.recorded_workout')
+                @if($tab == null || $tab === 'movements')
+                    <div class="card-body bg-black">
+                        @if(count($workout->movements))
+                            @foreach($workout->movements as $workoutMovement)
+                                <div class="card mb-3">
+                                    <div class="card-header bg-grey sedgwick">
+                                        <a class="btn-link" href="{{ route('movement_view', $workoutMovement->movement->id) }}">{{ $workoutMovement->movement->name }}</a>
+                                    </div>
+                                    <div class="card-body bg-grey text-white">
+                                        <div class="row">
+                                            @foreach($workoutMovement->fields as $field)
+                                                <div class="col">{{ $field->field->label . ': ' . $field->value }}</div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        @else
+                            There are no movements in this workout.
+                        @endif
+                    </div>
+                @elseif($tab === 'recorded')
+                    <div class="card-body bg-black">
+                        {{ $recordedWorkouts->links() }}
+                        @foreach($recordedWorkouts->chunk(2) as $chunk)
+                            <div class="row">
+                                @foreach($chunk as $recorded_workout)
+                                    <div class="col-md-6 mb-4">
+                                        @include('components.recorded_workout')
+                                    </div>
+                                @endforeach
                             </div>
                         @endforeach
+                        {{ $recordedWorkouts->links() }}
+                        @if (count($recordedWorkouts) === 0)
+                            <p class="mb-0">You haven't recorded any of this workout yet. You can click at the top of the page to record one.</p>
+                        @endif
                     </div>
-                @endforeach
-                {{ $recordedWorkouts->links() }}
-                @if (count($recordedWorkouts) === 0)
-                    <p class="mb-0">You haven't recorded any of this workout yet. You can click at the top of the page to record one.</p>
+                @elseif($tab === 'spots')
+                    <div class="card-body bg-black">
+                        <div class="row mb-4">
+                            <div class="col">
+                                <div class="card @error('workout') border-danger @enderror">
+                                    <div class="card-header bg-green sedgwick card-hidden-body">
+                                        <div class="row">
+                                            <div class="col">
+                                                Link Workout
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="fa fa-caret-down"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body bg-grey text-white">
+                                        <form method="POST" action="{{ route('spot_workout_link') }}" enctype="multipart/form-data">
+                                            @csrf
+                                            <input type="hidden" name="workout" value="{{ $workout->id }}">
+                                            <div class="form-group row">
+                                                <label for="title" class="col-md-2 col-form-label text-md-right">Spot</label>
+                                                <div class="col-md-8">
+                                                    <select class="select2-spots" name="spot"></select>
+                                                    <small>Select a spot that this workout can be completed at.</small>
+                                                    @error('workout')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                    @enderror
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <button type="submit" class="btn btn-green">Link</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {{ $spots->links() }}
+                        @foreach($spots->chunk(2) as $chunk)
+                            <div class="row">
+                                @foreach($chunk as $spot)
+                                    <div class="col-md-6 mb-4">
+                                        @include('components.spot')
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endforeach
+                        {{ $spots->links() }}
+                        @if (count($workout->spots) === 0)
+                            <p class="mb-0">This workout hasn't been linked to any spots yet. Link it to one above.</p>
+                        @endif
+                    </div>
                 @endif
             </div>
         </div>
@@ -88,3 +157,20 @@
 @section('footer')
     @include('components.footer')
 @endsection
+
+@push('scripts')
+    <script defer>
+        $.ajax({
+            url: '/spots/getSpots',
+            data: {
+                workout: {{ $workout->id }}
+            },
+            success: function (response) {
+                $('.select2-spots').select2({
+                    data: response,
+                    width: '100%',
+                });
+            },
+        });
+    </script>
+@endpush
