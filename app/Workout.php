@@ -43,4 +43,9 @@ class Workout extends Model
     {
         return $this->belongsToMany('App\Spot', 'spots_workouts');
     }
+
+    public function planUsers()
+    {
+        return $this->belongsToMany('App\User', 'workout_plans')->withPivot('id', 'date');
+    }
 }

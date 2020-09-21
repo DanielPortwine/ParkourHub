@@ -113,4 +113,9 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->belongsToMany('App\Workout', 'workout_bookmarks');
     }
+
+    public function planWorkouts()
+    {
+        return $this->belongsToMany('App\Workout', 'workout_plans')->withPivot('id', 'date');
+    }
 }

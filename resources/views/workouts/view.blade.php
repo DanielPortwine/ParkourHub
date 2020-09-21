@@ -102,7 +102,7 @@
                                     <div class="card-header bg-green sedgwick card-hidden-body">
                                         <div class="row">
                                             <div class="col">
-                                                Link Workout
+                                                Link Spot
                                             </div>
                                             <div class="col-auto">
                                                 <i class="fa fa-caret-down"></i>
@@ -118,7 +118,7 @@
                                                 <div class="col-md-8">
                                                     <select class="select2-spots" name="spot"></select>
                                                     <small>Select a spot that this workout can be completed at.</small>
-                                                    @error('workout')
+                                                    @error('spot')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
                                                     </span>

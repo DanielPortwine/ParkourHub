@@ -75,6 +75,10 @@ html, body {
     z-index: 10;
 }
 
+.h-20 {
+    height: 20%;
+}
+
 .sedgwick {
     font-family: 'Sedgwick Ave Display', sans-serif;
 }
@@ -603,6 +607,23 @@ input[type="checkbox"]:checked + label:after {
 
 .user-stats {
     font-size: 30px;
+}
+
+.calendar-card-header {
+    font-size: 1rem;
+    padding: 0.2rem 0.5rem;
+}
+
+.calendar-card-body {
+    min-height: 50px;
+    max-height: 150px;
+    overflow: auto;
+}
+
+.current-day {
+    background-color: $movementOrange;
+    border-radius: 50%;
+    padding: 5px;
 }
 
 .StripeElement {

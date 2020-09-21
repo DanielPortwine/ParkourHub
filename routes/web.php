@@ -175,6 +175,12 @@ Route::prefix('workouts')->middleware('verified')->group(function() {
         Route::post('/edit/{id}', 'RecordedWorkoutController@update')->name('recorded_workout_update');
         Route::get('/delete/{id}', 'RecordedWorkoutController@delete')->name('recorded_workout_delete');
     });
+    Route::prefix('plan')->group(function() {
+        Route::get('/', 'WorkoutPlanController@index')->name('workout_plan');
+        Route::post('/', 'WorkoutPlanController@addWorkout')->name('add_workout_to_plan');
+        Route::get('/remove_workout/{id}', 'WorkoutPlanController@removeWorkout')->name('workout_plan_remove_workout');
+        Route::get('/getUserWorkouts', 'WorkoutPlanController@getUserWorkouts')->name('user_workout_search');
+    });
 });
 
 Route::prefix('hometown')->middleware('verified')->group(function() {
