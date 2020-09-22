@@ -52,7 +52,7 @@ class MovementController extends Controller
 
     public function view($id, $tab = null)
     {
-        $movement = Movement::with(['spots', 'exercises', 'equipment', 'category'])->where('id', $id)->first();
+        $movement = Movement::with(['spots', 'exercises', 'equipment', 'category', 'fields'])->where('id', $id)->first();
         $spots = null;
         $progressions = null;
         $advancements = null;
@@ -61,6 +61,7 @@ class MovementController extends Controller
         $equipment = null;
         $progressionID = null;
         $advancementID = null;
+        $baselineFields = null;
         if (!empty($request['spots']) && (($tab == null && $movement->type_id === 1) || $tab === 'spots')) {
             $spots = $movement->spots()->paginate(20, ['*'], 'spots')->fragment('content');
         } else if (($tab == null && $movement->type_id === 1) || $tab === 'spots') {
@@ -91,6 +92,13 @@ class MovementController extends Controller
         } else if (($tab == null && $movement->type_id === 2) || $tab === 'equipment') {
             $equipment = $movement->equipment()->limit(4)->get();
         }
+        if ($tab === 'baseline') {
+            if (count(Auth::user()->baselineMovementFields()->where('movement_id', $id)->get())) {
+                $baselineFields = Auth::user()->baselineMovementFields()->withPivot('value', 'movement_id')->where('movement_id', $id)->get();
+            } else {
+                $baselineFields = $movement->fields;
+            }
+        }
         switch ($tab) {
             case 'progressions':
                 $advancementID = $movement->id;
@@ -120,6 +128,7 @@ class MovementController extends Controller
             'exercises' => $exercises,
             'moves' => $moves,
             'equipments' => $equipment,
+            'baselineFields' => $baselineFields,
             'tab' => $tab,
         ]);
     }
@@ -337,6 +346,25 @@ class MovementController extends Controller
         $movement->save();
 
         return back()->with('status', 'Successfully unofficialised movement');
+    }
+
+    public function setMovementBaseline(Request $request)
+    {
+        $baselineFields = Auth::user()->baselineMovementFields()->withPivot('movement_id')->where('movement_id', $request['movement'])->get();
+
+        if (count($baselineFields)) {
+            foreach ($baselineFields as $baselineField) {
+                $baselineField->pivot->value = $request['fields'][$baselineField->id];
+                $baselineField->save();
+            }
+        } else {
+            $baselineFields = Auth::user()->baselineMovementFields();
+            foreach ($request['fields'] as $id => $value) {
+                $baselineFields->attach($id, ['value' => $value, 'movement_id' => $request['movement']]);
+            }
+        }
+
+        return back()->with('status', 'Successfully set your baseline for this movement');
     }
 
     public function getMovements(Request $request)

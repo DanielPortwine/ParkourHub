@@ -91,6 +91,9 @@
                                 <li class="nav-item">
                                     <a class="nav-link btn-link @if($tab === 'exercises')active @endif" href="{{ route('movement_view', ['id' => $originalMovement->id, 'tab' => 'exercises']) }}#content">Exercises</a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link btn-link @if($tab === 'baseline')active @endif" href="{{ route('movement_view', ['id' => $originalMovement->id, 'tab' => 'baseline']) }}#content">Baseline</a>
+                                </li>
                             @endpremium
                         @elseif($originalMovement->type_id === 2)
                             @premium
@@ -105,6 +108,9 @@
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link btn-link @if($tab === 'moves')active @endif" href="{{ route('movement_view', ['id' => $originalMovement->id, 'tab' => 'moves']) }}#content">Moves</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link btn-link @if($tab === 'baseline')active @endif" href="{{ route('movement_view', ['id' => $originalMovement->id, 'tab' => 'baseline']) }}#content">Baseline</a>
                                 </li>
                             @endpremium
                         @endif
@@ -838,6 +844,45 @@
                                 @endif
                             </div>
                         @endif
+                    </div>
+                @elseif($tab === 'baseline')
+                    <div class="card-body bg-black">
+                        <div class="card">
+                            <div class="card-header bg-green sedgwick">
+                                Set Your Baseline
+                            </div>
+                            <div class="card-body bg-grey">
+                                <div class="form-group row">
+                                    <div class="col-md-10 offset-md-1">
+                                        Your baseline is the highest combination of values that you are able to comfortably achieve. You should not struggle to complete this movement with the values set as your baseline nor should it feel very easy.
+                                    </div>
+                                </div>
+                                <form method="POST" action="{{ route('set_movement_baseline') }}">
+                                    @csrf
+                                    <input type="hidden" name="movement" value="{{ $originalMovement->id }}">
+                                    <div class="form-group row">
+                                        <div class="col-md-10 offset-md-1 movement-entry-fields">
+                                            <div class="row">
+                                                @foreach($baselineFields as $field)
+                                                    @if(!empty($field->name))
+                                                        <div class="col-md">
+                                                            <label>{{ $field->label }}</label><br>
+                                                            <input class="form-control" type="{{ $field->type }}" name="fields[{{ $field->id }}]" placeholder="{{ $field->unit }}" @if(isset($field->pivot->value))value="{{ $field->pivot->value }}" @endif>
+                                                            <small>{{ $field->small_text }}</small>
+                                                        </div>
+                                                    @endif
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-10 offset-md-1">
+                                            <button type="submit" class="btn btn-green">Set</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 @endif
             </div>

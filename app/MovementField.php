@@ -15,4 +15,9 @@ class MovementField extends Model
     {
         return $this->hasMany('App\WorkoutMovementField');
     }
+
+    public function userMovementBaseline()
+    {
+        return $this->belongsToMany('App\User', 'users_movements_baseline');
+    }
 }
