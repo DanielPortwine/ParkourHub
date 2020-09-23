@@ -54,13 +54,11 @@ services:
       - "1080:80"
     networks:
       - laravel
-  composer:
+  redis:
     restart: unless-stopped
-    container_name: composer
-    image: composer
-    volumes:
-      - .:/app:cached
-      - /tmp:/tmp:cached
+    container_name: redis
+    image: redis
+    ports:
+      - "6379:6379"
     networks:
       - laravel
-    command: install --ignore-platform-reqs
