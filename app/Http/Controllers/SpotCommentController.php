@@ -100,8 +100,8 @@ class SpotCommentController extends Controller
             return back();
         }
 
-        $comment = SpotComment::where('id', $id)->first();
-        if (empty(SpotCommentLike::where('spot_comment_id', $id)->where('user_id', Auth::id())->first())) {
+        $comment = SpotComment::with('likes')->where('id', $id)->first();
+        if (empty($comment->likes->where('user_id', Auth::id())->first())) {
             $like = new SpotCommentLike;
             $like->spot_comment_id = $comment->id;
             $like->user_id = Auth::id();

@@ -52,7 +52,7 @@ class UserController extends Controller
             return redirect()->route('user_view', $id);
         }
 
-        $user = User::where('id', $id)->first();
+        $user = User::with(['spots', 'challenges', 'reviews', 'spotComments', 'followers', 'following'])->where('id', $id)->first();
 
         $spots = $reviews = $comments = $challenges = $followers = $following = null;
         if (!empty($request['spots']) && ($tab == null || $tab === 'spots')) {
@@ -373,7 +373,7 @@ class UserController extends Controller
         }
         $follower->save();
 
-        $user = User::where('id', $id)->first();
+        $user = User::with(['followers'])->where('id', $id)->first();
         $followers = $user->followers()->count();
         $user->followers_quantified = quantify_number($followers);
         $user->save();
@@ -402,7 +402,7 @@ class UserController extends Controller
         $follower = Follower::where('user_id', $id)->where('follower_id', Auth::id())->first();
         $follower->delete();
 
-        $user = User::where('id', $id)->first();
+        $user = User::with(['followers'])->where('id', $id)->first();
         $followers = $user->followers()->count();
         $user->followers_quantified = quantify_number($followers);
         $user->save();

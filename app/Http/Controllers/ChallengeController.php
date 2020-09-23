@@ -64,13 +64,13 @@ class ChallengeController extends Controller
 
             return redirect()->route('challenge_view', $id);
         }
-        $challenge = Challenge::where('id', $id)->first();
+        $challenge = Challenge::with(['entries'])->where('id', $id)->first();
         $entries = $challenge->entries()->orderByDesc('created_at')->paginate(10, ['*'], 'entries')->fragment('entries');
         $entered = !empty(
-            ChallengeEntry::where('challenge_id', $id)->where('user_id', Auth::id())->first()
+            $challenge->entries->where('user_id', Auth::id())->first()
         );
-        $winner = ChallengeEntry::where('challenge_id', $id)->where('winner', true)->first();
-        $usersViewed = ChallengeView::where('challenge_id', $id)->pluck('user_id')->toArray();
+        $winner = $challenge->entries->where('winner', true)->first();
+        $usersViewed = $challenge->entries->pluck('user_id')->toArray();
         if (!in_array(Auth::id(), $usersViewed) && Auth::id() !== $challenge->user_id) {
             $view = new ChallengeView;
             $view->challenge_id = $id;

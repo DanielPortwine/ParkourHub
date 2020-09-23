@@ -52,7 +52,17 @@ class MovementController extends Controller
 
     public function view($id, $tab = null)
     {
-        $movement = Movement::with(['spots', 'exercises', 'equipment', 'category', 'fields'])->where('id', $id)->first();
+        $movement = Movement::with([
+            'spots',
+            'progressions',
+            'advancements',
+            'exercises',
+            'moves',
+            'equipment',
+            'category',
+            'baselineMovementFields',
+            'fields',
+        ])->where('id', $id)->first();
         $spots = null;
         $progressions = null;
         $advancements = null;
@@ -188,7 +198,7 @@ class MovementController extends Controller
 
     public function update(UpdateMovement $request, $id)
     {
-        $movement = Movement::where('id', $id)->first();
+        $movement = Movement::with(['fields'])->where('id', $id)->first();
         if ($movement->user_id != Auth::id()) {
             return redirect()->route('movement_view', $id);
         }
@@ -253,7 +263,7 @@ class MovementController extends Controller
         if ($request['progression'] === $request['advancement']) {
             return back()->with('status', 'You can\'t link a movement with itself');
         }
-        $movement = Movement::where('id', $request['progression'])->first();
+        $movement = Movement::with(['advancements', 'progressions'])->where('id', $request['progression'])->first();
         if (!empty($movement->advancements()->where('advancement_id', $request['advancement'])->first()) || !empty($movement->progressions()->where('progression_id', $request['progression'])->first())) {
             return back()->with('status', 'Movements already linked');
         }
@@ -264,7 +274,7 @@ class MovementController extends Controller
 
     public function unlinkProgression(LinkMovements $request)
     {
-        $movement = Movement::where('id', $request['progression'])->first();
+        $movement = Movement::with(['advancements'])->where('id', $request['progression'])->first();
         if (empty($movement->advancements()->where('advancement_id', $request['advancement'])->first())) {
             return back()->with('status', 'These movements aren\'t linked');
         }
@@ -278,7 +288,7 @@ class MovementController extends Controller
         if ($request['move'] === $request['exercise']) {
             return back()->with('status', 'You can\'t link a movement with itself');
         }
-        $move = Movement::where('id', $request['move'])->first();
+        $move = Movement::with(['exercises', 'moves'])->where('id', $request['move'])->first();
         if (!empty($move->exercises()->where('exercise_id', $request['exercise'])->first()) || !empty($move->moves()->where('move_id', $request['move'])->first())) {
             return back()->with('status', 'Movements already linked');
         }
@@ -289,7 +299,7 @@ class MovementController extends Controller
 
     public function unlinkExercise(LinkExercise $request)
     {
-        $move = Movement::where('id', $request['move'])->first();
+        $move = Movement::with(['exercises'])->where('id', $request['move'])->first();
         if (empty($move->exercises()->where('exercise_id', $request['exercise'])->first())) {
             return back()->with('status', 'These movements aren\'t linked');
         }
@@ -300,7 +310,7 @@ class MovementController extends Controller
 
     public function linkEquipment(LinkEquipment $request)
     {
-        $movement = Movement::where('id', $request['movement'])->first();
+        $movement = Movement::with(['equipment'])->where('id', $request['movement'])->first();
         if (!empty($movement->equipment()->where('equipment_id', $request['equipment'])->first())) {
             return back()->with('status', 'Exercise and equipment already linked');
         }
@@ -311,7 +321,7 @@ class MovementController extends Controller
 
     public function unlinkEquipment(LinkEquipment $request)
     {
-        $movement = Movement::where('id', $request['movement'])->first();
+        $movement = Movement::with(['equipment'])->where('id', $request['movement'])->first();
         if (empty($movement->equipment()->where('equipment_id', $request['equipment'])->first())) {
             return back()->with('status', 'This movement and equipment aren\'t linked');
         }

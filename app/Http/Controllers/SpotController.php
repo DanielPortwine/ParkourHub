@@ -71,7 +71,7 @@ class SpotController extends Controller
             return redirect()->route('spot_view', $id);
         }
 
-        $spot = Spot::with(['user', 'movements'])->where('id', $id)->first();
+        $spot = Spot::with(['user', 'movements', 'reviews', 'comments', 'challenges', 'workouts'])->where('id', $id)->first();
 
         if ($request->ajax()){
             return view('components.spot', [
@@ -262,7 +262,7 @@ class SpotController extends Controller
 
     public function addMovement(AddMovement $request, $id)
     {
-        $spot = Spot::where('id', $id)->first();
+        $spot = Spot::with(['movements'])->where('id', $id)->first();
         if (empty($spot->movements()->where('movements.id', $request['movement'])->first())) {
             $spot->movements()->attach($request['movement'], ['user_id' => Auth::id()]);
         }
@@ -272,7 +272,7 @@ class SpotController extends Controller
 
     public function removeMovement($spotID, $movement)
     {
-        $spot = Spot::where('id', $spotID)->first();
+        $spot = Spot::with(['movements'])->where('id', $spotID)->first();
         if (!empty($spot->movements()->where('movements.id', $movement)->first())) {
             $spot->movements()->detach([$movement, $spotID]);
         }
@@ -282,7 +282,7 @@ class SpotController extends Controller
 
     public function linkWorkout(Request $request)
     {
-        $spot = Spot::where('id', $request['spot'])->first();
+        $spot = Spot::with(['workouts'])->where('id', $request['spot'])->first();
         $spot->workouts()->attach($request['workout']);
 
         return back()->with('status', 'Successfully linked workout with spot.');

@@ -41,6 +41,7 @@ class WorkoutController extends Controller
             'create' => true,
         ]);
     }
+
     public function myWorkouts(Request $request)
     {
         $sort = ['created_at', 'desc'];
