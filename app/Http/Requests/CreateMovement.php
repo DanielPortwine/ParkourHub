@@ -36,6 +36,7 @@ class CreateMovement extends FormRequest
             'description' => 'required|string|max:255',
             'youtube' => ['required_without:video', 'nullable', 'active_url', new YoutubeLink],
             'video' => 'required_without:youtube|mimes:mp4,mov,mpg,mpeg|max:500000',
+            'fields' => 'required|array',
         ];
     }
 

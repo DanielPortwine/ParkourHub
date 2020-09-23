@@ -22,22 +22,32 @@
                             <div class="form-group row">
                                 <label class="col-md-2 col-form-label text-md-right">Type</label>
                                 <div class="col-md-8 vertical-center">
-                                    <select class="select2-movement-type">
+                                    <select class="select2-movement-type @error('type') is-invalid border-danger @enderror" name="type">
                                         <option value="1">Move</option>
                                         <option value="2">Exercise</option>
                                     </select>
+                                    @error('type')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label class="col-md-2 col-form-label text-md-right">Category</label>
                                 <div class="col-md-8 vertical-center">
-                                    <select class="select2-movement-category" name="category"></select>
+                                    <select class="select2-movement-category @error('category') is-invalid border-danger @enderror" name="category"></select>
+                                    @error('category')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="name" class="col-md-2 col-form-label text-md-right">Name</label>
                                 <div class="col-md-8">
-                                    <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" autocomplete="title" maxlength="25" value="{{ old('name') }}" required>
+                                    <input id="name" type="text" class="form-control @error('name') is-invalid border-danger @enderror" name="name" autocomplete="title" maxlength="25" value="{{ old('name') }}" required>
                                     @error('name')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -48,7 +58,7 @@
                             <div class="form-group row">
                                 <label for="description" class="col-md-2 col-form-label text-md-right">Description</label>
                                 <div class="col-md-8">
-                                    <textarea id="description" class="form-control @error('description') is-invalid @enderror" name="description" maxlength="255">{{ old('description') }}</textarea>
+                                    <textarea id="description" class="form-control @error('description') is-invalid border-danger @enderror" name="description" maxlength="255">{{ old('description') }}</textarea>
                                     @error('description')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -59,7 +69,7 @@
                             <div class="row">
                                 <label class="col-md-2 col-form-label text-md-right">YouTube or Video</label>
                                 <div class="col-md-4">
-                                    <input type="text" id="youtube" class="form-control @error('youtube') is-invalid @enderror" name="youtube" autocomplete="youtube" placeholder="e.g. https://youtu.be/QDIVrf2ZW0s" value="{{ old('youtube') }}">
+                                    <input type="text" id="youtube" class="form-control @error('youtube') is-invalid border-danger @enderror" name="youtube" autocomplete="youtube" placeholder="e.g. https://youtu.be/QDIVrf2ZW0s" value="{{ old('youtube') }}">
                                     @error('youtube')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -67,7 +77,7 @@
                                     @enderror
                                 </div>
                                 <div class="col-md-4">
-                                    <input type="file" id="video" class="form-control-file @error('video') is-invalid @enderror" name="video">
+                                    <input type="file" id="video" class="form-control-file @error('video') is-invalid border-danger @enderror" name="video">
                                     @error('video')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -83,7 +93,12 @@
                             <div class="form-group row">
                                 <label class="col-md-2 col-form-label text-md-right">Fields</label>
                                 <div class="col-md-8 vertical-center">
-                                    <select class="select2-movement-fields" name="fields[]" multiple="multiple"></select>
+                                    <select class="select2-movement-fields @error('fields') is-invalid border-danger @enderror" name="fields[]" multiple="multiple"></select>
+                                    @error('fields')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -111,7 +126,6 @@
                     types: [type]
                 },
                 success: function (response) {
-                    console.log(response);
                     $('.select2-movement-category').select2({
                         data: response,
                         width: '100%',
