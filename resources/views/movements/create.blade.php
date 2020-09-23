@@ -19,7 +19,15 @@
                         @endif
                         <form method="POST" enctype="multipart/form-data">
                             @csrf
-                            <input type="hidden" name="type" value="1">
+                            <div class="form-group row">
+                                <label class="col-md-2 col-form-label text-md-right">Type</label>
+                                <div class="col-md-8 vertical-center">
+                                    <select class="select2-movement-type">
+                                        <option value="1">Move</option>
+                                        <option value="2">Exercise</option>
+                                    </select>
+                                </div>
+                            </div>
                             <div class="form-group row">
                                 <label class="col-md-2 col-form-label text-md-right">Category</label>
                                 <div class="col-md-8 vertical-center">
@@ -93,17 +101,31 @@
 
 @push('scripts')
     <script defer>
-        $.ajax({
-            url: '/movements/getMovementCategories',
-            data: {
-                types: [1]
-            },
-            success: function (response) {
-                $('.select2-movement-category').select2({
-                    data: response,
-                    width: '100%',
-                });
-            },
+        function updateCategoriesSelect(type) {
+            $('.select2-movement-category').children('option').each(function() {
+                $(this).remove();
+            });
+            $.ajax({
+                url: '/movements/getMovementCategories',
+                data: {
+                    types: [type]
+                },
+                success: function (response) {
+                    console.log(response);
+                    $('.select2-movement-category').select2({
+                        data: response,
+                        width: '100%',
+                    });
+                },
+            });
+        }
+        $(document).ready(function() {
+            $('.select2-movement-category').select2({width: '100%'});
+            updateCategoriesSelect(1);
+            $('.select2-movement-type').select2({width: '100%'}).change(function () {
+                var type = $(this).val();
+                updateCategoriesSelect(type);
+            });
         });
         $.ajax({
             url: '/movements/getMovementFields',

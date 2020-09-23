@@ -374,6 +374,12 @@
                                                             </div>
                                                         </div>
                                                         <div class="form-group row">
+                                                            <label class="col-md-2 col-form-label text-md-right">Fields</label>
+                                                            <div class="col-md-8 vertical-center">
+                                                                <select class="select2-movement-fields" name="fields[]" multiple="multiple"></select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
                                                             <div class="col-md-8 offset-md-2">
                                                                 <button type="submit" class="btn btn-green">Create & Link</button>
                                                             </div>
@@ -515,6 +521,12 @@
                                                         <div class="form-group row">
                                                             <div class="col offset-md-2">
                                                                 <small>The video must contain a demonstration of the movement and nothing else!</small>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <label class="col-md-2 col-form-label text-md-right">Fields</label>
+                                                            <div class="col-md-8 vertical-center">
+                                                                <select class="select2-movement-fields" name="fields[]" multiple="multiple"></select>
                                                             </div>
                                                         </div>
                                                         <div class="form-group row">
@@ -662,6 +674,12 @@
                                                             </div>
                                                         </div>
                                                         <div class="form-group row">
+                                                            <label class="col-md-2 col-form-label text-md-right">Fields</label>
+                                                            <div class="col-md-8 vertical-center">
+                                                                <select class="select2-movement-fields" name="fields[]" multiple="multiple"></select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
                                                             <div class="col-md-8 offset-md-2">
                                                                 <button type="submit" class="btn btn-green">Create</button>
                                                             </div>
@@ -806,6 +824,12 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
+                                                        <label class="col-md-2 col-form-label text-md-right">Fields</label>
+                                                        <div class="col-md-8 vertical-center">
+                                                            <select class="select2-movement-fields" name="fields[]" multiple="multiple"></select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
                                                         <div class="col-md-8 offset-md-2">
                                                             <button type="submit" class="btn btn-green">Create</button>
                                                         </div>
@@ -938,6 +962,15 @@
                     });
                 },
             });
+            $.ajax({
+                url: '/movements/getMovementFields',
+                success: function (response) {
+                    $('.select2-movement-fields').select2({
+                        data: response,
+                        width: '100%',
+                    });
+                },
+            });
         @elseif($tab === 'exercises')
             $.ajax({
                 url: '/movements/getMovements',
@@ -965,6 +998,15 @@
                     });
                 },
             });
+            $.ajax({
+                url: '/movements/getMovementFields',
+                success: function (response) {
+                    $('.select2-movement-fields').select2({
+                        data: response,
+                        width: '100%',
+                    });
+                },
+            });
         @elseif($tab === 'moves')
             $.ajax({
                 url: '/movements/getMovements',
@@ -986,6 +1028,15 @@
                 },
                 success: function (response) {
                     $('.select2-movement-category').select2({
+                        data: response,
+                        width: '100%',
+                    });
+                },
+            });
+            $.ajax({
+                url: '/movements/getMovementFields',
+                success: function (response) {
+                    $('.select2-movement-fields').select2({
                         data: response,
                         width: '100%',
                     });
