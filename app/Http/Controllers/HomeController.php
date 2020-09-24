@@ -9,6 +9,7 @@ use App\Spot;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class HomeController extends Controller
 {
@@ -55,15 +56,17 @@ class HomeController extends Controller
             ->orderByDesc('created_at')
             ->limit(5)
             ->get();
-        $userStats = [
-            'spotsCreated' => count(Spot::where('user_id', Auth::id())->get()),
-            'challengesCreated' => count(Challenge::where('user_id', Auth::id())->get()),
-            'uncompletedHits' => count(Hit::where('user_id', Auth::id())->whereNull('completed_at')->get()),
-            'completedHits' => count(Hit::where('user_id', Auth::id())->whereNotNull('completed_at')->get()),
-            'followers' => Auth::user()->followers_quantified,
-            'following' => count(Auth::user()->following),
-            'age' => Carbon::parse(User::where('id', Auth::id())->pluck('created_at')[0])->diffInDays(Carbon::now()),
-        ];
+        $userStats = Cache::remember('user_home_stats', 600, function() {
+            return [
+                'spotsCreated' => count(Spot::where('user_id', Auth::id())->get()),
+                'challengesCreated' => count(Challenge::where('user_id', Auth::id())->get()),
+                'uncompletedHits' => count(Hit::where('user_id', Auth::id())->whereNull('completed_at')->get()),
+                'completedHits' => count(Hit::where('user_id', Auth::id())->whereNotNull('completed_at')->get()),
+                'followers' => Auth::user()->followers_quantified,
+                'following' => count(Auth::user()->following),
+                'age' => Carbon::parse(User::where('id', Auth::id())->pluck('created_at')[0])->diffInDays(Carbon::now()),
+            ];
+        });
         $hometownChallenges = Challenge::with(['spot'])
             ->where('user_id', Auth::id())
             ->whereHas('spot', function($q) use ($hometownBoundaries) {

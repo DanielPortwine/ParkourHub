@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateEquipment;
 use App\Report;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
 class EquipmentController extends Controller
@@ -105,7 +106,9 @@ class EquipmentController extends Controller
         }
 
         $results = [];
-        $equipments = Equipment::get();
+        $equipments = Cache::remember('equipment', 120, function() {
+            return Equipment::get();
+        });
         foreach ($equipments as $equipment) {
             $results[] = [
                 'id' => $equipment->id,

@@ -6,6 +6,7 @@ use App\Challenge;
 use App\Spot;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class HometownController extends Controller
 {
@@ -28,19 +29,21 @@ class HometownController extends Controller
             return redirect()->route('user_manage')->with('status', 'You must have a hometown to view Hometown spots');
         }
 
-        $spots = Spot::withCount('views')
-            ->where('user_id', Auth::id())
-            ->whereBetween('latitude', [$boundaries[0], $boundaries[1]])
-            ->whereBetween('longitude', [$boundaries[2], $boundaries[3]])
-            ->hitlist(!empty($request['on_hitlist']) ? true : false)
-            ->ticked(!empty($request['ticked_hitlist']) ? true : false)
-            ->rating($request['rating'] ?? null)
-            ->dateBetween([
-                'from' => $request['date_from'] ?? null,
-                'to' => $request['date_to'] ?? null
-            ])
-            ->orderBy($sort[0], $sort[1])
-            ->paginate(20);
+        $spots = Cache::remember('hometown_spots_' . implode('_', $request->toArray()) . '_' . implode('_', $boundaries), 120, function() use($boundaries, $request, $sort) {
+            return Spot::withCount('views')
+                ->where('user_id', Auth::id())
+                ->whereBetween('latitude', [$boundaries[0], $boundaries[1]])
+                ->whereBetween('longitude', [$boundaries[2], $boundaries[3]])
+                ->hitlist(!empty($request['on_hitlist']) ? true : false)
+                ->ticked(!empty($request['ticked_hitlist']) ? true : false)
+                ->rating($request['rating'] ?? null)
+                ->dateBetween([
+                    'from' => $request['date_from'] ?? null,
+                    'to' => $request['date_to'] ?? null
+                ])
+                ->orderBy($sort[0], $sort[1])
+                ->paginate(20);
+        });
 
         return view('content_listings', [
             'title' => 'Spots In ' . $name,
@@ -68,21 +71,23 @@ class HometownController extends Controller
             return redirect()->route('user_manage')->with('status', 'You must have a hometown to view Hometown challenges');
         }
 
-        $challenges = Challenge::withCount('entries')
-            ->where('user_id', Auth::id())
-            ->whereHas('spot', function($q) use ($boundaries) {
-                $q->whereBetween('latitude', [$boundaries[0], $boundaries[1]])
-                    ->whereBetween('longitude', [$boundaries[2], $boundaries[3]]);
-            })
-            ->entered(!empty($request['entered']) ? true : false)
-            ->difficulty($request['difficulty'] ?? null)
-            ->dateBetween([
-                'from' => $request['date_from'] ?? null,
-                'to' => $request['date_to'] ?? null
-            ])
-            ->orderBy($sort[0], $sort[1])
-            ->orderBy('created_at', 'DESC')
-            ->paginate(20);
+        $challenges = Cache::remember('hometown_challenges_' . implode('_', $request->toArray()) . '_' . implode('_', $boundaries), 120, function() use($boundaries, $request, $sort) {
+            return Challenge::withCount('entries')
+                ->where('user_id', Auth::id())
+                ->whereHas('spot', function($q) use ($boundaries) {
+                    $q->whereBetween('latitude', [$boundaries[0], $boundaries[1]])
+                        ->whereBetween('longitude', [$boundaries[2], $boundaries[3]]);
+                })
+                ->entered(!empty($request['entered']) ? true : false)
+                ->difficulty($request['difficulty'] ?? null)
+                ->dateBetween([
+                    'from' => $request['date_from'] ?? null,
+                    'to' => $request['date_to'] ?? null
+                ])
+                ->orderBy($sort[0], $sort[1])
+                ->orderBy('created_at', 'DESC')
+                ->paginate(20);
+        });
 
         return view('content_listings', [
             'title' => 'Challenges In ' . $name,

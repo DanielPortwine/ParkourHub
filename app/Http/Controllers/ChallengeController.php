@@ -16,6 +16,7 @@ use App\Report;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
 class ChallengeController extends Controller
@@ -33,16 +34,18 @@ class ChallengeController extends Controller
             $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
         }
 
-        $challenges = Challenge::withCount('entries')
-            ->entered(!empty($request['entered']) ? true : false)
-            ->difficulty($request['difficulty'] ?? null)
-            ->dateBetween([
-                'from' => $request['date_from'] ?? null,
-                'to' => $request['date_to'] ?? null
-            ])
-            ->following(!empty($request['following']) ? true : false)
-            ->orderBy($sort[0], $sort[1])
-            ->paginate(20);
+        $challenges = Cache::remember('challenges_' . implode('_', $request->toArray()), 120, function() use($sort) {
+            return Challenge::withCount('entries')
+                ->entered(!empty($request['entered']) ? true : false)
+                ->difficulty($request['difficulty'] ?? null)
+                ->dateBetween([
+                    'from' => $request['date_from'] ?? null,
+                    'to' => $request['date_to'] ?? null
+                ])
+                ->following(!empty($request['following']) ? true : false)
+                ->orderBy($sort[0], $sort[1])
+                ->paginate(20);
+        });
 
         return view('content_listings', [
             'title' => 'Challenges',

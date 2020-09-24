@@ -11,6 +11,7 @@ use App\WorkoutMovement;
 use App\WorkoutMovementField;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class WorkoutController extends Controller
 {
@@ -25,14 +26,16 @@ class WorkoutController extends Controller
             $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
         }
 
-        $workouts = Workout::withCount('movements')
-            ->where('public', true)
-            ->dateBetween([
-                'from' => $request['date_from'] ?? null,
-                'to' => $request['date_to'] ?? null
-            ])
-            ->orderBy($sort[0], $sort[1])
-            ->paginate(20);
+        $workouts = Cache::remember('workouts_listing_' . implode('_', $request->toArray()), 120, function() use($request, $sort) {
+            return Workout::withCount('movements')
+                ->where('public', true)
+                ->dateBetween([
+                    'from' => $request['date_from'] ?? null,
+                    'to' => $request['date_to'] ?? null
+                ])
+                ->orderBy($sort[0], $sort[1])
+                ->paginate(20);
+        });
 
         return view('content_listings', [
             'title' => 'Workouts',
@@ -53,14 +56,17 @@ class WorkoutController extends Controller
             $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
         }
 
-        $workouts = Workout::withCount('movements')
-            ->where('user_id', Auth::id())
+        $userID = Auth::id();
+        $workouts = Cache::remember('user_workouts_listing_' . $userID . '_' . implode('_', $request->toArray()), 120, function() use($request, $userID, $sort) {
+        return Workout::withCount('movements')
+            ->where('user_id', $userID)
             ->dateBetween([
                 'from' => $request['date_from'] ?? null,
                 'to' => $request['date_to'] ?? null
             ])
             ->orderBy($sort[0], $sort[1])
             ->paginate(20);
+        });
 
         return view('content_listings', [
             'title' => 'Workouts',
@@ -72,16 +78,18 @@ class WorkoutController extends Controller
 
     public function view(Request $request, $id, $tab = null)
     {
-        $workout = Workout::with([
+        $workout = Cache::remember('workout_view_' . $id, 120, function() use($id) {
+            return Workout::with([
                 'user',
-                'movements' => function($q) {
+                'movements' => function ($q) {
                     $q->where('recorded_workout_id', null);
                 },
                 'movements.fields',
                 'movements.fields.field',
             ])
-            ->where('id', $id)
-            ->first();
+                ->where('id', $id)
+                ->first();
+        });
 
         $recordedWorkouts = RecordedWorkout::where('workout_id', $id)->where('user_id', Auth::id())->paginate(10);
         $spots = Workout::where('id', $id)->first()->spots()->orderByDesc('created_at')->paginate(20);
