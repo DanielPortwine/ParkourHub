@@ -191,7 +191,7 @@ class WorkoutController extends Controller
         $workout = Workout::where('id', $id)->first();
         $workout->name = $request['name'] ?: null;
         $workout->description = $request['description'] ?: null;
-        $workout->public = $request['public'] ?: null;
+        $workout->public = $request['public'] ?: 0;
         $workout->save();
 
         foreach ($request['movements'] as $movementRequest) {
