@@ -6,6 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class MovementField extends Model
 {
+    protected $fillable = [
+        'name',
+        'input_type',
+        'label',
+        'unit',
+        'small_text',
+    ];
+
     public function movements()
     {
         return $this->belongsToMany('App\Movement', 'movements_fields');

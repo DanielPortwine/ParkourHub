@@ -19,6 +19,7 @@ class CreateMovementCategoriesTable extends Migration
             $table->string('name');
             $table->string('colour');
             $table->string('description')->nullable();
+            $table->timestamps();
 
             $table->foreign('type_id')->references('id')->on('movement_types')->onDelete('cascade');
         });
