@@ -303,5 +303,27 @@ class MovementSeeder extends Seeder
         ]);
         $movement->fields()->attach(1); // reps
         $movement->fields()->attach(3); // weight
+
+        $movement = factory(Movement::class)->create([
+            'category_id' => 10,
+            'user_id' => 1,
+            'type_id' => 2,
+            'name' => 'Run',
+            'description' => 'A fast run over a medium distance',
+            'official' => true,
+        ]);
+        $movement->fields()->attach(4); // duration
+        $movement->fields()->attach(5); // distance
+
+        $movement = factory(Movement::class)->create([
+            'category_id' => 10,
+            'user_id' => 1,
+            'type_id' => 2,
+            'name' => 'Jog',
+            'description' => 'A slow run over a medium to long distance',
+            'official' => true,
+        ]);
+        $movement->fields()->attach(4); // duration
+        $movement->fields()->attach(5); // distance
     }
 }

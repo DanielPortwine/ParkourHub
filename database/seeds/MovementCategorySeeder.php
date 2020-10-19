@@ -57,5 +57,10 @@ class MovementCategorySeeder extends Seeder
             'colour' => 'blue',
             'description' => 'Movements that work the lower body',
         ]);
+        factory(MovementCategory::class)->create([
+            'name' => 'Cardio',
+            'colour' => 'orange',
+            'description' => 'Exercises that improve cardiovascular endurance'
+        ]);
     }
 }
