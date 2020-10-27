@@ -71,7 +71,6 @@
             </div>
         </div>
     </div>
-    <div class="fragment-link" id="content"></div>
     <div class="section">
         <div class="container">
             <div class="card bg-black border-0">
@@ -79,38 +78,38 @@
                     <ul class="nav nav-tabs card-header-tabs">
                         @if($originalMovement->type_id === 1)
                             <li class="nav-item">
-                                <a class="nav-link btn-link @if($tab == null || $tab === 'spots')active @endif" href="{{ route('movement_view', ['id' => $originalMovement->id, 'tab' => null]) }}#content">Spots</a>
+                                <a class="nav-link btn-link @if($tab == null || $tab === 'spots')active @endif" href="{{ route('movement_view', ['id' => $originalMovement->id, 'tab' => null]) }}">Spots</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link btn-link @if($tab === 'progressions')active @endif" href="{{ route('movement_view', ['id' => $originalMovement->id, 'tab' => 'progressions']) }}#content">Progressions</a>
+                                <a class="nav-link btn-link @if($tab === 'progressions')active @endif" href="{{ route('movement_view', ['id' => $originalMovement->id, 'tab' => 'progressions']) }}">Progressions</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link btn-link @if($tab === 'advancements')active @endif" href="{{ route('movement_view', ['id' => $originalMovement->id, 'tab' => 'advancements']) }}#content">Advancements</a>
+                                <a class="nav-link btn-link @if($tab === 'advancements')active @endif" href="{{ route('movement_view', ['id' => $originalMovement->id, 'tab' => 'advancements']) }}">Advancements</a>
                             </li>
                             @premium
                                 <li class="nav-item">
-                                    <a class="nav-link btn-link @if($tab === 'exercises')active @endif" href="{{ route('movement_view', ['id' => $originalMovement->id, 'tab' => 'exercises']) }}#content">Exercises</a>
+                                    <a class="nav-link btn-link @if($tab === 'exercises')active @endif" href="{{ route('movement_view', ['id' => $originalMovement->id, 'tab' => 'exercises']) }}">Exercises</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link btn-link @if($tab === 'baseline')active @endif" href="{{ route('movement_view', ['id' => $originalMovement->id, 'tab' => 'baseline']) }}#content">Baseline</a>
+                                    <a class="nav-link btn-link @if($tab === 'baseline')active @endif" href="{{ route('movement_view', ['id' => $originalMovement->id, 'tab' => 'baseline']) }}">Baseline</a>
                                 </li>
                             @endpremium
                         @elseif($originalMovement->type_id === 2)
                             @premium
                                 <li class="nav-item">
-                                    <a class="nav-link btn-link @if($tab == null || $tab === 'equipment')active @endif" href="{{ route('movement_view', ['id' => $originalMovement->id, 'tab' => null]) }}#content">Equipment</a>
+                                    <a class="nav-link btn-link @if($tab == null || $tab === 'equipment')active @endif" href="{{ route('movement_view', ['id' => $originalMovement->id, 'tab' => null]) }}">Equipment</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link btn-link @if($tab === 'progressions')active @endif" href="{{ route('movement_view', ['id' => $originalMovement->id, 'tab' => 'progressions']) }}#content">Progressions</a>
+                                    <a class="nav-link btn-link @if($tab === 'progressions')active @endif" href="{{ route('movement_view', ['id' => $originalMovement->id, 'tab' => 'progressions']) }}">Progressions</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link btn-link @if($tab === 'advancements')active @endif" href="{{ route('movement_view', ['id' => $originalMovement->id, 'tab' => 'advancements']) }}#content">Advancements</a>
+                                    <a class="nav-link btn-link @if($tab === 'advancements')active @endif" href="{{ route('movement_view', ['id' => $originalMovement->id, 'tab' => 'advancements']) }}">Advancements</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link btn-link @if($tab === 'moves')active @endif" href="{{ route('movement_view', ['id' => $originalMovement->id, 'tab' => 'moves']) }}#content">Moves</a>
+                                    <a class="nav-link btn-link @if($tab === 'moves')active @endif" href="{{ route('movement_view', ['id' => $originalMovement->id, 'tab' => 'moves']) }}">Moves</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link btn-link @if($tab === 'baseline')active @endif" href="{{ route('movement_view', ['id' => $originalMovement->id, 'tab' => 'baseline']) }}#content">Baseline</a>
+                                    <a class="nav-link btn-link @if($tab === 'baseline')active @endif" href="{{ route('movement_view', ['id' => $originalMovement->id, 'tab' => 'baseline']) }}">Baseline</a>
                                 </li>
                             @endpremium
                         @endif
@@ -138,9 +137,9 @@
                         @elseif(count($originalMovement->spots) > 4)
                             <div class="col text-center mb-4">
                                 @if(empty($request['spots']))
-                                    <a class="btn btn-green w-75" href="?spots=1#content">More</a>
+                                    <a class="btn btn-green w-75" href="?spots=1">More</a>
                                 @else
-                                    <a class="btn btn-green w-75" href="{{ route('movement_view', $originalMovement->id) }}#content">Less</a>
+                                    <a class="btn btn-green w-75" href="{{ route('movement_view', $originalMovement->id) }}">Less</a>
                                 @endif
                             </div>
                         @endif
@@ -261,9 +260,9 @@
                             @elseif(count($originalMovement->equipment) > 4)
                                 <div class="col text-center mb-4">
                                     @if(empty($request['equipments']))
-                                        <a class="btn btn-green w-75" href="?equipments=1#content">More</a>
+                                        <a class="btn btn-green w-75" href="?equipments=1">More</a>
                                     @else
-                                        <a class="btn btn-green w-75" href="{{ route('movement_view', $originalMovement->id) }}#content">Less</a>
+                                        <a class="btn btn-green w-75" href="{{ route('movement_view', $originalMovement->id) }}">Less</a>
                                     @endif
                                 </div>
                             @endif
@@ -412,9 +411,9 @@
                         @elseif(count($originalMovement->progressions) > 4)
                             <div class="col text-center mb-4">
                                 @if(empty($request['progressions']))
-                                    <a class="btn btn-green w-75" href="?progressions=1#content">More</a>
+                                    <a class="btn btn-green w-75" href="?progressions=1">More</a>
                                 @else
-                                    <a class="btn btn-green w-75" href="{{ route('movement_view', $originalMovement->id) }}#content">Less</a>
+                                    <a class="btn btn-green w-75" href="{{ route('movement_view', $originalMovement->id) }}">Less</a>
                                 @endif
                             </div>
                         @endif
@@ -562,9 +561,9 @@
                         @elseif(count($originalMovement->advancements) > 4)
                             <div class="col text-center mb-4">
                                 @if(empty($request['advancements']))
-                                    <a class="btn btn-green w-75" href="?advancements=1#content">More</a>
+                                    <a class="btn btn-green w-75" href="?advancements=1">More</a>
                                 @else
-                                    <a class="btn btn-green w-75" href="{{ route('movement_view', $originalMovement->id) }}#content">Less</a>
+                                    <a class="btn btn-green w-75" href="{{ route('movement_view', $originalMovement->id) }}">Less</a>
                                 @endif
                             </div>
                         @endif
@@ -712,9 +711,9 @@
                         @elseif(count($originalMovement->exercises) > 4)
                             <div class="col text-center mb-4">
                                 @if(empty($request['exercises']))
-                                    <a class="btn btn-green w-75" href="?exercises=1#content">More</a>
+                                    <a class="btn btn-green w-75" href="?exercises=1">More</a>
                                 @else
-                                    <a class="btn btn-green w-75" href="{{ route('movement_view', $originalMovement->id) }}#content">Less</a>
+                                    <a class="btn btn-green w-75" href="{{ route('movement_view', $originalMovement->id) }}">Less</a>
                                 @endif
                             </div>
                         @endif
@@ -862,9 +861,9 @@
                         @elseif(count($originalMovement->moves) > 4)
                             <div class="col text-center mb-4">
                                 @if(empty($request['moves']))
-                                    <a class="btn btn-green w-75" href="?moves=1#content">More</a>
+                                    <a class="btn btn-green w-75" href="?moves=1">More</a>
                                 @else
-                                    <a class="btn btn-green w-75" href="{{ route('movement_view', $originalMovement->id) }}#content">Less</a>
+                                    <a class="btn btn-green w-75" href="{{ route('movement_view', $originalMovement->id) }}">Less</a>
                                 @endif
                             </div>
                         @endif

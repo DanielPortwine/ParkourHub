@@ -88,22 +88,22 @@ class SpotController extends Controller
             $challenges = null;
             $workouts = null;
             if (!empty($request['reviews']) && ($tab == null || $tab === 'reviews')) {
-                $reviews = $spot->reviews()->whereNotNull('title')->orderByDesc('created_at')->paginate(20, ['*'], 'reviews')->fragment('content');
+                $reviews = $spot->reviews()->whereNotNull('title')->orderByDesc('created_at')->paginate(20, ['*'], 'reviews');
             } else if ($tab == null || $tab === 'reviews') {
                 $reviews = $spot->reviews()->whereNotNull('title')->orderByDesc('created_at')->limit(4)->get();
             }
             if (!empty($request['comments']) && $tab === 'comments') {
-                $comments = $spot->comments()->orderByDesc('created_at')->paginate(20, ['*'], 'comments')->fragment('content');
+                $comments = $spot->comments()->orderByDesc('created_at')->paginate(20, ['*'], 'comments');
             } else if ($tab === 'comments') {
                 $comments = $spot->comments()->orderByDesc('created_at')->limit(4)->get();
             }
             if (!empty($request['challenges']) && $tab === 'challenges') {
-                $challenges = $spot->challenges()->orderByDesc('created_at')->paginate(20, ['*'], 'challenges')->fragment('content');
+                $challenges = $spot->challenges()->orderByDesc('created_at')->paginate(20, ['*'], 'challenges');
             } else if ($tab === 'challenges') {
                 $challenges = $spot->challenges()->orderByDesc('created_at')->limit(4)->get();
             }
             if (!empty($request['workouts']) && $tab === 'workouts') {
-                $workouts = $spot->workouts()->orderByDesc('created_at')->paginate(20, ['*'], 'workouts')->fragment('content');
+                $workouts = $spot->workouts()->orderByDesc('created_at')->paginate(20, ['*'], 'workouts');
             } else if ($tab === 'workouts') {
                 $workouts = $spot->workouts()->orderByDesc('created_at')->limit(4)->get();
             }

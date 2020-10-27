@@ -217,24 +217,23 @@
             </div>
         </div>
     </div>
-    <div class="fragment-link" id="content"></div>
     <div class="section">
         <div class="container">
             <div class="card bg-black border-0">
                 <div class="card-header card-header-black">
                     <ul class="nav nav-tabs card-header-tabs">
                         <li class="nav-item">
-                            <a class="nav-link btn-link @if($tab == null || $tab === 'reviews')active @endif" href="{{ route('spot_view', ['id' => $spot->id, 'tab' => null]) }}#content">Reviews</a>
+                            <a class="nav-link btn-link @if($tab == null || $tab === 'reviews')active @endif" href="{{ route('spot_view', ['id' => $spot->id, 'tab' => null]) }}">Reviews</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link btn-link @if($tab === 'comments')active @endif" href="{{ route('spot_view', ['id' => $spot->id, 'tab' => 'comments']) }}#content">Comments</a>
+                            <a class="nav-link btn-link @if($tab === 'comments')active @endif" href="{{ route('spot_view', ['id' => $spot->id, 'tab' => 'comments']) }}">Comments</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link btn-link @if($tab === 'challenges')active @endif" href="{{ route('spot_view', ['id' => $spot->id, 'tab' => 'challenges']) }}#content">Challenges</a>
+                            <a class="nav-link btn-link @if($tab === 'challenges')active @endif" href="{{ route('spot_view', ['id' => $spot->id, 'tab' => 'challenges']) }}">Challenges</a>
                         </li>
                         @premium
                             <li class="nav-item">
-                                <a class="nav-link btn-link @if($tab === 'workouts')active @endif" href="{{ route('spot_view', ['id' => $spot->id, 'tab' => 'workouts']) }}#content">Workouts</a>
+                                <a class="nav-link btn-link @if($tab === 'workouts')active @endif" href="{{ route('spot_view', ['id' => $spot->id, 'tab' => 'workouts']) }}">Workouts</a>
                             </li>
                         @endpremium
                     </ul>
@@ -330,9 +329,9 @@
                         @elseif(count($spot->reviews) > 4)
                             <div class="col text-center mb-4">
                                 @if(empty($request['reviews']))
-                                    <a class="btn btn-green w-75" href="?reviews=1#content">More</a>
+                                    <a class="btn btn-green w-75" href="?reviews=1">More</a>
                                 @else
-                                    <a class="btn btn-green w-75" href="{{ route('spot_view', $spot->id) }}#content">Less</a>
+                                    <a class="btn btn-green w-75" href="{{ route('spot_view', $spot->id) }}">Less</a>
                                 @endif
                             </div>
                         @endif
@@ -420,9 +419,9 @@
                         @elseif(count($spot->comments) > 4)
                             <div class="col text-center mb-4">
                                 @if(empty($request['comments']))
-                                    <a class="btn btn-green w-75" href="?comments=1#content">More</a>
+                                    <a class="btn btn-green w-75" href="?comments=1">More</a>
                                 @else
-                                    <a class="btn btn-green w-75" href="{{ route('spot_view', $spot->id) }}#content">Less</a>
+                                    <a class="btn btn-green w-75" href="{{ route('spot_view', $spot->id) }}">Less</a>
                                 @endif
                             </div>
                         @endif
@@ -562,9 +561,9 @@
                         @elseif(count($spot->challenges) > 4)
                             <div class="col text-center mb-4">
                                 @if(empty($request['challenges']))
-                                    <a class="btn btn-green w-75" href="?challenges=1#content">More</a>
+                                    <a class="btn btn-green w-75" href="?challenges=1">More</a>
                                 @else
-                                    <a class="btn btn-green w-75" href="{{ route('spot_view', $spot->id) }}#content">Less</a>
+                                    <a class="btn btn-green w-75" href="{{ route('spot_view', $spot->id) }}">Less</a>
                                 @endif
                             </div>
                         @endif
@@ -628,9 +627,9 @@
                         @elseif(count($spot->workouts) > 4)
                             <div class="col text-center mb-4">
                                 @if(empty($request['workouts']))
-                                    <a class="btn btn-green w-75" href="?workouts=1#content">More</a>
+                                    <a class="btn btn-green w-75" href="?workouts=1">More</a>
                                 @else
-                                    <a class="btn btn-green w-75" href="{{ route('spot_view', $spot->id) }}#content">Less</a>
+                                    <a class="btn btn-green w-75" href="{{ route('spot_view', $spot->id) }}">Less</a>
                                 @endif
                             </div>
                         @endif

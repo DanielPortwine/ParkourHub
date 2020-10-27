@@ -54,7 +54,6 @@
             </div>
         </div>
     </div>
-    <div class="fragment-link" id="content"></div>
     <div class="section">
         <div class="container">
             <div class="row mt-3">
@@ -197,9 +196,9 @@
                 @elseif(count($equipment->movements) > 4)
                     <div class="col text-center">
                         @if(empty($request['movements']))
-                            <a class="btn btn-green w-75" href="?movements=1#content">More</a>
+                            <a class="btn btn-green w-75" href="?movements=1">More</a>
                         @else
-                            <a class="btn btn-green w-75" href="{{ route('equipment_view', $equipment->id) }}#content">Less</a>
+                            <a class="btn btn-green w-75" href="{{ route('equipment_view', $equipment->id) }}">Less</a>
                         @endif
                     </div>
                 @endif

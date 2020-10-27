@@ -78,32 +78,32 @@ class MovementController extends Controller
         $advancementID = null;
         $baselineFields = null;
         if (!empty($request['spots']) && (($tab == null && $movement->type_id === 1) || $tab === 'spots')) {
-            $spots = $movement->spots()->paginate(20, ['*'], 'spots')->fragment('content');
+            $spots = $movement->spots()->paginate(20, ['*'], 'spots');
         } else if (($tab == null && $movement->type_id === 1) || $tab === 'spots') {
             $spots = $movement->spots()->limit(4)->get();
         }
         if (!empty($request['progressions']) && $tab === 'progressions') {
-            $progressions = $movement->progressions()->paginate(20, ['*'], 'progressions')->fragment('content');
+            $progressions = $movement->progressions()->paginate(20, ['*'], 'progressions');
         } else if ($tab === 'progressions') {
             $progressions = $movement->progressions()->limit(4)->get();
         }
         if (!empty($request['advancements']) && $tab === 'advancements') {
-            $advancements = $movement->advancements()->paginate(20, ['*'], 'advancements')->fragment('content');
+            $advancements = $movement->advancements()->paginate(20, ['*'], 'advancements');
         } else if ($tab === 'advancements') {
             $advancements = $movement->advancements()->limit(4)->get();
         }
         if (!empty($request['exercises']) && $tab === 'exercises') {
-            $exercises = $movement->exercises()->paginate(20, ['*'], 'exercises')->fragment('content');
+            $exercises = $movement->exercises()->paginate(20, ['*'], 'exercises');
         } else if ($tab === 'exercises') {
             $exercises = $movement->exercises()->limit(4)->get();
         }
         if (!empty($request['moves']) && $tab === 'moves') {
-            $moves = $movement->moves()->paginate(20, ['*'], 'moves')->fragment('content');
+            $moves = $movement->moves()->paginate(20, ['*'], 'moves');
         } else if ($tab === 'moves') {
             $moves = $movement->moves()->limit(4)->get();
         }
         if (!empty($request['equipment']) && (($tab == null && $movement->type_id === 2) || $tab === 'equipment')) {
-            $equipment = $movement->equipment()->paginate(20, ['*'], 'equipment')->fragment('content');
+            $equipment = $movement->equipment()->paginate(20, ['*'], 'equipment');
         } else if (($tab == null && $movement->type_id === 2) || $tab === 'equipment') {
             $equipment = $movement->equipment()->limit(4)->get();
         }

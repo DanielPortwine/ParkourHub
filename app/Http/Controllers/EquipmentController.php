@@ -17,7 +17,7 @@ class EquipmentController extends Controller
     {
         $equipment = Equipment::with(['movements'])->where('id', $id)->first();
         if (!empty($request['movements'])) {
-            $movements = $equipment->movements()->paginate(20, ['*'], 'movements')->fragment('content');
+            $movements = $equipment->movements()->paginate(20, ['*'], 'movements');
         } else {
             $movements = $equipment->movements()->limit(4)->get();
         }

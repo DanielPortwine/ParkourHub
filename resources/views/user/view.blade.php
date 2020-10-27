@@ -83,29 +83,28 @@
             </div>
         </div>
     </div>
-    <div class="fragment-link" id="content"></div>
     <div class="section">
         <div class="container">
             <div class="card bg-black border-0">
                 <div class="card-header card-header-black">
                     <ul class="nav nav-tabs card-header-tabs">
                         <li class="nav-item">
-                            <a class="nav-link btn-link @if($tab == null || $tab === 'spots')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => null]) }}#content">Spots</a>
+                            <a class="nav-link btn-link @if($tab == null || $tab === 'spots')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => null]) }}">Spots</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link btn-link @if($tab === 'challenges')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'challenges']) }}#content">Challenges</a>
+                            <a class="nav-link btn-link @if($tab === 'challenges')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'challenges']) }}">Challenges</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link btn-link @if($tab === 'reviews')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'reviews']) }}#content">Reviews</a>
+                            <a class="nav-link btn-link @if($tab === 'reviews')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'reviews']) }}">Reviews</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link btn-link @if($tab === 'comments')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'comments']) }}#content">Comments</a>
+                            <a class="nav-link btn-link @if($tab === 'comments')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'comments']) }}">Comments</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link btn-link @if($tab === 'followers')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'followers']) }}#content">Followers</a>
+                            <a class="nav-link btn-link @if($tab === 'followers')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'followers']) }}">Followers</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link btn-link @if($tab === 'following')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'following']) }}#content">Following</a>
+                            <a class="nav-link btn-link @if($tab === 'following')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'following']) }}">Following</a>
                         </li>
                     </ul>
                 </div>
@@ -131,9 +130,9 @@
                         @elseif(count($user->spots) > 4)
                             <div class="col text-center mb-4">
                                 @if(empty($request['spots']))
-                                    <a class="btn btn-green w-75" href="?spots=1#content">More</a>
+                                    <a class="btn btn-green w-75" href="?spots=1">More</a>
                                 @else
-                                    <a class="btn btn-green w-75" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'spots']) }}#content">Less</a>
+                                    <a class="btn btn-green w-75" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'spots']) }}">Less</a>
                                 @endif
                             </div>
                         @endif
@@ -160,9 +159,9 @@
                         @elseif(count($user->reviews) > 4)
                             <div class="col text-center mb-4">
                                 @if(empty($request['reviews']))
-                                    <a class="btn btn-green w-75" href="?reviews=1#content">More</a>
+                                    <a class="btn btn-green w-75" href="?reviews=1">More</a>
                                 @else
-                                    <a class="btn btn-green w-75" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'reviews']) }}#content">Less</a>
+                                    <a class="btn btn-green w-75" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'reviews']) }}">Less</a>
                                 @endif
                             </div>
                         @endif
@@ -189,9 +188,9 @@
                         @elseif(count($user->spotComments) > 4)
                             <div class="col text-center mb-4">
                                 @if(empty($request['comments']))
-                                    <a class="btn btn-green w-75" href="?comments=1#content">More</a>
+                                    <a class="btn btn-green w-75" href="?comments=1">More</a>
                                 @else
-                                    <a class="btn btn-green w-75" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'comments']) }}#content">Less</a>
+                                    <a class="btn btn-green w-75" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'comments']) }}">Less</a>
                                 @endif
                             </div>
                         @endif
@@ -218,9 +217,9 @@
                         @elseif(count($user->challenges) > 4)
                             <div class="col text-center mb-4">
                                 @if(empty($request['challenges']))
-                                    <a class="btn btn-green w-75" href="?challenges=1#content">More</a>
+                                    <a class="btn btn-green w-75" href="?challenges=1">More</a>
                                 @else
-                                    <a class="btn btn-green w-75" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'challenges']) }}#content">Less</a>
+                                    <a class="btn btn-green w-75" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'challenges']) }}">Less</a>
                                 @endif
                             </div>
                         @endif
@@ -249,9 +248,9 @@
                         @elseif(count($user->followers) > 4)
                             <div class="col text-center mb-4">
                                 @if(empty($request['followers']))
-                                    <a class="btn btn-green w-75" href="?followers=1#content">More</a>
+                                    <a class="btn btn-green w-75" href="?followers=1">More</a>
                                 @else
-                                    <a class="btn btn-green w-75" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'followers']) }}#content">Less</a>
+                                    <a class="btn btn-green w-75" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'followers']) }}">Less</a>
                                 @endif
                             </div>
                         @endif
@@ -280,9 +279,9 @@
                         @elseif(count($user->following) > 4)
                             <div class="col text-center mb-4">
                                 @if(empty($request['following']))
-                                    <a class="btn btn-green w-75" href="?following=1#content">More</a>
+                                    <a class="btn btn-green w-75" href="?following=1">More</a>
                                 @else
-                                    <a class="btn btn-green w-75" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'following']) }}#content">Less</a>
+                                    <a class="btn btn-green w-75" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'following']) }}">Less</a>
                                 @endif
                             </div>
                         @endif

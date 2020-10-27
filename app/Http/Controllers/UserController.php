@@ -61,32 +61,32 @@ class UserController extends Controller
 
         $spots = $reviews = $comments = $challenges = $followers = $following = null;
         if (!empty($request['spots']) && ($tab == null || $tab === 'spots')) {
-            $spots = $user->spots()->where('private', false)->orderByDesc('rating')->paginate(20, ['*'], 'spots')->fragment('content');
+            $spots = $user->spots()->where('private', false)->orderByDesc('rating')->paginate(20, ['*'], 'spots');
         } else if ($tab == null || $tab === 'spots') {
             $spots = $user->spots()->where('private', false)->orderByDesc('rating')->limit(4)->get();
         }
         if (!empty($request['challenges']) && $tab === 'challenges') {
-            $challenges = $user->challenges()->orderByDesc('created_at')->paginate(20, ['*'], 'challenges')->fragment('content');
+            $challenges = $user->challenges()->orderByDesc('created_at')->paginate(20, ['*'], 'challenges');
         } else if ($tab === 'challenges') {
             $challenges = $user->challenges()->orderByDesc('created_at')->limit(4)->get();
         }
         if (!empty($request['reviews']) && $tab === 'reviews') {
-            $reviews = $user->reviews()->whereNotNull('title')->orderByDesc('created_at')->paginate(20, ['*'], 'reviews')->fragment('content');
+            $reviews = $user->reviews()->whereNotNull('title')->orderByDesc('created_at')->paginate(20, ['*'], 'reviews');
         } else if ($tab == null || $tab === 'reviews') {
             $reviews = $user->reviews()->whereNotNull('title')->orderByDesc('created_at')->limit(4)->get();
         }
         if (!empty($request['comments']) && $tab === 'comments') {
-            $comments = $user->spotComments()->orderByDesc('created_at')->paginate(20, ['*'], 'comments')->fragment('content');
+            $comments = $user->spotComments()->orderByDesc('created_at')->paginate(20, ['*'], 'comments');
         } else if ($tab === 'comments') {
             $comments = $user->spotComments()->orderByDesc('created_at')->limit(4)->get();
         }
         if (!empty($request['followers']) && $tab === 'followers') {
-            $followers = $user->followers()->orderByDesc('created_at')->paginate(20, ['*'], 'followers')->fragment('content');
+            $followers = $user->followers()->orderByDesc('created_at')->paginate(20, ['*'], 'followers');
         } else if ($tab === 'followers') {
             $followers = $user->followers()->orderByDesc('created_at')->limit(4)->get();
         }
         if (!empty($request['following']) && $tab === 'following') {
-            $following = $user->following()->orderByDesc('created_at')->paginate(20, ['*'], 'following')->fragment('content');
+            $following = $user->following()->orderByDesc('created_at')->paginate(20, ['*'], 'following');
         } else if ($tab === 'following') {
             $following = $user->following()->orderByDesc('created_at')->limit(4)->get();
         }
