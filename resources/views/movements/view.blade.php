@@ -34,6 +34,9 @@
                 </div>
                 <div class="col-auto vertical-center">
                     <div>
+                        @if ($originalMovement->user->id === Auth()->id())
+                            <a class="btn text-white" href="{{ route('movement_edit', $originalMovement->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
+                        @endif
                         @if(Auth()->id() !== 1)
                             <a class="btn text-white" href="{{ route('movement_report', $originalMovement->id) }}" title="Report"><i class="fa fa-flag"></i></a>
                         @else
@@ -48,9 +51,6 @@
                             @endif
                         @endif
                         <a class="btn text-white" href="{{ route('spot_listing', ['movement' => $originalMovement->id]) }}" title="Spots With Movement"><i class="fa fa-map-marker"></i></a>
-                        @if ($originalMovement->user->id === Auth()->id())
-                            <a class="btn text-white" href="{{ route('movement_edit', $originalMovement->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
-                        @endif
                     </div>
                 </div>
             </div>

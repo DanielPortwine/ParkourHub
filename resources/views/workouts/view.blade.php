@@ -17,14 +17,14 @@
                 <h1 class="sedgwick mb-0">{{ $workout->name ?: 'Workout ' . date('d/m/Y', strtotime($workout->created_at)) }}</h1>
             </div>
             <div class="col-auto vertical-center">
+                @if ($workout->user->id === Auth()->id())
+                    <a class="btn text-white" href="{{ route('workout_edit', $workout->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
+                @endif
                 <a class="btn text-white" href="{{ route('recorded_workout_create', $workout->id) }}" title="Record"><i class="fa fa-calendar-plus-o"></i></a>
                 @if($workout->bookmarks->contains(Auth()->id()))
                     <a class="btn text-white" href="{{ route('workout_unbookmark', $workout->id) }}" title="Remove Bookmark"><i class="fa fa-bookmark"></i></a>
                 @else
                     <a class="btn text-white" href="{{ route('workout_bookmark', $workout->id) }}" title="Bookmark"><i class="fa fa-bookmark-o"></i></a>
-                @endif
-                @if ($workout->user->id === Auth()->id())
-                    <a class="btn text-white" href="{{ route('workout_edit', $workout->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
                 @endif
             </div>
         </div>

@@ -19,24 +19,6 @@
                 <a class="btn-link h3 mb-0 sedgwick" href="{{ route('movement_view', $movement->id) }}">{{ $movement->name }}</a>
             </div>
             <div class="col-md-auto">
-                @if(Auth()->id() !== 1)
-                    <a class="btn text-white" href="{{ route('movement_report', $movement->id) }}" title="Report"><i class="fa fa-flag"></i></a>
-                @else
-                    @if(count($movement->reports) > 0)
-                        <a class="btn text-white" href="{{ route('report_discard', ['id' => $movement->id, 'type' => 'App\Movement']) }}" title="Discard Reports"><i class="fa fa-trash"></i></a>
-                    @endif
-                    <a class="btn text-white" href="{{ route('movement_report_delete', $movement->id) }}" title="Delete Content"><i class="fa fa-ban"></i></a>
-                    @if(!$movement->official)
-                        <a class="btn text-white" href="{{ route('movement_officialise', $movement->id) }}" title="Officialise"><i class="fa fa-gavel"></i></a>
-                    @else
-                        <a class="btn text-white" href="{{ route('movement_unofficialise', $movement->id) }}" title="Unofficialise"><i class="fa fa-gavel"></i></a>
-                    @endif
-                @endif
-                @if($movement->type_id === 1)
-                    <a class="btn text-white" href="{{ route('spot_listing', ['movement' => $movement->id]) }}" title="View Spots With Move"><i class="fa fa-map-marker"></i></a>
-                @elseif($movement->type_id === 2)
-                        <a class="btn text-white" href="{{ route('movement_listing', ['exercise' => $movement->id]) }}" title="View Moves For Exercise"><i class="fa fa-child"></i></a>
-                @endif
                 @if($movement->user_id === Auth()->id())
                     <a class="btn text-white" href="{{ route('movement_edit', $movement->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
                     @if(!empty($progressionID) || !empty($advancementID))
@@ -55,6 +37,24 @@
                             <button type="submit" class="btn text-white" title="Unlink"><i class="fa fa-unlink"></i></button>
                         </form>
                     @endif
+                @endif
+                @if(Auth()->id() !== 1)
+                    <a class="btn text-white" href="{{ route('movement_report', $movement->id) }}" title="Report"><i class="fa fa-flag"></i></a>
+                @else
+                    @if(count($movement->reports) > 0)
+                        <a class="btn text-white" href="{{ route('report_discard', ['id' => $movement->id, 'type' => 'App\Movement']) }}" title="Discard Reports"><i class="fa fa-trash"></i></a>
+                    @endif
+                    <a class="btn text-white" href="{{ route('movement_report_delete', $movement->id) }}" title="Delete Content"><i class="fa fa-ban"></i></a>
+                    @if(!$movement->official)
+                        <a class="btn text-white" href="{{ route('movement_officialise', $movement->id) }}" title="Officialise"><i class="fa fa-gavel"></i></a>
+                    @else
+                        <a class="btn text-white" href="{{ route('movement_unofficialise', $movement->id) }}" title="Unofficialise"><i class="fa fa-gavel"></i></a>
+                    @endif
+                @endif
+                @if($movement->type_id === 1)
+                    <a class="btn text-white" href="{{ route('spot_listing', ['movement' => $movement->id]) }}" title="View Spots With Move"><i class="fa fa-map-marker"></i></a>
+                @elseif($movement->type_id === 2)
+                        <a class="btn text-white" href="{{ route('movement_listing', ['exercise' => $movement->id]) }}" title="View Moves For Exercise"><i class="fa fa-child"></i></a>
                 @endif
             </div>
         </div>

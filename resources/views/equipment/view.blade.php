@@ -26,6 +26,9 @@
                 </div>
                 <div class="col-auto vertical-center">
                     <div>
+                        @if ($equipment->user->id === Auth()->id())
+                            <a class="btn text-white" href="{{ route('equipment_edit', $equipment->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
+                        @endif
                         @if(Auth()->id() !== 1)
                             <a class="btn text-white" href="{{ route('equipment_report', $equipment->id) }}" title="Report"><i class="fa fa-flag"></i></a>
                         @else
@@ -35,9 +38,6 @@
                             <a class="btn text-white" href="{{ route('equipment_report_delete', $equipment->id) }}" title="Delete Content"><i class="fa fa-ban"></i></a>
                         @endif
                         <a class="btn text-white" href="{{ route('movement_listing', ['equipment' => $equipment->id]) }}" title="View Exercises With Equipment"><i class="fa fa-child"></i></a>
-                        @if ($equipment->user->id === Auth()->id())
-                            <a class="btn text-white" href="{{ route('equipment_edit', $equipment->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
-                        @endif
                     </div>
                 </div>
             </div>

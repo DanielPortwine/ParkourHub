@@ -33,11 +33,11 @@
                 </h1>
             </div>
             <div class="col-auto vertical-center">
-                @if(!empty($recordedWorkout->workout))
-                    <a class="btn text-white" href="{{ route('workout_view', $recordedWorkout->workout->id) }}" title="View Workout"><i class="fa fa-eye"></i></a>
-                @endif
                 @if ($recordedWorkout->user->id === Auth()->id())
                     <a class="btn text-white" href="{{ route('recorded_workout_edit', $recordedWorkout->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
+                @endif
+                @if(!empty($recordedWorkout->workout))
+                    <a class="btn text-white" href="{{ route('workout_view', $recordedWorkout->workout->id) }}" title="View Workout"><i class="fa fa-eye"></i></a>
                 @endif
             </div>
         </div>
