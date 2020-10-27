@@ -106,7 +106,7 @@ class EquipmentController extends Controller
         }
 
         $results = [];
-        $equipments = Cache::remember('equipment', 120, function() {
+        $equipments = Cache::remember('equipment', 30, function() {
             return Equipment::get();
         });
         foreach ($equipments as $equipment) {

@@ -29,7 +29,7 @@ class HometownController extends Controller
             return redirect()->route('user_manage')->with('status', 'You must have a hometown to view Hometown spots');
         }
 
-        $spots = Cache::remember('hometown_spots_' . implode('_', $request->toArray()) . '_' . implode('_', $boundaries), 120, function() use($boundaries, $request, $sort) {
+        $spots = Cache::remember('hometown_spots_' . implode('_', $request->toArray()) . '_' . implode('_', $boundaries), 30, function() use($boundaries, $request, $sort) {
             return Spot::withCount('views')
                 ->where('user_id', Auth::id())
                 ->whereBetween('latitude', [$boundaries[0], $boundaries[1]])
@@ -71,7 +71,7 @@ class HometownController extends Controller
             return redirect()->route('user_manage')->with('status', 'You must have a hometown to view Hometown challenges');
         }
 
-        $challenges = Cache::remember('hometown_challenges_' . implode('_', $request->toArray()) . '_' . implode('_', $boundaries), 120, function() use($boundaries, $request, $sort) {
+        $challenges = Cache::remember('hometown_challenges_' . implode('_', $request->toArray()) . '_' . implode('_', $boundaries), 30, function() use($boundaries, $request, $sort) {
             return Challenge::withCount('entries')
                 ->where('user_id', Auth::id())
                 ->whereHas('spot', function($q) use ($boundaries) {

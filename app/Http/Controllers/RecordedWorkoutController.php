@@ -25,7 +25,7 @@ class RecordedWorkoutController extends Controller
             $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
         }
 
-        $workouts = Cache::remember('recorded_workouts_user_' . Auth::id() . '_' . implode('_', $request->toArray()), 120, function() use($request, $sort) {
+        $workouts = Cache::remember('recorded_workouts_user_' . Auth::id() . '_' . implode('_', $request->toArray()), 30, function() use($request, $sort) {
             return RecordedWorkout::with('workout')
                 ->where('user_id', Auth::id())
                 ->dateBetween([
@@ -45,7 +45,7 @@ class RecordedWorkoutController extends Controller
 
     public function view($id)
     {
-        $recordedWorkout = Cache::remember('recorded_workout_view_' . $id, 120, function() use($id) {
+        $recordedWorkout = Cache::remember('recorded_workout_view_' . $id, 30, function() use($id) {
             return RecordedWorkout::with([
                 'workout',
                 'user',

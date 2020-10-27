@@ -34,7 +34,7 @@ class ChallengeController extends Controller
             $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
         }
 
-        $challenges = Cache::remember('challenges_' . implode('_', $request->toArray()), 120, function() use($sort) {
+        $challenges = Cache::remember('challenges_' . implode('_', $request->toArray()), 30, function() use($sort) {
             return Challenge::withCount('entries')
                 ->entered(!empty($request['entered']) ? true : false)
                 ->difficulty($request['difficulty'] ?? null)

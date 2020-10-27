@@ -26,7 +26,7 @@ class WorkoutController extends Controller
             $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
         }
 
-        $workouts = Cache::remember('workouts_listing_' . implode('_', $request->toArray()), 120, function() use($request, $sort) {
+        $workouts = Cache::remember('workouts_listing_' . implode('_', $request->toArray()), 30, function() use($request, $sort) {
             return Workout::withCount('movements')
                 ->where('public', true)
                 ->dateBetween([
@@ -57,7 +57,7 @@ class WorkoutController extends Controller
         }
 
         $userID = Auth::id();
-        $workouts = Cache::remember('user_workouts_listing_' . $userID . '_' . implode('_', $request->toArray()), 120, function() use($request, $userID, $sort) {
+        $workouts = Cache::remember('user_workouts_listing_' . $userID . '_' . implode('_', $request->toArray()), 60, function() use($request, $userID, $sort) {
         return Workout::withCount('movements')
             ->where('user_id', $userID)
             ->dateBetween([
@@ -78,7 +78,7 @@ class WorkoutController extends Controller
 
     public function view(Request $request, $id, $tab = null)
     {
-        $workout = Cache::remember('workout_view_' . $id, 120, function() use($id) {
+        $workout = Cache::remember('workout_view_' . $id, 30, function() use($id) {
             return Workout::with([
                 'user',
                 'movements' => function ($q) {

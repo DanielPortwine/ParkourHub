@@ -38,7 +38,7 @@ class SpotController extends Controller
             $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
         }
 
-        $spots = Cache::remember('spots_' . implode('_', $request->toArray()), 120, function() use($request, $sort) {
+        $spots = Cache::remember('spots_' . implode('_', $request->toArray()), 30, function() use($request, $sort) {
             return Spot::withCount('views')
                 ->hitlist(!empty($request['on_hitlist']) ? true : false)
                 ->ticked(!empty($request['ticked_hitlist']) ? true : false)
@@ -130,7 +130,7 @@ class SpotController extends Controller
 
     public function fetch()
     {
-        $spots = Cache::remember('fetched_spots_user_' . Auth::id(), 120, function() {
+        $spots = Cache::remember('fetched_spots_user_' . Auth::id(), 30, function() {
             return Spot::where('private', false)
                 ->orWhere('user_id', Auth::id())
                 ->get();

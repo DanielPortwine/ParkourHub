@@ -31,7 +31,7 @@ class MovementController extends Controller
             $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
         }
 
-        $movements = Cache::remember('movements_listing_' . implode('_', $request->toArray()), 120, function() use($request, $sort) {
+        $movements = Cache::remember('movements_listing_' . implode('_', $request->toArray()), 30, function() use($request, $sort) {
             return Movement::withCount('spots')
                 ->dateBetween([
                     'from' => $request['date_from'] ?? null,
@@ -55,7 +55,7 @@ class MovementController extends Controller
 
     public function view($id, $tab = null)
     {
-        $movement = Cache::remember('spot_view_' . $id, 120, function() use($id) {
+        $movement = Cache::remember('spot_view_' . $id, 30, function() use($id) {
             return Movement::with([
                 'spots',
                 'progressions',
