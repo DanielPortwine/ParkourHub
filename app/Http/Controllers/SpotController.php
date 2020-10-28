@@ -81,6 +81,7 @@ class SpotController extends Controller
         if ($request->ajax()){
             return view('components.spot', [
                 'spot' => $spot,
+                'lazyload' => false,
             ])->render();
         } else {
             $reviews = null;
