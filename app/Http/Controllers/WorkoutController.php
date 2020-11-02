@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateWorkout;
 use App\Movement;
+use App\Notifications\NewWorkout;
+use App\Notifications\WorkoutUpdated;
 use App\RecordedWorkout;
 use App\Spot;
 use App\Workout;
@@ -78,6 +80,18 @@ class WorkoutController extends Controller
 
     public function view(Request $request, $id, $tab = null)
     {
+        // if coming from a notification, set the notification as read
+        if (!empty($request['notification'])) {
+            foreach (Auth::user()->unreadNotifications as $notification) {
+                if ($notification->id === $request['notification']) {
+                    $notification->markAsRead();
+                    break;
+                }
+            }
+
+            return redirect()->route('workout_view', $id);
+        }
+
         $workout = Cache::remember('workout_view_' . $id, 30, function() use($id) {
             return Workout::with([
                 'user',
@@ -166,6 +180,16 @@ class WorkoutController extends Controller
             }
         }
 
+        // notify followers that user created a workout
+        if ($workout->public) {
+            $followers = Auth::user()->followers()->get();
+            foreach ($followers as $follower) {
+                if (in_array(setting('notifications_new_workout', null, $follower->id), ['on-site', 'email', 'email-site']) && $follower->subscribedToPlan(env('STRIPE_PLAN'), 'premium')) {
+                    $follower->notify(new NewWorkout($workout));
+                }
+            }
+        }
+
         return redirect()->route('workout_view', $workout->id)->with('status', 'Successfully created workout');
     }
 
@@ -217,6 +241,16 @@ class WorkoutController extends Controller
                     $field->workout_movement_id = $movement->id;
                     $field->value = $value;
                     $field->save();
+                }
+            }
+        }
+
+        // notify bookmarkers that user updated a workout
+        if ($workout->public) {
+            $bookmarkers = $workout->bookmarks;
+            foreach ($bookmarkers as $bookmarker) {
+                if (in_array(setting('notifications_workout_updated', null, $bookmarker->id), ['on-site', 'email', 'email-site']) && $bookmarker->subscribedToPlan(env('STRIPE_PLAN'), 'premium')) {
+                    $bookmarker->notify(new WorkoutUpdated($workout));
                 }
             }
         }

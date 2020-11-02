@@ -103,6 +103,10 @@
                                             <a class="dropdown-item text-white" href="{{ route('user_view', ['id' => $notification->data['follower']['follower_id'], 'notification' => $notification->id]) }}">New follower {{ $notification->data['follower']['name'] }}</a>
                                         @elseif(!empty($notification->data['follow_requester']))
                                             <a class="dropdown-item text-white" href="{{ route('user_follow_requests', ['notification' => $notification->id]) }}">New follow request</a>
+                                        @elseif(!empty($notification->data['new_workout']))
+                                            <a class="dropdown-item text-white" href="{{ route('workout_view', ['id' => $notification->data['new_workout']['id'], 'notification' => $notification->id]) }}">New workout from  {{ $notification->data['user']['name'] }}</a>
+                                        @elseif(!empty($notification->data['workout_updated']))
+                                            <a class="dropdown-item text-white" href="{{ route('workout_view', ['id' => $notification->data['workout_updated']['id'], 'notification' => $notification->id]) }}">Workout {{ $notification->data['workout_updated']['name'] }} updated</a>
                                         @endif
                                     @endforeach
                                 </div>

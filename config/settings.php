@@ -39,7 +39,15 @@ return [
         'notifications_new_challenge' => [
             'title' => 'New Challenge',
             'description' => 'someone you follow creates a new challenge.'
-        ]
+        ],
+        'notifications_new_workout' => [
+            'title' => 'New Workout',
+            'description' => 'someone you follow create a new workout.'
+        ],
+        'notifications_workout_updated' => [
+            'title' => 'Workout Updated',
+            'description' => 'a workout you bookmarked gets updated.'
+        ],
     ],
     'privacy' => [
         'privacy_follow' => [
