@@ -22,7 +22,7 @@ class SpotCommentController extends Controller
         $comment->user_id = Auth::id();
         $comment->comment = $request['comment'];
         if (!empty($request['youtube'])){
-            $youtube = explode('t=', str_replace('https://youtu.be/?', '', str_replace('&', '', str_replace('https://www.youtube.com/watch?v=', '', $request['youtube']))));
+            $youtube = explode('t=', str_replace(['https://youtu.be/', 'https://www.youtube.com/watch?v=', '&', '?'], '', $request['youtube']));
             $comment->youtube = $youtube[0];
             $comment->youtube_start = $youtube[1] ?? null;
         } else if (!empty($request['video_image'])) {
@@ -58,7 +58,7 @@ class SpotCommentController extends Controller
         $comment = SpotComment::where('id', $id)->first();
         $comment->comment = $request['comment'];
         if (!empty($request['youtube'])){
-            $youtube = explode('t=', str_replace('https://youtu.be/?', '', str_replace('&', '', str_replace('https://www.youtube.com/watch?v=', '', $request['youtube']))));
+            $youtube = explode('t=', str_replace(['https://youtu.be/', 'https://www.youtube.com/watch?v=', '&', '?'], '', $request['youtube']));
             $comment->youtube = $youtube[0];
             $comment->youtube_start = $youtube[1] ?? null;
             $comment->video = null;

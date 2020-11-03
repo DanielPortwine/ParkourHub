@@ -162,7 +162,7 @@ class MovementController extends Controller
         $movement->name = $request['name'];
         $movement->description = $request['description'];
         if (!empty($request['youtube'])) {
-            $youtube = explode('t=', str_replace('https://youtu.be/?', '', str_replace('&', '', str_replace('https://www.youtube.com/watch?v=', '', $request['youtube']))));
+            $youtube = explode('t=', str_replace(['https://youtu.be/', 'https://www.youtube.com/watch?v=', '&', '?'], '', $request['youtube']));
             $movement->youtube = $youtube[0];
             $movement->youtube_start = $youtube[1] ?? null;
         } else if (!empty($request['video'])) {
@@ -210,7 +210,7 @@ class MovementController extends Controller
         $movement->name = $request['name'];
         $movement->description = $request['description'];
         if (!empty($request['youtube'])) {
-            $youtube = explode('t=', str_replace('https://youtu.be/?', '', str_replace('&', '', str_replace('https://www.youtube.com/watch?v=', '', $request['youtube']))));
+            $youtube = explode('t=', str_replace(['https://youtu.be/', 'https://www.youtube.com/watch?v=', '&', '?'], '', $request['youtube']));
             $movement->youtube = $youtube[0];
             $movement->youtube_start = $youtube[1] ?? null;
         } else if (!empty($request['video'])) {
