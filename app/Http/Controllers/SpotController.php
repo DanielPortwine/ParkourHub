@@ -252,22 +252,18 @@ class SpotController extends Controller
         return false;
     }
 
-    public function report($id)
+    public function report(Spot $spot)
     {
-        $report = new Report;
-        $report->reportable_id = $id;
-        $report->reportable_type = 'App\Spot';
-        $report->user_id = Auth::id();
-        $report->save();
+        $spot->report();
 
         return back()->with('status', 'Successfully reported Spot.');
     }
 
-    public function deleteReported($id)
+    public function discardReports(Spot $spot)
     {
-        Spot::where('id', $id)->first()->forceDelete();
+        $spot->discardReports();
 
-        return redirect()->route('spot_listing')->with('status', 'Successfully deleted Spot and its related content.');
+        return back()->with('status', 'Successfully discarded reports against this content.');
     }
 
     public function addMovement(AddMovement $request, $id)

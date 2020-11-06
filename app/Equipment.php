@@ -2,12 +2,14 @@
 
 namespace App;
 
+use App\Traits\Reportable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Equipment extends Model
 {
     use SoftDeletes;
+    use Reportable;
 
     protected $fillable = [
         'name',
@@ -19,11 +21,6 @@ class Equipment extends Model
     public function user()
     {
         return $this->belongsTo('App\User');
-    }
-
-    public function reports()
-    {
-        return $this->morphMany('App\Report', 'reportable');
     }
 
     public function movements()

@@ -67,29 +67,23 @@ class ReviewController extends Controller
             $review->delete();
         }
 
-        $spot->rating = round($spot->reviews->sum('rating') / count($spot->reviews));
+        $spot->rating = count($spot->reviews) ? round($spot->reviews->sum('rating') / count($spot->reviews)) : null;
         $spot->save();
 
-        return redirect()->route('home');
+        return redirect()->route('spot_view', $spot->id);
     }
 
-    public function report($id)
+    public function report(Review $review)
     {
-        $report = new Report;
-        $report->reportable_id = $id;
-        $report->reportable_type = 'App\Review';
-        $report->user_id = Auth::id();
-        $report->save();
+        $review->report();
 
         return back()->with('status', 'Successfully reported Review.');
     }
 
-    public function deleteReported($id)
+    public function discardReports(Review $review)
     {
-        $review = Review::where('id', $id)->first();
-        $spot = $review->spot_id;
-        $review->forceDelete();
+        $review->discardReports();
 
-        return redirect()->route('spot_view', $spot)->with('status', 'Successfully deleted Review.');
+        return back()->with('status', 'Successfully discarded reports against this content.');
     }
 }

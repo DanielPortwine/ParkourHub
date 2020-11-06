@@ -2,12 +2,14 @@
 
 namespace App;
 
+use App\Traits\Reportable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ChallengeEntry extends Model
 {
     use SoftDeletes;
+    use Reportable;
 
     protected $fillable = [
         'video',
@@ -44,10 +46,5 @@ class ChallengeEntry extends Model
     public function user()
     {
         return $this->belongsTo('App\User');
-    }
-
-    public function reports()
-    {
-        return $this->morphMany('App\Report', 'reportable');
     }
 }

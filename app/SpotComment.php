@@ -2,12 +2,14 @@
 
 namespace App;
 
+use App\Traits\Reportable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class SpotComment extends Model
 {
     use SoftDeletes;
+    use Reportable;
 
     protected $fillable = [
         'comment',

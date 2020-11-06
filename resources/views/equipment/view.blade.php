@@ -29,13 +29,12 @@
                         @if ($equipment->user->id === Auth()->id())
                             <a class="btn text-white" href="{{ route('equipment_edit', $equipment->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
                         @endif
-                        @if(Auth()->id() !== 1)
-                            <a class="btn text-white" href="{{ route('equipment_report', $equipment->id) }}" title="Report"><i class="fa fa-flag"></i></a>
-                        @else
+                        <a class="btn text-white" href="{{ route('equipment_report', $equipment->id) }}" title="Report"><i class="fa fa-flag"></i></a>
+                        @if(Auth()->id() === 1)
+                            <a class="btn text-white" href="{{ route('equipment_delete', $equipment->id) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
                             @if(count($equipment->reports) > 0)
-                                <a class="btn text-white" href="{{ route('report_discard', ['id' => $equipment->id, 'type' => 'App\Equipment']) }}" title="Discard Reports"><i class="fa fa-trash"></i></a>
+                                <a class="btn text-white" href="{{ route('equipment_report_discard', $equipment->id) }}" title="Discard Reports"><i class="fa fa-balance-scale"></i></a>
                             @endif
-                            <a class="btn text-white" href="{{ route('equipment_report_delete', $equipment->id) }}" title="Delete Content"><i class="fa fa-ban"></i></a>
                         @endif
                         <a class="btn text-white" href="{{ route('movement_listing', ['equipment' => $equipment->id]) }}" title="View Exercises With Equipment"><i class="fa fa-child"></i></a>
                     </div>

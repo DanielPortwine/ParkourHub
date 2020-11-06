@@ -164,7 +164,7 @@ class ChallengeController extends Controller
             $challenge->delete();
         }
 
-        return redirect()->route('home');
+        return redirect()->route('challenge_listing');
     }
 
     public function enter(EnterChallenge $request, $id)
@@ -219,38 +219,37 @@ class ChallengeController extends Controller
         return redirect()->back()->with('status', 'This challenge has already been won');
     }
 
-    public function report($id)
+    public function report(Challenge $challenge)
     {
-        $report = new Report;
-        $report->reportable_id = $id;
-        $report->reportable_type = 'App\Challenge';
-        $report->user_id = Auth::id();
-        $report->save();
+        $challenge->report();
 
         return back()->with('status', 'Successfully reported Challenge.');
     }
 
-    public function reportEntry($id)
+    public function discardReports(Challenge $challenge)
     {
-        $report = new Report;
-        $report->reportable_id = $id;
-        $report->reportable_type = 'App\ChallengeEntry';
-        $report->user_id = Auth::id();
-        $report->save();
+        $challenge->discardReports();
+
+        return back()->with('status', 'Successfully discarded reports against this content.');
+    }
+
+    public function reportEntry(ChallengeEntry $challengeEntry)
+    {
+        $challengeEntry->report();
 
         return back()->with('status', 'Successfully reported Challenge Entry.');
     }
 
-    public function deleteReported($id)
+    public function discardEntryReports(ChallengeEntry $challengeEntry)
     {
-        Challenge::where('id', $id)->first()->forceDelete();
+        $challengeEntry->discardReports();
 
-        return redirect()->route('challenge_listing')->with('status', 'Successfully deleted Challenge and its Entries.');
+        return back()->with('status', 'Successfully discarded reports against this content.');
     }
 
-    public function deleteReportedEntry($id)
+    public function deleteEntry(ChallengeEntry $challengeEntry)
     {
-        ChallengeEntry::where('id', $id)->first()->forceDelete();
+        $challengeEntry->delete();
 
         return redirect()->route('challenge_listing')->with('status', 'Successfully deleted Entry.');
     }

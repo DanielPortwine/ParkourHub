@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Traits\Reportable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
@@ -9,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 class Spot extends Model
 {
     use SoftDeletes;
+    use Reportable;
 
     protected $fillable = [
         'name',
@@ -113,11 +115,6 @@ class Spot extends Model
     public function views()
     {
         return $this->hasMany('App\SpotView');
-    }
-
-    public function reports()
-    {
-        return $this->morphMany('App\Report', 'reportable');
     }
 
     public function movements()

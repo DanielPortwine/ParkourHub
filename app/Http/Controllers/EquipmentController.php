@@ -81,22 +81,18 @@ class EquipmentController extends Controller
         return redirect()->route('movement_listing');
     }
 
-    public function report($id)
+    public function report(Equipment $equipment)
     {
-        $report = new Report;
-        $report->reportable_id = $id;
-        $report->reportable_type = 'App\Equipment';
-        $report->user_id = Auth::id();
-        $report->save();
+        $equipment->report();
 
         return back()->with('status', 'Successfully reported equipment.');
     }
 
-    public function deleteReported($id)
+    public function discardReports(Equipment $equipment)
     {
-        Equipment::where('id', $id)->first()->forceDelete();
+        $equipment->discardReports();
 
-        return redirect()->route('movement_listing')->with('status', 'Successfully deleted equipment and its related content.');
+        return back()->with('status', 'Successfully discarded reports against this content.');
     }
 
     public function getEquipment(Request $request)

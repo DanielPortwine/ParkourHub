@@ -73,9 +73,9 @@ Route::prefix('spots')->middleware('verified')->group(function() {
     Route::get('/search', 'SpotController@search')->name('spot_search');
     Route::get('/add_to_hitlist/{id}', 'SpotController@addToHitlist')->name('add_to_hitlist');
     Route::get('/tick_off_hitlist/{id}', 'SpotController@tickOffHitlist')->name('tick_off_hitlist');
-    Route::get('/report/{id}', 'SpotController@report')->name('spot_report');
-    Route::get('/delete_reported/{id}', 'SpotController@deleteReported')->name('spot_report_delete');
-    Route::post('/add_movement/{id}', 'SpotController@addMovement')->name('spot_add_movement');
+    Route::get('/report/{spot}', 'SpotController@report')->name('spot_report');
+    Route::get('/discard_reports/{spot}', 'SpotController@discardReports')->name('spot_report_discard');
+    Route::post('/add_movement/{spot}', 'SpotController@addMovement')->name('spot_add_movement');
     Route::get('/remove_movement/{spotID}/{movement}', 'SpotController@removeMovement')->name('spot_remove_movement');
     Route::post('/link_workout', 'SpotController@linkWorkout')->name('spot_workout_link');
     Route::get('/getSpots', 'SpotController@getSpots')->name('spot_search');
@@ -86,8 +86,8 @@ Route::prefix('/reviews')->middleware('verified')->group(function() {
     Route::get('/edit/{id}', 'ReviewController@edit')->name('review_edit');
     Route::post('/edit/{id}', 'ReviewController@update')->name('review_update');
     Route::get('/delete/{id}', 'ReviewController@delete')->name('review_delete');
-    Route::get('/report/{id}', 'ReviewController@report')->name('review_report');
-    Route::get('/delete_reported/{id}', 'ReviewController@deleteReported')->name('review_report_delete');
+    Route::get('/report/{review}', 'ReviewController@report')->name('review_report');
+    Route::get('/discard_reports/{review}', 'ReviewController@discardReports')->name('review_report_discard');
 });
 
 Route::prefix('/spot_comments')->middleware('verified')->group(function() {
@@ -97,8 +97,8 @@ Route::prefix('/spot_comments')->middleware('verified')->group(function() {
     Route::get('/delete/{id}', 'SpotCommentController@delete')->name('spot_comment_delete');
     Route::get('/like/{id}', 'SpotCommentController@like')->name('spot_comment_like');
     Route::get('/unlike/{id}', 'SpotCommentController@unlike')->name('spot_comment_unlike');
-    Route::get('/report/{id}', 'SpotCommentController@report')->name('spot_comment_report');
-    Route::get('/delete_reported/{id}', 'SpotCommentController@deleteReported')->name('spot_comment_report_delete');
+    Route::get('/report/{spotComment}', 'SpotCommentController@report')->name('spot_comment_report');
+    Route::get('/discard_reports/{spotComment}', 'SpotCommentController@discardReports')->name('spot_comment_report_discard');
 });
 
 Route::prefix('challenges')->middleware('verified')->group(function() {
@@ -110,10 +110,11 @@ Route::prefix('challenges')->middleware('verified')->group(function() {
     Route::get('/delete/{id}', 'ChallengeController@delete')->name('challenge_delete');
     Route::post('/enter/{id}', 'ChallengeController@enter')->name('challenge_enter');
     Route::get('/win/{id}', 'ChallengeController@win')->name('challenge_win');
-    Route::get('/report/{id}', 'ChallengeController@report')->name('challenge_report');
-    Route::get('/delete_reported/{id}', 'ChallengeController@deleteReported')->name('challenge_report_delete');
-    Route::get('/entries/report/{id}', 'ChallengeController@reportEntry')->name('entry_report');
-    Route::get('/entries/delete_reported/{id}', 'ChallengeController@deleteReportedEntry')->name('entry_report_delete');
+    Route::get('/report/{challenge}', 'ChallengeController@report')->name('challenge_report');
+    Route::get('/discard_reports/{challenge}', 'ChallengeController@discardReports')->name('challenge_report_discard');
+    Route::get('/entries/report/{challengeEntry}', 'ChallengeController@reportEntry')->name('entry_report');
+    Route::get('/entries/discard_reports/{challengeEntry}', 'ChallengeController@discardEntryReports')->name('entry_report_discard');
+    Route::get('/entries/delete/{challengeEntry}', 'ChallengeController@deleteEntry')->name('entry_delete');
 });
 
 Route::prefix('movements')->middleware('verified')->group(function() {
@@ -124,8 +125,8 @@ Route::prefix('movements')->middleware('verified')->group(function() {
     Route::get('/edit/{id}', 'MovementController@edit')->name('movement_edit');
     Route::post('/edit/{id}', 'MovementController@update')->name('movement_update');
     Route::get('/delete/{id}', 'MovementController@delete')->name('movement_delete');
-    Route::get('/report/{id}', 'MovementController@report')->name('movement_report');
-    Route::get('/delete_reported/{id}', 'MovementController@deleteReported')->name('movement_report_delete');
+    Route::get('/report/{movement}', 'MovementController@report')->name('movement_report');
+    Route::get('/discard_reports/{movement}', 'MovementController@discardReports')->name('movement_report_discard');
     Route::post('/link_progression', 'MovementController@linkProgression')->name('movements_link');
     Route::post('/unlink_progression', 'MovementController@unlinkProgression')->name('movements_unlink');
     Route::post('/link_exercise', 'MovementController@linkExercise')->name('movement_exercise_link');
@@ -147,8 +148,8 @@ Route::prefix('equipment')->middleware('verified')->group(function() {
     Route::get('/edit/{id}', 'EquipmentController@edit')->name('equipment_edit');
     Route::post('/edit/{id}', 'EquipmentController@update')->name('equipment_update');
     Route::get('/delete/{id}', 'EquipmentController@delete')->name('equipment_delete');
-    Route::get('/report/{id}', 'EquipmentController@report')->name('equipment_report');
-    Route::get('/delete_reported/{id}', 'EquipmentController@deleteReported')->name('equipment_report_delete');
+    Route::get('/report/{equipment}', 'EquipmentController@report')->name('equipment_report');
+    Route::get('/discard_reports/{equipment}', 'EquipmentController@discardReports')->name('equipment_report_discard');
     Route::get('/getEquipment', 'EquipmentController@getEquipment')->name('equipment_search');
 });
 

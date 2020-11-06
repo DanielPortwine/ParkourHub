@@ -2,12 +2,14 @@
 
 namespace App;
 
+use App\Traits\Reportable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Movement extends Model
 {
     use SoftDeletes;
+    use Reportable;
 
     protected $fillable = [
         'name',
@@ -81,11 +83,6 @@ class Movement extends Model
     public function spots()
     {
         return $this->belongsToMany('App\Spot', 'spots_movements');
-    }
-
-    public function reports()
-    {
-        return $this->morphMany('App\Report', 'reportable');
     }
 
     public function progressions()

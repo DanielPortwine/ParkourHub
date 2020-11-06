@@ -64,7 +64,6 @@ class MovementController extends Controller
                 'moves',
                 'equipment',
                 'category',
-                'baselineMovementFields',
                 'fields',
             ])->where('id', $id)->first();
         });
@@ -245,22 +244,18 @@ class MovementController extends Controller
         return redirect()->route('movement_listing');
     }
 
-    public function report($id)
+    public function report(Movement $movement)
     {
-        $report = new Report;
-        $report->reportable_id = $id;
-        $report->reportable_type = 'App\Movement';
-        $report->user_id = Auth::id();
-        $report->save();
+        $movement->report();
 
         return back()->with('status', 'Successfully reported Movement.');
     }
 
-    public function deleteReported($id)
+    public function discardReports(Movement $movement)
     {
-        Movement::where('id', $id)->first()->forceDelete();
+        $movement->discardReports();
 
-        return redirect()->route('movement_listing')->with('status', 'Successfully deleted Movement and its related content.');
+        return back()->with('status', 'Successfully discarded reports against this content.');
     }
 
     public function linkProgression(LinkMovements $request)

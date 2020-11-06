@@ -101,15 +101,4 @@ class ReportController extends Controller
             'component' => $type,
         ]);
     }
-
-    public function discard($id, $type)
-    {
-        $reports = Report::where('reportable_id', $id)->where('reportable_type', $type)->get();
-
-        foreach ($reports as $report) {
-            $report->delete();
-        }
-
-        return back()->with('status', 'Successfully discarded report.');
-    }
 }

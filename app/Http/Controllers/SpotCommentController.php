@@ -122,23 +122,17 @@ class SpotCommentController extends Controller
         echo count(SpotCommentLike::where('spot_comment_id', $id)->get());
     }
 
-    public function report($id)
+    public function report(SpotComment $spotComment)
     {
-        $report = new Report;
-        $report->reportable_id = $id;
-        $report->reportable_type = 'App\SpotComment';
-        $report->user_id = Auth::id();
-        $report->save();
+        $spotComment->report();
 
         return back()->with('status', 'Successfully reported Spot Comment.');
     }
 
-    public function deleteReported($id)
+    public function discardReports(SpotComment $spotComment)
     {
-        $comment = SpotComment::where('id', $id)->first();
-        $spot = $comment->spot_id;
-        $comment->forceDelete();
+        $spotComment->discardReports();
 
-        return redirect()->route('spot_view', $spot)->with('status', 'Successfully deleted Comment.');
+        return back()->with('status', 'Successfully discarded reports against this content.');
     }
 }
