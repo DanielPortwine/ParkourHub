@@ -157,14 +157,23 @@ class ChallengeController extends Controller
         return back()->with('status', 'Successfully updated challenge');
     }
 
-    public function delete($id)
+    public function delete($id, $from = 'view')
     {
         $challenge = Challenge::where('id', $id)->first();
         if ($challenge->user_id === Auth::id()) {
             $challenge->delete();
         }
 
-        return redirect()->route('challenge_listing');
+        switch ($from) {
+            case 'component':
+                $redirect = back();
+                break;
+            case 'view':
+            default:
+                $redirect = redirect()->route('challenge_listing');
+        }
+
+        return $redirect->with('status', 'Successfully deleted challenge.');
     }
 
     public function enter(EnterChallenge $request, $id)

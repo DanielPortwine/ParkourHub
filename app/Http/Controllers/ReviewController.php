@@ -70,7 +70,7 @@ class ReviewController extends Controller
         $spot->rating = count($spot->reviews) ? round($spot->reviews->sum('rating') / count($spot->reviews)) : null;
         $spot->save();
 
-        return redirect()->route('spot_view', $spot->id);
+        return back()->with('status', 'Successfully deleted review.');
     }
 
     public function report(Review $review)

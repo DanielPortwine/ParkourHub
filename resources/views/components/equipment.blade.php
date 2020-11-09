@@ -25,7 +25,7 @@
                 @endif
                 <a class="btn text-white" href="{{ route('equipment_report', $equipment->id) }}" title="Report"><i class="fa fa-flag"></i></a>
                 @if(Auth()->id() === 1)
-                    <a class="btn text-white" href="{{ route('equipment_delete', $equipment->id) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
+                    <a class="btn text-white" href="{{ route('equipment_delete', [$equipment->id, 'component']) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
                     @if(count($equipment->reports) > 0)
                         <a class="btn text-white" href="{{ route('equipment_report_discard', $equipment->id) }}" title="Discard Reports"><i class="fa fa-balance-scale"></i></a>
                     @endif

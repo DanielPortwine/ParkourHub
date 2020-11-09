@@ -71,14 +71,23 @@ class EquipmentController extends Controller
         return back()->with('status', 'Successfully updated movement.');
     }
 
-    public function delete($id)
+    public function delete($id, $from = 'view')
     {
         $equipment = Equipment::where('id', $id)->first();
         if ($equipment->user_id === Auth::id()) {
             $equipment->delete();
         }
 
-        return redirect()->route('movement_listing');
+        switch ($from) {
+            case 'component':
+                $redirect = back();
+                break;
+            case 'view':
+            default:
+                $redirect = redirect()->route('movement_listing');
+        }
+
+        return $redirect->with('status', 'Successfully deleted equipment.');
     }
 
     public function report(Equipment $equipment)

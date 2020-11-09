@@ -86,12 +86,11 @@ class SpotCommentController extends Controller
     public function delete($id)
     {
         $comment = SpotComment::where('id', $id)->first();
-        $spot = $comment->spot->id;
         if ($comment->user_id === Auth::id()) {
             $comment->delete();
         }
 
-        return redirect()->route('spot_view', $spot);
+        return back()->with('status', 'Successfully deleted spot.');
     }
 
     public function like(Request $request, $id)

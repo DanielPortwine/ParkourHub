@@ -40,7 +40,7 @@
                 @endif
                 <a class="btn text-white" href="{{ route('movement_report', $movement->id) }}" title="Report"><i class="fa fa-flag"></i></a>
                 @if(Auth()->id() === 1)
-                    <a class="btn text-white" href="{{ route('movement_delete', $movement->id) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
+                    <a class="btn text-white" href="{{ route('movement_delete', [$movement->id, 'component']) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
                     @if(count($movement->reports) > 0)
                         <a class="btn text-white" href="{{ route('movement_report_discard', $movement->id) }}" title="Discard Reports"><i class="fa fa-balance-scale"></i></a>
                     @endif

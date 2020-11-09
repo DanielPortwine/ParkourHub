@@ -195,14 +195,23 @@ class SpotController extends Controller
         return back()->with('status', 'Spot updated successfully');
     }
 
-    public function delete($id)
+    public function delete($id, $from = 'view')
     {
         $spot = Spot::where('id', $id)->first();
         if ($spot->user_id === Auth::id()) {
             $spot->delete();
         }
 
-        return redirect()->route('spots');
+        switch ($from) {
+            case 'component':
+                $redirect = back();
+                break;
+            case 'view':
+            default:
+                $redirect = redirect()->route('spot_listing');
+        }
+
+        return $redirect->with('status', 'Successfully deleted spot.');
     }
 
     public function search(SearchMap $request)

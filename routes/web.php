@@ -69,7 +69,7 @@ Route::prefix('spots')->middleware('verified')->group(function() {
     Route::post('/create', 'SpotController@create')->middleware('optimizeImages')->name('spot_create');
     Route::get('/edit/{id}', 'SpotController@edit')->name('spot_edit');
     Route::post('/edit/{id}', 'SpotController@update')->middleware('optimizeImages')->name('spot_update');
-    Route::get('/delete/{id}', 'SpotController@delete')->name('spot_delete');
+    Route::get('/delete/{id}/{from?}', 'SpotController@delete')->name('spot_delete');
     Route::get('/search', 'SpotController@search')->name('spot_search');
     Route::get('/add_to_hitlist/{id}', 'SpotController@addToHitlist')->name('add_to_hitlist');
     Route::get('/tick_off_hitlist/{id}', 'SpotController@tickOffHitlist')->name('tick_off_hitlist');
@@ -85,7 +85,7 @@ Route::prefix('/reviews')->middleware('verified')->group(function() {
     Route::post('/create', 'ReviewController@create')->name('review_create');
     Route::get('/edit/{id}', 'ReviewController@edit')->name('review_edit');
     Route::post('/edit/{id}', 'ReviewController@update')->name('review_update');
-    Route::get('/delete/{id}', 'ReviewController@delete')->name('review_delete');
+    Route::get('/delete/{id}/{from?}', 'ReviewController@delete')->name('review_delete');
     Route::get('/report/{review}', 'ReviewController@report')->name('review_report');
     Route::get('/discard_reports/{review}', 'ReviewController@discardReports')->name('review_report_discard');
 });
@@ -94,7 +94,7 @@ Route::prefix('/spot_comments')->middleware('verified')->group(function() {
     Route::post('/create', 'SpotCommentController@create')->middleware('optimizeImages')->name('spot_comment_create');
     Route::get('/edit/{id}', 'SpotCommentController@edit')->name('spot_comment_edit');
     Route::post('/edit/{id}', 'SpotCommentController@update')->middleware('optimizeImages')->name('spot_comment_update');
-    Route::get('/delete/{id}', 'SpotCommentController@delete')->name('spot_comment_delete');
+    Route::get('/delete/{id}/{from?}', 'SpotCommentController@delete')->name('spot_comment_delete');
     Route::get('/like/{id}', 'SpotCommentController@like')->name('spot_comment_like');
     Route::get('/unlike/{id}', 'SpotCommentController@unlike')->name('spot_comment_unlike');
     Route::get('/report/{spotComment}', 'SpotCommentController@report')->name('spot_comment_report');
@@ -107,7 +107,7 @@ Route::prefix('challenges')->middleware('verified')->group(function() {
     Route::post('/create', 'ChallengeController@create')->middleware('optimizeImages')->name('challenge_create');
     Route::get('/edit/{id}', 'ChallengeController@edit')->name('challenge_edit');
     Route::post('/edit/{id}', 'ChallengeController@update')->middleware('optimizeImages')->name('challenge_update');
-    Route::get('/delete/{id}', 'ChallengeController@delete')->name('challenge_delete');
+    Route::get('/delete/{id}/{from?}', 'ChallengeController@delete')->name('challenge_delete');
     Route::post('/enter/{id}', 'ChallengeController@enter')->name('challenge_enter');
     Route::get('/win/{id}', 'ChallengeController@win')->name('challenge_win');
     Route::get('/report/{challenge}', 'ChallengeController@report')->name('challenge_report');
@@ -124,7 +124,7 @@ Route::prefix('movements')->middleware(['verified', 'isPremium'])->group(functio
     Route::post('/create', 'MovementController@store')->name('movement_store');
     Route::get('/edit/{id}', 'MovementController@edit')->name('movement_edit');
     Route::post('/edit/{id}', 'MovementController@update')->name('movement_update');
-    Route::get('/delete/{id}', 'MovementController@delete')->name('movement_delete');
+    Route::get('/delete/{id}/{from?}', 'MovementController@delete')->name('movement_delete');
     Route::get('/report/{movement}', 'MovementController@report')->name('movement_report');
     Route::get('/discard_reports/{movement}', 'MovementController@discardReports')->name('movement_report_discard');
     Route::post('/link_progression', 'MovementController@linkProgression')->name('movements_link');
@@ -147,7 +147,7 @@ Route::prefix('equipment')->middleware(['verified', 'isPremium'])->group(functio
     Route::post('/create', 'EquipmentController@create')->name('equipment_create');
     Route::get('/edit/{id}', 'EquipmentController@edit')->name('equipment_edit');
     Route::post('/edit/{id}', 'EquipmentController@update')->name('equipment_update');
-    Route::get('/delete/{id}', 'EquipmentController@delete')->name('equipment_delete');
+    Route::get('/delete/{id}/{from?}', 'EquipmentController@delete')->name('equipment_delete');
     Route::get('/report/{equipment}', 'EquipmentController@report')->name('equipment_report');
     Route::get('/discard_reports/{equipment}', 'EquipmentController@discardReports')->name('equipment_report_discard');
     Route::get('/getEquipment', 'EquipmentController@getEquipment')->name('equipment_search');
