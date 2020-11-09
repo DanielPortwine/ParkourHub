@@ -92,59 +92,59 @@
                 </div>
                 <a class="btn btn-link" id="description-more">More</a>
             </div>
-            <div class="row">
-                <div class="col">
-                    <small>Movements at this spot:</small>
-                </div>
-            </div>
-            <div class="row vertical-center">
-                <div class="col movements-list movements-list-hidden" id="movements-list">
-                    <div id="movements-inner-container">
-                        @foreach($movements as $movement)
-                            @if($movement->user_id === Auth()->id() || $spot->user_id === Auth()->id())
-                                <a class="btn btn-feature btn-movement-{{ $movement->category->colour }}" href="{{ route('movement_view', $movement->id) }}">
-                                    {{ $movement->name }}<a class="btn btn-feature-remove btn-green" href="{{ route('spot_remove_movement', [$spot->id, $movement->id]) }}"><i class="fa fa-times"></i></a>
-                                </a>
-                            @else
-                                <a class="btn btn-feature btn-movement-{{ $movement->category->colour }}" href="{{ route('movement_view', $movement->id) }}">{{ $movement->name }}</a>
-                            @endif
-                        @endforeach
+            @premium
+                <div class="row">
+                    <div class="col">
+                        <small>Movements at this spot:</small>
                     </div>
                 </div>
-                <div class="col-auto">
-                    <a class="btn btn-sm btn-green" id="add-movement-button"><i class="fa fa-plus"></i></a>
-                </div>
-            </div>
-            <div class="row pb-3">
-                <div class="col">
-                    <a class="btn btn-link" id="all-movements-button">Show All...</a>
-                </div>
-            </div>
-            <div class="row pb-3" id="add-movement-container" style="display:none">
-                <div class="col">
-                    <form method="POST" action="{{ route('spot_add_movement', $spot->id) }}" enctype="multipart/form-data">
-                        @csrf
-                        <div class="form-group row">
-                            <label class="col-md-2 col-form-label text-md-right">Select a Movement</label>
-                            <div class="col-md-8 vertical-center">
-                                <select class="select2-movements" id="spot-{{ $spot->id }}" name="movement"></select>
-                            </div>
-                            <div class="col-md-2"><button type="submit" class="btn btn-green">Add</button></div>
+                <div class="row vertical-center">
+                    <div class="col movements-list movements-list-hidden" id="movements-list">
+                        <div id="movements-inner-container">
+                            @foreach($movements as $movement)
+                                @if($movement->user_id === Auth()->id() || $spot->user_id === Auth()->id())
+                                    <a class="btn btn-feature btn-movement-{{ $movement->category->colour }}" href="{{ route('movement_view', $movement->id) }}">
+                                        {{ $movement->name }}<a class="btn btn-feature-remove btn-green" href="{{ route('spot_remove_movement', [$spot->id, $movement->id]) }}"><i class="fa fa-times"></i></a>
+                                    </a>
+                                @else
+                                    <a class="btn btn-feature btn-movement-{{ $movement->category->colour }}" href="{{ route('movement_view', $movement->id) }}">{{ $movement->name }}</a>
+                                @endif
+                            @endforeach
                         </div>
-                    </form>
-                    <div class="card @error('category') border-danger @enderror @error('name') border-danger @enderror @error('description') border-danger @enderror @error('video') border-danger @enderror @error('youtube') border-danger @enderror">
-                        <div class="card-header bg-green sedgwick card-hidden-body">
-                            <div class="row">
-                                <div class="col">
-                                    Can't find what you're looking for?
+                    </div>
+                    <div class="col-auto">
+                        <a class="btn btn-sm btn-green" id="add-movement-button"><i class="fa fa-plus"></i></a>
+                    </div>
+                </div>
+                <div class="row pb-3">
+                    <div class="col">
+                        <a class="btn btn-link" id="all-movements-button">Show All...</a>
+                    </div>
+                </div>
+                <div class="row pb-3" id="add-movement-container" style="display:none">
+                    <div class="col">
+                        <form method="POST" action="{{ route('spot_add_movement', $spot->id) }}" enctype="multipart/form-data">
+                            @csrf
+                            <div class="form-group row">
+                                <label class="col-md-2 col-form-label text-md-right">Select a Movement</label>
+                                <div class="col-md-8 vertical-center">
+                                    <select class="select2-movements" id="spot-{{ $spot->id }}" name="movement"></select>
                                 </div>
-                                <div class="col-auto">
-                                    <i class="fa fa-caret-down"></i>
+                                <div class="col-md-2"><button type="submit" class="btn btn-green">Add</button></div>
+                            </div>
+                        </form>
+                        <div class="card @error('category') border-danger @enderror @error('name') border-danger @enderror @error('description') border-danger @enderror @error('video') border-danger @enderror @error('youtube') border-danger @enderror">
+                            <div class="card-header bg-green sedgwick card-hidden-body">
+                                <div class="row">
+                                    <div class="col">
+                                        Can't find what you're looking for?
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fa fa-caret-down"></i>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="card-body bg-grey text-white">
-                            @premium
+                            <div class="card-body bg-grey text-white">
                                 <form method="POST" action="{{ route('movement_store') }}" enctype="multipart/form-data">
                                     @csrf
                                     <input type="hidden" name="type" value="1">
@@ -207,13 +207,11 @@
                                         </div>
                                     </div>
                                 </form>
-                            @else
-                                Only premium members can create new movements. Sign up <a class="btn-link" href="{{ route('premium') }}">here.</a>
-                            @endpremium
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            @endpremium
         </div>
     </div>
     <div class="section">

@@ -24,12 +24,9 @@
 </head>
 <body>
     <div class="flex-center premium-section">
-        @premium
-            <div class="top-right links">
-                <a href="{{ url('/spots') }}">Spots</a>
-                <a href="{{ url('/home') }}">Home</a>
-            </div>
-        @endpremium
+        <div class="top-right links">
+            <a href="{{ url('/home') }}">Home</a>
+        </div>
         <div class="text-center">
             <div class="page-title sedgwick">
                 Parkour Hub <span class="text-premium">Premium</span>

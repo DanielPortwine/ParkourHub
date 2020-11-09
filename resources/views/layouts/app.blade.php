@@ -123,10 +123,12 @@
                                     <a class="dropdown-item text-white" href="{{ route('user_followers') }}"><i class="fa fa-group nav-icon"></i>Followers</a>
                                     <a class="dropdown-item text-white" href="{{ route('user_follow_requests') }}"><i class="fa fa-user-plus nav-icon"></i>Follow requests</a>
                                     <a class="dropdown-item text-white" href="{{ route('user_spots') }}"><i class="fa fa-map-marker nav-icon"></i>Spots</a>
-                                    <a class="dropdown-item text-white" href="{{ route('workout_listing_user') }}"><i class="fa fa-calendar-check-o"></i> Workouts</a>
-                                    <a class="dropdown-item text-white" href="{{ route('workout_bookmark_listing') }}"><i class="fa fa-calendar-check-o"></i> Bookmarked Workouts</a>
-                                    <a class="dropdown-item text-white" href="{{ route('recorded_workout_listing') }}"><i class="fa fa-calendar-check-o"></i> Recorded Workouts</a>
-                                    <a class="dropdown-item text-white" href="{{ route('workout_plan') }}"><i class="fa fa-calendar"></i> Workout Plan</a>
+                                    @premium
+                                        <a class="dropdown-item text-white" href="{{ route('workout_listing_user') }}"><i class="fa fa-calendar-check-o"></i> Workouts</a>
+                                        <a class="dropdown-item text-white" href="{{ route('workout_bookmark_listing') }}"><i class="fa fa-calendar-check-o"></i> Bookmarked Workouts</a>
+                                        <a class="dropdown-item text-white" href="{{ route('recorded_workout_listing') }}"><i class="fa fa-calendar-check-o"></i> Recorded Workouts</a>
+                                        <a class="dropdown-item text-white" href="{{ route('workout_plan') }}"><i class="fa fa-calendar"></i> Workout Plan</a>
+                                    @endpremium
                                     <a class="dropdown-item text-white" href="{{ route('user_hitlist') }}"><i class="fa fa-check-square-o nav-icon"></i>Hitlist</a>
                                     <a class="dropdown-item text-white" href="{{ route('user_reviews') }}"><i class="fa fa-star nav-icon"></i>Reviews</a>
                                     <a class="dropdown-item text-white" href="{{ route('user_challenges') }}"><i class="fa fa-bullseye nav-icon"></i>Challenges</a>

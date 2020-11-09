@@ -117,7 +117,7 @@ Route::prefix('challenges')->middleware('verified')->group(function() {
     Route::get('/entries/delete/{challengeEntry}', 'ChallengeController@deleteEntry')->name('entry_delete');
 });
 
-Route::prefix('movements')->middleware('verified')->group(function() {
+Route::prefix('movements')->middleware(['verified', 'isPremium'])->group(function() {
     Route::get('/', 'MovementController@listing')->name('movement_listing');
     Route::get('/view/{id}/{tab?}', 'MovementController@view')->name('movement_view');
     Route::get('/create', 'MovementController@create')->name('movement_create');
@@ -142,7 +142,7 @@ Route::prefix('movements')->middleware('verified')->group(function() {
     Route::get('/getFieldsFromMovement', 'MovementController@getFieldsFromMovement')->name('field_from_movement_search');
 });
 
-Route::prefix('equipment')->middleware('verified')->group(function() {
+Route::prefix('equipment')->middleware(['verified', 'isPremium'])->group(function() {
     Route::get('/view/{id}', 'EquipmentController@view')->name('equipment_view');
     Route::post('/create', 'EquipmentController@create')->name('equipment_create');
     Route::get('/edit/{id}', 'EquipmentController@edit')->name('equipment_edit');
@@ -153,7 +153,7 @@ Route::prefix('equipment')->middleware('verified')->group(function() {
     Route::get('/getEquipment', 'EquipmentController@getEquipment')->name('equipment_search');
 });
 
-Route::prefix('workouts')->middleware('verified')->group(function() {
+Route::prefix('workouts')->middleware(['verified', 'isPremium'])->group(function() {
     Route::get('/', 'WorkoutController@index')->name('workout_listing');
     Route::get('/my_workouts', 'WorkoutController@myWorkouts')->name('workout_listing_user');
     Route::get('/view/{id}/{tab?}', 'WorkoutController@view')->name('workout_view');
