@@ -124,8 +124,8 @@
                                     <a class="dropdown-item text-white" href="{{ route('user_follow_requests') }}"><i class="fa fa-user-plus nav-icon"></i>Follow requests</a>
                                     <a class="dropdown-item text-white" href="{{ route('user_spots') }}"><i class="fa fa-map-marker nav-icon"></i>Spots</a>
                                     @premium
-                                        <a class="dropdown-item text-white" href="{{ route('workout_listing_user') }}"><i class="fa fa-calendar-check-o"></i> Workouts</a>
-                                        <a class="dropdown-item text-white" href="{{ route('workout_bookmark_listing') }}"><i class="fa fa-calendar-check-o"></i> Bookmarked Workouts</a>
+                                        <a class="dropdown-item text-white" href="{{ route('workout_listing_user') }}"><i class="fa fa-bolt"></i> Workouts</a>
+                                        <a class="dropdown-item text-white" href="{{ route('workout_bookmark_listing') }}"><i class="fa fa-bookmark"></i> Bookmarked Workouts</a>
                                         <a class="dropdown-item text-white" href="{{ route('recorded_workout_listing') }}"><i class="fa fa-calendar-check-o"></i> Recorded Workouts</a>
                                         <a class="dropdown-item text-white" href="{{ route('workout_plan') }}"><i class="fa fa-calendar"></i> Workout Plan</a>
                                     @endpremium
