@@ -321,9 +321,9 @@
                         @if(!empty($request['reviews']))
                             {{ $reviews->links() }}
                         @endif
-                        @if (count($spot->reviews) === 0)
+                        @if (count($spot->textReviews) === 0)
                             <p class="mb-0">This spot has no reviews yet. Create one by clicking 'Submit Review' above.</p>
-                        @elseif(count($spot->reviews) > 4)
+                        @elseif(count($spot->textReviews) > 4)
                             <div class="col text-center mb-4">
                                 @if(empty($request['reviews']))
                                     <a class="btn btn-green w-75" href="?reviews=1">More</a>
