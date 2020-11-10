@@ -172,7 +172,7 @@ class UserController extends Controller
         $user = User::where('id', Auth::id())->first();
         switch($field) {
             case 'name':
-                $user->name = 'ParkourHubUser' . Auth::id();
+                $user->name = 'User' . Auth::id();
                 break;
         }
         $user->save();
