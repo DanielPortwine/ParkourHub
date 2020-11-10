@@ -48,10 +48,6 @@
                                     </span>
                                     @enderror
                                 </div>
-                                <div class="col-md-2">
-                                    <a class="btn btn-danger require-confirmation">Obfuscate</a>
-                                    <a href="{{ route('obfuscate', 'email') }}" class="btn btn-danger d-none confirmation-button">Confirm</a>
-                                </div>
                             </div>
                             <div class="form-group row">
                                 <label for="hometown" class="col-md-2 col-form-label text-md-right">Hometown</label>

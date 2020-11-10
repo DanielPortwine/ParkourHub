@@ -174,9 +174,6 @@ class UserController extends Controller
             case 'name':
                 $user->name = 'ParkourHubUser' . Auth::id();
                 break;
-            case 'email':
-                $user->email = Auth::id() . '@parkourhub.user';
-                break;
         }
         $user->save();
 
