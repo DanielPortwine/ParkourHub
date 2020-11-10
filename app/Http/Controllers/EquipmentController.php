@@ -111,9 +111,8 @@ class EquipmentController extends Controller
         }
 
         $results = [];
-        $equipments = Cache::remember('equipment', 30, function() {
-            return Equipment::get();
-        });
+        $equipments = Equipment::get();
+
         foreach ($equipments as $equipment) {
             $results[] = [
                 'id' => $equipment->id,

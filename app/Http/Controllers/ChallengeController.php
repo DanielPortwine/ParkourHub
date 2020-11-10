@@ -34,18 +34,16 @@ class ChallengeController extends Controller
             $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
         }
 
-        $challenges = Cache::remember('challenges_' . implode('_', $request->toArray()), 30, function() use($sort) {
-            return Challenge::withCount('entries')
-                ->entered(!empty($request['entered']) ? true : false)
-                ->difficulty($request['difficulty'] ?? null)
-                ->dateBetween([
-                    'from' => $request['date_from'] ?? null,
-                    'to' => $request['date_to'] ?? null
-                ])
-                ->following(!empty($request['following']) ? true : false)
-                ->orderBy($sort[0], $sort[1])
-                ->paginate(20);
-        });
+        $challenges = Challenge::withCount('entries')
+            ->entered(!empty($request['entered']) ? true : false)
+            ->difficulty($request['difficulty'] ?? null)
+            ->dateBetween([
+                'from' => $request['date_from'] ?? null,
+                'to' => $request['date_to'] ?? null
+            ])
+            ->following(!empty($request['following']) ? true : false)
+            ->orderBy($sort[0], $sort[1])
+            ->paginate(20);
 
         return view('content_listings', [
             'title' => 'Challenges',

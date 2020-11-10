@@ -31,19 +31,17 @@ class MovementController extends Controller
             $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
         }
 
-        $movements = Cache::remember('movements_listing_' . implode('_', $request->toArray()), 30, function() use($request, $sort) {
-            return Movement::withCount('spots')
-                ->dateBetween([
-                    'from' => $request['date_from'] ?? null,
-                    'to' => $request['date_to'] ?? null
-                ])
-                ->type($request['type'] ?? null)
-                ->category($request['category'] ?? null)
-                ->exercise($request['exercise'] ?? null)
-                ->equipment($request['equipment'] ?? null)
-                ->orderBy($sort[0], $sort[1])
-                ->paginate(20);
-        });
+        $movements = Movement::withCount('spots')
+            ->dateBetween([
+                'from' => $request['date_from'] ?? null,
+                'to' => $request['date_to'] ?? null
+            ])
+            ->type($request['type'] ?? null)
+            ->category($request['category'] ?? null)
+            ->exercise($request['exercise'] ?? null)
+            ->equipment($request['equipment'] ?? null)
+            ->orderBy($sort[0], $sort[1])
+            ->paginate(20);
 
         return view('content_listings', [
             'title' => 'Movements',
@@ -55,8 +53,7 @@ class MovementController extends Controller
 
     public function view($id, $tab = null)
     {
-        $movement = Cache::remember('spot_view_' . $id, 30, function() use($id) {
-            return Movement::with([
+        $movement = Movement::with([
                 'spots',
                 'progressions',
                 'advancements',
@@ -66,7 +63,7 @@ class MovementController extends Controller
                 'category',
                 'fields',
             ])->where('id', $id)->first();
-        });
+
         $spots = null;
         $progressions = null;
         $advancements = null;

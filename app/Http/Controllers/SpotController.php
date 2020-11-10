@@ -38,20 +38,18 @@ class SpotController extends Controller
             $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
         }
 
-        $spots = Cache::remember('spots_' . implode('_', $request->toArray()), 30, function() use($request, $sort) {
-            return Spot::withCount('views')
-                ->hitlist(!empty($request['on_hitlist']) ? true : false)
-                ->ticked(!empty($request['ticked_hitlist']) ? true : false)
-                ->rating($request['rating'] ?? null)
-                ->dateBetween([
-                    'from' => $request['date_from'] ?? null,
-                    'to' => $request['date_to'] ?? null
-                ])
-                ->following(!empty($request['following']) ? true : false)
-                ->movement($request['movement'])
-                ->orderBy($sort[0], $sort[1])
-                ->paginate(20);
-        });
+        $spots = Spot::withCount('views')
+            ->hitlist(!empty($request['on_hitlist']) ? true : false)
+            ->ticked(!empty($request['ticked_hitlist']) ? true : false)
+            ->rating($request['rating'] ?? null)
+            ->dateBetween([
+                'from' => $request['date_from'] ?? null,
+                'to' => $request['date_to'] ?? null
+            ])
+            ->following(!empty($request['following']) ? true : false)
+            ->movement($request['movement'])
+            ->orderBy($sort[0], $sort[1])
+            ->paginate(20);
 
         return view('content_listings', [
             'title' => 'Spots',
@@ -74,9 +72,7 @@ class SpotController extends Controller
             return redirect()->route('spot_view', $id);
         }
 
-        $spot = Cache::remember('spot_view_' . $id, 60, function() use($id) {
-            return Spot::with(['user', 'movements', 'reviews', 'comments', 'challenges', 'workouts'])->where('id', $id)->first();
-        });
+        $spot = Spot::with(['user', 'movements', 'reviews', 'comments', 'challenges', 'workouts'])->where('id', $id)->first();
 
         if ($request->ajax()){
             return view('components.spot', [
@@ -131,11 +127,9 @@ class SpotController extends Controller
 
     public function fetch()
     {
-        $spots = Cache::remember('fetched_spots_user_' . Auth::id(), 30, function() {
-            return Spot::where('private', false)
-                ->orWhere('user_id', Auth::id())
-                ->get();
-        });
+        $spots = Spot::where('private', false)
+            ->orWhere('user_id', Auth::id())
+            ->get();
 
         return $spots;
     }
@@ -217,19 +211,17 @@ class SpotController extends Controller
     public function search(SearchMap $request)
     {
         $search = $request['search'];
-        $spots = Cache::remember('spot_search_' . $search, 60, function() use($search) {
-            return Spot::with(['user'])
-                ->where(function($query) use($search) {
-                    $query->where('name', 'like', '%' . $search . '%')
-                        ->orWhere('description', 'like', '%' . $search . '%');
-                })
-                ->where(function($query) {
-                    $query->where('private', false)
-                        ->orWhere('user_id', Auth::id());
-                })
-                ->limit(20)
-                ->get();
-        });
+        $spots = Spot::with(['user'])
+            ->where(function($query) use($search) {
+                $query->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('description', 'like', '%' . $search . '%');
+            })
+            ->where(function($query) {
+                $query->where('private', false)
+                    ->orWhere('user_id', Auth::id());
+            })
+            ->limit(20)
+            ->get();
 
         return $spots;
     }

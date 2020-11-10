@@ -30,9 +30,7 @@ class UserController extends Controller
             $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
         }
 
-        $users = Cache::remember('users_listing_' . implode('_', $request->toArray()), 30, function() use($sort) {
-            return User::whereNotNull('email_verified_at')->orderBy($sort[0], $sort[1])->paginate(20);
-        });
+        $users = User::whereNotNull('email_verified_at')->orderBy($sort[0], $sort[1])->paginate(20);
 
         return view('content_listings', [
             'title' => 'Users',
@@ -55,9 +53,7 @@ class UserController extends Controller
             return redirect()->route('user_view', $id);
         }
 
-        $user = Cache::remember('user_view_' . $id . '_' . implode('_', $request->toArray()), 30, function() use($id) {
-            return User::with(['spots', 'challenges', 'reviews', 'spotComments', 'followers', 'following'])->where('id', $id)->first();
-        });
+        $user = User::with(['spots', 'challenges', 'reviews', 'spotComments', 'followers', 'following'])->where('id', $id)->first();
 
         $spots = $reviews = $comments = $challenges = $followers = $following = null;
         if (!empty($request['spots']) && ($tab == null || $tab === 'spots')) {
@@ -207,19 +203,17 @@ class UserController extends Controller
         }
 
         $userID = Auth::id();
-        $spots = Cache::remember('user_spots_listing_' . $userID . '_' . implode('_', $request->toArray()), 30, function() use($request, $userID, $sort) {
-            return Spot::withCount('views')
-                ->where('user_id', $userID)
-                ->hitlist(!empty($request['on_hitlist']) ? true : false)
-                ->ticked(!empty($request['ticked_hitlist']) ? true : false)
-                ->rating($request['rating'] ?? null)
-                ->dateBetween([
-                    'from' => $request['date_from'] ?? null,
-                    'to' => $request['date_to'] ?? null
-                ])
-                ->orderBy($sort[0], $sort[1])
-                ->paginate(20);
-        });
+        $spots = Spot::withCount('views')
+            ->where('user_id', $userID)
+            ->hitlist(!empty($request['on_hitlist']) ? true : false)
+            ->ticked(!empty($request['ticked_hitlist']) ? true : false)
+            ->rating($request['rating'] ?? null)
+            ->dateBetween([
+                'from' => $request['date_from'] ?? null,
+                'to' => $request['date_to'] ?? null
+            ])
+            ->orderBy($sort[0], $sort[1])
+            ->paginate(20);
 
         return view('content_listings', [
             'title' => 'Your Spots',
@@ -241,18 +235,16 @@ class UserController extends Controller
             $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
         }
 
-        $spots = Cache::remember('user_hitlist_listing_' . Auth::id() . '_' . implode('_', $request->toArray()), 30, function() use($request, $sort) {
-            return Spot::withCount('views')
-                ->hitlist(true)
-                ->ticked(!empty($request['ticked_hitlist']) ? true : false)
-                ->rating($request['rating'] ?? null)
-                ->dateBetween([
-                    'from' => $request['date_from'] ?? null,
-                    'to' => $request['date_to'] ?? null
-                ])
-                ->orderBy($sort[0], $sort[1])
-                ->paginate(20);
-        });
+        $spots = Spot::withCount('views')
+            ->hitlist(true)
+            ->ticked(!empty($request['ticked_hitlist']) ? true : false)
+            ->rating($request['rating'] ?? null)
+            ->dateBetween([
+                'from' => $request['date_from'] ?? null,
+                'to' => $request['date_to'] ?? null
+            ])
+            ->orderBy($sort[0], $sort[1])
+            ->paginate(20);
 
         return view('content_listings', [
             'title' => 'Your Hitlist',
@@ -275,16 +267,14 @@ class UserController extends Controller
         }
 
         $userID = Auth::id();
-        $reviews = Cache::remember('user_reviews_listing_' . $userID . '_' . implode('_', $request->toArray()), 30, function() use($request, $userID, $sort) {
-            return Review::where('user_id', $userID)
-                ->rating($request['rating'] ?? null)
-                ->dateBetween([
-                    'from' => $request['date_from'] ?? null,
-                    'to' => $request['date_to'] ?? null
-                ])
-                ->orderBy($sort[0], $sort[1])
-                ->paginate(20);
-        });
+        $reviews = Review::where('user_id', $userID)
+            ->rating($request['rating'] ?? null)
+            ->dateBetween([
+                'from' => $request['date_from'] ?? null,
+                'to' => $request['date_to'] ?? null
+            ])
+            ->orderBy($sort[0], $sort[1])
+            ->paginate(20);
 
         return view('content_listings', [
             'title' => 'Your Reviews',
@@ -308,18 +298,16 @@ class UserController extends Controller
         }
 
         $userID = Auth::id();
-        $challenges = Cache::remember('user_challenges_listing_' . $userID . '_' . implode('_', $request->toArray()), 30, function() use($request, $userID, $sort) {
-            return Challenge::withCount('entries')
-                ->where('user_id', $userID)
-                ->entered(!empty($request['entered']) ? true : false)
-                ->difficulty($request['difficulty'] ?? null)
-                ->dateBetween([
-                    'from' => $request['date_from'] ?? null,
-                    'to' => $request['date_to'] ?? null
-                ])
-                ->orderBy($sort[0], $sort[1])
-                ->paginate(20);
-        });
+        $challenges = Challenge::withCount('entries')
+            ->where('user_id', $userID)
+            ->entered(!empty($request['entered']) ? true : false)
+            ->difficulty($request['difficulty'] ?? null)
+            ->dateBetween([
+                'from' => $request['date_from'] ?? null,
+                'to' => $request['date_to'] ?? null
+            ])
+            ->orderBy($sort[0], $sort[1])
+            ->paginate(20);
 
         return view('content_listings', [
             'title' => 'Your Challenges',
@@ -340,16 +328,14 @@ class UserController extends Controller
         }
 
         $userID = Auth::id();
-        $entries = Cache::remember('user_entries_listing_' . $userID . '_' . implode('_', $request->toArray()), 30, function() use($request, $userID, $sort) {
-            return ChallengeEntry::where('user_id', $userID)
-                ->winner(!empty($request['winner']) ? true : false)
-                ->dateBetween([
-                    'from' => $request['date_from'] ?? null,
-                    'to' => $request['date_to'] ?? null
-                ])
-                ->orderBy($sort[0], $sort[1])
-                ->paginate(20);
-        });
+        $entries = ChallengeEntry::where('user_id', $userID)
+            ->winner(!empty($request['winner']) ? true : false)
+            ->dateBetween([
+                'from' => $request['date_from'] ?? null,
+                'to' => $request['date_to'] ?? null
+            ])
+            ->orderBy($sort[0], $sort[1])
+            ->paginate(20);
 
         return view('content_listings', [
             'title' => 'Your Challenge Entries',
