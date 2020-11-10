@@ -131,6 +131,7 @@
                                     @endpremium
                                     <a class="dropdown-item text-white" href="{{ route('user_hitlist') }}"><i class="fa fa-check-square-o nav-icon"></i>Hitlist</a>
                                     <a class="dropdown-item text-white" href="{{ route('user_reviews') }}"><i class="fa fa-star nav-icon"></i>Reviews</a>
+                                    <a class="dropdown-item text-white" href="{{ route('user_comments') }}"><i class="fa fa-comment nav-icon"></i>Comments</a>
                                     <a class="dropdown-item text-white" href="{{ route('user_challenges') }}"><i class="fa fa-bullseye nav-icon"></i>Challenges</a>
                                     <a class="dropdown-item text-white" href="{{ route('user_entries') }}"><i class="fa fa-bullseye nav-icon"></i>Challenge Entries</a>
                                     @if(!empty(Auth::user()->hometown_name))

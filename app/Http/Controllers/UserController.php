@@ -11,6 +11,7 @@ use App\Notifications\UserFollowed;
 use App\Notifications\UserFollowRequested;
 use App\Review;
 use App\Spot;
+use App\SpotComment;
 use App\Subscriber;
 use App\User;
 use Illuminate\Http\Request;
@@ -280,6 +281,35 @@ class UserController extends Controller
             'title' => 'Your Reviews',
             'content' => $reviews,
             'component' => 'review',
+            'options' => ['user' => true],
+        ]);
+    }
+
+    public function comments(Request $request)
+    {
+        $sort = ['created_at', 'desc'];
+        if (!empty($request['sort'])) {
+            $fieldMapping = [
+                'date' => 'created_at',
+                'rating' => 'rating',
+            ];
+            $sortParams = explode('_', $request['sort']);
+            $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
+        }
+
+        $userID = Auth::id();
+        $comments = SpotComment::where('user_id', $userID)
+            ->dateBetween([
+                'from' => $request['date_from'] ?? null,
+                'to' => $request['date_to'] ?? null
+            ])
+            ->orderBy($sort[0], $sort[1])
+            ->paginate(20);
+
+        return view('content_listings', [
+            'title' => 'Your Comments',
+            'content' => $comments,
+            'component' => 'comment',
             'options' => ['user' => true],
         ]);
     }

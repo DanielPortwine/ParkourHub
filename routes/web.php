@@ -41,6 +41,7 @@ Route::prefix('user')->middleware('verified')->group(function() {
     Route::get('/hitlist', 'UserController@hitlist')->name('user_hitlist');
     Route::get('/hitlist/completed', 'UserController@hitlistCompleted')->name('user_hitlist_completed');
     Route::get('/reviews', 'UserController@reviews')->name('user_reviews');
+    Route::get('/comments', 'UserController@comments')->name('user_comments');
     Route::get('/challenges', 'UserController@challenges')->name('user_challenges');
     Route::get('/entries', 'UserController@entries')->name('user_entries');
     Route::get('/fetch_hometown_bounding', 'UserController@fetchHometownBounding');
