@@ -72,7 +72,7 @@ class ChallengeController extends Controller
         );
         $winner = $challenge->entries->where('winner', true)->first();
         $usersViewed = $challenge->entries->pluck('user_id')->toArray();
-        if (!in_array(Auth::id(), $usersViewed) && Auth::id() !== $challenge->user_id) {
+        if (Auth::check() && !in_array(Auth::id(), $usersViewed) && Auth::id() !== $challenge->user_id) {
             $view = new ChallengeView;
             $view->challenge_id = $id;
             $view->user_id = Auth::id();

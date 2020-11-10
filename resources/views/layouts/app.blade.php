@@ -49,6 +49,12 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('spots') }}"><i class="fa fa-map nav-icon"></i>Map</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('spot_listing') }}"><i class="fa fa-map-marker nav-icon"></i>Spots</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('challenge_listing') }}"><i class="fa fa-bullseye nav-icon"></i>Challenges</a>
+                        </li>
                         @guest
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('login') }}"><i class="fa fa-user nav-icon"></i>{{ __('Login') }}</a>
@@ -59,12 +65,6 @@
                                 </li>
                             @endif
                         @else
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('spot_listing') }}"><i class="fa fa-map-marker nav-icon"></i>Spots</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('challenge_listing') }}"><i class="fa fa-bullseye nav-icon"></i>Challenges</a>
-                            </li>
                             @premium
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('workout_listing') }}"><i class="fa fa-calendar-plus-o nav-icon"></i>Workouts</a>

@@ -15,7 +15,9 @@
                 @if($challenge->user_id === Auth()->id())
                     <a class="btn text-white" href="{{ route('challenge_edit', $challenge->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
                 @endif
-                <a class="btn text-white" href="{{ route('challenge_report', $challenge->id) }}" title="Report"><i class="fa fa-flag"></i></a>
+                @auth
+                    <a class="btn text-white" href="{{ route('challenge_report', $challenge->id) }}" title="Report"><i class="fa fa-flag"></i></a>
+                @endauth
                 @if(Auth()->id() === 1)
                     <a class="btn text-white" href="{{ route('challenge_delete', ['id' => $challenge->id, 'from' => 'component']) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
                     @if(count($challenge->reports) > 0)

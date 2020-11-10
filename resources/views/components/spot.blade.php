@@ -1,5 +1,5 @@
 @php
-$hit = Auth()->user()->hits->where('spot_id', $spot->id)->first()
+$hit = $spot->hits->where('user_id', Auth()->id() ?: null)->first()
 @endphp
 
 <div class="card bg-grey">
@@ -31,15 +31,19 @@ $hit = Auth()->user()->hits->where('spot_id', $spot->id)->first()
                 @if($spot->user_id === Auth()->id())
                     <a class="btn text-white" href="{{ route('spot_edit', $spot->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
                 @endif
-                <a class="btn text-white" href="{{ route('spot_report', $spot->id) }}" title="Report"><i class="fa fa-flag"></i></a>
+                @auth
+                    <a class="btn text-white" href="{{ route('spot_report', $spot->id) }}" title="Report"><i class="fa fa-flag"></i></a>
+                @endauth
                 @if(Auth()->id() === 1)
                     <a class="btn text-white" href="{{ route('spot_delete', [$spot->id, 'component']) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
                     @if(count($spot->reports) > 0)
                         <a class="btn text-white" href="{{ route('spot_report_discard', $spot->id) }}" title="Discard Reports"><i class="fa fa-balance-scale"></i></a>
                     @endif
                 @endif
-                <a class="btn text-white tick-off-hitlist-button @if(!(!empty($hit) && $hit->completed_at == null))d-none @endif" id="hitlist-spot-{{ $spot->id }}-add" title="Tick Off Hitlist"><i class="fa fa-check"></i></a>
-                <a class="btn text-white add-to-hitlist-button @if(!empty($hit))d-none @endif" id="hitlist-spot-{{ $spot->id }}-tick" title="Add To Hitlist"><i class="fa fa-crosshairs"></i></a>
+                @auth
+                    <a class="btn text-white tick-off-hitlist-button @if(!(!empty($hit) && $hit->completed_at == null))d-none @endif" id="hitlist-spot-{{ $spot->id }}-add" title="Tick Off Hitlist"><i class="fa fa-check"></i></a>
+                    <a class="btn text-white add-to-hitlist-button @if(!empty($hit))d-none @endif" id="hitlist-spot-{{ $spot->id }}-tick" title="Add To Hitlist"><i class="fa fa-crosshairs"></i></a>
+                @endauth
                 <a class="btn text-white" href="{{ route('spots', ['spot' => $spot->id]) }}" title="Locate"><i class="fa fa-map-marker"></i></a>
             </div>
         </div>

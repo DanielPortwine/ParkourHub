@@ -105,11 +105,16 @@ class SpotController extends Controller
                 $workouts = $spot->workouts()->orderByDesc('created_at')->limit(4)->get();
             }
             $usersViewed = SpotView::where('spot_id', $id)->pluck('user_id')->toArray();
-            if (!in_array(Auth::id(), $usersViewed) && Auth::id() !== $spot->user_id) {
+            if (Auth::check() && !in_array(Auth::id(), $usersViewed) && Auth::id() !== $spot->user_id) {
                 $view = new SpotView;
                 $view->spot_id = $id;
                 $view->user_id = Auth::id();
                 $view->save();
+            }
+
+            $hit = null;
+            if (Auth::check()) {
+                $hit = Auth()->user()->hits->where('spot_id', $id)->first();
             }
 
             return view('spots.view', [
@@ -121,6 +126,7 @@ class SpotController extends Controller
                 'workouts' => $workouts,
                 'tab' => $tab,
                 'movements' => $spot->movements,
+                'hit' => $hit,
             ]);
         }
     }

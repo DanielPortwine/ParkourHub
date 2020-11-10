@@ -62,16 +62,16 @@ Route::prefix('premium')->middleware('verified')->group(function() {
     Route::get('/restart', 'PremiumController@restart')->name('premium_restart');
 });
 
-Route::get('/spots', 'SpotController@index')->name('spots');
-Route::get('/spots/fetch', 'SpotController@fetch')->name('spot_fetch');
 Route::prefix('spots')->middleware('verified')->group(function() {
-    Route::get('/all', 'SpotController@listing')->name('spot_listing');
-    Route::get('/spot/{id}/{tab?}', 'SpotController@view')->name('spot_view');
+    Route::get('/', 'SpotController@index')->withoutMiddleware('verified')->name('spots');
+    Route::get('/fetch', 'SpotController@fetch')->withoutMiddleware('verified')->name('spot_fetch');
+    Route::get('/all', 'SpotController@listing')->withoutMiddleware('verified')->name('spot_listing');
+    Route::get('/spot/{id}/{tab?}', 'SpotController@view')->withoutMiddleware('verified')->name('spot_view');
     Route::post('/create', 'SpotController@create')->middleware('optimizeImages')->name('spot_create');
     Route::get('/edit/{id}', 'SpotController@edit')->name('spot_edit');
     Route::post('/edit/{id}', 'SpotController@update')->middleware('optimizeImages')->name('spot_update');
     Route::get('/delete/{id}/{from?}', 'SpotController@delete')->name('spot_delete');
-    Route::get('/search', 'SpotController@search')->name('spot_search');
+    Route::get('/search', 'SpotController@search')->withoutMiddleware('verified')->name('spot_search');
     Route::get('/add_to_hitlist/{id}', 'SpotController@addToHitlist')->name('add_to_hitlist');
     Route::get('/tick_off_hitlist/{id}', 'SpotController@tickOffHitlist')->name('tick_off_hitlist');
     Route::get('/report/{spot}', 'SpotController@report')->name('spot_report');
@@ -79,7 +79,7 @@ Route::prefix('spots')->middleware('verified')->group(function() {
     Route::post('/add_movement/{spot}', 'SpotController@addMovement')->name('spot_add_movement');
     Route::get('/remove_movement/{spotID}/{movement}', 'SpotController@removeMovement')->name('spot_remove_movement');
     Route::post('/link_workout', 'SpotController@linkWorkout')->name('spot_workout_link');
-    Route::get('/getSpots', 'SpotController@getSpots')->name('spot_search');
+    Route::get('/getSpots', 'SpotController@getSpots')->name('spots_get');
 });
 
 Route::prefix('/reviews')->middleware('verified')->group(function() {
@@ -103,8 +103,8 @@ Route::prefix('/spot_comments')->middleware('verified')->group(function() {
 });
 
 Route::prefix('challenges')->middleware('verified')->group(function() {
-    Route::get('/all', 'ChallengeController@listing')->name('challenge_listing');
-    Route::get('/challenge/{id}', 'ChallengeController@view')->name('challenge_view');
+    Route::get('/all', 'ChallengeController@listing')->withoutMiddleware('verified')->name('challenge_listing');
+    Route::get('/challenge/{id}', 'ChallengeController@view')->withoutMiddleware('verified')->name('challenge_view');
     Route::post('/create', 'ChallengeController@create')->middleware('optimizeImages')->name('challenge_create');
     Route::get('/edit/{id}', 'ChallengeController@edit')->name('challenge_edit');
     Route::post('/edit/{id}', 'ChallengeController@update')->middleware('optimizeImages')->name('challenge_update');
