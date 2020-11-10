@@ -32,11 +32,11 @@ Route::post('/subscribe', 'UserController@subscribe')->name('user_subscribe');
 Route::get('users', 'UserController@listing')->middleware('verified')->name('user_listing');
 Route::prefix('user')->middleware('verified')->group(function() {
     Route::get('/view/{id}/{tab?}', 'UserController@view')->name('user_view');
-    Route::get('/manage', 'UserController@manage')->name('user_manage');
-    Route::post('/manage', 'UserController@update')->name('user_update');
-    Route::get('/reset_password', 'UserController@resetPassword')->name('user_reset_password');
-    Route::get('/obfuscate/{field}', 'UserController@obfuscate')->name('obfuscate');
-    Route::get('/delete', 'UserController@delete')->name('user_delete');
+    Route::get('/manage', 'UserController@manage')->withoutMiddleware('verified')->middleware('auth')->name('user_manage');
+    Route::post('/manage', 'UserController@update')->withoutMiddleware('verified')->middleware('auth')->name('user_update');
+    Route::get('/reset_password', 'UserController@resetPassword')->withoutMiddleware('verified')->middleware('auth')->name('user_reset_password');
+    Route::get('/obfuscate/{field}', 'UserController@obfuscate')->withoutMiddleware('verified')->middleware('auth')->name('obfuscate');
+    Route::get('/delete', 'UserController@delete')->withoutMiddleware('verified')->middleware('auth')->name('user_delete');
     Route::get('/spots', 'UserController@spots')->name('user_spots');
     Route::get('/hitlist', 'UserController@hitlist')->name('user_hitlist');
     Route::get('/hitlist/completed', 'UserController@hitlistCompleted')->name('user_hitlist_completed');
