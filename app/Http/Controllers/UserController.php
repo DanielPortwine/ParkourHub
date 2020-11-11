@@ -118,7 +118,11 @@ class UserController extends Controller
     {
         if (!empty($request['account-form'])) {
             $user = User::where('id', Auth::id())->first();
-            $user->name = $request['name'];
+            if (empty($data['name'])) {
+                $user->name = 'User' . Auth::id();
+            } else {
+                $user->name = $request['name'];
+            }
             $user->email = $request['email'];
             if (!empty($request['hometown'])) {
                 $hometown = explode('|', $request['hometown']);

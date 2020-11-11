@@ -11674,6 +11674,10 @@ body {
   background-color: #73c979;
 }
 
+.required-star {
+  color: #e3342f;
+}
+
 #description-box {
   max-height: 55px;
   overflow: hidden;
