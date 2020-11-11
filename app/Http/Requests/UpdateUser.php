@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Rules\Checkbox;
 use App\Rules\Hometown;
+use App\Rules\NotAutoUsername;
 use App\Rules\UniqueOrOldEmail;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -27,7 +28,7 @@ class UpdateUser extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required_with:account-form|string|max:25',
+            'name' => ['sometimes', 'string', 'max:25', new NotAutoUsername],
             'email' => ['required_with:account_form', 'string', 'email', 'max:255', new UniqueOrOldEmail],
             'hometown' => ['string', 'max:255', new Hometown],
             'subscribed' => new Checkbox,
