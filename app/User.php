@@ -128,4 +128,9 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->belongsToMany('App\MovementField', 'users_movements_baseline');
     }
+
+    public function settingsLog()
+    {
+        return $this->hasMany('App\UserSettingsLog');
+    }
 }

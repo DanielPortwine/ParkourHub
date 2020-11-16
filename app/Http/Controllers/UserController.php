@@ -14,6 +14,7 @@ use App\Spot;
 use App\SpotComment;
 use App\Subscriber;
 use App\User;
+use App\UserSettingsLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -139,12 +140,18 @@ class UserController extends Controller
             } else {
                 $this->unsubscribe();
             }
-        } else if (!empty($request['notification-form'])) {
-            setting()->set($request['notifications']);
+        } else if (!empty($request['notification-form']) || !empty($request['privacy-form'])) {
+            if (!empty($request['notification-form'])) {
+                setting()->set($request['notifications']);
+            } else if (!empty($request['privacy-form'])) {
+                setting()->set($request['privacy']);
+            }
             setting()->save();
-        } else if (!empty($request['privacy-form'])) {
-            setting()->set($request['privacy']);
-            setting()->save();
+
+            UserSettingsLog::create([
+                'user_id' => Auth::id(),
+                'settings' => Auth::user()->settings,
+            ]);
         }
 
         return back()->with('status', 'Updated Account Information');
