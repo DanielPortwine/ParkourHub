@@ -152,11 +152,13 @@
                 <h1 class="text-center subtitle sedgwick">From your Hitlist</h1>
             </div>
         </div>
-        @foreach($hitlist as $spot)
+        @foreach($hitlist->chunk(4) as $chunk)
             <div class="row">
-                <div class="col-xl-3 col-md-6 mb-4">
-                    @include('components.spot')
-                </div>
+                @foreach($chunk as $spot)
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        @include('components.spot')
+                    </div>
+                @endforeach
             </div>
         @endforeach
         <div class="row pb-4">
