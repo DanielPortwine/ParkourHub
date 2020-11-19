@@ -33,7 +33,7 @@ class SpotCreated extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        switch (setting('new_spot', 'none', $notifiable->id)) {
+        switch (setting('new_spot', 'on-site', $notifiable->id)) {
             case 'on-site':
                 $channels = ['database'];
                 break;

@@ -2,10 +2,10 @@
 
 return [
     'notification_channels' => [
-        'none' => 'None',
         'on-site' => 'On-site Only',
         'email' => 'Email Only',
         'email-site' => 'On-site & Email',
+        'none' => 'None',
     ],
     'notifications' => [
         'notifications_review' => [

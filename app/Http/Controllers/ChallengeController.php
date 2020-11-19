@@ -109,14 +109,14 @@ class ChallengeController extends Controller
 
         // notify the spot creator that someone created a challenge
         $creator = User::where('id', $challenge->spot->user_id)->first();
-        if ($creator->id != Auth::id() && in_array(setting('notifications_challenge', null, $creator->id), ['on-site', 'email', 'email-site'])) {
+        if ($creator->id != Auth::id() && in_array(setting('notifications_challenge', 'on-site', $creator->id), ['on-site', 'email', 'email-site'])) {
             $creator->notify(new SpotChallenged($challenge));
         }
 
         // notify followers that user created a challenge
         $followers = Auth::user()->followers()->get();
         foreach ($followers as $follower) {
-            if (in_array(setting('notifications_new_challenge', null, $follower->id), ['on-site', 'email', 'email-site'])) {
+            if (in_array(setting('notifications_new_challenge', 'on-site', $follower->id), ['on-site', 'email', 'email-site'])) {
                 $follower->notify(new ChallengeCreated($challenge));
             }
         }
@@ -193,7 +193,7 @@ class ChallengeController extends Controller
 
             // notify the challenge creator that someone enters a challenge
             $creator = User::where('id', $entry->challenge->user_id)->first();
-            if ($creator->id != Auth::id() && in_array(setting('notifications_entry', null, $creator->id), ['on-site', 'email', 'email-site'])) {
+            if ($creator->id != Auth::id() && in_array(setting('notifications_entry', 'on-site', $creator->id), ['on-site', 'email', 'email-site'])) {
                 $creator->notify(new ChallengeEntered($entry));
             }
 
@@ -212,7 +212,7 @@ class ChallengeController extends Controller
 
             // notify the challenge winner that they won
             $winner = User::where('id', $entry->user_id)->first();
-            if ($winner->id != Auth::id() && in_array(setting('notifications_challenge_won', null, $winner->id), ['on-site', 'email', 'email-site'])) {
+            if ($winner->id != Auth::id() && in_array(setting('notifications_challenge_won', 'on-site', $winner->id), ['on-site', 'email', 'email-site'])) {
                 $winner->notify(new ChallengeWon($entry));
             }
 

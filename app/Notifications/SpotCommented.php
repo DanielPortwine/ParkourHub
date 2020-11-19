@@ -31,7 +31,7 @@ class SpotCommented extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        switch (setting('notifications_comment', 'none', $notifiable->id)) {
+        switch (setting('notifications_comment', 'on-site', $notifiable->id)) {
             case 'on-site':
                 $channels = ['database'];
                 break;

@@ -33,7 +33,7 @@ class ChallengeWon extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        switch (setting('notifications_challenge_won', 'none', $notifiable->id)) {
+        switch (setting('notifications_challenge_won', 'on-site', $notifiable->id)) {
             case 'on-site':
                 $channels = ['database'];
                 break;

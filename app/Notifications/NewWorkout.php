@@ -33,7 +33,7 @@ class NewWorkout extends Notification
      */
     public function via($notifiable)
     {
-        switch (setting('notifications_new_workout', 'none', $notifiable->id)) {
+        switch (setting('notifications_new_workout', 'on-site', $notifiable->id)) {
             case 'on-site':
                 $channels = ['database'];
                 break;

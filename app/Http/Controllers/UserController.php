@@ -423,7 +423,7 @@ class UserController extends Controller
         $user->save();
 
         // notify the user that someone started following them or requested to follow them
-        if ($id != Auth::id() && in_array(setting('notifications_follower', null, $id), ['on-site', 'email', 'email-site'])) {
+        if ($id != Auth::id() && in_array(setting('notifications_follower', 'on-site', $id), ['on-site', 'email', 'email-site'])) {
             switch (setting('privacy_follow', null, $id)) {
                 case 'request':
                     $user->notify(new UserFollowRequested($follower));
