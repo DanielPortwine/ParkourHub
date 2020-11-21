@@ -22,5 +22,9 @@ class DatabaseSeeder extends Seeder
         $this->call(ChallengeSeeder::class);
         $this->call(ChallengeViewSeeder::class);
         $this->call(ChallengeEntrySeeder::class);
+        $this->call(MovementTypeSeeder::class);
+        $this->call(MovementCategorySeeder::class);
+        $this->call(MovementFieldSeeder::class);
+        $this->call(MovementSeeder::class);
     }
 }

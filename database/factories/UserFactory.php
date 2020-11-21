@@ -22,7 +22,9 @@ $factory->define(User::class, function (Faker $faker) {
         'name' => $faker->firstName . ' ' . $faker->lastName,
         'email' => $faker->unique()->safeEmail,
         'email_verified_at' => now(),
-        'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+        'profile_image' => '/storage/images/users/profile/' . $faker->image('public/storage/images/users/profile', 640, 480, 'people', false),
+        'cover_image' => '/storage/images/users/cover/' . $faker->image('public/storage/images/users/cover', 640, 480, 'nature', false),
+        'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // 'password'
         'remember_token' => Str::random(10),
         'settings' => '{}',
     ];

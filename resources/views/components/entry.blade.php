@@ -16,8 +16,8 @@
         @endif
     </div>
     <div class="py-3 px-4">
-        <div class="row border-subtle mb-2">
-            <div class="col-md vertical-center">
+        <div class="row">
+            <div class="col vertical-center">
                 <a class="btn-link h3 mb-0 sedgwick" href="{{ route('challenge_view', $entry->challenge->id) }}">
                     @if($entry->winner)
                         <i class="fa fa-trophy"></i>
@@ -25,7 +25,7 @@
                     {{ $entry->challenge->name }}
                 </a>
             </div>
-            <div class="col-md-auto vertical-center">
+            <div class="col-auto vertical-center pl-0">
                 <div>
                     @if($entry->challenge->user_id === Auth()->id() && !$entry->challenge->won)
                         <a class="btn text-white" href="{{ route('challenge_win', $entry->id) }}" title="Select Winner"><i class="fa fa-trophy"></i></a>
@@ -37,16 +37,23 @@
                             <a class="btn text-white" href="{{ route('entry_report_discard', $entry->id) }}" title="Discard Reports"><i class="fa fa-balance-scale"></i></a>
                         @endif
                     @endif
-                    <a class="btn text-white d-md-inline-block d-none" href="{{ route('spots', ['spot' => $entry->challenge->spot_id]) }}" title="Locate Spot"><i class="fa fa-map-marker"></i></a>
+                    <a class="btn text-white" href="{{ route('spots', ['spot' => $entry->challenge->spot_id]) }}" title="Locate Spot"><i class="fa fa-map-marker"></i></a>
                 </div>
+            </div>
+        </div>
+        <div class="row border-subtle mb-2">
+            <div class="col-md vertical-center">
+                {{ $entry->created_at->diffForHumans() }}
             </div>
         </div>
         <div class="row">
             <div class="col vertical-center">
-                <a class="btn-link large-text sedgwick" href="{{ route('user_view', $entry->user->id) }}">{{ $entry->user->name }}</a> | {{ $entry->created_at->diffForHumans() }}
-            </div>
-            <div class="col-auto">
-                <a class="btn text-white d-md-none d-inline-block" href="{{ route('spots', ['spot' => $entry->challenge->spot_id]) }}" title="Locate Spot"><i class="fa fa-map-marker"></i></a>
+                @if(!empty($entry->user->profile_image))
+                    <div class="profile-image-wrapper--component pr-3">
+                        <a href="{{ $entry->user->profile_image }}"><img src="{{ $entry->user->profile_image }}" alt="Profile image of the user named {{ $entry->user->name }}."></a>
+                    </div>
+                @endif
+                <a class="btn-link large-text sedgwick" href="{{ route('user_view', $entry->user->id) }}">{{ $entry->user->name }}</a>
             </div>
         </div>
     </div>

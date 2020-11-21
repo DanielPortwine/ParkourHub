@@ -29,6 +29,11 @@
         </div>
         <div class="row">
             <div class="col-md vertical-center">
+                @if(!empty($challenge->user->profile_image))
+                    <div class="profile-image-wrapper--component pr-3">
+                        <a href="{{ $challenge->user->profile_image }}"><img src="{{ $challenge->user->profile_image }}" alt="Profile image of the user named {{ $challenge->user->name }}."></a>
+                    </div>
+                @endif
                 <a class="btn-link large-text sedgwick" href="{{ route('user_view', $challenge->user->id) }}">{{ $challenge->user->name }}</a>
             </div>
             <div class="col-md-auto vertical-center">

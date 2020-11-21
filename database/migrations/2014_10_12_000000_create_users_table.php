@@ -19,6 +19,8 @@ class CreateUsersTable extends Migration
             $table->string('followers_quantified')->default('0');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
+            $table->string('profile_image')->nullable();
+            $table->string('cover_image')->nullable();
             $table->string('hometown_name')->nullable();
             $table->string('hometown_bounding')->nullable();
             $table->string('password');

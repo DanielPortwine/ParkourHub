@@ -89,6 +89,16 @@ class UserController extends Controller
             $following = $user->following()->orderByDesc('created_at')->limit(4)->get();
         }
 
+        $showHometown = !empty($user->hometown_name) && (
+                (
+                    setting('privacy_hometown', null, $user->id) === 'anybody' || (
+                        setting('privacy_hometown', null, $user->id) === 'follower' &&
+                        !empty($user->followers->firstWhere('id', Auth()->id()))
+                    )
+                ) ||
+                $user->id === Auth()->id()
+            );
+
         return view('user.view', [
             'user' => $user,
             'request' => $request,
@@ -99,6 +109,7 @@ class UserController extends Controller
             'followers' => $followers,
             'following' => $following,
             'tab' => $tab,
+            'showHometown' => $showHometown,
         ]);
     }
 

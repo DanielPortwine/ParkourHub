@@ -2,6 +2,11 @@
     <div class="py-3 px-4">
         <div class="row">
             <div class="col-md vertical-center">
+                @if(!empty($user->profile_image))
+                    <div class="profile-image-wrapper--component pr-3">
+                        <a href="{{ $user->profile_image }}"><img src="{{ $user->profile_image }}" alt="Profile image of the user named {{ $user->name }}."></a>
+                    </div>
+                @endif
                 <a class="btn-link large-text sedgwick" href="{{ route('user_view', $user->id) }}">{{ $user->name }}</a>
             </div>
             <div class="col-md-auto vertical-center">

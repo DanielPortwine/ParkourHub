@@ -25,6 +25,11 @@ $like = $comment->likes->where('user_id', Auth()->id() ?: null)->first()
     <div class="py-3 px-4">
         <div class="row">
             <div class="col-md vertical-center">
+                @if(!empty($comment->user->profile_image))
+                    <div class="profile-image-wrapper--component pr-3">
+                        <a href="{{ $comment->user->profile_image }}"><img src="{{ $comment->user->profile_image }}" alt="Profile image of the user named {{ $comment->user->name }}."></a>
+                    </div>
+                @endif
                 <a class="btn-link large-text sedgwick" href="{{ route('user_view', $comment->user->id) }}">{{ $comment->user->name }}</a>
             </div>
             <div class="col-md-auto">

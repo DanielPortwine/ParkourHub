@@ -49,6 +49,11 @@ $hit = $spot->hits->where('user_id', Auth()->id() ?: null)->first()
         </div>
         <div class="row">
             <div class="col-md vertical-center">
+                @if(!empty($spot->user->profile_image))
+                    <div class="profile-image-wrapper--component pr-3">
+                        <a href="{{ $spot->user->profile_image }}"><img src="{{ $spot->user->profile_image }}" alt="Profile image of the user named {{ $spot->user->name }}."></a>
+                    </div>
+                @endif
                 <a class="btn-link large-text sedgwick" href="{{ route('user_view', $spot->user->id) }}">{{ $spot->user->name }}</a>
             </div>
             @if(count($spot->reviews))

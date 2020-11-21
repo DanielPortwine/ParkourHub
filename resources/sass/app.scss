@@ -571,6 +571,37 @@ input[type="checkbox"]:checked + label:after {
     object-fit: cover;
 }
 
+.cover-image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: 35%;
+    background-color: $black;
+}
+
+.cover-image-wrapper img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-image-wrapper img {
+    border-radius: 50%;
+    object-fit: cover;
+    width: 8rem;
+    height: 8rem;
+}
+
+.profile-image-wrapper--component img {
+    border-radius: 50%;
+    object-fit: cover;
+    width: 2.5rem;
+    height: 2.5rem;
+}
+
 .youtube {
     cursor: pointer;
 }

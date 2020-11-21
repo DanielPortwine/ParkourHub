@@ -11,21 +11,42 @@
             </button>
         </div>
     @endif
-    <div class="container p-0">
-        @if(!empty($user->image))
-            <div class="content-wrapper">
-                <img class="full-content-content" src="{{ $user->image }}" alt="Image of the user named {{ $user->name }}.">
+    <div class="container p-0" {{--@if(!empty($user->cover_image)) style="background-image:url('{{ $user->cover_image }}')" @endif--}}>
+        @if(!empty($user->cover_image))
+            <div class="cover-image-wrapper">
+                <img src="{{ $user->cover_image }}" alt="Cover image of the user named {{ $user->name }}.">
             </div>
         @endif
     </div>
     <div class="section grey-section">
         <div class="container">
-            <div class="row pt-4">
+            <div class="row py-3">
+                @if(!empty($user->profile_image))
+                    <div class="col-auto vertical-center">
+                        <div class="profile-image-wrapper">
+                            <a href="{{ $user->profile_image }}"><img src="{{ $user->profile_image }}" alt="Profile image of the user named {{ $user->name }}."></a>
+                        </div>
+                    </div>
+                @endif
                 <div class="col vertical-center">
-                    <h1 class="sedgwick mb-0">{{ $user->name }}</h1>
+                    <div class="container-fluid p-0">
+                        <div class="row">
+                            <div class="col">
+                                <h1 class="sedgwick mb-0">{{ $user->name }}</h1>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                @if($showHometown)
+                                    <p class="mb-0">{{ explode(',', $user->hometown_name)[0] . ', ' . explode(',', $user->hometown_name)[1] }}</p>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-auto vertical-center">
                     <div>
+                        {{ $user->followers_quantified }} <i class="fa fa-group"></i>
                         @if ($user->id === Auth()->id())
                             <a class="btn text-white" href="{{ route('user_manage') }}" title="Manage"><i class="fa fa-pencil"></i></a>
                         @else
@@ -36,7 +57,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row border-subtle pb-1 mb-2">
+            {{--<div class="row border-subtle pb-1">
                 @if(!empty($user->hometown_name) && (
                         (
                             setting('privacy_hometown', null, $user->id) === 'anybody' || (
@@ -50,8 +71,8 @@
                         {{ explode(',', $user->hometown_name)[0] . ', ' . explode(',', $user->hometown_name)[1] }}
                     </div>
                 @endif
-            </div>
-            <div class="row text-center user-stats py-3">
+            </div>--}}
+            {{--<div class="row text-center user-stats py-3 mt-2">
                 <div class="col" title="Number Of Spots Created">
                     <i class="fa fa-map-marker text-white"></i>
                     {{ count($user->spots) }}
@@ -80,7 +101,7 @@
                     <i class="fa fa-clock-o text-white"></i>
                     {{ Carbon\Carbon::parse($user->email_verified_at)->diffInDays() }}
                 </div>
-            </div>
+            </div>--}}
         </div>
     </div>
     <div class="section">
