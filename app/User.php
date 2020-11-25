@@ -69,11 +69,6 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany('App\Review');
     }
 
-    public function textReviews()
-    {
-        return $this->hasMany('App\Review')->whereNotNull('title')->orWhereNotNull('review');
-    }
-
     public function spotComments()
     {
         return $this->hasMany('App\SpotComment');

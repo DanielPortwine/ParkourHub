@@ -130,9 +130,9 @@
                         @if(!empty($request['reviews']))
                             {{ $reviews->links() }}
                         @endif
-                        @if (count($user->textReviews) === 0)
+                        @if ($user->reviews()->withText()->count() === 0)
                             <p class="mb-0">{{ $user->id === Auth()->id() ? 'You have ' : 'This user has ' }}no reviews.</p>
-                        @elseif(count($user->textReviews) > 4)
+                        @elseif($user->reviews()->withText()->count() > 4)
                             <div class="col text-center mb-4">
                                 @if(empty($request['reviews']))
                                     <a class="btn btn-green w-75" href="?reviews=1">More</a>

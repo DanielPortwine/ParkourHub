@@ -102,11 +102,6 @@ class Spot extends Model
         return $this->hasMany('App\Review');
     }
 
-    public function textReviews()
-    {
-        return $this->hasMany('App\Review')->whereNotNull('title')->orWhereNotNull('review');
-    }
-
     public function comments()
     {
         return $this->hasMany('App\SpotComment');

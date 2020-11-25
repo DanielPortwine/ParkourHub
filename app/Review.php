@@ -41,6 +41,11 @@ class Review extends Model
         return $query;
     }
 
+    public function scopeWithText($query)
+    {
+        return $query->whereNotNull('title')->orWhereNotNull('review');
+    }
+
     public function user()
     {
         return $this->belongsTo('App\User');
