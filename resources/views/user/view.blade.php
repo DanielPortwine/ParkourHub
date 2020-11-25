@@ -11,12 +11,12 @@
             </button>
         </div>
     @endif
-    <div class="container p-0" {{--@if(!empty($user->cover_image)) style="background-image:url('{{ $user->cover_image }}')" @endif--}}>
-        @if(!empty($user->cover_image))
-            <div class="cover-image-wrapper">
+    <div class="container p-0">
+        <div class="cover-image-wrapper">
+            @if(!empty($user->cover_image))
                 <img src="{{ $user->cover_image }}" alt="Cover image of the user named {{ $user->name }}.">
-            </div>
-        @endif
+            @endif
+        </div>
     </div>
     <div class="section grey-section">
         <div class="container">
@@ -57,51 +57,6 @@
                     </div>
                 </div>
             </div>
-            {{--<div class="row border-subtle pb-1">
-                @if(!empty($user->hometown_name) && (
-                        (
-                            setting('privacy_hometown', null, $user->id) === 'anybody' || (
-                                setting('privacy_hometown', null, $user->id) === 'follower' &&
-                                !empty($user->followers->firstWhere('id', Auth()->id()))
-                            )
-                        ) ||
-                        $user->id === Auth()->id()
-                    ))
-                    <div class="col">
-                        {{ explode(',', $user->hometown_name)[0] . ', ' . explode(',', $user->hometown_name)[1] }}
-                    </div>
-                @endif
-            </div>--}}
-            {{--<div class="row text-center user-stats py-3 mt-2">
-                <div class="col" title="Number Of Spots Created">
-                    <i class="fa fa-map-marker text-white"></i>
-                    {{ count($user->spots) }}
-                </div>
-                <div class="col" title="Number Of Challenges Created">
-                    <i class="fa fa-bullseye text-white"></i>
-                    {{ count($user->challenges) }}
-                </div>
-                <div class="col" title="Number Of Spots Reviewed">
-                    <i class="fa fa-star text-white"></i>
-                    {{ count($user->reviews) }}
-                </div>
-                <div class="col" title="Number Of Comments On Spots">
-                    <i class="fa fa-comment text-white"></i>
-                    {{ count($user->spotComments) }}
-                </div>
-                <div class="col" title="Followers">
-                    <i class="fa fa-group text-white"></i>
-                    {{ $user->followers_quantified }}
-                </div>
-                <div class="col" title="Following">
-                    <i class="fa fa-group text-white"></i>
-                    {{ count($user->following) }}
-                </div>
-                <div class="col" title="Number Of Days Since Registration">
-                    <i class="fa fa-clock-o text-white"></i>
-                    {{ Carbon\Carbon::parse($user->email_verified_at)->diffInDays() }}
-                </div>
-            </div>--}}
         </div>
     </div>
     <div class="section">

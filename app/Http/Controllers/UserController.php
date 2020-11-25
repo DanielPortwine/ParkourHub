@@ -18,6 +18,7 @@ use App\UserSettingsLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -136,6 +137,18 @@ class UserController extends Controller
                 $user->name = $request['name'];
             }
             $user->email = $request['email'];
+            if (!empty($request->file('profile_image'))) {
+                $user->profile_image = Storage::url($request->file('profile_image')->store('images/users/profile', 'public'));
+            } else if (empty($request['old_profile_image'])) {
+                Storage::disk('public')->delete(str_replace('/storage/', '', $user->profile_image));
+                $user->profile_image = null;
+            }
+            if (!empty($request->file('cover_image'))) {
+                $user->cover_image = Storage::url($request->file('cover_image')->store('images/users/cover', 'public'));
+            } else if (empty($request['old_cover_image'])) {
+                Storage::disk('public')->delete(str_replace('/storage/', '', $user->cover_image));
+                $user->cover_image = null;
+            }
             if (!empty($request['hometown'])) {
                 $hometown = explode('|', $request['hometown']);
                 $user->hometown_name = $hometown[0];

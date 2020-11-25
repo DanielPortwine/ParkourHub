@@ -465,7 +465,18 @@ $(document).ready(function() {
     // clear the user's hometown
     $('#remove-hometown-button').click(function() {
         $('#hometown').val('');
-        $('#account-form').submit();
+    });
+
+    // clear the user's profile image
+    $('#remove-profile-image-button').click(function() {
+        $('#profile-image').val('');
+        $('#profile-image-container').html('');
+    });
+
+    // clear the user's cover image
+    $('#remove-cover-image-button').click(function() {
+        $('#cover-image').val('');
+        $('#cover-image-container').html('');
     });
 
     // toggle the card-body

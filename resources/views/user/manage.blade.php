@@ -19,7 +19,7 @@
                         @endif
                         <div class="mb-3">
                             <h3 class="separator sedgwick pb-2 mb-3">Account Details</h3>
-                            <form id="account-form" method="POST">
+                            <form id="account-form" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 <input type="hidden" name="account-form" value="true">
                             </form>
@@ -50,6 +50,50 @@
                                 </div>
                             </div>
                             <div class="form-group row">
+                                <label class="col-md-2 col-form-label text-md-right">Profile Image</label>
+                                <div class="col-8">
+                                    @if(!empty($user->profile_image))
+                                        <div id="profile-image-container">
+                                            <div class="profile-image-wrapper mb-2">
+                                                <a href="{{ $user->profile_image }}"><img src="{{ $user->profile_image }}" alt="Profile image of the user named {{ $user->name }}."></a>
+                                                <input type="hidden" name="old_profile_image" value="{{ $user->profile_image }}" form="account-form">
+                                            </div>
+                                        </div>
+                                    @endif
+                                    <input type="file" id="profile-image" class="form-control-file @error('profile_image') is-invalid @enderror" name="profile_image" form="account-form">
+                                    @error('profile_image')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
+                                </div>
+                                <div class="col-md-2">
+                                    <a class="btn btn-danger" id="remove-profile-image-button">Remove</a>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-2 col-form-label text-md-right">Cover Image</label>
+                                <div class="col-8">
+                                    @if(!empty($user->cover_image))
+                                        <div id="cover-image-container">
+                                            <div class="cover-image-wrapper mb-2">
+                                                <img src="{{ $user->cover_image }}" alt="Cover image of the user named {{ $user->name }}.">
+                                                <input type="hidden" name="old_cover_image" value="{{ $user->cover_image }}" form="account-form">
+                                            </div>
+                                        </div>
+                                    @endif
+                                    <input type="file" id="cover-image" class="form-control-file @error('cover_image') is-invalid @enderror" name="cover_image" form="account-form">
+                                    @error('cover_image')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
+                                </div>
+                                <div class="col-md-2">
+                                    <a class="btn btn-danger" id="remove-cover-image-button">Remove</a>
+                                </div>
+                            </div>
+                            <div class="form-group row">
                                 <label for="hometown" class="col-md-2 col-form-label text-md-right">Hometown</label>
                                 <div class="col-md-8">
                                     <form id="hometown-form">
@@ -67,8 +111,7 @@
                                     </form>
                                 </div>
                                 <div class="col-md-2">
-                                    <a class="btn btn-danger require-confirmation">Remove</a>
-                                    <a class="btn btn-danger d-none confirmation-button" id="remove-hometown-button">Confirm</a>
+                                    <a class="btn btn-danger" id="remove-hometown-button">Remove</a>
                                 </div>
                             </div>
                             <div class="form-group row d-none" id="hometown-results-container">
@@ -83,7 +126,7 @@
                                         <input class="form-check-input @error('subscribed') is-invalid @enderror" type="checkbox" name="subscribed" id="subscribed" value="1" {{ $subscribed ? 'checked' : '' }} form="account-form">
                                         <label class="form-check-label" for="subscribed">Subscribed to email news</label>
                                         @error('subscribed')
-                                            <span class="invalid-feedback" role="alert">
+                                        <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
                                             </span>
                                         @enderror
