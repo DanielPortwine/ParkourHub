@@ -1,4 +1,4 @@
-<div class="py-3 section grey-section">
+<div id="footer" class="py-3 section grey-section position-absolute w-100">
     <div class="container">
         <div class="row">
             <div class="col-md-4">

@@ -163,7 +163,6 @@
                                         if (error) {
                                             cardButton.innerHTML = 'Sign Up';
                                             cardButton.id = 'card-button';
-                                            console.log(error);
                                         } else {
                                             $.ajax({
                                                 url: '{{ route('premium_register') }}',
@@ -295,7 +294,6 @@
                                     if (error) {
                                         cardButton.innerHTML = 'Update';
                                         cardButton.id = 'card-button';
-                                        console.log(error);
                                     } else {
                                         $.ajax({
                                             url: '{{ route('premium_update') }}',

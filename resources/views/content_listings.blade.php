@@ -183,7 +183,7 @@
         {{ $content->links() }}
     </div>
     @if(!empty($create) && $create)
-        <a class="btn btn-green z-10" style="position:fixed;bottom:20px;right:20px" href="{{ route($component . '_create') }}" title="Create New {{ ucfirst($component) }}"><i class="fa fa-plus"></i></a>
+        <a class="btn btn-green z-10" style="position:absolute;top:5rem;left:1rem" href="{{ route($component . '_create') }}" title="Create New {{ ucfirst($component) }}"><i class="fa fa-plus"></i></a>
     @endif
 @endsection
 
@@ -215,7 +215,6 @@
                     types: [1, 2]
                 },
                 success: function (response) {
-                    console.log(response);
                     $('.select2-movement-category').select2({
                         data: response,
                         width: '100%',

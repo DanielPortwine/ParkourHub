@@ -133,7 +133,6 @@ function mapSearch(urlParams, search = null) {
     }
     var latLon = search.split(',');
     if (latLon.length == 2 && (-85 <= latLon[0] && latLon[0] <= 85) && (-180 <= latLon[1] && latLon[1] <= 180)) {
-        console.log('searching lat lon');
         window.location = '/spots?latLon=' + latLon;
     }
     if (urlParams.has('search')) {
@@ -217,6 +216,14 @@ function setRating(rating, shape) {
         } else {
             $value.addClass(unselected).removeClass(selected);
         }
+    }
+}
+
+function updateFooterPosition() {
+    if (($('body').height() + $('#footer').height()) < $(window).height()) {
+        $('#footer').css('bottom', 0);
+    } else {
+        $('#footer').css('bottom', '');
     }
 }
 
@@ -647,4 +654,9 @@ $(document).ready(function() {
     $('#add-movement-button').click(function() {
         $('#add-movement-container').slideDown();
     })
+
+    // keep the footer at the bottom
+    $(window).resize(updateFooterPosition);
+    $('body').resize(updateFooterPosition);
+    updateFooterPosition();
 });
