@@ -57,7 +57,7 @@
             <div class="row">
                 <div class="col"></div>
                 <div class="col-md-8">
-                    <p class="text-center large-text">Parkour Hub is a place for traceurs to share their spots and set challenges for others to attempt.</p>
+                    <p class="text-center large-text">Parkour Hub is a place for athletes to share their spots and set challenges for others to attempt.</p>
                     <p class="text-center large-text">Going to a new town and don't know if there are any spots? Check on Parkour Hub to see what the locals have uploaded.</p>
                     <p class="text-center large-text">Found a particularly tricky spot? Why not create a challenge there and see if anyone can complete it?</p>
                 </div>
@@ -124,28 +124,47 @@
             </div>
         </div>
     </div>
-    <div class="pb-md-3 pb-sm-2 section grey-section">
+    <div class="pb-md-5 pb-sm-4 section grey-section">
         <div class="container">
             <div class="row my-3">
                 <div class="col">
-                    <h1 class="text-center text-white sedgwick"><i class="fa fa-diamond text-premium"></i> Premium Features <i class="fa fa-diamond text-premium"></i></h1>
+                    <h1 class="text-center sedgwick">Premium</h1>
+                </div>
+            </div>
+            <hr class="subtitle-line-premium">
+            <div class="row">
+                <div class="col"></div>
+                <div class="col-md-8">
+                    <p class="text-center large-text">Premium is a place for athletes to create and share moves, exercises and workouts to help themselves and others get better at parkour.</p>
+                    <p class="text-center large-text">Need some more structure to your training? Add workouts to your plan in advance so you can jump straight into it on the day.</p>
+                    <p class="text-center large-text">Want to learn a particular move? Create a plan of workouts with progressions of that move to build up to it safely.</p>
+                </div>
+                <div class="col"></div>
+            </div>
+        </div>
+    </div>
+    <div class="pb-md-3 pb-sm-2 section">
+        <div class="container">
+            <div class="row my-3">
+                <div class="col">
+                    <h1 class="text-center text-premium sedgwick"><i class="fa fa-diamond"></i> Premium Features <i class="fa fa-diamond"></i></h1>
                 </div>
             </div>
             <div class="row my-md-4">
                 <div class="col-md-4">
-                    <i class="fa fa-calendar feature-icon"></i>
+                    <i class="fa fa-user-o feature-icon text-premium"></i>
+                    <h3 class="sedgwick">Workouts</h3>
+                    <p class="large-text">Create workouts using moves & exercises you or other users have created.</p>
+                </div>
+                <div class="col-md-4">
+                    <i class="fa fa-calendar feature-icon text-premium"></i>
                     <h3 class="sedgwick">Training Planner</h3>
-                    <p class="large-text">Generate custom training plans based on areas you want to improve on and track your progress.</p>
+                    <p class="large-text">Use a simple calendar to plan which workouts you want to do when.</p>
                 </div>
                 <div class="col-md-4">
-                    <i class="fa fa-file-video-o feature-icon"></i>
-                    <h3 class="sedgwick">Video Upload</h3>
-                    <p class="large-text">Upload videos directly from your device to showcase spots or demonstrate challenges.</p>
-                </div>
-                <div class="col-md-4">
-                    <i class="fa fa-user-o feature-icon"></i>
-                    <h3 class="sedgwick">Avatar</h3>
-                    <p class="large-text">Customise an avatar to express your personality and help others identify you.</p>
+                    <i class="fa fa-file-video-o feature-icon text-premium"></i>
+                    <h3 class="sedgwick">File Uploads</h3>
+                    <p class="large-text">Upload videos up to 500MB and upload larger images up to 5MB to showcase your content.</p>
                 </div>
             </div>
         </div>
