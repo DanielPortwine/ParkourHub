@@ -3,15 +3,15 @@
 @push('title'){{ $title }} | @endpush
 
 @section('content')
+    @if (session('status'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('status') }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    @endif
     <div class="container-fluid pt-4">
-        @if (session('status'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {{ session('status') }}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        @endif
         <div class="row">
             <div class="col">
                 <h1 class="sedgwick text-center pb-3">{{ $title }}</h1>
@@ -183,7 +183,7 @@
         {{ $content->links() }}
     </div>
     @if(!empty($create) && $create)
-        <a class="btn btn-green" style="position:fixed;bottom:20px;right:20px" href="{{ route($component . '_create') }}" title="Create New {{ ucfirst($component) }}"><i class="fa fa-plus"></i></a>
+        <a class="btn btn-green z-10" style="position:fixed;bottom:20px;right:20px" href="{{ route($component . '_create') }}" title="Create New {{ ucfirst($component) }}"><i class="fa fa-plus"></i></a>
     @endif
 @endsection
 

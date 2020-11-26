@@ -79,6 +79,13 @@ html, body {
     height: 20%;
 }
 
+.alert {
+    position: absolute;
+    top: 5rem;
+    right: 1rem;
+    z-index: 10;
+}
+
 .sedgwick {
     font-family: 'Sedgwick Ave Display', sans-serif;
 }
