@@ -580,6 +580,21 @@ $(document).ready(function() {
             type: 'GET',
             success: function(response) {
                 $button.siblings('.tick-off-hitlist-button').removeClass('d-none');
+                $button.siblings('.remove-from-hitlist-button').removeClass('d-none');
+                $button.addClass('d-none');
+            }
+        })
+    });
+    //remove a spot from hitlist
+    $('.remove-from-hitlist-button').click(function() {
+        var $button = $(this),
+            spot = $button.attr('id').split('-')[2];
+        $.ajax({
+            url: '/spots/remove_from_hitlist/' + spot,
+            type: 'GET',
+            success: function (response) {
+                $button.siblings('.tick-off-hitlist-button').addClass('d-none');
+                $button.siblings('.add-to-hitlist-button').removeClass('d-none');
                 $button.addClass('d-none');
             }
         })

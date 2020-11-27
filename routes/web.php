@@ -73,6 +73,7 @@ Route::prefix('spots')->middleware('verified')->group(function() {
     Route::get('/delete/{id}/{from?}', 'SpotController@delete')->name('spot_delete');
     Route::get('/search', 'SpotController@search')->withoutMiddleware('verified')->name('spot_search');
     Route::get('/add_to_hitlist/{id}', 'SpotController@addToHitlist')->name('add_to_hitlist');
+    Route::get('/remove_from_hitlist/{id}', 'SpotController@removeFromHitlist')->name('remove_from_hitlist');
     Route::get('/tick_off_hitlist/{id}', 'SpotController@tickOffHitlist')->name('tick_off_hitlist');
     Route::get('/report/{spot}', 'SpotController@report')->name('spot_report');
     Route::get('/discard_reports/{spot}', 'SpotController@discardReports')->name('spot_report_discard');

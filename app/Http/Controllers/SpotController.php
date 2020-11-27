@@ -246,6 +246,18 @@ class SpotController extends Controller
         return false;
     }
 
+    public function removeFromHitlist(Request $request, $id)
+    {
+        if (!$request->ajax()) {
+            return back();
+        }
+
+        $hit = Hit::where('user_id', Auth::id())->where('spot_id', $id)->first();
+        $hit->delete();
+
+        return false;
+    }
+
     public function tickOffHitlist(Request $request, $id)
     {
         if (!$request->ajax()) {
