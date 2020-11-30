@@ -47,7 +47,7 @@ $like = $comment->likes->where('user_id', Auth()->id() ?: null)->first()
                 @endif
                 @auth
                     <a class="btn text-white like-spot-comment @if(!empty($like))d-none @endif" id="like-spot-comment-{{ $comment->id }}" title="Like"><i class="fa fa-thumbs-o-up"></i></a>
-                    <a class="btn text-white unlike-spot-comment @if(empty($like))d-none @endif" id="unlike-spot-comment-{{ $comment->id }}" title="Unlike"><i class="fa fa-thumbs-up"></i>
+                    <a class="btn text-white unlike-spot-comment @if(empty($like))d-none @endif" id="unlike-spot-comment-{{ $comment->id }}" title="Unlike"><i class="fa fa-thumbs-up"></i></a>
                 @endauth
             </div>
         </div>
