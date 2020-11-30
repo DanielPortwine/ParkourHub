@@ -190,7 +190,7 @@ class UserController extends Controller
         }
 
         if ($return) {
-            return redirect()->route('subscription_thanks');
+            return back()->with('status', 'Thank you for subscribing!');
         }
     }
 
