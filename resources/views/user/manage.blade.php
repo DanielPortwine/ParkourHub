@@ -67,9 +67,11 @@
                                     </span>
                                     @enderror
                                 </div>
-                                <div class="col-md-2">
-                                    <a class="btn btn-danger" id="remove-profile-image-button">Remove</a>
-                                </div>
+                                @if(!empty($user->profile_image))
+                                    <div class="col-md-2">
+                                        <a class="btn btn-danger" id="remove-profile-image-button">Remove</a>
+                                    </div>
+                                @endif
                             </div>
                             <div class="form-group row">
                                 <label class="col-md-2 col-form-label text-md-right">Cover Image</label>
@@ -89,9 +91,11 @@
                                     </span>
                                     @enderror
                                 </div>
-                                <div class="col-md-2">
-                                    <a class="btn btn-danger" id="remove-cover-image-button">Remove</a>
-                                </div>
+                                @if(!empty($user->cover_image))
+                                    <div class="col-md-2">
+                                        <a class="btn btn-danger" id="remove-cover-image-button">Remove</a>
+                                    </div>
+                                @endif
                             </div>
                             <div class="form-group row">
                                 <label for="hometown" class="col-md-2 col-form-label text-md-right">Hometown</label>
@@ -110,9 +114,11 @@
                                         </div>
                                     </form>
                                 </div>
-                                <div class="col-md-2">
-                                    <a class="btn btn-danger" id="remove-hometown-button">Remove</a>
-                                </div>
+                                @if(!empty($user->hometown_name))
+                                    <div class="col-md-2">
+                                        <a class="btn btn-danger" id="remove-hometown-button">Remove</a>
+                                    </div>
+                                @endif
                             </div>
                             <div class="form-group row d-none" id="hometown-results-container">
                                 <div class="col-md-8 offset-md-2">
