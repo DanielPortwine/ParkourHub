@@ -202,7 +202,3 @@ Route::prefix('ajax')->group(function() {
     Route::get('searchHometown/{hometown}', 'AjaxController@searchHometown');
     Route::get('/isVerifiedLoggedIn', 'AjaxController@isVerifiedLoggedIn');
 });
-
-Route::get('/thanks', function() {
-    return view('subscription_thanks');
-})->name('subscription_thanks');
