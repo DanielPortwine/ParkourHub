@@ -12,6 +12,7 @@ $factory->define(Movement::class, function (Faker $faker) {
     return [
         'category_id' => MovementCategory::inRandomOrder()->first()->id,
         'user_id' => User::inRandomOrder()->first()->id,
+        'creator_id' => User::inRandomOrder()->first()->id,
         'type_id' => MovementType::inRandomOrder()->first()->id,
         'name' => $faker->name,
         'description' => $faker->paragraph,
