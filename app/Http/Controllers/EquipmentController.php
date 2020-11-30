@@ -42,7 +42,7 @@ class EquipmentController extends Controller
 
         $equipment->movements()->attach($request['movement'], ['user_id' => Auth::id()]);
 
-        return back()->with('status', 'Successfully created equipment.');
+        return back()->with('status', 'Successfully created equipment');
     }
 
     public function edit($id)
@@ -68,7 +68,7 @@ class EquipmentController extends Controller
         }
         $equipment->save();
 
-        return back()->with('status', 'Successfully updated movement.');
+        return back()->with('status', 'Successfully updated movement');
     }
 
     public function delete($id, $from = 'view')
@@ -87,21 +87,21 @@ class EquipmentController extends Controller
                 $redirect = redirect()->route('movement_listing');
         }
 
-        return $redirect->with('status', 'Successfully deleted equipment.');
+        return $redirect->with('status', 'Successfully deleted equipment');
     }
 
     public function report(Equipment $equipment)
     {
         $equipment->report();
 
-        return back()->with('status', 'Successfully reported equipment.');
+        return back()->with('status', 'Successfully reported equipment');
     }
 
     public function discardReports(Equipment $equipment)
     {
         $equipment->discardReports();
 
-        return back()->with('status', 'Successfully discarded reports against this content.');
+        return back()->with('status', 'Successfully discarded reports against this content');
     }
 
     public function getEquipment(Request $request)

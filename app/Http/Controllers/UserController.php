@@ -178,7 +178,7 @@ class UserController extends Controller
             ]);
         }
 
-        return back()->with('status', 'Updated Account Information');
+        return back()->with('status', 'Updated account information');
     }
 
     public function subscribe(Subscribe $request, $return = true)

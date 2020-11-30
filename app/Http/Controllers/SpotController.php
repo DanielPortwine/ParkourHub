@@ -211,7 +211,7 @@ class SpotController extends Controller
                 $redirect = redirect()->route('spot_listing');
         }
 
-        return $redirect->with('status', 'Successfully deleted spot.');
+        return $redirect->with('status', 'Successfully deleted spot');
     }
 
     public function search(SearchMap $request)
@@ -275,14 +275,14 @@ class SpotController extends Controller
     {
         $spot->report();
 
-        return back()->with('status', 'Successfully reported Spot.');
+        return back()->with('status', 'Successfully reported spot');
     }
 
     public function discardReports(Spot $spot)
     {
         $spot->discardReports();
 
-        return back()->with('status', 'Successfully discarded reports against this content.');
+        return back()->with('status', 'Successfully discarded reports against this content');
     }
 
     public function addMovement(AddMovement $request, $id)
@@ -292,7 +292,7 @@ class SpotController extends Controller
             $spot->movements()->attach($request['movement'], ['user_id' => Auth::id()]);
         }
 
-        return back()->with('status', 'Successfully added movement to spot.');
+        return back()->with('status', 'Successfully added movement to spot');
     }
 
     public function removeMovement($spotID, $movement)
@@ -302,7 +302,7 @@ class SpotController extends Controller
             $spot->movements()->detach([$movement, $spotID]);
         }
 
-        return back()->with('status', 'Successfully removed movement from spot.');
+        return back()->with('status', 'Successfully removed movement from spot');
     }
 
     public function linkWorkout(Request $request)
@@ -310,7 +310,7 @@ class SpotController extends Controller
         $spot = Spot::with(['workouts'])->where('id', $request['spot'])->first();
         $spot->workouts()->attach($request['workout']);
 
-        return back()->with('status', 'Successfully linked workout with spot.');
+        return back()->with('status', 'Successfully linked workout with spot');
     }
 
     public function getSpots(Request $request)

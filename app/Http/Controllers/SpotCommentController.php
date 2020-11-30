@@ -90,7 +90,7 @@ class SpotCommentController extends Controller
             $comment->delete();
         }
 
-        return back()->with('status', 'Successfully deleted spot.');
+        return back()->with('status', 'Successfully deleted spot');
     }
 
     public function like(Request $request, $id)
@@ -125,13 +125,13 @@ class SpotCommentController extends Controller
     {
         $spotComment->report();
 
-        return back()->with('status', 'Successfully reported Spot Comment.');
+        return back()->with('status', 'Successfully reported spot comment');
     }
 
     public function discardReports(SpotComment $spotComment)
     {
         $spotComment->discardReports();
 
-        return back()->with('status', 'Successfully discarded reports against this content.');
+        return back()->with('status', 'Successfully discarded reports against this content');
     }
 }

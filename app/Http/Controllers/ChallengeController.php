@@ -171,7 +171,7 @@ class ChallengeController extends Controller
                 $redirect = redirect()->route('challenge_listing');
         }
 
-        return $redirect->with('status', 'Successfully deleted challenge.');
+        return $redirect->with('status', 'Successfully deleted challenge');
     }
 
     public function enter(EnterChallenge $request, $id)
@@ -230,34 +230,34 @@ class ChallengeController extends Controller
     {
         $challenge->report();
 
-        return back()->with('status', 'Successfully reported Challenge.');
+        return back()->with('status', 'Successfully reported challenge');
     }
 
     public function discardReports(Challenge $challenge)
     {
         $challenge->discardReports();
 
-        return back()->with('status', 'Successfully discarded reports against this content.');
+        return back()->with('status', 'Successfully discarded reports against this content');
     }
 
     public function reportEntry(ChallengeEntry $challengeEntry)
     {
         $challengeEntry->report();
 
-        return back()->with('status', 'Successfully reported Challenge Entry.');
+        return back()->with('status', 'Successfully reported challenge entry');
     }
 
     public function discardEntryReports(ChallengeEntry $challengeEntry)
     {
         $challengeEntry->discardReports();
 
-        return back()->with('status', 'Successfully discarded reports against this content.');
+        return back()->with('status', 'Successfully discarded reports against this content');
     }
 
     public function deleteEntry(ChallengeEntry $challengeEntry)
     {
         $challengeEntry->delete();
 
-        return redirect()->route('challenge_listing')->with('status', 'Successfully deleted Entry.');
+        return redirect()->route('challenge_listing')->with('status', 'Successfully deleted entry');
     }
 }

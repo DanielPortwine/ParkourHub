@@ -228,7 +228,7 @@ class MovementController extends Controller
             }
         }
 
-        return back()->with('status', 'Successfully updated movement.');
+        return back()->with('status', 'Successfully updated movement');
     }
 
     public function delete($id, $from = 'view')
@@ -247,21 +247,21 @@ class MovementController extends Controller
                 $redirect = redirect()->route('movement_listing');
         }
 
-        return $redirect->with('status', 'Successfully deleted movement.');
+        return $redirect->with('status', 'Successfully deleted movement');
     }
 
     public function report(Movement $movement)
     {
         $movement->report();
 
-        return back()->with('status', 'Successfully reported Movement.');
+        return back()->with('status', 'Successfully reported movement');
     }
 
     public function discardReports(Movement $movement)
     {
         $movement->discardReports();
 
-        return back()->with('status', 'Successfully discarded reports against this content.');
+        return back()->with('status', 'Successfully discarded reports against this content');
     }
 
     public function linkProgression(LinkMovements $request)

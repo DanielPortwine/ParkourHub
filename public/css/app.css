@@ -11632,7 +11632,7 @@ body {
 }
 
 .alert {
-  position: absolute;
+  position: fixed;
   top: 5rem;
   right: 1rem;
   z-index: 10;

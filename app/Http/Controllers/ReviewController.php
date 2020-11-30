@@ -70,20 +70,20 @@ class ReviewController extends Controller
         $spot->rating = count($spot->reviews) ? round($spot->reviews->sum('rating') / count($spot->reviews)) : null;
         $spot->save();
 
-        return back()->with('status', 'Successfully deleted review.');
+        return back()->with('status', 'Successfully deleted review');
     }
 
     public function report(Review $review)
     {
         $review->report();
 
-        return back()->with('status', 'Successfully reported Review.');
+        return back()->with('status', 'Successfully reported review');
     }
 
     public function discardReports(Review $review)
     {
         $review->discardReports();
 
-        return back()->with('status', 'Successfully discarded reports against this content.');
+        return back()->with('status', 'Successfully discarded reports against this content');
     }
 }
