@@ -220,10 +220,16 @@ function setRating(rating, shape) {
 }
 
 function updateFooterPosition() {
-    if (($('body').height() + $('#footer').height()) < $(window).height()) {
-        $('#footer').css('bottom', 0);
+    let $footer = $('#footer'),
+        $body = $('body'),
+        $window = $(window);
+
+    if ($footer.css('bottom') == '0px' && $body.height() > ($window.height() - $footer.height())) {
+        $footer.css('bottom', '');
+    } else if (($body.height() + $footer.height()) < $window.height()) {
+        $footer.css('bottom', 0);
     } else {
-        $('#footer').css('bottom', '');
+        $footer.css('bottom', '');
     }
 }
 
@@ -494,6 +500,7 @@ $(document).ready(function() {
         } else {
             $cardBody.slideUp();
         }
+        setTimeout(updateFooterPosition, 400);
     });
 
     // handle descriptions being taller than 50px
@@ -672,6 +679,5 @@ $(document).ready(function() {
 
     // keep the footer at the bottom
     $(window).resize(updateFooterPosition);
-    $('body').resize(updateFooterPosition);
     updateFooterPosition();
 });
