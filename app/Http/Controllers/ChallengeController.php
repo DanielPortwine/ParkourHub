@@ -121,7 +121,7 @@ class ChallengeController extends Controller
             }
         }
 
-        return redirect()->back()->with('status', 'Successfully created challenge');
+        return redirect()->route('challenge_view', $challenge->id)->with('status', 'Successfully created challenge');
     }
 
     public function edit($id)

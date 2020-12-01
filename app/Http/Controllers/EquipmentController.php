@@ -76,7 +76,7 @@ class EquipmentController extends Controller
             $equipment->movements()->attach($request['movement'], ['user_id' => Auth::id()]);
         }
 
-        return back()->with('status', 'Successfully created equipment');
+        return redirect()->route('equipment_view', $equipment->id)->with('status', 'Successfully created equipment');
     }
 
     public function edit($id)

@@ -184,7 +184,7 @@ class MovementController extends Controller
             $movement->moves()->attach($request['move'], ['user_id' => Auth::id()]);
         }
 
-        return back()->with('status', 'Successfully created movement');
+        return redirect()->route('movement_view', $movement->id)->with('status', 'Successfully created movement');
     }
 
     public function edit($id)
