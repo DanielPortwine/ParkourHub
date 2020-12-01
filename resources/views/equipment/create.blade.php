@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@push('title')Edit Equipment | @endpush
+@push('title')Create Equipment | @endpush
 
 @section('content')
     @if (session('status'))
@@ -15,15 +15,14 @@
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header bg-green sedgwick">Edit Equipment</div>
+                    <div class="card-header bg-green sedgwick">Create Equipment</div>
                     <div class="card-body bg-grey text-white">
-                        <form method="POST" action="{{ route('equipment_update', $equipment->id) }}" enctype="multipart/form-data">
+                        <form method="POST" enctype="multipart/form-data">
                             @csrf
-                            <input type="hidden" name="return" value="{{ back() }}">
                             <div class="form-group row">
                                 <label for="name" class="col-md-2 col-form-label text-md-right">Name</label>
                                 <div class="col-md-8">
-                                    <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" autocomplete="name" maxlength="25" value="{{ $equipment->name }}" required>
+                                    <input id="name" type="text" class="form-control @error('name') is-invalid border-danger @enderror" name="name" autocomplete="title" maxlength="25" value="{{ old('name') }}" required>
                                     @error('name')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -34,7 +33,7 @@
                             <div class="form-group row">
                                 <label for="description" class="col-md-2 col-form-label text-md-right">Description</label>
                                 <div class="col-md-8">
-                                    <textarea id="description" class="form-control @error('description') is-invalid @enderror" name="description" maxlength="255">{{ $equipment->description }}</textarea>
+                                    <textarea id="description" class="form-control @error('description') is-invalid border-danger @enderror" name="description" maxlength="255">{{ old('description') }}</textarea>
                                     @error('description')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -42,25 +41,27 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="form-group row">
-                                <label for="image" class="col-md-2 col-form-label text-md-right">Image</label>
-                                <div class="col-md-8">
-                                    @if(!empty($equipment->image))
-                                        <img class="w-100 mb-2" src="{{ $equipment->image }}">
-                                    @endif
-                                    <input type="file" id="image" class="form-control-file @error('image') is-invalid @enderror" name="image" required>
+                            <div class="row">
+                                <label class="col-md-2 col-form-label text-md-right">Image</label>
+                                <div class="col-8">
+                                    <input type="file" id="image" class="form-control-file @error('image') is-invalid @enderror" name="image" value="">
                                     @error('image')
                                     <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
+                                            <strong>{{ $message }}</strong>
+                                        </span>
                                     @enderror
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col offset-md-2">
+                                    <small>The image must clearly show the equipment!</small>
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label class="form-check-label col-md-2 col-form-label text-md-right" for="required">Required</label>
                                 <div class="col-md-8 vertical-center">
                                     <div class="form-check">
-                                        <input class="form-check-input @error('required') is-invalid @enderror" type="checkbox" name="required" id="required" value="1" {{ $equipment->required ? 'checked' : '' }}>
+                                        <input class="form-check-input @error('required') is-invalid @enderror" type="checkbox" name="required" id="required" value="1">
                                         <label class="form-check-label" for="required"></label>
                                         @error('required')
                                         <span class="invalid-feedback" role="alert">
@@ -72,9 +73,7 @@
                             </div>
                             <div class="form-group row">
                                 <div class="col-md-8 offset-md-2">
-                                    <button type="submit" class="btn btn-green">Update</button>
-                                    <a class="btn btn-danger require-confirmation float-right">Delete</a>
-                                    <a class="btn btn-danger d-none confirmation-button float-right" href="{{ route('equipment_delete', [$equipment->id]) }}">Confirm</a>
+                                    <button type="submit" class="btn btn-green">Create</button>
                                 </div>
                             </div>
                         </form>
@@ -84,3 +83,42 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script defer>
+        function updateCategoriesSelect(type) {
+            $('.select2-movement-category').children('option').each(function() {
+                $(this).remove();
+            });
+            $.ajax({
+                url: '/movements/getMovementCategories',
+                data: {
+                    types: [type]
+                },
+                success: function (response) {
+                    $('.select2-movement-category').select2({
+                        data: response,
+                        width: '100%',
+                    });
+                },
+            });
+        }
+        $(document).ready(function() {
+            $('.select2-movement-category').select2({width: '100%'});
+            updateCategoriesSelect(1);
+            $('.select2-movement-type').select2({width: '100%'}).change(function () {
+                var type = $(this).val();
+                updateCategoriesSelect(type);
+            });
+        });
+        $.ajax({
+            url: '/movements/getMovementFields',
+            success: function (response) {
+                $('.select2-movement-fields').select2({
+                    data: response,
+                    width: '100%',
+                });
+            },
+        });
+    </script>
+@endpush

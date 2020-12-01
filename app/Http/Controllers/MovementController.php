@@ -231,20 +231,15 @@ class MovementController extends Controller
         return back()->with('status', 'Successfully updated movement');
     }
 
-    public function delete($id, $from = 'view')
+    public function delete($id, $redirect = null)
     {
         $movement = Movement::where('id', $id)->first();
         if ($movement->user_id === Auth::id()) {
             $movement->delete();
         }
 
-        switch ($from) {
-            case 'component':
-                $redirect = back();
-                break;
-            case 'view':
-            default:
-                $redirect = redirect()->route('movement_listing');
+        if (empty($redirect)) {
+            $redirect = redirect()->route('movement_listing');
         }
 
         return $redirect->with('status', 'Successfully deleted movement');

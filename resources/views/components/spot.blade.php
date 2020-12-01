@@ -35,7 +35,7 @@ $hit = $spot->hits->where('user_id', Auth()->id() ?: null)->first()
                     <a class="btn text-white" href="{{ route('spot_report', $spot->id) }}" title="Report"><i class="fa fa-flag"></i></a>
                 @endauth
                 @if(Auth()->id() === 1)
-                    <a class="btn text-white" href="{{ route('spot_delete', [$spot->id, 'component']) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
+                    <a class="btn text-white" href="{{ route('spot_delete', [$spot->id, url()->full()]) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
                     @if(count($spot->reports) > 0)
                         <a class="btn text-white" href="{{ route('spot_report_discard', $spot->id) }}" title="Discard Reports"><i class="fa fa-balance-scale"></i></a>
                     @endif

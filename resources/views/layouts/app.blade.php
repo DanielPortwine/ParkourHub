@@ -72,6 +72,9 @@
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('movement_listing') }}"><i class="fa fa-child nav-icon"></i>Movements</a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('equipment_listing') }}"><i class="fa fa-child nav-icon"></i>Equipment</a>
+                                </li>
                             @endpremium
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('user_listing') }}"><i class="fa fa-users nav-icon"></i>Users</a>

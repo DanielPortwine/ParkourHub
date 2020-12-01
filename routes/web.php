@@ -109,7 +109,7 @@ Route::prefix('challenges')->middleware('verified')->group(function() {
     Route::post('/create', 'ChallengeController@create')->middleware('optimizeImages')->name('challenge_create');
     Route::get('/edit/{id}', 'ChallengeController@edit')->name('challenge_edit');
     Route::post('/edit/{id}', 'ChallengeController@update')->middleware('optimizeImages')->name('challenge_update');
-    Route::get('/delete/{id}/{from?}', 'ChallengeController@delete')->name('challenge_delete');
+    Route::get('/delete/{id}/{redirect?}', 'ChallengeController@delete')->name('challenge_delete');
     Route::post('/enter/{id}', 'ChallengeController@enter')->name('challenge_enter');
     Route::get('/win/{id}', 'ChallengeController@win')->name('challenge_win');
     Route::get('/report/{challenge}', 'ChallengeController@report')->name('challenge_report');
@@ -126,7 +126,7 @@ Route::prefix('movements')->middleware(['verified', 'isPremium'])->group(functio
     Route::post('/create', 'MovementController@store')->name('movement_store');
     Route::get('/edit/{id}', 'MovementController@edit')->name('movement_edit');
     Route::post('/edit/{id}', 'MovementController@update')->name('movement_update');
-    Route::get('/delete/{id}/{from?}', 'MovementController@delete')->name('movement_delete');
+    Route::get('/delete/{id}/{redirect?}', 'MovementController@delete')->name('movement_delete');
     Route::get('/report/{movement}', 'MovementController@report')->name('movement_report');
     Route::get('/discard_reports/{movement}', 'MovementController@discardReports')->name('movement_report_discard');
     Route::post('/link_progression', 'MovementController@linkProgression')->name('movements_link');
@@ -145,11 +145,13 @@ Route::prefix('movements')->middleware(['verified', 'isPremium'])->group(functio
 });
 
 Route::prefix('equipment')->middleware(['verified', 'isPremium'])->group(function() {
+    Route::get('/', 'EquipmentController@listing')->name('equipment_listing');
     Route::get('/view/{id}', 'EquipmentController@view')->name('equipment_view');
-    Route::post('/create', 'EquipmentController@create')->name('equipment_create');
+    Route::get('/create', 'EquipmentController@create')->name('equipment_create');
+    Route::post('/create', 'EquipmentController@store')->name('equipment_store');
     Route::get('/edit/{id}', 'EquipmentController@edit')->name('equipment_edit');
     Route::post('/edit/{id}', 'EquipmentController@update')->name('equipment_update');
-    Route::get('/delete/{id}/{from?}', 'EquipmentController@delete')->name('equipment_delete');
+    Route::get('/delete/{id}', 'EquipmentController@delete')->name('equipment_delete');
     Route::get('/report/{equipment}', 'EquipmentController@report')->name('equipment_report');
     Route::get('/discard_reports/{equipment}', 'EquipmentController@discardReports')->name('equipment_report_discard');
     Route::get('/getEquipment', 'EquipmentController@getEquipment')->name('equipment_search');

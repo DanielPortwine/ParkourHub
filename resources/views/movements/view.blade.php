@@ -191,7 +191,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="card-body bg-grey text-white">
-                                                    <form method="POST" action="{{ route('equipment_create') }}" enctype="multipart/form-data">
+                                                    <form method="POST" action="{{ route('equipment_store') }}" enctype="multipart/form-data">
                                                         @csrf
                                                         <input type="hidden" name="movement" value="{{ $originalMovement->id }}">
                                                         <div class="form-group row">

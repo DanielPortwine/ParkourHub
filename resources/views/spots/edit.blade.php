@@ -72,7 +72,7 @@
                                 <div class="col-md-8 offset-2">
                                     <button type="submit" class="btn btn-green">Save</button>
                                     <a class="btn btn-danger require-confirmation float-right">Delete</a>
-                                    <a class="btn btn-danger d-none confirmation-button float-right" href="{{ route('spot_delete', $spot->id) }}">Confirm</a>
+                                    <a class="btn btn-danger d-none confirmation-button float-right" href="{{ route('spot_delete', [$spot->id, 'edit']) }}">Confirm</a>
                                 </div>
                             </div>
                         </form>

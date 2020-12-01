@@ -13,6 +13,33 @@ use Illuminate\Support\Facades\Storage;
 
 class EquipmentController extends Controller
 {
+    public function listing(Request $request)
+    {
+        $sort = ['created_at', 'desc'];
+        if (!empty($request['sort'])) {
+            $fieldMapping = [
+                'date' => 'created_at',
+                'difficulty' => 'difficulty',
+                'entries' => 'entries_count',
+            ];
+            $sortParams = explode('_', $request['sort']);
+            $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
+        }
+
+        $equipment = Equipment::dateBetween([
+                'from' => $request['date_from'] ?? null,
+                'to' => $request['date_to'] ?? null
+            ])
+            ->orderBy($sort[0], $sort[1])
+            ->paginate(20);
+
+        return view('content_listings', [
+            'title' => 'Equipment',
+            'content' => $equipment,
+            'component' => 'equipment',
+            'create' => true,
+        ]);
+    }
     public function view(Request $request, $id)
     {
         $equipment = Equipment::with(['movements'])->where('id', $id)->first();
@@ -29,7 +56,12 @@ class EquipmentController extends Controller
         ]);
     }
 
-    public function create(CreateEquipment $request)
+    public function create()
+    {
+        return view('equipment.create');
+    }
+
+    public function store(CreateEquipment $request)
     {
         $equipment = new Equipment;
         $equipment->user_id = Auth::id();
@@ -40,7 +72,9 @@ class EquipmentController extends Controller
         }
         $equipment->save();
 
-        $equipment->movements()->attach($request['movement'], ['user_id' => Auth::id()]);
+        if (!empty($request['movement'])) {
+            $equipment->movements()->attach($request['movement'], ['user_id' => Auth::id()]);
+        }
 
         return back()->with('status', 'Successfully created equipment');
     }
@@ -71,20 +105,15 @@ class EquipmentController extends Controller
         return back()->with('status', 'Successfully updated movement');
     }
 
-    public function delete($id, $from = 'view')
+    public function delete($id, $redirect = null)
     {
         $equipment = Equipment::where('id', $id)->first();
         if ($equipment->user_id === Auth::id()) {
             $equipment->delete();
         }
 
-        switch ($from) {
-            case 'component':
-                $redirect = back();
-                break;
-            case 'view':
-            default:
-                $redirect = redirect()->route('movement_listing');
+        if (empty($redirect)) {
+            $redirect = redirect()->route('equipment_listing');
         }
 
         return $redirect->with('status', 'Successfully deleted equipment');

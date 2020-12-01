@@ -90,7 +90,7 @@ class SpotCommentController extends Controller
             $comment->delete();
         }
 
-        return back()->with('status', 'Successfully deleted spot');
+        return back()->with('status', 'Successfully deleted comment');
     }
 
     public function like(Request $request, $id)
