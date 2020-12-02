@@ -23,14 +23,22 @@
     <link rel="icon" href="/favicon.png" type="image/png">
 </head>
 <body>
-    <div class="flex-center premium-section">
+    <div class="flex-center full-height premium-section">
         <div class="top-right links">
-            <a href="{{ url('/home') }}">Home</a>
+            @auth
+                <a href="{{ route('home') }}">Home</a>
+            @endauth
+            @guest
+                <a href="{{ route('welcome') }}">Home</a>
+            @endguest
         </div>
         <div class="text-center">
             <div class="page-title sedgwick">
                 Parkour Hub <span class="text-premium">Premium</span>
             </div>
+        </div>
+        <div class="text-center bottom-centre" id="scroll-arrow">
+            <i class="fa fa-angle-double-down"></i>
         </div>
     </div>
     <div class="pb-md-3 pb-2 premium-section grey-section">
@@ -68,26 +76,38 @@
             </div>
             <div class="row my-md-4">
                 <div class="col-md-6">
-                    <div class="text-md-center"><i class="fa fa-calendar feature-icon-premium"></i></div>
-                    <h3 class="sedgwick text-md-center">Training Planner</h3>
-                    <p class="large-text">Generate custom training plans based on areas you want to improve on and track your progress.</p>
-                </div>
-                <div class="col-md-6">
                     <div class="text-md-center"><i class="fa fa-file-video-o feature-icon-premium"></i></div>
                     <h3 class="sedgwick text-md-center">Video Upload</h3>
                     <p class="large-text">Upload videos of up to 50MB directly from your device without needing to upload to YouTube first.</p>
                 </div>
-            </div>
-            <div class="row my-md-4">
                 <div class="col-md-6">
                     <div class="text-md-center"><i class="fa fa-file-image-o feature-icon-premium"></i></div>
                     <h3 class="sedgwick text-md-center">Image Upload</h3>
                     <p class="large-text">Upload images of up to 5MB, a significant increase over the standard 500KB.</p>
                 </div>
+            </div>
+            <div class="row my-md-4">
+                <div class="col-md-6">
+                    <div class="text-md-center"><i class="fa fa-child feature-icon-premium"></i></div>
+                    <h3 class="sedgwick text-md-center">Movements</h3>
+                    <p class="large-text">Create and share movements - either a parkour move such as a vault or an exercise such as push-ups.</p>
+                </div>
+                <div class="col-md-6">
+                    <div class="text-md-center"><i class="fa fa-bar-chart feature-icon-premium"></i></div>
+                    <h3 class="sedgwick text-md-center">Workouts</h3>
+                    <p class="large-text">Combine movements into a workout to record your training and track your progress.</p>
+                </div>
+            </div>
+            <div class="row my-md-4">
+                <div class="col-md-6">
+                    <div class="text-md-center"><i class="fa fa-calendar feature-icon-premium"></i></div>
+                    <h3 class="sedgwick text-md-center">Training Planner</h3>
+                    <p class="large-text">Add workouts to your calendar to plan your journey to achieving your parkour or fitness goals.</p>
+                </div>
                 <div class="col-md-6">
                     <div class="text-md-center"><i class="fa fa-ellipsis-h feature-icon-premium"></i></div>
                     <h3 class="sedgwick text-md-center">More</h3>
-                    <p class="large-text">There are even more amazing features coming in future updates.</p>
+                    <p class="large-text">There are more amazing features coming in future.</p>
                 </div>
             </div>
         </div>

@@ -57,6 +57,9 @@
                         </li>
                         @guest
                             <li class="nav-item">
+                                <a class="nav-link" href="{{ route('premium') }}"><i class="fa fa-diamond nav-icon text-premium"></i>Premium</a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link" href="{{ route('login') }}"><i class="fa fa-user nav-icon"></i>{{ __('Login') }}</a>
                             </li>
                             @if (Route::has('register'))
@@ -66,19 +69,18 @@
                             @endif
                         @else
                             @premium
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('workout_listing') }}"><i class="fa fa-calendar-plus-o nav-icon"></i>Workouts</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('movement_listing') }}"><i class="fa fa-child nav-icon"></i>Movements</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('equipment_listing') }}"><i class="fa fa-child nav-icon"></i>Equipment</a>
+                                <li class="nav-item dropdown">
+                                    <a id="premium-dropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                        <i class="fa fa-diamond nav-icon text-premium"></i>Premium
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right bg-grey" id="notification-menu" aria-labelledby="notification-dropdown">
+                                        <a class="dropdown-item text-white" href="{{ route('workout_listing') }}"><i class="fa fa-bar-chart nav-icon"></i>Workouts</a>
+                                        <a class="dropdown-item text-white" href="{{ route('movement_listing') }}"><i class="fa fa-child nav-icon"></i>Movements</a>
+                                        <a class="dropdown-item text-white" href="{{ route('equipment_listing') }}"><i class="fa fa-child nav-icon"></i>Equipment</a>
+                                        <a class="dropdown-item text-white" href="{{ route('premium') }}"><i class="fa fa-diamond nav-icon"></i>Manage</a>
+                                    </div>
                                 </li>
                             @endpremium
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('user_listing') }}"><i class="fa fa-users nav-icon"></i>Users</a>
-                            </li>
                             <li class="nav-item dropdown">
                                 <a id="notification-dropdown" class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     <i class="fa {{ count(Auth()->user()->unreadNotifications) > 0 ? 'fa-bell' : 'fa-bell-o' }} nav-icon"></i><span class="d-md-none">Notifications</span>
@@ -116,15 +118,19 @@
                             </li>
                             <li class="nav-item dropdown">
                                 <a id="user-dropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    <i class="fa fa-user nav-icon"></i>{{ Auth::user()->name }} <span class="caret"></span>
+                                    <i class="fa fa-user nav-icon"></i>{{ Auth::user()->name }}
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right bg-grey" id="user-menu" aria-labelledby="user-dropdown">
-                                    <a class="dropdown-item btn-premium" href="{{ route('premium') }}"><i class="fa fa-diamond nav-icon"></i>Premium</a>
+                                    @premium
+                                    @else
+                                        <a class="dropdown-item btn-premium" href="{{ route('premium') }}"><i class="fa fa-diamond nav-icon"></i>Premium</a>
+                                    @endpremium
                                     <a class="dropdown-item text-white" href="{{ route('home') }}"><i class="fa fa-home nav-icon"></i>Home</a>
                                     <a class="dropdown-item text-white" href="{{ route('user_view', Auth()->id()) }}"><i class="fa fa-user nav-icon"></i>Profile</a>
                                     <a class="dropdown-item text-white" href="{{ route('user_manage') }}"><i class="fa fa-cog nav-icon"></i>Settings</a>
                                     <a class="dropdown-item text-white" href="{{ route('user_followers') }}"><i class="fa fa-group nav-icon"></i>Followers</a>
                                     <a class="dropdown-item text-white" href="{{ route('user_follow_requests') }}"><i class="fa fa-user-plus nav-icon"></i>Follow requests</a>
+                                    <a class="dropdown-item text-white" href="{{ route('user_listing') }}"><i class="fa fa-users nav-icon"></i>Users</a>
                                     <a class="dropdown-item text-white" href="{{ route('user_spots') }}"><i class="fa fa-map-marker nav-icon"></i>Spots</a>
                                     @premium
                                         <a class="dropdown-item text-white" href="{{ route('workout_listing_user') }}"><i class="fa fa-bolt"></i> Workouts</a>

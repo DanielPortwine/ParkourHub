@@ -24,9 +24,10 @@
 <body>
     <div class="flex-center full-height section">
         <div class="top-right links">
-            <a href="{{ url('/spots') }}">Spots</a>
+            <a href="{{ route('spots') }}">Spots</a>
+            <a href="{{ route('premium') }}">Premium</a>
             @auth
-                <a href="{{ url('/home') }}">Home</a>
+                <a href="{{ route('home') }}">Home</a>
             @else
                 <a href="{{ route('login') }}">Login</a>
 
