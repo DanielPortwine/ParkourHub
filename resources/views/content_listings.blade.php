@@ -42,7 +42,7 @@
                                         </div>
                                     </div>
                                 @endif
-                                @if($component === 'spot' || $component === 'challenge')
+                                @if(($component === 'spot' || $component === 'challenge') && Auth::check())
                                     <div class="col-auto pb-3">
                                         <label><strong>Following</strong></label>
                                         <div class="form-check text-center">
@@ -63,30 +63,34 @@
                                             <i class="rating-star editable fa fa-star-o" id="rating-star-5"></i>
                                         </div>
                                     </div>
-                                    @if(empty($hitlist))
+                                    @auth
+                                        @if(empty($hitlist))
+                                            <div class="col-auto pb-3">
+                                                <label><strong>On Hitlist</strong></label>
+                                                <div class="form-check text-center">
+                                                    <input class="form-check-input" type="checkbox" name="on_hitlist" id="on-hitlist" {{ !empty($_GET['on_hitlist']) ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="on-hitlist"></label>
+                                                </div>
+                                            </div>
+                                        @endif
                                         <div class="col-auto pb-3">
-                                            <label><strong>On Hitlist</strong></label>
+                                            <label><strong>Ticked Off</strong></label>
                                             <div class="form-check text-center">
-                                                <input class="form-check-input" type="checkbox" name="on_hitlist" id="on-hitlist" {{ !empty($_GET['on_hitlist']) ? 'checked' : '' }}>
-                                                <label class="form-check-label" for="on-hitlist"></label>
+                                                <input class="form-check-input" type="checkbox" name="ticked_hitlist" id="ticked-hitlist" {{ !empty($_GET['ticked_hitlist']) ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="ticked-hitlist"></label>
                                             </div>
                                         </div>
-                                    @endif
-                                    <div class="col-auto pb-3">
-                                        <label><strong>Ticked Off</strong></label>
-                                        <div class="form-check text-center">
-                                            <input class="form-check-input" type="checkbox" name="ticked_hitlist" id="ticked-hitlist" {{ !empty($_GET['ticked_hitlist']) ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="ticked-hitlist"></label>
-                                        </div>
-                                    </div>
+                                    @endauth
                                 @elseif($component === 'challenge')
-                                    <div class="col-auto pb-3">
-                                        <label><strong>Entered</strong></label>
-                                        <div class="form-check text-center">
-                                            <input class="form-check-input" type="checkbox" name="entered" id="entered"  {{ !empty($_GET['entered']) ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="entered"></label>
+                                    @auth
+                                        <div class="col-auto pb-3">
+                                            <label><strong>Entered</strong></label>
+                                            <div class="form-check text-center">
+                                                <input class="form-check-input" type="checkbox" name="entered" id="entered"  {{ !empty($_GET['entered']) ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="entered"></label>
+                                            </div>
                                         </div>
-                                    </div>
+                                    @endauth
                                     <div class="col-auto pb-3">
                                         <label><strong>Difficulty</strong></label>
                                         <input type="hidden" id="difficulty" name="difficulty" value="{{ $_GET['difficulty'] ?? '0' }}">
@@ -98,7 +102,7 @@
                                             <i class="rating-circle editable fa fa-circle-o" id="rating-circle-5"></i>
                                         </div>
                                     </div>
-                                @elseif($component === 'entry')
+                                @elseif($component === 'entry' && Auth::check())
                                     <div class="col-auto pb-3">
                                         <label><strong>Winner</strong></label>
                                         <div class="form-check text-center">
