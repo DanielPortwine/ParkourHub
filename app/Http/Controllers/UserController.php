@@ -476,6 +476,13 @@ class UserController extends Controller
         return back()->with('status', 'Successfully unfollowed user');
     }
 
+    public function removeFollower(Request $request, $id) {
+        $follower = Follower::where('user_id', Auth::id())->where('follower_id', $id)->first();
+        $follower->delete();
+
+        return back()->with('status', 'Successfully removed follower');
+    }
+
     public function followers(Request $request)
     {
         $sort = ['created_at', 'desc'];
@@ -494,7 +501,7 @@ class UserController extends Controller
             ->paginate(20);
 
         return view('content_listings', [
-            'title' => 'Users',
+            'title' => 'Followers',
             'content' => $users,
             'component' => 'user',
         ]);

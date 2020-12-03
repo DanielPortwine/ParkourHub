@@ -47,6 +47,7 @@ Route::prefix('user')->middleware('verified')->group(function() {
     Route::get('/fetch_hometown_bounding', 'UserController@fetchHometownBounding');
     Route::get('/follow/{id}', 'UserController@follow')->name('user_follow');
     Route::get('/unfollow/{id}', 'UserController@unfollow')->name('user_unfollow');
+    Route::get('/remove_follower/{id}', 'UserController@removeFollower')->name('user_remove_follower');
     Route::get('/followers', 'UserController@followers')->name('user_followers');
     Route::get('/follow_requests', 'UserController@followRequests')->name('user_follow_requests');
     Route::get('/accept_follower/{id}', 'UserController@acceptFollower')->name('user_accept_follower');

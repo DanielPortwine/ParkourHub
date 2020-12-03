@@ -17,6 +17,8 @@
                         @if(!empty($title) && $title === 'Follow Requests')
                             <a class="accept-follower-button btn text-white" href="{{ route('user_accept_follower', $user->id) }}" title="Accept Follower"><i class="fa fa-check"></i></a>
                             <a class="reject-follower-button btn text-white" href="{{ route('user_reject_follower', $user->id) }}" title="Reject Follower"><i class="fa fa-times"></i></a>
+                        @elseif(!empty($title) && $title === 'Followers')
+                            <a class="btn text-white" href="{{ route('user_remove_follower', $user->id) }}" title="Remove Follower"><i class="fa fa-ban"></i></a>
                         @endif
                         @php
                             $followSetting = setting('privacy_follow', 'nobody', $user->id);
