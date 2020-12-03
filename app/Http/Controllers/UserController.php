@@ -507,6 +507,30 @@ class UserController extends Controller
         ]);
     }
 
+    public function following(Request $request)
+    {
+        $sort = ['created_at', 'desc'];
+        if (!empty($request['sort'])) {
+            $fieldMapping = [
+                'date' => 'created_at',
+            ];
+            $sortParams = explode('_', $request['sort']);
+            $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
+        }
+
+        $followings = Follower::where('follower_id', Auth::id())->where('accepted', true)->pluck('user_id');
+
+        $users = User::whereIn('id', $followings)
+            ->orderBy($sort[0], $sort[1])
+            ->paginate(20);
+
+        return view('content_listings', [
+            'title' => 'Following',
+            'content' => $users,
+            'component' => 'user',
+        ]);
+    }
+
     public function followRequests(Request $request)
     {
         // if coming from a notification, set the notification as read

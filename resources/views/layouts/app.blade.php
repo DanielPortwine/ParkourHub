@@ -129,6 +129,7 @@
                                     <a class="dropdown-item text-white" href="{{ route('user_view', Auth()->id()) }}"><i class="fa fa-user nav-icon"></i>Profile</a>
                                     <a class="dropdown-item text-white" href="{{ route('user_manage') }}"><i class="fa fa-cog nav-icon"></i>Settings</a>
                                     <a class="dropdown-item text-white" href="{{ route('user_followers') }}"><i class="fa fa-group nav-icon"></i>Followers</a>
+                                    <a class="dropdown-item text-white" href="{{ route('user_following') }}"><i class="fa fa-group nav-icon"></i>Following</a>
                                     <a class="dropdown-item text-white" href="{{ route('user_follow_requests') }}"><i class="fa fa-user-plus nav-icon"></i>Follow requests</a>
                                     <a class="dropdown-item text-white" href="{{ route('user_listing') }}"><i class="fa fa-users nav-icon"></i>Users</a>
                                     <a class="dropdown-item text-white" href="{{ route('user_spots') }}"><i class="fa fa-map-marker nav-icon"></i>Spots</a>
