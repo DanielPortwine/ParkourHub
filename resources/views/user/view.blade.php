@@ -50,9 +50,19 @@
                         @if ($user->id === Auth()->id())
                             <a class="btn text-white" href="{{ route('user_manage') }}" title="Manage"><i class="fa fa-pencil"></i></a>
                         @else
-                            @php $userFollowers = $user->followers()->pluck('follower_id')->toArray(); @endphp
-                            <a class="follow-user-button btn text-white @if(in_array(Auth()->id(), $userFollowers))d-none @endif" id="follow-user-{{ $user->id }}" title="Follow"><i class="fa fa-user-plus"></i></a>
-                            <a class="unfollow-user-button btn text-white @if(!in_array(Auth()->id(), $userFollowers))d-none @endif" id="unfollow-user-{{ $user->id }}" title="Unfollow"><i class="fa fa-user-times"></i></a>
+                            @php
+                                $followSetting = setting('privacy_follow', 'nobody', $user->id);
+                                $followers = $user->followers()->pluck('follower_id')->toArray();
+                            @endphp
+                            @if(in_array(Auth()->id(), $followers))
+                                <a class="btn text-white" href="{{ route('user_unfollow', $user->id) }}" title="Unfollow"><i class="fa fa-user-times"></i></a>
+                            @else
+                                @if($followSetting === 'anybody')
+                                    <a class="btn text-white" href="{{ route('user_follow', $user->id) }}" title="Follow"><i class="fa fa-user-plus"></i></a>
+                                @elseif($followSetting === 'request')
+                                    <a class="btn text-white" href="{{ route('user_follow', $user->id) }}" title="Request to follow"><i class="fa fa-user-plus"></i></a>
+                                @endif
+                            @endif
                         @endif
                     </div>
                 </div>

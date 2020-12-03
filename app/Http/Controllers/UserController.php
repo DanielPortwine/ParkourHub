@@ -22,6 +22,14 @@ use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
+    private function updateFollowersCount($id)
+    {
+        $user = User::with(['followers'])->where('id', $id)->first();
+        $followers = $user->followers()->count();
+        $user->followers_quantified = quantify_number($followers);
+        $user->save();
+    }
+
     public function listing(Request $request)
     {
         $sort = ['created_at', 'desc'];
@@ -419,63 +427,53 @@ class UserController extends Controller
 
     public function follow(Request $request, $id)
     {
-        if (!$request->ajax()) {
-            return back();
+        if (!empty(Follower::where('user_id', $id)->where('follower_id', Auth::id())->first())) {
+            return back()->with('status', 'You are already following this user or they haven\'t accepted your request yet');
         }
 
-        if (!empty(Follower::where('user_id', $id)->where('follower_id', Auth::id())->first())) {
-            return back();
+        $followSetting = setting('privacy_follow', 'nobody', $id);
+        if ($followSetting === 'nobody') {
+            return back()->with('status', 'This user is not accepting followers');
         }
 
         $follower = new Follower;
         $follower->user_id = $id;
         $follower->follower_id = Auth::id();
-        switch (setting('privacy_follow', null, $id)) {
-            case null:
-            case 'nobody':
-                $follower->rejected = true;
-                break;
-            case 'anybody':
-                $follower->accepted = true;
-                break;
+        if ($followSetting === 'anybody') {
+            $follower->accepted = true;
         }
         $follower->save();
 
-        $user = User::with(['followers'])->where('id', $id)->first();
-        $followers = $user->followers()->count();
-        $user->followers_quantified = quantify_number($followers);
-        $user->save();
-
         // notify the user that someone started following them or requested to follow them
-        if ($id != Auth::id() && in_array(setting('notifications_follower', 'on-site', $id), ['on-site', 'email', 'email-site'])) {
-            switch (setting('privacy_follow', null, $id)) {
-                case 'request':
+        $notificationSetting = setting('notifications_follower', 'on-site', $id);
+        $user = User::with(['followers'])->where('id', $id)->first();
+        switch ($followSetting) {
+            case 'request':
+                if ($notificationSetting !== 'none') {
                     $user->notify(new UserFollowRequested($follower));
-                    break;
-                case 'anybody':
+                }
+                $status = 'Successfully sent follow request to user';
+                break;
+            case 'anybody':
+                if ($notificationSetting !== 'none') {
                     $user->notify(new UserFollowed($follower));
-                    break;
-            }
+                }
+                $this->updateFollowersCount($id);
+                $status = 'Successfully started following user';
+                break;
         }
 
-        return false;
+        return back()->with('status', $status);
     }
 
     public function unfollow(Request $request, $id)
     {
-        if (!$request->ajax()) {
-            return back();
-        }
-
         $follower = Follower::where('user_id', $id)->where('follower_id', Auth::id())->first();
         $follower->delete();
 
-        $user = User::with(['followers'])->where('id', $id)->first();
-        $followers = $user->followers()->count();
-        $user->followers_quantified = quantify_number($followers);
-        $user->save();
+        $this->updateFollowersCount($id);
 
-        return false;
+        return back()->with('status', 'Successfully unfollowed user');
     }
 
     public function followers(Request $request)
@@ -489,7 +487,7 @@ class UserController extends Controller
             $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
         }
 
-        $followers = Follower::where('user_id', Auth::id())->pluck('follower_id');
+        $followers = Follower::where('user_id', Auth::id())->where('accepted', true)->pluck('follower_id');
 
         $users = User::whereIn('id', $followers)
             ->orderBy($sort[0], $sort[1])
@@ -525,7 +523,7 @@ class UserController extends Controller
             $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
         }
 
-        $requests = Follower::where('user_id', Auth::id())->where('accepted', false)->where('rejected', false)->pluck('follower_id');
+        $requests = Follower::where('user_id', Auth::id())->where('accepted', false)->pluck('follower_id');
 
         $users = User::whereIn('id', $requests)
             ->orderBy($sort[0], $sort[1])
@@ -544,14 +542,15 @@ class UserController extends Controller
         $follower->accepted = true;
         $follower->save();
 
+        $this->updateFollowersCount($id);
+
         return back()->with('status', 'Accepted follow request');
     }
 
     public function rejectFollower($id)
     {
         $follower = Follower::where('user_id', Auth::id())->where('follower_id', $id)->first();
-        $follower->rejected = true;
-        $follower->save();
+        $follower->delete();
 
         return back()->with('status', 'Rejected follow request');
     }
