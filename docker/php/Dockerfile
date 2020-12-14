@@ -17,7 +17,7 @@ RUN apt-get update; apt-get install -y \
         optipng \
         pngquant
 
-COPY --from=composer:1.9.3 /usr/bin/composer /usr/bin/composer
+COPY --from=composer /usr/bin/composer /usr/bin/composer
 
 ## PHP Extensions
 RUN docker-php-ext-install curl
