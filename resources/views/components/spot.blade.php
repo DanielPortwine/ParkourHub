@@ -72,9 +72,9 @@ $hit = $spot->hits->where('user_id', Auth()->id() ?: null)->first()
                 </div>
             @endif
         </div>
-        <div class="row">
+        <div class="row pt-2">
             <div class="col vertical-center">
-                <span>{{ count($spot->views) . (count($spot->views) === 1 ? ' view' : ' views') }} | {{ $spot->updated_at->diffForHumans() }}</span>
+                <span>{{ $spot->updated_at->diffForHumans() }}</span>
             </div>
         </div>
     </div>

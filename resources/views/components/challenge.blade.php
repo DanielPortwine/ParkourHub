@@ -44,9 +44,9 @@
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div class="row pt-2">
             <div class="col-md vertical-center">
-                <span>{{ count($challenge->views) . (count($challenge->views) === 1 ? ' view' : ' views') }} | {{ count($challenge->entries) . (count($challenge->entries) === 1 ? ' entry' : ' entries') }} | {{ $challenge->created_at->diffForHumans() }}</span>
+                <span>{{ count($challenge->entries) . (count($challenge->entries) === 1 ? ' entry' : ' entries') }} | {{ $challenge->created_at->diffForHumans() }}</span>
             </div>
         </div>
     </div>

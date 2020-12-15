@@ -93,34 +93,6 @@ class SpotCommentController extends Controller
         return back()->with('status', 'Successfully deleted comment');
     }
 
-    public function like(Request $request, $id)
-    {
-        if (!$request->ajax()) {
-            return back();
-        }
-
-        $comment = SpotComment::with('likes')->where('id', $id)->first();
-        if (empty($comment->likes->where('user_id', Auth::id())->first())) {
-            $like = new SpotCommentLike;
-            $like->spot_comment_id = $comment->id;
-            $like->user_id = Auth::id();
-            $like->save();
-        }
-
-        echo count(SpotCommentLike::where('spot_comment_id', $id)->get());
-    }
-
-    public function unlike(Request $request, $id)
-    {
-        if (!$request->ajax()) {
-            return back();
-        }
-
-        SpotCommentLike::where('spot_comment_id', $id)->where('user_id', Auth::id())->delete();
-
-        echo count(SpotCommentLike::where('spot_comment_id', $id)->get());
-    }
-
     public function report(SpotComment $spotComment)
     {
         $spotComment->report();

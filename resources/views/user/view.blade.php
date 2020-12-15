@@ -46,7 +46,6 @@
                 </div>
                 <div class="col-auto vertical-center">
                     <div>
-                        {{ $user->followers_quantified }} <i class="fa fa-group"></i>
                         @if ($user->id === Auth()->id())
                             <a class="btn text-white" href="{{ route('user_manage') }}" title="Manage"><i class="fa fa-pencil"></i></a>
                         @else

@@ -41,11 +41,6 @@ class SpotComment extends Model
         return $this->belongsTo('App\User');
     }
 
-    public function likes()
-    {
-        return $this->hasMany('App\SpotCommentLike');
-    }
-
     public function reports()
     {
         return $this->morphMany('App\Report', 'reportable');

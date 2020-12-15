@@ -86,9 +86,9 @@
                     </div>
                 @endif
             </div>
-            <div class="row pb-2 border-subtle">
+            <div class="row py-2 border-subtle">
                 <div class="col">
-                    <span>{{ count($spot->views) . (count($spot->views) === 1 ? ' view' : ' views') }} | {{ $spot->created_at->format('jS M, Y') }}</span>
+                    <span>{{ $spot->created_at->format('jS M, Y') }}</span>
                 </div>
             </div>
             <div class="py-3">

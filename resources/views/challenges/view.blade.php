@@ -84,9 +84,9 @@
                     </div>
                 @endif
             </div>
-            <div class="row pb-2 border-subtle">
+            <div class="row py-2 border-subtle">
                 <div class="col">
-                    <span>{{ count($challenge->views) . (count($challenge->views) === 1 ? ' view' : ' views') }} | {{ count($challenge->entries) . (count($challenge->entries) === 1 ? ' entry' : ' entries') }} | {{ $challenge->created_at->format('jS M, Y') }}</span>
+                    <span>{{ count($challenge->entries) . (count($challenge->entries) === 1 ? ' entry' : ' entries') }} | {{ $challenge->created_at->format('jS M, Y') }}</span>
                 </div>
             </div>
             <div class="py-3">

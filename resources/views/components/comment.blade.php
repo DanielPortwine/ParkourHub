@@ -1,7 +1,3 @@
-@php
-$like = $comment->likes->where('user_id', Auth()->id() ?: null)->first()
-@endphp
-
 <div class="card bg-grey">
     @if(!empty($comment->image))
         <div class="content-wrapper">
@@ -45,15 +41,11 @@ $like = $comment->likes->where('user_id', Auth()->id() ?: null)->first()
                         <a class="btn text-white" href="{{ route('spot_comment_report_discard', $comment->id) }}" title="Discard Reports"><i class="fa fa-balance-scale"></i></a>
                     @endif
                 @endif
-                @auth
-                    <a class="btn text-white like-spot-comment @if(!empty($like))d-none @endif" id="like-spot-comment-{{ $comment->id }}" title="Like"><i class="fa fa-thumbs-o-up"></i></a>
-                    <a class="btn text-white unlike-spot-comment @if(empty($like))d-none @endif" id="unlike-spot-comment-{{ $comment->id }}" title="Unlike"><i class="fa fa-thumbs-up"></i></a>
-                @endauth
             </div>
         </div>
         <div class="row @if(!empty($comment->comment))border-subtle mb-2 @endif">
             <div class="col-md vertical-center">
-                <span><span id="spot-comment-likes-{{ $comment->id }}">{{ count($comment->likes) . (count($comment->likes) === 1 ? ' like' : ' likes') }}</span> | {{ $comment->created_at->diffForHumans() }}</span>
+                <span>{{ $comment->created_at->diffForHumans() }}</span>
             </div>
         </div>
         @if(!empty($comment->comment))

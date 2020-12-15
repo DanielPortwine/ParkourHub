@@ -99,8 +99,6 @@ Route::prefix('/spot_comments')->middleware('verified')->group(function() {
     Route::get('/edit/{id}', 'SpotCommentController@edit')->name('spot_comment_edit');
     Route::post('/edit/{id}', 'SpotCommentController@update')->middleware('optimizeImages')->name('spot_comment_update');
     Route::get('/delete/{id}/{from?}', 'SpotCommentController@delete')->name('spot_comment_delete');
-    Route::get('/like/{id}', 'SpotCommentController@like')->name('spot_comment_like');
-    Route::get('/unlike/{id}', 'SpotCommentController@unlike')->name('spot_comment_unlike');
     Route::get('/report/{spotComment}', 'SpotCommentController@report')->name('spot_comment_report');
     Route::get('/discard_reports/{spotComment}', 'SpotCommentController@discardReports')->name('spot_comment_report_discard');
 });

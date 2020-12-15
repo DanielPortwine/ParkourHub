@@ -69,10 +69,6 @@
                 <i class="fa fa-comment text-white"></i>
                 {{ count($user->spotComments) }}
             </div>
-            <div class="col" title="Followers">
-                <i class="fa fa-group text-white"></i>
-                {{ $user->followers_quantified }}
-            </div>
             <div class="col" title="Number Of Days Since Registration">
                 <i class="fa fa-clock-o text-white"></i>
                 {{ Carbon\Carbon::parse($user->email_verified_at)->diffInDays() }}
