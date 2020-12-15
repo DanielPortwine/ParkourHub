@@ -78,14 +78,6 @@
                 <i class="fa fa-check-square-o text-white"></i>
                 {{ $userStats['completedHits'] }}
             </div>
-            <div class="col user-stats" title="Followers">
-                <i class="fa fa-group text-white"></i>
-                {{ $userStats['followers'] }}
-            </div>
-            <div class="col user-stats" title="Following">
-                <i class="fa fa-group text-white"></i>
-                {{ $userStats['following'] }}
-            </div>
             <div class="col user-stats" title="Number Of Days Since Registration">
                 <i class="fa fa-clock-o text-white"></i>
                 {{ $userStats['age'] }}
