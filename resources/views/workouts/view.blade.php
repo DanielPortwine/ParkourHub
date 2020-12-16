@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
-@push('title'){{ $workout->name ?: 'Workout ' . date('d/m/Y', strtotime($workout->created_at)) }} | @endpush
+@push('title'){{ $workout->name ?: 'Workout ' . date('d/m/Y', strtotime($workout->created_at)) }} - Workout | @endpush
+
+@section('description')View the '{{ $workout->name ?: 'Workout ' . date('d/m/Y', strtotime($workout->created_at)) }}' workout on Parkour Hub.@endsection
 
 @section('content')
     @if (session('status'))

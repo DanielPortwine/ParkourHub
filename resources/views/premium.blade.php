@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Sign up for the Premium membership to access exclusive features such as the training system and increased file upload sizes.">
 
     <title>Premium | {{ config('app.name') }}</title>
 

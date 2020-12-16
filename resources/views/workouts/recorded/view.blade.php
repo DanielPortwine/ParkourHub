@@ -2,13 +2,15 @@
 
 @push('title')
     @if(empty($recordedWorkout->workout))
-        Deleted Workout
+        Deleted Workout - Workout
     @elseif(!empty($recordedWorkout->workout->name))
-        {{ $recordedWorkout->workout->name }}
+        {{ $recordedWorkout->workout->name }} - Workout
     @else
-        Workout {{ $recordedWorkout->workout->id }}
+        Workout {{ $recordedWorkout->workout->id }} - Workout
     @endif |
 @endpush
+
+@section('description')View a workout on Parkour Hub.@endsection
 
 @section('content')
     @if (session('status'))

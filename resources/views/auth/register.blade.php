@@ -2,6 +2,8 @@
 
 @push('title')Register | @endpush
 
+@section('description')Register an account on Parkour Hub to create your own spots, challenges and more.@endsection
+
 @section('content')
 <div class="container py-4">
     <div class="row justify-content-center">

@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
-@push('title'){{ $originalMovement->name }} | @endpush
+@push('title'){{ $originalMovement->name }} - Movement | @endpush
+
+@section('description')View the '{{ $originalMovement->name }}' movement on Parkour Hub.@endsection
 
 @section('content')
     @if (session('status'))

@@ -1,2 +1,4 @@
 User-agent: *
-Disallow:
+Disallow: /spots?search=*
+Disallow: /email/
+Disallow: /ajax/

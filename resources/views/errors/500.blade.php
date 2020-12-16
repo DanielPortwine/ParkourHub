@@ -2,6 +2,8 @@
 
 @push('title')500 - Server Error | @endpush
 
+@section('description')500 - Unfortunately something went wrong.@endsection
+
 @section('content')
     <div class="flex-center vh-100-nav">
         <div class="text-center">

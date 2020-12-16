@@ -2,6 +2,8 @@
 
 @push('title')404 - Not Found | @endpush
 
+@section('description')404 - Unfortunately this page could not be found.@endsection
+
 @section('content')
     <div class="flex-center vh-100-nav">
         <div class="text-center">

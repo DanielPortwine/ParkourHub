@@ -2,6 +2,8 @@
 
 @push('title'){{ $title }} | @endpush
 
+@section('description')All {{ $title }} on Parkour Hub.@endsection
+
 @section('content')
     @if (session('status'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">

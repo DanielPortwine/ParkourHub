@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@push('title')Create a Workout | @endpush
+@push('title')Create Workout | @endpush
 
 @section('content')
     @if (session('status'))

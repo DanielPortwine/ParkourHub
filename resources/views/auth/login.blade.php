@@ -2,6 +2,8 @@
 
 @push('title')Login | @endpush
 
+@section('description')Login to your Parkour Hub account.@endsection
+
 @section('content')
 <div class="container py-4">
     <div class="row justify-content-center">

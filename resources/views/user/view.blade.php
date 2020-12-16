@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
-@push('title'){{ $user->name }} | @endpush
+@push('title'){{ $user->name }} - User | @endpush
+
+@section('description')View user '{{ $user->name }}' on Parkour Hub.@endsection
 
 @section('content')
     @if (session('status'))

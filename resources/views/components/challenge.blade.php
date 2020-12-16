@@ -2,7 +2,7 @@
     <div class="content-wrapper">
         @if(!empty($challenge->thumbnail))
             <a href="{{ route('challenge_view', $challenge->id) }}">
-                <img class="lazyload" data-src="{{ $challenge->thumbnail }}">
+                <img class="lazyload" data-src="{{ $challenge->thumbnail }}" alt="Image of the {{ $challenge->name }} challenge.">
             </a>
         @endif
     </div>

@@ -45,7 +45,7 @@
                                 <label class="col-md-2 col-form-label text-md-right">Main Image</label>
                                 <div class="col-md-8">
                                     @if(!empty($spot->image))
-                                        <img class="w-100 mb-2" src="{{ $spot->image }}">
+                                        <img class="w-100 mb-2" src="{{ $spot->image }}" alt="Image of the {{ $spot->name }} spot.">
                                     @endif
                                     <input type="file" id="image" class="form-control-file @error('image') is-invalid @enderror" name="image" value="">
                                     @error('image')

@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
-@push('title'){{ $challenge->name }} | @endpush
+@push('title'){{ $challenge->name }} - Challenge | @endpush
+
+@section('description')View the '{{ $challenge->name }}' parkour challenge on Parkour Hub.@endsection
 
 @section('content')
     @if (session('status'))

@@ -2,7 +2,7 @@
     <div class="content-wrapper">
         @if(!empty($equipment->image))
             <a href="{{ route('equipment_view', $equipment->id) }}">
-                <img class="lazyload" data-src="{{ $equipment->image }}">
+                <img class="lazyload" data-src="{{ $equipment->image }}" alt="Image of the {{ $equipment->name }} equipment">
             </a>
         @endif
     </div>

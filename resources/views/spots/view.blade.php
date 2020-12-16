@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
-@push('title'){{ $spot->name }} | @endpush
+@push('title'){{ $spot->name }} - Spot | @endpush
+
+@section('description')All parkour spots on Parkour Hub.@endsection
 
 @section('content')
     @if (session('status'))
@@ -14,7 +16,7 @@
     <div class="container p-0">
         @if(!empty($spot->image))
             <div class="content-wrapper">
-                <img class="full-content-content" src="{{ $spot->image }}" alt="Image of the {{ $spot->name }} challenge.">
+                <img class="full-content-content" src="{{ $spot->image }}" alt="Image of the {{ $spot->name }} spot.">
             </div>
         @endif
     </div>

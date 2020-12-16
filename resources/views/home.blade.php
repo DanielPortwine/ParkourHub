@@ -2,6 +2,8 @@
 
 @push('title')Home | @endpush
 
+@section('description')Your homepage on Parkour Hub.@endsection
+
 @section('content')
     <div class="container-fluid">
         <div class="row my-3">

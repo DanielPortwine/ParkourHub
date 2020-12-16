@@ -58,7 +58,7 @@
                                         <div class="form-group row">
                                             <div class="col">
                                                 <div class="content-wrapper">
-                                                    <img src="{{ $comment->image }}">
+                                                    <img src="{{ $comment->image }}" alt="Image of the {{ $comment->id }} comment.">
                                                 </div>
                                             </div>
                                         </div>

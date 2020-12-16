@@ -2,6 +2,8 @@
 
 @push('title')Workout Plan | @endpush
 
+@section('description')View your workout plan on Parkour Hub.@endsection
+
 @section('content')
     @if (session('status'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">

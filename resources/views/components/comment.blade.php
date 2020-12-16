@@ -2,7 +2,7 @@
     @if(!empty($comment->image))
         <div class="content-wrapper">
             <a href="{{ $comment->image }}">
-                <img class="lazyload" data-src="{{ $comment->image }}">
+                <img class="lazyload" data-src="{{ $comment->image }}" alt="Image of the {{ $comment->id }} comment.">
             </a>
         </div>
     @elseif(!empty($comment->video))

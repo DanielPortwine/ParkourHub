@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
-@push('title')Spots | @endpush
+@push('title')Spots Map | @endpush
+
+@section('description')Travel the world and find or create spots on Parkour Hub.@endsection
 
 @section('content')
     <div class="vh-100-nav">
