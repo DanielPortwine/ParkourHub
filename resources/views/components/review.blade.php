@@ -63,7 +63,14 @@
     <div class="card-body bg-grey">
         <div class="row">
             @if(!isset($user))
-                <a class="col h4 sedgwick btn-link" href="{{ route('user_view', $review->user->id) }}">{{ $review->user->name }}</a>
+                <div class="col-md vertical-center">
+                    @if(!empty($spot->user->profile_image))
+                        <div class="profile-image-wrapper--component pr-3">
+                            <a href="{{ $spot->user->profile_image }}"><img src="{{ $spot->user->profile_image }}" alt="Profile image of the user named {{ $spot->user->name }}."></a>
+                        </div>
+                    @endif
+                    <a class="btn-link large-text sedgwick" href="{{ route('user_view', $spot->user->id) }}">{{ $spot->user->name }}</a>
+                </div>
             @endif
             <div class="col-auto d-none d-md-flex">
                 @if($review->user_id === Auth()->id())
