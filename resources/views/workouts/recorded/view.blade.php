@@ -54,7 +54,7 @@
         </div>
     </div>
     @if(count($recordedWorkout->movements))
-        <div class="container mt-3">
+        <div class="container">
             @foreach($recordedWorkout->movements as $workoutMovement)
                 <div class="card mb-3">
                     <div class="card-header bg-grey sedgwick">
@@ -63,7 +63,7 @@
                     <div class="card-body bg-grey text-white">
                         <div class="row">
                             @foreach($workoutMovement->fields as $field)
-                                <div class="col">{{ $field->field->label . ': ' . $field->value }}</div>
+                                <div class="col-md">{{ $field->field->label . ': ' . $field->value }}</div>
                             @endforeach
                         </div>
                     </div>

@@ -221,12 +221,11 @@ function setRating(rating, shape) {
 
 function updateFooterPosition() {
     let $footer = $('#footer'),
+        $nav = $('.navbar'),
         $body = $('body'),
         $window = $(window);
 
-    if ($footer.css('bottom') == '0px' && $body.height() > ($window.height() - $footer.height())) {
-        $footer.css('bottom', '');
-    } else if (($body.height() + $footer.height()) < $window.height()) {
+    if (($body.height() + $footer.height() + $nav.height()) < $window.height()) {
         $footer.css('bottom', 0);
     } else {
         $footer.css('bottom', '');
@@ -466,11 +465,22 @@ $(document).ready(function() {
 
     // have a dropdown for hometown content in the user nav dropdown
     $('#hometown-nav-item').on('click', function(e) {
-        var $navItems = $('#hometown-nav-items');
-        if ($navItems.css('display') == 'none') {
-            $navItems.slideDown('fast');
+        var $hometownNavItems = $('#hometown-nav-items');
+        if ($hometownNavItems.css('display') == 'none') {
+            $hometownNavItems.slideDown('fast');
         } else {
-            $navItems.slideUp('fast');
+            $hometownNavItems.slideUp('fast');
+        }
+        e.stopPropagation();
+    });
+
+    // have a dropdown for workour content in the user nav dropdown
+    $('#workouts-nav-item').on('click', function(e) {
+        var $workoutsNavItems = $('#workouts-nav-items');
+        if ($workoutsNavItems.css('display') == 'none') {
+            $workoutsNavItems.slideDown('fast');
+        } else {
+            $workoutsNavItems.slideUp('fast');
         }
         e.stopPropagation();
     });

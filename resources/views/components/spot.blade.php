@@ -24,7 +24,7 @@ $hit = $spot->hits->where('user_id', Auth()->id() ?: null)->first()
     </div>
     <div class="py-3 px-4">
         <div class="row border-subtle mb-2">
-            <div class="col-md vertical-center">
+            <div class="d-block d-md-flex col-md vertical-center">
                 <a class="btn-link h3 mb-0 sedgwick" href="{{ route('spot_view', $spot->id) }}">{{ $spot->name }}</a>
             </div>
             <div class="col-md-auto">
@@ -57,22 +57,20 @@ $hit = $spot->hits->where('user_id', Auth()->id() ?: null)->first()
                 @endif
                 <a class="btn-link large-text sedgwick" href="{{ route('user_view', $spot->user->id) }}">{{ $spot->user->name }}</a>
             </div>
-            @if(count($spot->reviews))
-                <div class="col-md-auto vertical-center">
+            <div class="col-md-auto vertical-center pt-2 pt-md-0">
+                @if(count($spot->reviews))
                     <div>
                         @for($star = 1; $star <= 5; $star++)
                             <i class="rating-star pr-1 fa {{ $star <= $spot->rating ? 'fa-star' : 'fa-star-o' }}"></i>
                         @endfor
                         <span>({{ count($spot->reviews) }})</span>
                     </div>
-                </div>
-            @else
-                <div class="col-md-auto vertical-center">
+                @else
                     <span>No reviews</span>
-                </div>
-            @endif
+                @endif
+            </div>
         </div>
-        <div class="row pt-2">
+        <div class="row pt-md-2">
             <div class="col vertical-center">
                 <span>{{ $spot->updated_at->diffForHumans() }}</span>
             </div>

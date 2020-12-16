@@ -43,7 +43,7 @@
                             </div>
                             <div class="row">
                                 <label class="col-md-2 col-form-label text-md-right">Image</label>
-                                <div class="col-8">
+                                <div class="col-md-8">
                                     <input type="file" id="image" class="form-control-file @error('image') is-invalid @enderror" name="image" value="">
                                     @error('image')
                                     <span class="invalid-feedback" role="alert">
@@ -68,6 +68,10 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('footer')
+    @include('components.footer')
 @endsection
 
 @push('scripts')

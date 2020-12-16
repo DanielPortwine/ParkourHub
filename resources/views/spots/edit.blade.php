@@ -43,7 +43,7 @@
                             </div>
                             <div class="form-group row">
                                 <label class="col-md-2 col-form-label text-md-right">Main Image</label>
-                                <div class="col-8">
+                                <div class="col-md-8">
                                     @if(!empty($spot->image))
                                         <img class="w-100 mb-2" src="{{ $spot->image }}">
                                     @endif
@@ -81,4 +81,8 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('footer')
+    @include('components.footer')
 @endsection

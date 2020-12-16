@@ -18,7 +18,7 @@
         <div class="row mb-3">
             <div class="col">
                 <div class="card @error('workout') border-danger @enderror @error('date') border-danger @enderror @error('repeat_frequency') border-danger @enderror @error('repeat_until') border-danger @enderror">
-                    <div class="card-header bg-green sedgwick card-hidden-body">
+                    <div class="card-header bg-green sedgwick card-hidden-body py-1 py-md-2">
                         <div class="row">
                             <div class="col">
                                 Add Workout
@@ -28,10 +28,10 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-body bg-grey text-white">
+                    <div class="card-body bg-grey text-white py-0 py-md-2">
                         <form method="POST">
                             @csrf
-                            <div class="form-group row">
+                            <div class="form-group row vertical-center">
                                 <label for="workout" class="col-md-2 col-form-label text-md-right">Workout</label>
                                 <div class="col-md-8">
                                     <select class="select2-workouts @error('workout') is-invalid border-danger @enderror" name="workout"></select>
@@ -45,7 +45,7 @@
                             <div class="form-group row vertical-center">
                                 <label for="date" class="col-md-2 col-form-label text-md-right">Date</label>
                                 <div class="col-md-2">
-                                    <input type="date" class="d-block @error('date') is-invalid border-danger @enderror" name="date">
+                                    <input type="date" class="w-100 @error('date') is-invalid border-danger @enderror" name="date">
                                     @error('date')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -136,6 +136,10 @@
             </div>
         @endforeach
     </div>
+@endsection
+
+@section('footer')
+    @include('components.footer')
 @endsection
 
 @push('scripts')

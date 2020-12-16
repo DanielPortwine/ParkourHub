@@ -24,7 +24,7 @@
 </head>
 <body>
     <div class="flex-center full-height premium-section">
-        <div class="top-right links">
+        <div class="position-absolute links d-flex justify-content-end w-100 px-4">
             @auth
                 <a href="{{ route('home') }}">Home</a>
             @endauth
@@ -76,37 +76,49 @@
             </div>
             <div class="row my-md-4">
                 <div class="col-md-6">
-                    <div class="text-md-center"><i class="fa fa-file-video-o feature-icon-premium"></i></div>
-                    <h3 class="sedgwick text-md-center">Video Upload</h3>
+                    <div class="flex d-md-block vertical-center">
+                        <div class="text-md-center"><i class="fa fa-file-video-o feature-icon-premium"></i></div>
+                        <h3 class="sedgwick ml-2 ml-md-0 text-md-center">Video Upload</h3>
+                    </div>
                     <p class="large-text">Upload videos of up to 50MB directly from your device without needing to upload to YouTube first.</p>
                 </div>
                 <div class="col-md-6">
-                    <div class="text-md-center"><i class="fa fa-file-image-o feature-icon-premium"></i></div>
-                    <h3 class="sedgwick text-md-center">Image Upload</h3>
+                    <div class="flex d-md-block vertical-center">
+                        <div class="text-md-center"><i class="fa fa-file-image-o feature-icon-premium"></i></div>
+                        <h3 class="sedgwick ml-2 ml-md-0 text-md-center">Image Upload</h3>
+                    </div>
                     <p class="large-text">Upload images of up to 5MB, a significant increase over the standard 500KB.</p>
                 </div>
             </div>
             <div class="row my-md-4">
                 <div class="col-md-6">
-                    <div class="text-md-center"><i class="fa fa-child feature-icon-premium"></i></div>
-                    <h3 class="sedgwick text-md-center">Movements</h3>
+                    <div class="flex d-md-block vertical-center">
+                        <div class="text-md-center"><i class="fa fa-child feature-icon-premium"></i></div>
+                        <h3 class="sedgwick ml-2 ml-md-0 text-md-center">Movements</h3>
+                    </div>
                     <p class="large-text">Create and share movements - either a parkour move such as a vault or an exercise such as push-ups.</p>
                 </div>
                 <div class="col-md-6">
-                    <div class="text-md-center"><i class="fa fa-bar-chart feature-icon-premium"></i></div>
-                    <h3 class="sedgwick text-md-center">Workouts</h3>
+                    <div class="flex d-md-block vertical-center">
+                        <div class="text-md-center"><i class="fa fa-bolt feature-icon-premium"></i></div>
+                        <h3 class="sedgwick ml-2 ml-md-0 text-md-center">Workouts</h3>
+                    </div>
                     <p class="large-text">Combine movements into a workout to record your training and track your progress.</p>
                 </div>
             </div>
             <div class="row my-md-4">
                 <div class="col-md-6">
-                    <div class="text-md-center"><i class="fa fa-calendar feature-icon-premium"></i></div>
-                    <h3 class="sedgwick text-md-center">Training Planner</h3>
+                    <div class="flex d-md-block vertical-center">
+                        <div class="text-md-center"><i class="fa fa-calendar feature-icon-premium"></i></div>
+                        <h3 class="sedgwick ml-2 ml-md-0 text-md-center">Training Planner</h3>
+                    </div>
                     <p class="large-text">Add workouts to your calendar to plan your journey to achieving your parkour or fitness goals.</p>
                 </div>
                 <div class="col-md-6">
-                    <div class="text-md-center"><i class="fa fa-ellipsis-h feature-icon-premium"></i></div>
-                    <h3 class="sedgwick text-md-center">More</h3>
+                    <div class="flex d-md-block vertical-center">
+                        <div class="text-md-center"><i class="fa fa-ellipsis-h feature-icon-premium"></i></div>
+                        <h3 class="sedgwick ml-2 ml-md-0 text-md-center">More</h3>
+                    </div>
                     <p class="large-text">There are more amazing features coming in future.</p>
                 </div>
             </div>

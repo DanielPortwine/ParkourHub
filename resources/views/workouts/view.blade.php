@@ -41,7 +41,7 @@
         </div>
     </div>
     <div class="section">
-        <div class="container">
+        <div class="container-fluid container-md p-0 p-md-4">
             <div class="card bg-black border-0">
                 <div class="card-header card-header-black">
                     <ul class="nav nav-tabs card-header-tabs">
@@ -67,7 +67,7 @@
                                     <div class="card-body bg-grey text-white">
                                         <div class="row">
                                             @foreach($workoutMovement->fields as $field)
-                                                <div class="col">{{ $field->field->label . ': ' . $field->value }}</div>
+                                                <div class="col-md">{{ $field->field->label . ': ' . $field->value }}</div>
                                             @endforeach
                                         </div>
                                     </div>

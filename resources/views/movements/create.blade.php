@@ -114,6 +114,10 @@
     </div>
 @endsection
 
+@section('footer')
+    @include('components.footer')
+@endsection
+
 @push('scripts')
     <script defer>
         function updateCategoriesSelect(type) {

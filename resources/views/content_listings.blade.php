@@ -191,6 +191,10 @@
     @endif
 @endsection
 
+@section('footer')
+    @include('components.footer')
+@endsection
+
 @push('scripts')
     <script defer>
         $(document).ready(function() {

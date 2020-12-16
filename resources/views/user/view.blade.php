@@ -32,7 +32,7 @@
                     <div class="container-fluid p-0">
                         <div class="row">
                             <div class="col">
-                                <h1 class="sedgwick mb-0">{{ $user->name }}</h1>
+                                <h2 class="sedgwick mb-0 large-text">{{ $user->name }}</h2>
                             </div>
                         </div>
                         <div class="row">
@@ -51,9 +51,9 @@
                         @else
                             @php
                                 $followSetting = setting('privacy_follow', 'nobody', $user->id);
-                                $followers = $user->followers()->pluck('follower_id')->toArray();
+                                $userFollowers = $user->followers()->pluck('follower_id')->toArray();
                             @endphp
-                            @if(in_array(Auth()->id(), $followers))
+                            @if(in_array(Auth()->id(), $userFollowers))
                                 <a class="btn text-white" href="{{ route('user_unfollow', $user->id) }}" title="Unfollow"><i class="fa fa-user-times"></i></a>
                             @else
                                 @if($followSetting === 'anybody')
@@ -69,7 +69,7 @@
         </div>
     </div>
     <div class="section">
-        <div class="container">
+        <div class="container-fluid container-md p-0 p-md-4">
             <div class="card bg-black border-0">
                 <div class="card-header card-header-black">
                     <ul class="nav nav-tabs card-header-tabs">

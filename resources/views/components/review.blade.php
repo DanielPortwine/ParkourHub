@@ -38,7 +38,7 @@
                 <i class="fa fa-caret-down"></i>
             </div>
         </div>
-        <div class="d-md-none d-block row">
+        <div class="d-md-none d-flex row">
             <div class="col">
                 <div class="rating-stars">
                     @for($star = 1; $star <= 5; $star++)
@@ -46,16 +46,26 @@
                     @endfor
                 </div>
             </div>
+            <div class="col-auto d-flex d-md-none">
+                @if($review->user_id === Auth()->id())
+                    <a class="btn text-white" href="{{ route('review_edit', $review->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
+                @endif
+                <a class="btn text-white" href="{{ route('review_report', $review->id) }}" title="Report"><i class="fa fa-flag"></i></a>
+                @if(Auth()->id() === 1)
+                    <a class="btn text-white" href="{{ route('review_delete', $review->id) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
+                    @if(count($review->reports) > 0)
+                        <a class="btn text-white" href="{{ route('review_report_discard', $review->id) }}" title="Discard Reports"><i class="fa fa-balance-scale"></i></a>
+                    @endif
+                @endif
+            </div>
         </div>
     </div>
     <div class="card-body bg-grey">
         <div class="row">
-            @if(isset($user))
-                <span class="col h4 sedgwick">{{ $review->title }}</span>
-            @else
+            @if(!isset($user))
                 <a class="col h4 sedgwick btn-link" href="{{ route('user_view', $review->user->id) }}">{{ $review->user->name }}</a>
             @endif
-            <div class="col-auto">
+            <div class="col-auto d-none d-md-flex">
                 @if($review->user_id === Auth()->id())
                     <a class="btn text-white" href="{{ route('review_edit', $review->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
                 @endif

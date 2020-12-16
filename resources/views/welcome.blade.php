@@ -23,7 +23,7 @@
 </head>
 <body>
     <div class="flex-center full-height section">
-        <div class="top-right links">
+        <div class="position-absolute links d-flex justify-content-between justify-content-md-end w-100 px-4">
             <a href="{{ route('spots') }}">Spots</a>
             <a href="{{ route('premium') }}">Premium</a>
             @auth
@@ -91,36 +91,48 @@
             </div>
             <div class="row my-md-4">
                 <div class="col-md-4">
-                    <i class="fa fa-map feature-icon"></i>
-                    <h3 class="sedgwick">Spots Map</h3>
+                    <div class="flex d-md-block vertical-center">
+                        <i class="fa fa-map feature-icon"></i>
+                        <h3 class="sedgwick ml-2 ml-md-0">Spots Map</h3>
+                    </div>
                     <p class="large-text">See spots that other users have created on a global map.</p>
                 </div>
                 <div class="col-md-4">
-                    <i class="fa fa-bullseye feature-icon"></i>
-                    <h3 class="sedgwick">Challenges</h3>
+                    <div class="flex d-md-block vertical-center">
+                        <i class="fa fa-bullseye feature-icon"></i>
+                        <h3 class="sedgwick ml-2 ml-md-0">Challenges</h3>
+                    </div>
                     <p class="large-text">Set challenges at your own or others' spots and see if anyone can complete them.</p>
                 </div>
                 <div class="col-md-4">
-                    <i class="fa fa-check-square-o feature-icon"></i>
-                    <h3 class="sedgwick">Hitlist</h3>
+                    <div class="flex d-md-block vertical-center">
+                        <i class="fa fa-check-square-o feature-icon"></i>
+                        <h3 class="sedgwick ml-2 ml-md-0">Hitlist</h3>
+                    </div>
                     <p class="large-text">Add spots to your Hitlist and tick them off once you complete them.</p>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-4">
-                    <i class="fa fa-comment feature-icon"></i>
-                    <h3 class="sedgwick">Comments</h3>
+                    <div class="flex d-md-block vertical-center">
+                        <i class="fa fa-comment feature-icon"></i>
+                        <h3 class="sedgwick ml-2 ml-md-0">Comments</h3>
+                    </div>
                     <p class="large-text">Comment on a spot with text, image or video to share your experiences at the spot.</p>
                 </div>
                 <div class="col-md-4">
-                    <i class="fa fa-star feature-icon"></i>
-                    <h3 class="sedgwick">Reviews</h3>
+                    <div class="flex d-md-block vertical-center">
+                        <i class="fa fa-star feature-icon"></i>
+                        <h3 class="sedgwick ml-2 ml-md-0">Reviews</h3>
+                    </div>
                     <p class="large-text">Review a spot to let others know what you think of it.</p>
                 </div>
                 <div class="col-md-4">
-                    <i class="fa fa-youtube-play feature-icon"></i>
-                    <h3 class="sedgwick">YouTube Embed</h3>
-                    <p class="large-text">Link YouTube videos to showcase spots or demonstrate challenges.</p>
+                    <div class="flex d-md-block vertical-center">
+                        <i class="fa fa-youtube-play feature-icon"></i>
+                        <h3 class="sedgwick ml-2 ml-md-0">YouTube</h3>
+                    </div>
+                    <p class="large-text">Embed YouTube videos to showcase spots or demonstrate challenges.</p>
                 </div>
             </div>
         </div>
@@ -148,23 +160,29 @@
         <div class="container">
             <div class="row my-3">
                 <div class="col">
-                    <h1 class="text-center text-premium sedgwick"><i class="fa fa-diamond"></i> Premium Features <i class="fa fa-diamond"></i></h1>
+                    <h1 class="text-center text-premium sedgwick"><i class="fa fa-diamond d-none d-md-inline-block"></i> Premium Features <i class="fa fa-diamond d-none d-md-inline-block"></i></h1>
                 </div>
             </div>
             <div class="row my-md-4">
                 <div class="col-md-4">
-                    <i class="fa fa-user-o feature-icon text-premium"></i>
-                    <h3 class="sedgwick">Workouts</h3>
+                    <div class="flex d-md-block vertical-center">
+                        <i class="fa fa-user-o feature-icon text-premium"></i>
+                        <h3 class="sedgwick ml-2 ml-md-0">Workouts</h3>
+                    </div>
                     <p class="large-text">Create workouts using moves & exercises you or other users have created.</p>
                 </div>
                 <div class="col-md-4">
-                    <i class="fa fa-calendar feature-icon text-premium"></i>
-                    <h3 class="sedgwick">Training Planner</h3>
+                    <div class="flex d-md-block vertical-center">
+                        <i class="fa fa-calendar feature-icon text-premium"></i>
+                        <h3 class="sedgwick ml-2 ml-md-0">Training Planner</h3>
+                    </div>
                     <p class="large-text">Use a simple calendar to plan which workouts you want to do when.</p>
                 </div>
                 <div class="col-md-4">
-                    <i class="fa fa-file-video-o feature-icon text-premium"></i>
-                    <h3 class="sedgwick">File Uploads</h3>
+                    <div class="flex d-md-block vertical-center">
+                        <i class="fa fa-file-video-o feature-icon text-premium"></i>
+                        <h3 class="sedgwick ml-2 ml-md-0">File Uploads</h3>
+                    </div>
                     <p class="large-text">Upload videos up to 500MB and upload larger images up to 5MB to showcase your content.</p>
                 </div>
             </div>

@@ -41,6 +41,14 @@ html, body {
     display: none;
 }
 
+#workouts-nav-item {
+    cursor: pointer;
+}
+
+#workouts-nav-items {
+    display: none;
+}
+
 .full-height {
     height: 100vh;
 }
@@ -101,6 +109,10 @@ html, body {
 
 .btn-link:hover {
     color: $green;
+}
+
+.links {
+    top: 18px;
 }
 
 .links > a {
@@ -252,7 +264,9 @@ html, body {
     background-color: $grey;
 }
 
-.bg-grey .dropdown-item:not(.btn-premium):hover {
+.bg-grey .dropdown-item:not(.btn-premium):hover,
+.bg-grey .dropdown-item:not(.btn-premium):active,
+.bg-grey .dropdown-item:not(.btn-premium):focus {
     background-color: $green;
 }
 
@@ -594,8 +608,8 @@ input[type="checkbox"]:checked + label:after {
 .profile-image-wrapper img {
     border-radius: 50%;
     object-fit: cover;
-    width: 8rem;
-    height: 8rem;
+    width: 6rem;
+    height: 6rem;
 }
 
 .profile-image-wrapper--component img {
@@ -640,7 +654,7 @@ input[type="checkbox"]:checked + label:after {
 #toggle-hometown-button {
     z-index: 100;
     bottom: 20px;
-    left: 20px;
+    right: 20px;
 }
 
 .user-stats {
@@ -661,7 +675,7 @@ input[type="checkbox"]:checked + label:after {
 .current-day {
     background-color: $movementOrange;
     border-radius: 50%;
-    padding: 5px;
+    padding: 3px;
 }
 
 .StripeElement {
@@ -719,8 +733,17 @@ input[type="checkbox"]:checked + label:after {
 }
 
 @include media-breakpoint-down(md) {
+    .links > a {
+        padding: 0;
+    }
+
+    #map{
+        height: calc(100% - 44px);
+    }
+
     .map-search {
         width: 100%;
+        position: static;
     }
 
     #address-results,
@@ -729,8 +752,34 @@ input[type="checkbox"]:checked + label:after {
         overflow: auto;
     }
 
-    .nav-tabs .nav-link.active {
-        border: 1px solid $white;
-        border-radius: 0.25rem;
+    .card-header-black {
+        border-bottom: 1px solid $grey3;
+        padding: 0.25rem 1.25rem 0.75rem 1.25rem;
+    }
+
+    .card-header-black .card-header-tabs {
+        font-size: medium;
+        overflow-x: scroll;
+        overflow-y: hidden;
+        flex-wrap: nowrap;
+    }
+
+    .card-header-black .card-header-tabs .nav-link {
+        padding: 0.25rem 0.25rem;
+    }
+
+    .card-header-black .card-header-tabs .nav-link:hover,
+    .card-header-black .card-header-tabs .nav-link:focus {
+        border-color: transparent;
+    }
+
+    .card-header-black .card-header-tabs .nav-link.active {
+        border-color: transparent;
+    }
+}
+
+@include media-breakpoint-up(md) {
+    .map-search {
+        position: absolute;
     }
 }

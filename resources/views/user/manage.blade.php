@@ -33,7 +33,7 @@
                                     </span>
                                     @enderror
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-2 pt-1 pt-md-0">
                                     <a class="btn btn-danger require-confirmation">Obfuscate</a>
                                     <a href="{{ route('obfuscate', 'name') }}" class="btn btn-danger d-none confirmation-button">Confirm</a>
                                 </div>
@@ -51,7 +51,7 @@
                             </div>
                             <div class="form-group row">
                                 <label class="col-md-2 col-form-label text-md-right">Profile Image</label>
-                                <div class="col-8">
+                                <div class="col-md-8">
                                     @if(!empty($user->profile_image))
                                         <div id="profile-image-container">
                                             <div class="profile-image-wrapper mb-2">
@@ -68,14 +68,14 @@
                                     @enderror
                                 </div>
                                 @if(!empty($user->profile_image))
-                                    <div class="col-md-2">
+                                    <div class="col-md-2 pt-2 pt-md-0">
                                         <a class="btn btn-danger" id="remove-profile-image-button">Remove</a>
                                     </div>
                                 @endif
                             </div>
                             <div class="form-group row">
                                 <label class="col-md-2 col-form-label text-md-right">Cover Image</label>
-                                <div class="col-8">
+                                <div class="col-md-8">
                                     @if(!empty($user->cover_image))
                                         <div id="cover-image-container">
                                             <div class="cover-image-wrapper mb-2">
@@ -92,7 +92,7 @@
                                     @enderror
                                 </div>
                                 @if(!empty($user->cover_image))
-                                    <div class="col-md-2">
+                                    <div class="col-md-2 pt-2 pt-md-0">
                                         <a class="btn btn-danger" id="remove-cover-image-button">Remove</a>
                                     </div>
                                 @endif
@@ -115,7 +115,7 @@
                                     </form>
                                 </div>
                                 @if(!empty($user->hometown_name))
-                                    <div class="col-md-2">
+                                    <div class="col-md-2 pt-2 pt-md-0">
                                         <a class="btn btn-danger" id="remove-hometown-button">Remove</a>
                                     </div>
                                 @endif
@@ -221,4 +221,8 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('footer')
+    @include('components.footer')
 @endsection

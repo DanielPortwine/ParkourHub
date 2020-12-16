@@ -8,7 +8,7 @@
     </div>
     <div class="py-3 px-4">
         <div class="row border-subtle mb-2">
-            <div class="col-md vertical-center">
+            <div class="d-block d-md-flex col-md vertical-center">
                 <a class="btn-link h3 mb-0 sedgwick" href="{{ route('challenge_view', $challenge->id) }}">{{ $challenge->name }}</a>
             </div>
             <div class="col-md-auto">
@@ -36,7 +36,7 @@
                 @endif
                 <a class="btn-link large-text sedgwick" href="{{ route('user_view', $challenge->user->id) }}">{{ $challenge->user->name }}</a>
             </div>
-            <div class="col-md-auto vertical-center">
+            <div class="col-md-auto vertical-center pt-2 pt-md-0">
                 <div>
                     @for($circle = 1; $circle <= 5; $circle++)
                         <i class="rating-circle pr-1 fa {{ $circle <= $challenge->difficulty ? 'fa-circle' : 'fa-circle-o' }}"></i>
@@ -44,7 +44,7 @@
                 </div>
             </div>
         </div>
-        <div class="row pt-2">
+        <div class="row pt-md-2">
             <div class="col-md vertical-center">
                 <span>{{ count($challenge->entries) . (count($challenge->entries) === 1 ? ' entry' : ' entries') }} | {{ $challenge->created_at->diffForHumans() }}</span>
             </div>

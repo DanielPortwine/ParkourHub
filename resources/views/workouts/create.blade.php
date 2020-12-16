@@ -76,6 +76,10 @@
     </div>
 @endsection
 
+@section('footer')
+    @include('components.footer')
+@endsection
+
 @push('scripts')
     <script defer>
         var count = 1,

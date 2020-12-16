@@ -74,7 +74,7 @@
                                         <i class="fa fa-diamond nav-icon text-premium"></i>Premium
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-right bg-grey" id="notification-menu" aria-labelledby="notification-dropdown">
-                                        <a class="dropdown-item text-white" href="{{ route('workout_listing') }}"><i class="fa fa-bar-chart nav-icon"></i>Workouts</a>
+                                        <a class="dropdown-item text-white" href="{{ route('workout_listing') }}"><i class="fa fa-bolt nav-icon"></i>Workouts</a>
                                         <a class="dropdown-item text-white" href="{{ route('movement_listing') }}"><i class="fa fa-child nav-icon"></i>Movements</a>
                                         <a class="dropdown-item text-white" href="{{ route('equipment_listing') }}"><i class="fa fa-child nav-icon"></i>Equipment</a>
                                         <a class="dropdown-item text-white" href="{{ route('premium') }}"><i class="fa fa-diamond nav-icon"></i>Manage</a>
@@ -128,22 +128,15 @@
                                     <a class="dropdown-item text-white" href="{{ route('home') }}"><i class="fa fa-home nav-icon"></i>Home</a>
                                     <a class="dropdown-item text-white" href="{{ route('user_view', Auth()->id()) }}"><i class="fa fa-user nav-icon"></i>Profile</a>
                                     <a class="dropdown-item text-white" href="{{ route('user_manage') }}"><i class="fa fa-cog nav-icon"></i>Settings</a>
-                                    <a class="dropdown-item text-white" href="{{ route('user_followers') }}"><i class="fa fa-group nav-icon"></i>Followers</a>
-                                    <a class="dropdown-item text-white" href="{{ route('user_following') }}"><i class="fa fa-group nav-icon"></i>Following</a>
-                                    <a class="dropdown-item text-white" href="{{ route('user_follow_requests') }}"><i class="fa fa-user-plus nav-icon"></i>Follow requests</a>
-                                    <a class="dropdown-item text-white" href="{{ route('user_listing') }}"><i class="fa fa-users nav-icon"></i>Users</a>
-                                    <a class="dropdown-item text-white" href="{{ route('user_spots') }}"><i class="fa fa-map-marker nav-icon"></i>Spots</a>
                                     @premium
-                                        <a class="dropdown-item text-white" href="{{ route('workout_listing_user') }}"><i class="fa fa-bolt"></i> Workouts</a>
-                                        <a class="dropdown-item text-white" href="{{ route('workout_bookmark_listing') }}"><i class="fa fa-bookmark"></i> Bookmarked Workouts</a>
-                                        <a class="dropdown-item text-white" href="{{ route('recorded_workout_listing') }}"><i class="fa fa-calendar-check-o"></i> Recorded Workouts</a>
-                                        <a class="dropdown-item text-white" href="{{ route('workout_plan') }}"><i class="fa fa-calendar"></i> Workout Plan</a>
+                                        <a class="dropdown-item text-white dropdown-toggle" id="workouts-nav-item"><i class="fa fa-bolt nav-icon"></i>Workouts <span class="caret"></span></a>
+                                        <div id="workouts-nav-items">
+                                            <a class="dropdown-item text-white" href="{{ route('workout_listing_user') }}"><i class="fa fa-bolt nav-icon nav-spacer"></i>Workouts</a>
+                                            <a class="dropdown-item text-white" href="{{ route('workout_plan') }}"><i class="fa fa-calendar nav-icon nav-spacer"></i>Workout Plan</a>
+                                            <a class="dropdown-item text-white" href="{{ route('workout_bookmark_listing') }}"><i class="fa fa-bookmark nav-icon nav-spacer"></i>Bookmarked Workouts</a>
+                                            <a class="dropdown-item text-white" href="{{ route('recorded_workout_listing') }}"><i class="fa fa-calendar-check-o nav-icon nav-spacer"></i>Recorded Workouts</a>
+                                        </div>
                                     @endpremium
-                                    <a class="dropdown-item text-white" href="{{ route('user_hitlist') }}"><i class="fa fa-check-square-o nav-icon"></i>Hitlist</a>
-                                    <a class="dropdown-item text-white" href="{{ route('user_reviews') }}"><i class="fa fa-star nav-icon"></i>Reviews</a>
-                                    <a class="dropdown-item text-white" href="{{ route('user_comments') }}"><i class="fa fa-comment nav-icon"></i>Comments</a>
-                                    <a class="dropdown-item text-white" href="{{ route('user_challenges') }}"><i class="fa fa-bullseye nav-icon"></i>Challenges</a>
-                                    <a class="dropdown-item text-white" href="{{ route('user_entries') }}"><i class="fa fa-bullseye nav-icon"></i>Challenge Entries</a>
                                     @if(!empty(Auth::user()->hometown_name))
                                         <a class="dropdown-item text-white dropdown-toggle" id="hometown-nav-item"><i class="fa fa-street-view nav-icon"></i>Hometown <span class="caret"></span></a>
                                         <div id="hometown-nav-items">
@@ -172,6 +165,6 @@
             @yield('content')
         </main>
     </div>
-    @include('components.footer')
+    @yield('footer')
 </body>
 </html>
