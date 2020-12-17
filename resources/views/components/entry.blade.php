@@ -18,12 +18,26 @@
     <div class="py-3 px-4">
         <div class="row">
             <div class="col vertical-center">
-                <a class="btn-link h3 mb-0 sedgwick" href="{{ route('challenge_view', $entry->challenge->id) }}">
-                    @if($entry->winner)
-                        <i class="fa fa-trophy"></i>
+                @if(!isset($challenge))
+                    <a class="btn-link h3 mb-0 sedgwick" href="{{ route('challenge_view', $entry->challenge->id) }}">
+                        @if($entry->winner)
+                            <i class="fa fa-trophy"></i>
+                        @endif
+                        {{ $entry->challenge->name }}
+                    </a>
+                @else
+                    @if(!empty($entry->user->profile_image))
+                        <div class="profile-image-wrapper--component pr-3">
+                            <a href="{{ $entry->user->profile_image }}"><img src="{{ $entry->user->profile_image }}" alt="Profile image of the user named {{ $entry->user->name }}."></a>
+                        </div>
                     @endif
-                    {{ $entry->challenge->name }}
-                </a>
+                    <a class="btn-link large-text sedgwick" href="{{ route('user_view', $entry->user->id) }}">
+                        @if($entry->winner)
+                            <i class="fa fa-trophy"></i>
+                        @endif
+                        {{ $entry->user->name }}
+                    </a>
+                @endif
             </div>
             <div class="col-auto vertical-center pl-0">
                 <div>
@@ -41,19 +55,9 @@
                 </div>
             </div>
         </div>
-        <div class="row border-subtle mb-2">
+        <div class="row mt-2">
             <div class="col-md vertical-center">
                 {{ $entry->created_at->diffForHumans() }}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col vertical-center">
-                @if(!empty($entry->user->profile_image))
-                    <div class="profile-image-wrapper--component pr-3">
-                        <a href="{{ $entry->user->profile_image }}"><img src="{{ $entry->user->profile_image }}" alt="Profile image of the user named {{ $entry->user->name }}."></a>
-                    </div>
-                @endif
-                <a class="btn-link large-text sedgwick" href="{{ route('user_view', $entry->user->id) }}">{{ $entry->user->name }}</a>
             </div>
         </div>
     </div>
