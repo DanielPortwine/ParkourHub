@@ -37,13 +37,13 @@
                                 <h2 class="sedgwick mb-0 large-text">{{ $user->name }}</h2>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col">
-                                @if($showHometown)
+                        @if($showHometown)
+                            <div class="row d-none d-md-flex">
+                                <div class="col">
                                     <p class="mb-0">{{ explode(',', $user->hometown_name)[0] . ', ' . explode(',', $user->hometown_name)[1] }}</p>
-                                @endif
+                                </div>
                             </div>
-                        </div>
+                        @endif
                     </div>
                 </div>
                 <div class="col-auto vertical-center">
