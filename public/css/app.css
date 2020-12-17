@@ -11984,6 +11984,14 @@ a.btn-premium:hover {
   border-bottom: 1px solid #f0f5f0;
 }
 
+.card-header-black .card-header-tabs {
+  font-size: large;
+}
+
+.card-header-black .card-header-tabs .nav-link {
+  padding: 0.25rem 0.5rem;
+}
+
 .card-hidden-body {
   cursor: pointer;
 }

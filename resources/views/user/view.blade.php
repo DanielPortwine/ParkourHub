@@ -71,35 +71,49 @@
         </div>
     </div>
     <div class="section">
-        <div class="container-fluid container-md p-0 p-md-4">
+        <div class="container-fluid container-md p-0">
             <div class="card bg-black border-0">
                 <div class="card-header card-header-black">
-                    <ul class="nav nav-tabs card-header-tabs">
+                    <ul class="nav nav-tabs card-header-tabs justify-content-between">
                         <li class="nav-item">
-                            <a class="nav-link btn-link @if($tab == null || $tab === 'spots')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => null]) }}">Spots</a>
+                            <a class="nav-link btn-link @if($tab == null || $tab === 'spots')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => null]) }}" title="Spots"><i class="fa fa-map-marker"></i></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link btn-link @if($tab === 'challenges')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'challenges']) }}">Challenges</a>
+                            <a class="nav-link btn-link @if($tab === 'hitlist')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'hitlist']) }}" title="Hitlist"><i class="fa fa-crosshairs"></i></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link btn-link @if($tab === 'reviews')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'reviews']) }}">Reviews</a>
+                            <a class="nav-link btn-link @if($tab === 'reviews')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'reviews']) }}" title="Reviews"><i class="fa fa-star"></i></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link btn-link @if($tab === 'comments')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'comments']) }}">Comments</a>
+                            <a class="nav-link btn-link @if($tab === 'comments')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'comments']) }}" title="Comments"><i class="fa fa-comment"></i></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link btn-link @if($tab === 'followers')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'followers']) }}">Followers</a>
+                            <a class="nav-link btn-link @if($tab === 'challenges')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'challenges']) }}" title="Challenges"><i class="fa fa-bullseye"></i></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link btn-link @if($tab === 'following')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'following']) }}">Following</a>
+                            <a class="nav-link btn-link @if($tab === 'entries')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'entries']) }}" title="Challenge Entries"><i class="fa fa-trophy"></i></a>
+                        </li>
+                        @premium
+                            <li class="nav-item">
+                                <a class="nav-link btn-link @if($tab === 'movements')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'movements']) }}" title="Movements"><i class="fa fa-child"></i></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link btn-link @if($tab === 'equipment')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'equipment']) }}" title="Equipment"><i class="fa fa-child"></i></a>
+                            </li>
+                        @endpremium
+                        <li class="nav-item">
+                            <a class="nav-link btn-link @if($tab === 'followers')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'followers']) }}" title="Followers"><i class="fa fa-users"></i></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn-link @if($tab === 'following')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'following']) }}" title="Following"><i class="fa fa-users"></i></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn-link @if($tab === 'follow_requests')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'follow_requests']) }}" title="Follow Requests"><i class="fa fa-user-plus"></i></a>
                         </li>
                     </ul>
                 </div>
                 @if($tab == null || $tab === 'spots')
                     <div class="card-body bg-black">
-                        @if(!empty($request['spots']))
-                            {{ $spots->links() }}
-                        @endif
                         @foreach($spots->chunk(2) as $chunk)
                             <div class="row">
                                 @foreach($chunk as $spot)
@@ -109,26 +123,35 @@
                                 @endforeach
                             </div>
                         @endforeach
-                        @if(!empty($request['spots']))
-                            {{ $spots->links() }}
-                        @endif
                         @if (count($user->spots) === 0)
                             <p class="mb-0">{{ $user->id === Auth()->id() ? 'You have ' : 'This user has ' }}no spots.</p>
                         @elseif(count($user->spots) > 4)
                             <div class="col text-center mb-4">
-                                @if(empty($request['spots']))
-                                    <a class="btn btn-green w-75" href="?spots=1">More</a>
-                                @else
-                                    <a class="btn btn-green w-75" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'spots']) }}">Less</a>
-                                @endif
+                                <a class="btn btn-green w-75" href="{{ route('user_spots') }}">More</a>
+                            </div>
+                        @endif
+                    </div>
+                @elseif($tab === 'hitlist')
+                    <div class="card-body bg-black">
+                        @foreach($hits->chunk(2) as $chunk)
+                            <div class="row">
+                                @foreach($chunk as $spot)
+                                    <div class="col-md-6 mb-4">
+                                        @include('components.spot')
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endforeach
+                        @if (count($user->hits) === 0)
+                            <p class="mb-0">{{ $user->id === Auth()->id() ? 'You have ' : 'This user has ' }}no hits.</p>
+                        @elseif(count($user->hits) > 4)
+                            <div class="col text-center mb-4">
+                                <a class="btn btn-green w-75" href="{{ route('user_hitlist') }}">More</a>
                             </div>
                         @endif
                     </div>
                 @elseif($tab === 'reviews')
                     <div class="card-body bg-black">
-                        @if(!empty($request['reviews']))
-                            {{ $reviews->links() }}
-                        @endif
                         @foreach($reviews->chunk(2) as $chunk)
                             <div class="row">
                                 @foreach($chunk as $review)
@@ -138,26 +161,16 @@
                                 @endforeach
                             </div>
                         @endforeach
-                        @if(!empty($request['reviews']))
-                            {{ $reviews->links() }}
-                        @endif
                         @if ($user->reviews()->withText()->count() === 0)
                             <p class="mb-0">{{ $user->id === Auth()->id() ? 'You have ' : 'This user has ' }}no reviews.</p>
-                        @elseif($user->reviews()->withText()->count() > 4)
+                        @elseif($user->reviews()->withText()->count() > 6)
                             <div class="col text-center mb-4">
-                                @if(empty($request['reviews']))
-                                    <a class="btn btn-green w-75" href="?reviews=1">More</a>
-                                @else
-                                    <a class="btn btn-green w-75" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'reviews']) }}">Less</a>
-                                @endif
+                                <a class="btn btn-green w-75" href="{{ route('user_reviews') }}">More</a>
                             </div>
                         @endif
                     </div>
                 @elseif($tab === 'comments')
                     <div class="card-body bg-black">
-                        @if(!empty($request['comments']))
-                            {{ $comments->links() }}
-                        @endif
                         @foreach($comments->chunk(2) as $chunk)
                             <div class="row">
                                 @foreach($chunk as $comment)
@@ -167,26 +180,16 @@
                                 @endforeach
                             </div>
                         @endforeach
-                        @if(!empty($request['comments']))
-                            {{ $comments->links() }}
-                        @endif
                         @if (count($user->spotComments) === 0)
                             <p class="mb-0">{{ $user->id === Auth()->id() ? 'You have ' : 'This user has ' }}no comments.</p>
                         @elseif(count($user->spotComments) > 4)
                             <div class="col text-center mb-4">
-                                @if(empty($request['comments']))
-                                    <a class="btn btn-green w-75" href="?comments=1">More</a>
-                                @else
-                                    <a class="btn btn-green w-75" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'comments']) }}">Less</a>
-                                @endif
+                                <a class="btn btn-green w-75" href="{{ route('user_comments') }}">More</a>
                             </div>
                         @endif
                     </div>
                 @elseif($tab === 'challenges')
                     <div class="card-body bg-black">
-                        @if(!empty($request['challenges']))
-                            {{ $challenges->links() }}
-                        @endif
                         @foreach($challenges->chunk(2) as $chunk)
                             <div class="row">
                                 @foreach($chunk as $challenge)
@@ -196,27 +199,74 @@
                                 @endforeach
                             </div>
                         @endforeach
-                        @if(!empty($request['challenges']))
-                            {{ $challenges->links() }}
-                        @endif
                         @if (count($user->challenges) === 0)
                             <p class="mb-0">{{ $user->id === Auth()->id() ? 'You have ' : 'This user has ' }}no challenges.</p>
                         @elseif(count($user->challenges) > 4)
                             <div class="col text-center mb-4">
-                                @if(empty($request['challenges']))
-                                    <a class="btn btn-green w-75" href="?challenges=1">More</a>
-                                @else
-                                    <a class="btn btn-green w-75" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'challenges']) }}">Less</a>
-                                @endif
+                                <a class="btn btn-green w-75" href="{{ route('user_challenges') }}">More</a>
+                            </div>
+                        @endif
+                    </div>
+                @elseif($tab === 'entries')
+                    <div class="card-body bg-black">
+                        @foreach($entries->chunk(2) as $chunk)
+                            <div class="row">
+                                @foreach($chunk as $entry)
+                                    <div class="col-md-6 mb-4">
+                                        @include('components.entry')
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endforeach
+                        @if (count($user->challengeEntries) === 0)
+                            <p class="mb-0">{{ $user->id === Auth()->id() ? 'You have ' : 'This user has ' }}not entered any challenges.</p>
+                        @elseif(count($user->challengeEntries) > 4)
+                            <div class="col text-center mb-4">
+                                <a class="btn btn-green w-75" href="{{ route('user_entries') }}">More</a>
+                            </div>
+                        @endif
+                    </div>
+                @elseif($tab === 'movements')
+                    <div class="card-body bg-black">
+                        @foreach($movements->chunk(2) as $chunk)
+                            <div class="row">
+                                @foreach($chunk as $movement)
+                                    <div class="col-md-6 mb-4">
+                                        @include('components.movement')
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endforeach
+                        @if (count($user->movements) === 0)
+                            <p class="mb-0">{{ $user->id === Auth()->id() ? 'You have ' : 'This user has ' }}no movements.</p>
+                        @elseif(count($user->movements) > 4)
+                            <div class="col text-center mb-4">
+                                <a class="btn btn-green w-75" href="{{ route('user_movements') }}">More</a>
+                            </div>
+                        @endif
+                    </div>
+                @elseif($tab === 'equipment')
+                    <div class="card-body bg-black">
+                        @foreach($equipments->chunk(2) as $chunk)
+                            <div class="row">
+                                @foreach($chunk as $equipment)
+                                    <div class="col-md-6 mb-4">
+                                        @include('components.equipment')
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endforeach
+                        @if (count($user->equipment) === 0)
+                            <p class="mb-0">{{ $user->id === Auth()->id() ? 'You have ' : 'This user has ' }}no equipment.</p>
+                        @elseif(count($user->equipment) > 4)
+                            <div class="col text-center mb-4">
+                                <a class="btn btn-green w-75" href="{{ route('user_equipment') }}">More</a>
                             </div>
                         @endif
                     </div>
                 @elseif($tab === 'followers')
                     @php $pageUser = $user @endphp
                     <div class="card-body bg-black">
-                        @if(!empty($request['followers']))
-                            {{ $followers->links() }}
-                        @endif
                         @foreach($followers->chunk(2) as $chunk)
                             <div class="row">
                                 @foreach($chunk as $user)
@@ -226,28 +276,18 @@
                                 @endforeach
                             </div>
                         @endforeach
-                        @if(!empty($request['followers']))
-                            {{ $followers->links() }}
-                        @endif
                         @php $user = $pageUser @endphp
-                        @if (count($user->followers) === 0)
+                        @if ($user->followers()->where('accepted', true)->count() === 0)
                             <p class="mb-0">{{ $user->id === Auth()->id() ? 'You have ' : 'This user has ' }}no followers.</p>
-                        @elseif(count($user->followers) > 4)
+                        @elseif($user->followers()->where('accepted', true)->count() > 10)
                             <div class="col text-center mb-4">
-                                @if(empty($request['followers']))
-                                    <a class="btn btn-green w-75" href="?followers=1">More</a>
-                                @else
-                                    <a class="btn btn-green w-75" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'followers']) }}">Less</a>
-                                @endif
+                                <a class="btn btn-green w-75" href="{{ route('user_followers') }}">More</a>
                             </div>
                         @endif
                     </div>
                 @elseif($tab === 'following')
                     @php $pageUser = $user @endphp
                     <div class="card-body bg-black">
-                        @if(!empty($request['following']))
-                            {{ $following->links() }}
-                        @endif
                         @foreach($following->chunk(2) as $chunk)
                             <div class="row">
                                 @foreach($chunk as $user)
@@ -257,19 +297,33 @@
                                 @endforeach
                             </div>
                         @endforeach
-                        @if(!empty($request['following']))
-                            {{ $following->links() }}
-                        @endif
                         @php $user = $pageUser @endphp
                         @if (count($user->following) === 0)
                             <p class="mb-0">{{ $user->id === Auth()->id() ? 'You are ' : 'This user is ' }}not following anyone.</p>
-                        @elseif(count($user->following) > 4)
+                        @elseif(count($user->following) > 10)
                             <div class="col text-center mb-4">
-                                @if(empty($request['following']))
-                                    <a class="btn btn-green w-75" href="?following=1">More</a>
-                                @else
-                                    <a class="btn btn-green w-75" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'following']) }}">Less</a>
-                                @endif
+                                <a class="btn btn-green w-75" href="{{ route('user_following') }}">More</a>
+                            </div>
+                        @endif
+                    </div>
+                @elseif($tab === 'follow_requests' && Auth()->id() === $user->id)
+                    @php $pageUser = $user @endphp
+                    <div class="card-body bg-black">
+                        @foreach($followRequests->chunk(2) as $chunk)
+                            <div class="row">
+                                @foreach($chunk as $user)
+                                    <div class="col-md-6 mb-4">
+                                        @include('components.user')
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endforeach
+                        @php $user = $pageUser @endphp
+                        @if ($user->followers()->where('accepted', false)->count() === 0)
+                            <p class="mb-0">{{ $user->id === Auth()->id() ? 'You have ' : 'This user has ' }}no follow requests.</p>
+                        @elseif($user->followers()->where('accepted', false)->count() > 10)
+                            <div class="col text-center mb-4">
+                                <a class="btn btn-green w-75" href="{{ route('user_follow_requests') }}">More</a>
                             </div>
                         @endif
                     </div>

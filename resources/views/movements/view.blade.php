@@ -73,7 +73,7 @@
         </div>
     </div>
     <div class="section">
-        <div class="container-fluid container-md p-0 p-md-4">
+        <div class="container-fluid container-md p-0">
             <div class="card bg-black border-0">
                 <div class="card-header card-header-black">
                     <ul class="nav nav-tabs card-header-tabs">

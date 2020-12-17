@@ -74,11 +74,6 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany('App\SpotComment');
     }
 
-    public function spotCommentLikes()
-    {
-        return $this->hasMany('App\SpotCommentLike');
-    }
-
     public function challenges()
     {
         return $this->hasMany('App\Challenge');
@@ -107,6 +102,11 @@ class User extends Authenticatable implements MustVerifyEmail
     public function movements()
     {
         return $this->hasMany('App\Movement');
+    }
+
+    public function equipment()
+    {
+        return $this->hasMany('App\Equipment');
     }
 
     public function bookmarks()

@@ -44,6 +44,8 @@ Route::prefix('user')->middleware('verified')->group(function() {
     Route::get('/comments', 'UserController@comments')->name('user_comments');
     Route::get('/challenges', 'UserController@challenges')->name('user_challenges');
     Route::get('/entries', 'UserController@entries')->name('user_entries');
+    Route::get('/movements', 'UserController@movements')->middleware('isPremium')->name('user_movements');
+    Route::get('/equipment', 'UserController@Equipment')->middleware('isPremium')->name('user_equipment');
     Route::get('/fetch_hometown_bounding', 'UserController@fetchHometownBounding');
     Route::get('/follow/{id}', 'UserController@follow')->name('user_follow');
     Route::get('/unfollow/{id}', 'UserController@unfollow')->name('user_unfollow');
