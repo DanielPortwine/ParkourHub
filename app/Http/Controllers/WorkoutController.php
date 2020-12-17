@@ -102,12 +102,16 @@ class WorkoutController extends Controller
         $recordedWorkouts = RecordedWorkout::where('workout_id', $id)->where('user_id', Auth::id())->paginate(10);
         $spots = Workout::where('id', $id)->first()->spots()->orderByDesc('created_at')->paginate(20);
 
+        $displayMovement = $workout->movements()->inRandomOrder()->first()->movement;
+
+
         return view('workouts.view', [
             'workout' => $workout,
             'recordedWorkouts' => $recordedWorkouts,
             'spots' => $spots,
             'request' => $request,
             'tab' => $tab,
+            'displayMovement' => $displayMovement,
         ]);
     }
 

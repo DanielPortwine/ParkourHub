@@ -13,33 +13,52 @@
             </button>
         </div>
     @endif
-    <div class="container">
-        <div class="row pt-4">
-            <div class="col vertical-center">
-                <h1 class="sedgwick mb-0">{{ $workout->name ?: 'Workout ' . date('d/m/Y', strtotime($workout->created_at)) }}</h1>
+    <div class="container p-0">
+        @if(!empty($displayMovement->video))
+            <div class="content-wrapper">
+                <video controls>
+                    <source src="{{ $displayMovement->video }}" type="video/{{ $displayMovement->video_type }}">
+                </video>
+                <h4 class="sedgwick top-right z-10">{{ $displayMovement->name }}</h4>
             </div>
-            <div class="col-auto vertical-center">
-                @if ($workout->user->id === Auth()->id())
-                    <a class="btn text-white" href="{{ route('workout_edit', $workout->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
-                @endif
-                <a class="btn text-white" href="{{ route('recorded_workout_create', $workout->id) }}" title="Record"><i class="fa fa-calendar-plus-o"></i></a>
-                @if($workout->bookmarks->contains(Auth()->id()))
-                    <a class="btn text-white" href="{{ route('workout_unbookmark', $workout->id) }}" title="Remove Bookmark"><i class="fa fa-bookmark"></i></a>
-                @else
-                    <a class="btn text-white" href="{{ route('workout_bookmark', $workout->id) }}" title="Bookmark"><i class="fa fa-bookmark-o"></i></a>
-                @endif
+        @elseif(!empty($displayMovement->youtube))
+            <div class="content-wrapper">
+                <div class="youtube" data-id="{{ $displayMovement->youtube }}" data-start="{{ $displayMovement->youtube_start }}">
+                    <span class="h-100 flex-center"><i class="fa fa-youtube-play text-shadow z-10"></i></span>
+                    <h4 class="sedgwick top-right z-10">{{ $displayMovement->name }}</h4>
+                </div>
             </div>
-        </div>
-        <div class="row pb-2 border-subtle">
-            <div class="col">
-                <span>{{ $workout->created_at->format('jS M, Y') }}</span>
+        @endif
+    </div>
+    <div class="grey-section">
+        <div class="container">
+            <div class="row pt-4">
+                <div class="col vertical-center">
+                    <h1 class="sedgwick mb-0">{{ $workout->name ?: 'Workout ' . date('d/m/Y', strtotime($workout->created_at)) }}</h1>
+                </div>
+                <div class="col-auto vertical-center">
+                    @if ($workout->user->id === Auth()->id())
+                        <a class="btn text-white" href="{{ route('workout_edit', $workout->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
+                    @endif
+                    <a class="btn text-white" href="{{ route('recorded_workout_create', $workout->id) }}" title="Record"><i class="fa fa-calendar-plus-o"></i></a>
+                    @if($workout->bookmarks->contains(Auth()->id()))
+                        <a class="btn text-white" href="{{ route('workout_unbookmark', $workout->id) }}" title="Remove Bookmark"><i class="fa fa-bookmark"></i></a>
+                    @else
+                        <a class="btn text-white" href="{{ route('workout_bookmark', $workout->id) }}" title="Bookmark"><i class="fa fa-bookmark-o"></i></a>
+                    @endif
+                </div>
             </div>
-        </div>
-        <div class="py-3">
-            <div id="description-box">
-                <p class="mb-0" id="description-content">{!! nl2br(e($workout->description)) !!}</p>
+            <div class="row pb-2 border-subtle">
+                <div class="col">
+                    <span>{{ $workout->created_at->format('jS M, Y') }}</span>
+                </div>
             </div>
-            <a class="btn btn-link" id="description-more">More</a>
+            <div class="py-3">
+                <div id="description-box">
+                    <p class="mb-0" id="description-content">{!! nl2br(e($workout->description)) !!}</p>
+                </div>
+                <a class="btn btn-link" id="description-more">More</a>
+            </div>
         </div>
     </div>
     <div class="section">
