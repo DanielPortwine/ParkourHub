@@ -85,6 +85,13 @@
                 @endif
             </div>
         </div>
+        @if(isset($user))
+            <div class="row mt-2">
+                <div class="col">
+                    <h4 class="sedgwick text-large">{{ $review->title }}</h4>
+                </div>
+            </div>
+        @endif
         <div class="row">
             <div class="col">
                 {!! nl2br(e($review->review)) !!}
