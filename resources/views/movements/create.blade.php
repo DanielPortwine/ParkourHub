@@ -68,7 +68,7 @@
                             </div>
                             <div class="row">
                                 <label class="col-md-2 col-form-label text-md-right">YouTube or Video</label>
-                                <div class="col-md-4">
+                                <div class="col-lg-4 col-md-8">
                                     <input type="text" id="youtube" class="form-control @error('youtube') is-invalid border-danger @enderror" name="youtube" autocomplete="youtube" placeholder="e.g. https://youtu.be/QDIVrf2ZW0s" value="{{ old('youtube') }}">
                                     @error('youtube')
                                     <span class="invalid-feedback" role="alert">
@@ -76,7 +76,7 @@
                                     </span>
                                     @enderror
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-lg-4 col-md-8 offset-md-2 offset-lg-0">
                                     <input type="file" id="video" class="form-control-file @error('video') is-invalid border-danger @enderror" name="video">
                                     @error('video')
                                     <span class="invalid-feedback" role="alert">

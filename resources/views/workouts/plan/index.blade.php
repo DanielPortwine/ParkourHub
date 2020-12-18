@@ -45,8 +45,8 @@
                                 </div>
                             </div>
                             <div class="form-group row vertical-center">
-                                <label for="date" class="col-md-2 col-form-label text-md-right">Date</label>
-                                <div class="col-md-2">
+                                <label for="date" class="col-lg-2 col-md-2 col-form-label text-md-right">Date</label>
+                                <div class="col-lg-2 col-md-8">
                                     <input type="date" class="w-100 @error('date') is-invalid border-danger @enderror" name="date">
                                     @error('date')
                                     <span class="invalid-feedback" role="alert">
@@ -54,8 +54,9 @@
                                     </span>
                                     @enderror
                                 </div>
-                                <label for="repeat-frequency" class="col-md-1 col-form-label text-md-right">Repeat</label>
-                                <div class="col-md-2 vertical-center">
+                                <div class="col-md-2 d-lg-none"></div>
+                                <label for="repeat-frequency" class="col-lg-1 col-md-2 col-form-label text-md-right">Repeat</label>
+                                <div class="col-lg-2 col-md-8 vertical-center">
                                     <select class="select2-repeat-frequency @error('repeat_frequency') is-invalid border-danger @enderror" name="repeat_frequency">
                                         <option value="">Never</option>
                                         <option value="weekly">Weekly</option>
@@ -68,8 +69,9 @@
                                     </span>
                                     @enderror
                                 </div>
-                                <label for="repeat-until" class="col-md-1 col-form-label text-md-right">Until</label>
-                                <div class="col-md-2">
+                                <div class="col-md-2 d-lg-none"></div>
+                                <label for="repeat-until" class="col-lg-1 col-md-2 col-form-label text-md-right">Until</label>
+                                <div class="col-lg-2 col-md-8">
                                     <input type="date" class="w-100 @error('repeat_until') is-invalid border-danger @enderror" name="repeat_until">
                                     @error('repeat_until')
                                     <span class="invalid-feedback" role="alert">

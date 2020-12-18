@@ -12093,7 +12093,7 @@ input[type=checkbox]:checked + label:after {
 }
 
 #map {
-  height: 100%;
+  height: calc(100% - 44px);
 }
 
 .ol-popup {
@@ -12197,7 +12197,8 @@ input[type=checkbox]:checked + label:after {
 
 .map-search {
   z-index: 100;
-  width: 500px;
+  width: 100%;
+  position: static;
 }
 
 #map-search-clear {
@@ -12304,15 +12305,6 @@ input[type=checkbox]:checked + label:after {
     padding: 0;
   }
 
-  #map {
-    height: calc(100% - 44px);
-  }
-
-  .map-search {
-    width: 100%;
-    position: static;
-  }
-
   #address-results,
   #spot-results {
     max-height: 40vh;
@@ -12346,8 +12338,13 @@ input[type=checkbox]:checked + label:after {
 }
 
 @media (min-width: 768px) {
+  #map {
+    height: 100%;
+  }
+
   .map-search {
     position: absolute;
+    width: 500px;
   }
 }
 

@@ -45,7 +45,7 @@
                                 <label class="col-md-2 col-form-label text-md-right">Youtube or Video</label>
                                 <div class="col-md-8">
                                     @if(!empty($movement->youtube))
-                                        <div class="form-group row">
+                                        <div class="row">
                                             <div class="col">
                                                 <div class="content-wrapper">
                                                     <div class="youtube" data-id="{{ $movement->youtube }}" data-start="{{ $movement->youtube_start }}">
@@ -55,7 +55,7 @@
                                             </div>
                                         </div>
                                     @elseif(!empty($movement->video))
-                                        <div class="form-group row">
+                                        <div class="row">
                                             <div class="col">
                                                 <div class="content-wrapper">
                                                     <video controls>
@@ -68,7 +68,7 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <div class="col-md-4 offset-md-2">
+                                <div class="col-lg-4 col-md-8 offset-md-2 mb-md-2">
                                     <input type="text" id="youtube" class="form-control @error('youtube') is-invalid @enderror" name="youtube" autocomplete="youtube" placeholder="e.g. https://youtu.be/QDIVrf2ZW0s">
                                     @error('youtube')
                                     <span class="invalid-feedback" role="alert">
@@ -76,7 +76,7 @@
                                     </span>
                                     @enderror
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-lg-4 col-md-8 offset-md-2 offset-lg-0">
                                     <input type="file" id="video" class="form-control-file @error('video') is-invalid @enderror" name="video">
                                     @error('video')
                                     <span class="invalid-feedback" role="alert">
@@ -92,7 +92,7 @@
                                 </div>
                             </div>
                             <div class="form-group row mb-0">
-                                <div class="col-md-8 offset-2">
+                                <div class="col-md-8 offset-md-2">
                                     <button type="submit" class="btn btn-green">Save</button>
                                     <a class="btn btn-danger require-confirmation float-right">Delete</a>
                                     <a class="btn btn-danger d-none confirmation-button float-right" href="{{ route('movement_delete', $movement->id) }}">Confirm</a>

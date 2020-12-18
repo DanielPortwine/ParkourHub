@@ -78,6 +78,7 @@
                                         <a class="dropdown-item text-white" href="{{ route('workout_listing') }}"><i class="fa fa-running nav-icon"></i>Workouts</a>
                                         <a class="dropdown-item text-white" href="{{ route('movement_listing') }}"><i class="fa fa-child nav-icon"></i>Movements</a>
                                         <a class="dropdown-item text-white" href="{{ route('equipment_listing') }}"><i class="fa fa-dumbbell nav-icon"></i>Equipment</a>
+                                        <a class="dropdown-item text-white" href="{{ route('workout_plan') }}"><i class="fa fa-calendar nav-icon"></i>Workout Plan</a>
                                         <a class="dropdown-item text-white" href="{{ route('premium') }}"><i class="fa fa-diamond nav-icon"></i>Manage</a>
                                     </div>
                                 </li>
@@ -130,7 +131,7 @@
                                     <a class="dropdown-item text-white" href="{{ route('user_view', Auth()->id()) }}"><i class="fa fa-user nav-icon"></i>Profile</a>
                                     <a class="dropdown-item text-white" href="{{ route('user_manage') }}"><i class="fa fa-user-cog nav-icon"></i>Settings</a>
                                     @premium
-                                        <a class="dropdown-item text-white dropdown-toggle" id="workouts-nav-item"><i class="fa fa-running nav-icon"></i>Workouts <span class="caret"></span></a>
+                                        <a class="dropdown-item text-white dropdown-toggle" id="workouts-nav-item"><i class="fa fa-running nav-icon"></i>Training <span class="caret"></span></a>
                                         <div id="workouts-nav-items">
                                             <a class="dropdown-item text-white" href="{{ route('workout_listing_user') }}"><i class="fa fa-running nav-icon nav-spacer"></i>Workouts</a>
                                             <a class="dropdown-item text-white" href="{{ route('workout_plan') }}"><i class="fa fa-calendar nav-icon nav-spacer"></i>Workout Plan</a>

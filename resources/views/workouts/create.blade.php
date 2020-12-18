@@ -124,7 +124,7 @@
                             for (field in response) {
                                 var field = response[field];
                                 $('.movement-fields-' + currentCount + ' .row').append(
-                                    '<div class="col-md">\n' +
+                                    '<div class="col-lg">\n' +
                                     '    <label>' + field.label + '</label><br>\n' +
                                     '    <input class="form-control" type="' + field.type + '" name="movements[' + currentCount + '][fields][' + field.id + ']" placeholder="' + field.unit + '">\n' +
                                     '    <small>' + field.smallText + '</small>\n' +

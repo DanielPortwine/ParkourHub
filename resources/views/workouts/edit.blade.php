@@ -80,7 +80,7 @@
                                                     <div class="row">
                                                         @foreach($workoutMovement->fields as $field)
                                                             @if(!empty($field->field->name))
-                                                                <div class="col-md">
+                                                                <div class="col-lg">
                                                                     <label>{{ $field->field->label }}</label><br>
                                                                     <input class="form-control" type="{{ $field->field->type }}" name="movements[{{ $count }}][fields][{{ $field->id }}]" placeholder="{{ $field->field->unit }}" value="{{ $field->value }}">
                                                                     <small>{{ $field->field->small_text }}</small>
@@ -159,7 +159,7 @@
                             for (field in response) {
                                 var field = response[field];
                                 $('.movement-entry-fields-' + currentCount + ' .row').append(
-                                    '<div class="col-md">\n' +
+                                    '<div class="col-lg">\n' +
                                     '    <label>' + field.label + '</label><br>\n' +
                                     '    <input class="form-control" type="' + field.type + '" name="movements[' + currentCount + '][fields][' + field.id + ']" placeholder="' + field.unit + '">\n' +
                                     '    <small>' + field.smallText + '</small>\n' +

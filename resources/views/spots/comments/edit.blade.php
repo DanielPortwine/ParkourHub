@@ -64,7 +64,7 @@
                                         </div>
                                     @endif
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-lg-6 mb-2 mb-lg-0">
                                             <input type="text" id="youtube" class="form-control @error('youtube') is-invalid @enderror" name="youtube" autocomplete="youtube" placeholder="e.g. https://youtu.be/QDIVrf2ZW0s" value="{{ old('youtube') }}">
                                             @error('youtube')
                                                 <span class="invalid-feedback" role="alert">
@@ -72,7 +72,7 @@
                                                 </span>
                                             @enderror
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-lg-6">
                                             <input type="file" id="video_image" class="form-control-file @error('video_image') is-invalid @enderror" name="video_image">
                                             @error('video_image')
                                                 <span class="invalid-feedback" role="alert">
