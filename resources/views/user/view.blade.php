@@ -98,17 +98,17 @@
                                 <a class="nav-link btn-link @if($tab === 'movements')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'movements']) }}" title="Movements"><i class="fa fa-child"></i></a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link btn-link @if($tab === 'equipment')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'equipment']) }}" title="Equipment"><i class="fa fa-child"></i></a>
+                                <a class="nav-link btn-link @if($tab === 'equipment')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'equipment']) }}" title="Equipment"><i class="fa fa-dumbbell"></i></a>
                             </li>
                         @endpremium
                         <li class="nav-item">
                             <a class="nav-link btn-link @if($tab === 'followers')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'followers']) }}" title="Followers"><i class="fa fa-users"></i></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link btn-link @if($tab === 'following')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'following']) }}" title="Following"><i class="fa fa-users"></i></a>
+                            <a class="nav-link btn-link @if($tab === 'following')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'following']) }}" title="Following"><i class="fa fa-user-friends"></i></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link btn-link @if($tab === 'follow_requests')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'follow_requests']) }}" title="Follow Requests"><i class="fa fa-user-plus"></i></a>
+                            <a class="nav-link btn-link @if($tab === 'follow_requests')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'follow_requests']) }}" title="Follow Requests"><i class="fa fa-user-clock"></i></a>
                         </li>
                     </ul>
                 </div>

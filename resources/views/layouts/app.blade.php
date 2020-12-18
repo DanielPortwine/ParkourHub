@@ -22,7 +22,7 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://kit.fontawesome.com/014efa2ea8.js" crossorigin="anonymous"></script>
 
     <!-- Favicon -->
     <link rel="icon" href="/favicon.png" type="image/png">
@@ -75,9 +75,9 @@
                                         <i class="fa fa-diamond nav-icon text-premium"></i>Premium
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-right bg-grey" id="notification-menu" aria-labelledby="notification-dropdown">
-                                        <a class="dropdown-item text-white" href="{{ route('workout_listing') }}"><i class="fa fa-bolt nav-icon"></i>Workouts</a>
+                                        <a class="dropdown-item text-white" href="{{ route('workout_listing') }}"><i class="fa fa-running nav-icon"></i>Workouts</a>
                                         <a class="dropdown-item text-white" href="{{ route('movement_listing') }}"><i class="fa fa-child nav-icon"></i>Movements</a>
-                                        <a class="dropdown-item text-white" href="{{ route('equipment_listing') }}"><i class="fa fa-child nav-icon"></i>Equipment</a>
+                                        <a class="dropdown-item text-white" href="{{ route('equipment_listing') }}"><i class="fa fa-dumbbell nav-icon"></i>Equipment</a>
                                         <a class="dropdown-item text-white" href="{{ route('premium') }}"><i class="fa fa-diamond nav-icon"></i>Manage</a>
                                     </div>
                                 </li>
@@ -128,11 +128,11 @@
                                     @endpremium
                                     <a class="dropdown-item text-white" href="{{ route('home') }}"><i class="fa fa-home nav-icon"></i>Home</a>
                                     <a class="dropdown-item text-white" href="{{ route('user_view', Auth()->id()) }}"><i class="fa fa-user nav-icon"></i>Profile</a>
-                                    <a class="dropdown-item text-white" href="{{ route('user_manage') }}"><i class="fa fa-cog nav-icon"></i>Settings</a>
+                                    <a class="dropdown-item text-white" href="{{ route('user_manage') }}"><i class="fa fa-user-cog nav-icon"></i>Settings</a>
                                     @premium
-                                        <a class="dropdown-item text-white dropdown-toggle" id="workouts-nav-item"><i class="fa fa-bolt nav-icon"></i>Workouts <span class="caret"></span></a>
+                                        <a class="dropdown-item text-white dropdown-toggle" id="workouts-nav-item"><i class="fa fa-running nav-icon"></i>Workouts <span class="caret"></span></a>
                                         <div id="workouts-nav-items">
-                                            <a class="dropdown-item text-white" href="{{ route('workout_listing_user') }}"><i class="fa fa-bolt nav-icon nav-spacer"></i>Workouts</a>
+                                            <a class="dropdown-item text-white" href="{{ route('workout_listing_user') }}"><i class="fa fa-running nav-icon nav-spacer"></i>Workouts</a>
                                             <a class="dropdown-item text-white" href="{{ route('workout_plan') }}"><i class="fa fa-calendar nav-icon nav-spacer"></i>Workout Plan</a>
                                             <a class="dropdown-item text-white" href="{{ route('workout_bookmark_listing') }}"><i class="fa fa-bookmark nav-icon nav-spacer"></i>Bookmarked Workouts</a>
                                             <a class="dropdown-item text-white" href="{{ route('recorded_workout_listing') }}"><i class="fa fa-calendar-check-o nav-icon nav-spacer"></i>Recorded Workouts</a>

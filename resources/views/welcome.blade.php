@@ -17,14 +17,14 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://kit.fontawesome.com/014efa2ea8.js" crossorigin="anonymous"></script>
 
     <!-- Favicon -->
     <link rel="icon" href="/favicon.png" type="image/png">
 </head>
 <body>
     <div class="flex-center full-height section">
-        <div class="position-absolute links d-flex justify-content-between justify-content-md-end w-100 px-4">
+        <div class="position-absolute links d-flex justify-content-between justify-content-lg-end w-100 px-4">
             <a href="{{ route('spots') }}">Spots</a>
             <a href="{{ route('premium') }}">Premium</a>
             @auth
@@ -107,7 +107,7 @@
                 </div>
                 <div class="col-md-4">
                     <div class="flex d-md-block vertical-center">
-                        <i class="fa fa-check-square-o feature-icon"></i>
+                        <i class="fa fa-crosshairs feature-icon"></i>
                         <h3 class="sedgwick ml-2 ml-md-0">Hitlist</h3>
                     </div>
                     <p class="large-text">Add spots to your Hitlist and tick them off once you complete them.</p>
@@ -167,7 +167,7 @@
             <div class="row my-md-4">
                 <div class="col-md-4">
                     <div class="flex d-md-block vertical-center">
-                        <i class="fa fa-user-o feature-icon text-premium"></i>
+                        <i class="fa fa-running feature-icon text-premium"></i>
                         <h3 class="sedgwick ml-2 ml-md-0">Workouts</h3>
                     </div>
                     <p class="large-text">Create workouts using moves & exercises you or other users have created.</p>

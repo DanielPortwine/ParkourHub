@@ -18,7 +18,7 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://kit.fontawesome.com/014efa2ea8.js" crossorigin="anonymous"></script>
 
     <!-- Favicon -->
     <link rel="icon" href="/favicon.png" type="image/png">
@@ -101,7 +101,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="flex d-md-block vertical-center">
-                        <div class="text-md-center"><i class="fa fa-bolt feature-icon-premium"></i></div>
+                        <div class="text-md-center"><i class="fa fa-running feature-icon-premium"></i></div>
                         <h3 class="sedgwick ml-2 ml-md-0 text-md-center">Workouts</h3>
                     </div>
                     <p class="large-text">Combine movements into a workout to record your training and track your progress.</p>
