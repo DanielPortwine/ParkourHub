@@ -20,7 +20,7 @@
     @endif
     <div class="py-3 px-4">
         <div class="row">
-            <div class="col-md vertical-center">
+            <div class="col-lg vertical-center">
                 <div class="row vertical-center">
                     @if(!empty($comment->user->profile_image))
                         <div class="col-auto pr-0">
@@ -34,7 +34,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-auto">
+            <div class="col-lg-auto vertical-center pl-0">
                 @if($comment->user_id === Auth()->id())
                     <a class="btn text-white" href="{{ route('spot_comment_edit', $comment->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
                 @endif

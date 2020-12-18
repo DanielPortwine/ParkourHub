@@ -16,8 +16,8 @@
         @endif
     </div>
     <div class="py-3 px-4">
-        <div class="row">
-            <div class="col vertical-center">
+        <div class="row border-subtle">
+            <div class="col-lg vertical-center">
                 @if(!isset($challenge))
                     <a class="btn-link h3 mb-0 sedgwick" href="{{ route('challenge_view', $entry->challenge->id) }}">
                         @if($entry->winner)
@@ -39,7 +39,7 @@
                     </a>
                 @endif
             </div>
-            <div class="col-auto vertical-center pl-0">
+            <div class="col-lg-auto vertical-center pl-0">
                 <div>
                     @if($entry->challenge->user_id === Auth()->id() && !$entry->challenge->won)
                         <a class="btn text-white" href="{{ route('challenge_win', $entry->id) }}" title="Select Winner"><i class="fa fa-trophy"></i></a>
@@ -56,7 +56,7 @@
             </div>
         </div>
         <div class="row mt-2">
-            <div class="col-md vertical-center">
+            <div class="col-lg vertical-center">
                 {{ $entry->created_at->diffForHumans() }}
             </div>
         </div>

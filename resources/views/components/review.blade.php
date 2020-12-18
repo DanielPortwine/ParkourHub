@@ -21,13 +21,13 @@
     <div class="card-header bg-grey card-hidden-body">
         <div class="row">
             <div class="col sedgwick">
-                @if(isset($user) && $user === true)
+                @if(isset($user))
                     <a class="btn-link" href="{{ route('spot_view', $review->spot_id) }}">{{ $review->spot->name }}</a>
                 @else
                     <span>{{ $review->title }}</span>
                 @endif
             </div>
-            <div class="col-auto d-md-block d-none">
+            <div class="col-auto d-lg-block d-none">
                 <div class="rating-stars">
                     @for($star = 1; $star <= 5; $star++)
                         <i class="rating-star fa {{ $star <= $review->rating ? 'fa-star' : 'fa-star-o' }}"></i>
@@ -38,7 +38,7 @@
                 <i class="fa fa-caret-down"></i>
             </div>
         </div>
-        <div class="d-md-none d-flex row">
+        <div class="d-lg-none d-flex row">
             <div class="col">
                 <div class="rating-stars">
                     @for($star = 1; $star <= 5; $star++)
@@ -46,7 +46,7 @@
                     @endfor
                 </div>
             </div>
-            <div class="col-auto d-flex d-md-none">
+            <div class="col-auto d-flex d-lg-none">
                 @if($review->user_id === Auth()->id())
                     <a class="btn text-white" href="{{ route('review_edit', $review->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
                 @endif
@@ -62,17 +62,17 @@
     </div>
     <div class="card-body bg-grey">
         <div class="row">
-            @if(!isset($user))
-                <div class="col-md vertical-center">
+            <div class="col-md vertical-center">
+                @if(!isset($user))
                     @if(!empty($spot->user->profile_image))
                         <div class="profile-image-wrapper--component pr-3">
                             <a href="{{ $spot->user->profile_image }}"><img src="{{ $spot->user->profile_image }}" alt="Profile image of the user named {{ $spot->user->name }}."></a>
                         </div>
                     @endif
                     <a class="btn-link large-text sedgwick" href="{{ route('user_view', $spot->user->id) }}">{{ $spot->user->name }}</a>
-                </div>
-            @endif
-            <div class="col-auto d-none d-md-flex">
+                @endif
+            </div>
+            <div class="col-auto d-none d-lg-flex">
                 @if($review->user_id === Auth()->id())
                     <a class="btn text-white" href="{{ route('review_edit', $review->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
                 @endif

@@ -24,10 +24,10 @@ $hit = $spot->hits->where('user_id', Auth()->id() ?: null)->first()
     </div>
     <div class="py-3 px-4">
         <div class="row border-subtle mb-2">
-            <div class="d-block d-md-flex col-md vertical-center">
+            <div class="d-block d-lg-flex col-md vertical-center">
                 <a class="btn-link h3 mb-0 sedgwick" href="{{ route('spot_view', $spot->id) }}">{{ $spot->name }}</a>
             </div>
-            <div class="col-md-auto">
+            <div class="col-lg-auto vertical-center pl-0">
                 @if($spot->user_id === Auth()->id())
                     <a class="btn text-white" href="{{ route('spot_edit', $spot->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
                 @endif
@@ -49,7 +49,7 @@ $hit = $spot->hits->where('user_id', Auth()->id() ?: null)->first()
             </div>
         </div>
         <div class="row">
-            <div class="col-md vertical-center">
+            <div class="col-lg vertical-center">
                 @if(!empty($spot->user->profile_image))
                     <div class="profile-image-wrapper--component pr-3">
                         <a href="{{ $spot->user->profile_image }}"><img src="{{ $spot->user->profile_image }}" alt="Profile image of the user named {{ $spot->user->name }}."></a>
@@ -57,7 +57,7 @@ $hit = $spot->hits->where('user_id', Auth()->id() ?: null)->first()
                 @endif
                 <a class="btn-link large-text sedgwick" href="{{ route('user_view', $spot->user->id) }}">{{ $spot->user->name }}</a>
             </div>
-            <div class="col-md-auto vertical-center pt-2 pt-md-0">
+            <div class="col-lg-auto vertical-center pt-2 pt-lg-0">
                 @if(count($spot->reviews))
                     <div>
                         @for($star = 1; $star <= 5; $star++)
@@ -70,7 +70,7 @@ $hit = $spot->hits->where('user_id', Auth()->id() ?: null)->first()
                 @endif
             </div>
         </div>
-        <div class="row pt-md-2">
+        <div class="row pt-lg-2">
             <div class="col vertical-center">
                 <span>{{ $spot->updated_at->diffForHumans() }}</span>
             </div>

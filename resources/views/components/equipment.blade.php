@@ -8,10 +8,10 @@
     </div>
     <div class="py-3 px-4">
         <div class="row border-subtle mb-2">
-            <div class="col-md vertical-center">
+            <div class="col-lg vertical-center">
                 <a class="btn-link h3 mb-0 sedgwick" href="{{ route('equipment_view', $equipment->id) }}">{{ $equipment->name }}</a>
             </div>
-            <div class="col-md-auto">
+            <div class="col-lg-auto vertical-center pl-0">
                 @if($equipment->user_id === Auth()->id())
                     <a class="btn text-white" href="{{ route('equipment_edit', $equipment->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
                     @if(isset($tab) && (($tab == null && $originalMovement->type_id === 2) || $tab === 'equipment' && !empty($originalMovement)))

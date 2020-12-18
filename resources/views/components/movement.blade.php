@@ -15,10 +15,10 @@
     </div>
     <div class="py-3 px-4">
         <div class="row border-subtle mb-2">
-            <div class="col-md vertical-center">
+            <div class="col-lg vertical-center">
                 <a class="btn-link h3 mb-0 sedgwick" href="{{ route('movement_view', $movement->id) }}">{{ $movement->name }}</a>
             </div>
-            <div class="col-md-auto">
+            <div class="col-lg-auto vertical-center pl-0">
                 @if($movement->user_id === Auth()->id())
                     <a class="btn text-white" href="{{ route('movement_edit', $movement->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
                     @if(!empty($progressionID) || !empty($advancementID))
@@ -58,7 +58,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md vertical-center">
+            <div class="col-lg vertical-center">
                 @if($movement->type_id === 1)
                     <span>{{ count($movement->spots) . (count($movement->spots) === 1 ? ' spot' : ' spots') }} | {{ $movement->created_at->diffForHumans() }}</span>
                 @elseif($movement->type_id === 2)
