@@ -112,6 +112,11 @@
                         </li>
                     </ul>
                 </div>
+                <div class="row">
+                    <div class="col">
+                        <h1 class="sedgwick text-center pt-3">{{ ucwords($tab ?? 'Spots') }}</h1>
+                    </div>
+                </div>
                 @if($tab == null || $tab === 'spots')
                     <div class="card-body bg-black">
                         @foreach($spots->chunk(2) as $chunk)
