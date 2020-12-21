@@ -209,10 +209,13 @@ class MovementController extends Controller
             $youtube = explode('t=', str_replace(['https://youtu.be/', 'https://www.youtube.com/watch?v=', '&', '?'], '', $request['youtube']));
             $movement->youtube = $youtube[0];
             $movement->youtube_start = $youtube[1] ?? null;
+            $movement->video = null;
         } else if (!empty($request['video'])) {
             $video = $request->file('video');
             $movement->video = Storage::url($video->store('videos/movements', 'public'));
             $movement->video_type = $video->extension();
+            $movement->youtube = null;
+            $movement->youtube_start = null;
         }
         $movement->save();
 

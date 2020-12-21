@@ -70,10 +70,12 @@ class SpotCommentController extends Controller
                 $comment->video = Storage::url($file->store('videos/spot_comments', 'public'));
                 $comment->video_type = $extension;
                 $comment->youtube = null;
+                $comment->youtube_start = null;
                 $comment->image = null;
             } else if (in_array($extension, ['jpg','jpeg','png'])) {
                 $comment->image = Storage::url($file->store('images/spot_comments', 'public'));
                 $comment->youtube = null;
+                $comment->youtube_start = null;
                 $comment->video = null;
             }
         }

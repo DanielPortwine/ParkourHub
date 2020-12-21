@@ -147,8 +147,7 @@ class ChallengeController extends Controller
             $challenge->video = Storage::url($video->store('videos/challenges', 'public'));
             $challenge->video_type = $video->extension();
             $challenge->youtube = null;
-        } else if (empty($challenge->video) && empty($challenge->youtube)) {
-            return back()->withErrors(['youtube' => 'You must provide either a Youtube link or video file', 'video' => 'You must provide either a video file or Youtube link']);
+            $challenge->youtube_start = null;
         }
         $challenge->save();
 
