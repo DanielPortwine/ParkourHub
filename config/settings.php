@@ -63,10 +63,19 @@ return [
             'title' => 'Hometown',
             'description' => 'view your hometown.',
             'options' => [
-                'nobody' => 'Nobody',
+                'nobody' => 'Only You',
                 'follower' => 'Followers',
                 'anybody' => 'Anybody',
             ]
         ],
+        'privacy_content' => [
+            'title' => 'Content Visibility',
+            'description' => 'view your content by default (can be overridden per content item on the create or edit pages).',
+            'options' => [
+                'private' => 'Private',
+                'follower' => 'Followers',
+                'public' => 'Public',
+            ]
+        ]
     ],
 ];

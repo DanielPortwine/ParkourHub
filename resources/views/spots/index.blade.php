@@ -100,16 +100,13 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <div class="col">
-                                <div class="form-check">
-                                    <input class="form-check-input @error('private') is-invalid @enderror" type="checkbox" name="private" id="private" value="1">
-                                    <label class="form-check-label" for="private">Private</label>
-                                    @error('private')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
+                            <label for="visibility" class="col-12 col-form-label">Visibility</label>
+                            <div class="col-12">
+                                <select name="visibility" class="form-control">
+                                    @foreach(config('settings.privacy.privacy_content.options') as $key => $name)
+                                        <option value="{{ $key }}" @if(setting('privacy_content', 'private') === $key)selected @endif>{{ $name }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                         <div class="form-group row mb-0">

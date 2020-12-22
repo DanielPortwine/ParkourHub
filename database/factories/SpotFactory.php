@@ -23,6 +23,7 @@ $factory->define(Spot::class, function (Faker $faker) {
         'user_id' => User::inRandomOrder()->first()->id,
         'name' => $faker->word,
         'description' => $faker->realText(255),
+        'visibility' => $faker->randomElement(['private', 'follower', 'public']),
         'coordinates' => $coordinates->x . ',' . $coordinates->y,
         'latitude' => $lat,
         'longitude' => $lon,

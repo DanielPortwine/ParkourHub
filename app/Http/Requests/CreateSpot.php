@@ -32,7 +32,6 @@ class CreateSpot extends FormRequest
             'name' => 'required|string|max:25',
             'description' => 'required|string|max:255',
             'image' => 'mimes:jpg,jpeg,png|max:' . $imageMax,
-            'private' => new Checkbox,
         ];
     }
 

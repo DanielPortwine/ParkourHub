@@ -79,8 +79,8 @@
                 </div>
                 @if($tab == null || $tab === 'movements')
                     <div class="card-body bg-black">
-                        @if(count($workout->movements))
-                            @foreach($workout->movements as $workoutMovement)
+                        @if(count($workoutMovements))
+                            @foreach($workoutMovements as $workoutMovement)
                                 <div class="card mb-3">
                                     <div class="card-header bg-grey sedgwick">
                                         <a class="btn-link" href="{{ route('movement_view', $workoutMovement->movement->id) }}">{{ $workoutMovement->movement->name }}</a>

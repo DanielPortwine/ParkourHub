@@ -91,6 +91,16 @@
                                     <select class="select2-movement-fields" name="fields[]" multiple="multiple"></select>
                                 </div>
                             </div>
+                            <div class="form-group row">
+                                <label for="visibility" class="col-md-2 col-form-label text-md-right">Visibility</label>
+                                <div class="col-md-8">
+                                    <select name="visibility" class="form-control">
+                                        @foreach(config('settings.privacy.privacy_content.options') as $key => $name)
+                                            <option value="{{ $key }}" @if($movement->visibility === $key)selected @endif>{{ $name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
                             <div class="form-group row mb-0">
                                 <div class="col-md-8 offset-md-2">
                                     <button type="submit" class="btn btn-green">Save</button>

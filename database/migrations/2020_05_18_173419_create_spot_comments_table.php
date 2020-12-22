@@ -18,6 +18,7 @@ class CreateSpotCommentsTable extends Migration
             $table->unsignedBigInteger('spot_id');
             $table->unsignedBigInteger('user_id');
             $table->string('comment')->nullable();
+            $table->enum('visibility', ['private', 'follower', 'public'])->default('private');
             $table->string('image')->nullable();
             $table->string('youtube')->nullable();
             $table->integer('youtube_start')->nullable();

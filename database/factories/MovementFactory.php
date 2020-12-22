@@ -16,6 +16,7 @@ $factory->define(Movement::class, function (Faker $faker) {
         'type_id' => MovementType::inRandomOrder()->first()->id,
         'name' => $faker->name,
         'description' => $faker->paragraph,
+        'visibility' => $faker->randomElement(['private', 'follower', 'public']),
         'youtube' => $faker->randomElement(['fpX9dOcBjaQ', 'RHnXg6piz20', 'jPhuefvauuk', '_Ciuaz6duvw', 'KFfLUdnsvjY', 'Au2Zz7W99bQ', 'Mg7WANy8QE4', 'XUzkBa0p-SM']),
         'official' => $faker->boolean,
     ];

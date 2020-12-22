@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Equipment;
+use App\Follower;
 use App\Http\Requests\CreateMovement;
 use App\Http\Requests\LinkEquipment;
 use App\Http\Requests\LinkExercise;
@@ -32,6 +33,14 @@ class MovementController extends Controller
         }
 
         $movements = Movement::withCount('spots')
+            ->where(function($q) {
+                $q->where('visibility', 'public')
+                    ->orWhere(function($q1) {
+                        $q1->where('visibility', 'follower')
+                            ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
+                    })
+                    ->orWhere('user_id', Auth::id());
+            })
             ->dateBetween([
                 'from' => $request['date_from'] ?? null,
                 'to' => $request['date_to'] ?? null
@@ -54,15 +63,81 @@ class MovementController extends Controller
     public function view($id, $tab = null)
     {
         $movement = Movement::with([
-                'spots',
-                'progressions',
-                'advancements',
-                'exercises',
-                'moves',
-                'equipment',
+                'spots' => function($query) {
+                    $query->where(function($q) {
+                        $q->where('visibility', 'public')
+                            ->orWhere(function($q1) {
+                                $q1->where('visibility', 'follower')
+                                    ->whereIn('spots.user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
+                            })
+                            ->orWhere('spots.user_id', Auth::id());
+                    });
+                },
+                'progressions' => function($query) {
+                    $query->where(function($q) {
+                        $q->where('visibility', 'public')
+                            ->orWhere(function($q1) {
+                                $q1->where('visibility', 'follower')
+                                    ->whereIn('movements.user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
+                            })
+                            ->orWhere('movements.user_id', Auth::id());
+                    });
+                },
+                'advancements' => function($query) {
+                    $query->where(function($q) {
+                        $q->where('visibility', 'public')
+                            ->orWhere(function($q1) {
+                                $q1->where('visibility', 'follower')
+                                    ->whereIn('movements.user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
+                            })
+                            ->orWhere('movements.user_id', Auth::id());
+                    });
+                },
+                'exercises' => function($query) {
+                    $query->where(function($q) {
+                        $q->where('visibility', 'public')
+                            ->orWhere(function($q1) {
+                                $q1->where('visibility', 'follower')
+                                    ->whereIn('movements.user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
+                            })
+                            ->orWhere('movements.user_id', Auth::id());
+                    });
+                },
+                'moves' => function($query) {
+                    $query->where(function($q) {
+                        $q->where('visibility', 'public')
+                            ->orWhere(function($q1) {
+                                $q1->where('visibility', 'follower')
+                                    ->whereIn('movements.user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
+                            })
+                            ->orWhere('movements.user_id', Auth::id());
+                    });
+                },
+                'equipment' => function($query) {
+                    $query->where(function($q) {
+                        $q->where('visibility', 'public')
+                            ->orWhere(function($q1) {
+                                $q1->where('visibility', 'follower')
+                                    ->whereIn('equipment.user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
+                            })
+                            ->orWhere('equipment.user_id', Auth::id());
+                    });
+                },
                 'category',
                 'fields',
-            ])->where('id', $id)->first();
+            ])
+            ->where(function($q) {
+                if (Auth::id() !== 1) {
+                    $q->where('visibility', 'public')
+                        ->orWhere(function($q1) {
+                            $q1->where('visibility', 'follower')
+                                ->whereIn('movements.user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
+                        })
+                        ->orWhere('movements.user_id', Auth::id());
+                }
+            })
+            ->where('id', $id)
+            ->first();
 
         $spots = null;
         $progressions = null;
@@ -74,34 +149,172 @@ class MovementController extends Controller
         $advancementID = null;
         $baselineFields = null;
         if (!empty($request['spots']) && (($tab == null && $movement->type_id === 1) || $tab === 'spots')) {
-            $spots = $movement->spots()->paginate(20, ['*'], 'spots');
+            $spots = $movement->spots()
+                ->where(function($q) {
+                    if (Auth::id() !== 1) {
+                        $q->where('visibility', 'public')
+                            ->orWhere(function($q1) {
+                                $q1->where('visibility', 'follower')
+                                    ->whereIn('spots.user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
+                            })
+                            ->orWhere('spots.user_id', Auth::id());
+                    }
+                })
+                ->paginate(20, ['*'], 'spots');
         } else if (($tab == null && $movement->type_id === 1) || $tab === 'spots') {
-            $spots = $movement->spots()->limit(4)->get();
+            $spots = $movement->spots()
+                ->where(function($q) {
+                    if (Auth::id() !== 1) {
+                        $q->where('visibility', 'public')
+                            ->orWhere(function($q1) {
+                                $q1->where('visibility', 'follower')
+                                    ->whereIn('spots.user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
+                            })
+                            ->orWhere('spots.user_id', Auth::id());
+                    }
+                })
+                ->limit(4)
+                ->get();
         }
         if (!empty($request['progressions']) && $tab === 'progressions') {
-            $progressions = $movement->progressions()->paginate(20, ['*'], 'progressions');
+            $progressions = $movement->progressions()
+                ->where(function($q) {
+                    if (Auth::id() !== 1) {
+                        $q->where('visibility', 'public')
+                            ->orWhere(function($q1) {
+                                $q1->where('visibility', 'follower')
+                                    ->whereIn('movements.user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
+                            })
+                            ->orWhere('movements.user_id', Auth::id());
+                    }
+                })
+                ->paginate(20, ['*'], 'progressions');
         } else if ($tab === 'progressions') {
-            $progressions = $movement->progressions()->limit(4)->get();
+            $progressions = $movement->progressions()
+                ->where(function($q) {
+                    if (Auth::id() !== 1) {
+                        $q->where('visibility', 'public')
+                            ->orWhere(function($q1) {
+                                $q1->where('visibility', 'follower')
+                                    ->whereIn('movements.user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
+                            })
+                            ->orWhere('movements.user_id', Auth::id());
+                    }
+                })
+                ->limit(4)
+                ->get();
         }
         if (!empty($request['advancements']) && $tab === 'advancements') {
-            $advancements = $movement->advancements()->paginate(20, ['*'], 'advancements');
+            $advancements = $movement->advancements()
+                ->where(function($q) {
+                    if (Auth::id() !== 1) {
+                        $q->where('visibility', 'public')
+                            ->orWhere(function($q1) {
+                                $q1->where('visibility', 'follower')
+                                    ->whereIn('movements.user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
+                            })
+                            ->orWhere('movements.user_id', Auth::id());
+                    }
+                })
+                ->paginate(20, ['*'], 'advancements');
         } else if ($tab === 'advancements') {
-            $advancements = $movement->advancements()->limit(4)->get();
+            $advancements = $movement->advancements()
+                ->where(function($q) {
+                    if (Auth::id() !== 1) {
+                        $q->where('visibility', 'public')
+                            ->orWhere(function($q1) {
+                                $q1->where('visibility', 'follower')
+                                    ->whereIn('movements.user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
+                            })
+                            ->orWhere('movements.user_id', Auth::id());
+                    }
+                })
+                ->limit(4)
+                ->get();
         }
         if (!empty($request['exercises']) && $tab === 'exercises') {
-            $exercises = $movement->exercises()->paginate(20, ['*'], 'exercises');
+            $exercises = $movement->exercises()
+                ->where(function($q) {
+                    if (Auth::id() !== 1) {
+                        $q->where('visibility', 'public')
+                            ->orWhere(function($q1) {
+                                $q1->where('visibility', 'follower')
+                                    ->whereIn('movements.user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
+                            })
+                            ->orWhere('movements.user_id', Auth::id());
+                    }
+                })
+                ->paginate(20, ['*'], 'exercises');
         } else if ($tab === 'exercises') {
-            $exercises = $movement->exercises()->limit(4)->get();
+            $exercises = $movement->exercises()
+                ->where(function($q) {
+                    if (Auth::id() !== 1) {
+                        $q->where('visibility', 'public')
+                            ->orWhere(function($q1) {
+                                $q1->where('visibility', 'follower')
+                                    ->whereIn('movements.user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
+                            })
+                            ->orWhere('movements.user_id', Auth::id());
+                    }
+                })
+                ->limit(4)
+                ->get();
         }
         if (!empty($request['moves']) && $tab === 'moves') {
-            $moves = $movement->moves()->paginate(20, ['*'], 'moves');
+            $moves = $movement->moves()
+                ->where(function($q) {
+                    if (Auth::id() !== 1) {
+                        $q->where('visibility', 'public')
+                            ->orWhere(function($q1) {
+                                $q1->where('visibility', 'follower')
+                                    ->whereIn('movements.user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
+                            })
+                            ->orWhere('movements.user_id', Auth::id());
+                    }
+                })
+                ->paginate(20, ['*'], 'moves');
         } else if ($tab === 'moves') {
-            $moves = $movement->moves()->limit(4)->get();
+            $moves = $movement->moves()
+                ->where(function($q) {
+                    if (Auth::id() !== 1) {
+                        $q->where('visibility', 'public')
+                            ->orWhere(function($q1) {
+                                $q1->where('visibility', 'follower')
+                                    ->whereIn('movements.user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
+                            })
+                            ->orWhere('movements.user_id', Auth::id());
+                    }
+                })
+                ->limit(4)
+                ->get();
         }
         if (!empty($request['equipment']) && (($tab == null && $movement->type_id === 2) || $tab === 'equipment')) {
-            $equipment = $movement->equipment()->paginate(20, ['*'], 'equipment');
+            $equipment = $movement->equipment()
+                ->where(function($q) {
+                    if (Auth::id() !== 1) {
+                        $q->where('visibility', 'public')
+                            ->orWhere(function($q1) {
+                                $q1->where('visibility', 'follower')
+                                    ->whereIn('equipment.user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
+                            })
+                            ->orWhere('equipment.user_id', Auth::id());
+                    }
+                })
+                ->paginate(20, ['*'], 'equipment');
         } else if (($tab == null && $movement->type_id === 2) || $tab === 'equipment') {
-            $equipment = $movement->equipment()->limit(4)->get();
+            $equipment = $movement->equipment()
+                ->where(function($q) {
+                    if (Auth::id() !== 1) {
+                        $q->where('visibility', 'public')
+                            ->orWhere(function($q1) {
+                                $q1->where('visibility', 'follower')
+                                    ->whereIn('equipment.user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
+                            })
+                            ->orWhere('equipment.user_id', Auth::id());
+                    }
+                })
+                ->limit(4)
+                ->get();
         }
         if ($tab === 'baseline') {
             if (count(Auth::user()->baselineMovementFields()->where('movement_id', $id)->get())) {
@@ -157,6 +370,7 @@ class MovementController extends Controller
         $movement->type_id = $request['type'];
         $movement->name = $request['name'];
         $movement->description = $request['description'];
+        $movement->visibility = $request['visibility'] ?: 'private';
         if (!empty($request['youtube'])) {
             $youtube = explode('t=', str_replace(['https://youtu.be/', 'https://www.youtube.com/watch?v=', '&', '?'], '', $request['youtube']));
             $movement->youtube = $youtube[0];
@@ -205,6 +419,7 @@ class MovementController extends Controller
         }
         $movement->name = $request['name'];
         $movement->description = $request['description'];
+        $movement->visibility = $request['visibility'] ?: 'private';
         if (!empty($request['youtube'])) {
             $youtube = explode('t=', str_replace(['https://youtu.be/', 'https://www.youtube.com/watch?v=', '&', '?'], '', $request['youtube']));
             $movement->youtube = $youtube[0];
@@ -395,7 +610,18 @@ class MovementController extends Controller
                 if (!empty($exercise)) {
                     $exerciseEquipment = $exercise->equipment()->pluck('equipment.id')->toArray();
                 }
-                $equipments = Equipment::whereNotIn('id', $exerciseEquipment)->get();
+                $equipments = Equipment::whereNotIn('id', $exerciseEquipment)
+                    ->where(function($q) {
+                        if (Auth::id() !== 1) {
+                            $q->where('visibility', 'public')
+                                ->orWhere(function($q1) {
+                                    $q1->where('visibility', 'follower')
+                                        ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
+                                })
+                                ->orWhere('user_id', Auth::id());
+                        }
+                    })
+                    ->get();
                 foreach ($equipments as $equipment) {
                     $results[] = [
                         'id' => $equipment->id,
@@ -409,7 +635,19 @@ class MovementController extends Controller
                 if (!empty($equipment)) {
                     $equipmentExercise = $equipment->movements()->pluck('movements.id')->toArray();
                 }
-                $exercises = Movement::where('type_id', $request['type'])->whereNotIn('id', $equipmentExercise)->get();
+                $exercises = Movement::where('type_id', $request['type'])
+                    ->whereNotIn('id', $equipmentExercise)
+                    ->where(function($q) {
+                        if (Auth::id() !== 1) {
+                            $q->where('visibility', 'public')
+                                ->orWhere(function($q1) {
+                                    $q1->where('visibility', 'follower')
+                                        ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
+                                })
+                                ->orWhere('user_id', Auth::id());
+                        }
+                    })
+                    ->get();
                 foreach ($exercises as $exercise) {
                     $results[] = [
                         'id' => $exercise->id,
@@ -424,7 +662,21 @@ class MovementController extends Controller
                     $moveProgressions = $movement->progressions()->orderBy('category_id')->where('type_id', $request['type'])->pluck('movements.id')->toArray();
                     $moveAdvancements = $movement->advancements()->orderBy('category_id')->where('type_id', $request['type'])->pluck('movements.id')->toArray();
                 }
-                $exercises = Movement::with(['category'])->where('type_id', $request['type'])->where('id', '!=', $request['id'])->whereNotIn('id', array_merge($moveProgressions, $moveAdvancements))->get();
+                $exercises = Movement::with(['category'])
+                    ->where('type_id', $request['type'])
+                    ->where('id', '!=', $request['id'])
+                    ->whereNotIn('id', array_merge($moveProgressions, $moveAdvancements))
+                    ->where(function($q) {
+                        if (Auth::id() !== 1) {
+                            $q->where('visibility', 'public')
+                                ->orWhere(function($q1) {
+                                    $q1->where('visibility', 'follower')
+                                        ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
+                                })
+                                ->orWhere('user_id', Auth::id());
+                        }
+                    })
+                    ->get();
                 foreach ($exercises as $exercise) {
                     $results[] = [
                         'id' => $exercise->id,
@@ -438,7 +690,20 @@ class MovementController extends Controller
                 if (!empty($move)) {
                     $moveExercises = $move->exercises()->orderBy('category_id')->where('type_id', 1)->pluck('movements.id')->toArray();
                 }
-                $exercises = Movement::with(['category'])->where('type_id', 1)->whereNotIn('id', $moveExercises)->get();
+                $exercises = Movement::with(['category'])
+                    ->where('type_id', 1)
+                    ->whereNotIn('id', $moveExercises)
+                    ->where(function($q) {
+                        if (Auth::id() !== 1) {
+                            $q->where('visibility', 'public')
+                                ->orWhere(function($q1) {
+                                    $q1->where('visibility', 'follower')
+                                        ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
+                                })
+                                ->orWhere('user_id', Auth::id());
+                        }
+                    })
+                    ->get();
                 foreach ($exercises as $exercise) {
                     $results[] = [
                         'id' => $exercise->id,
@@ -452,7 +717,19 @@ class MovementController extends Controller
                 if (!empty($exercise)) {
                     $exerciseMoves = $exercise->moves()->orderBy('category_id')->where('type_id', 1)->pluck('movements.id')->toArray();
                 }
-                $moves = Movement::with(['category'])->where('type_id', 1)->whereNotIn('id', $exerciseMoves)->get();
+                $moves = Movement::with(['category'])
+                    ->where('type_id', 1)
+                    ->whereNotIn('id', $exerciseMoves)
+                    ->where(function($q) {
+                        if (Auth::id() !== 1) {
+                            $q->where('visibility', 'public')
+                                ->orWhere(function($q1) {
+                                    $q1->where('visibility', 'follower')
+                                        ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
+                                })
+                                ->orWhere('user_id', Auth::id());
+                        }
+                    })->get();
                 foreach ($moves as $move) {
                     $results[] = [
                         'id' => $move->id,
@@ -466,7 +743,19 @@ class MovementController extends Controller
                 if (!empty($spot)) {
                     $spotMovements = $spot->movements()->orderBy('category_id')->where('type_id', 1)->pluck('movements.id')->toArray();
                 }
-                $movements = Movement::with(['category'])->where('type_id', 1)->whereNotIn('id', $spotMovements)->get();
+                $movements = Movement::with(['category'])
+                    ->where('type_id', 1)
+                    ->whereNotIn('id', $spotMovements)
+                    ->where(function($q) {
+                        if (Auth::id() !== 1) {
+                            $q->where('visibility', 'public')
+                                ->orWhere(function($q1) {
+                                    $q1->where('visibility', 'follower')
+                                        ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
+                                })
+                                ->orWhere('user_id', Auth::id());
+                        }
+                    })->get();
                 foreach ($movements as $movement) {
                     $results[] = [
                         'id' => $movement->id,
@@ -475,7 +764,18 @@ class MovementController extends Controller
                 }
                 break;
             case 'AllMovements':
-                $movements = Movement::with(['category', 'type'])->get();
+                $movements = Movement::with(['category', 'type'])
+                    ->where(function($q) {
+                        if (Auth::id() !== 1) {
+                            $q->where('visibility', 'public')
+                                ->orWhere(function($q1) {
+                                    $q1->where('visibility', 'follower')
+                                        ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
+                                })
+                                ->orWhere('user_id', Auth::id());
+                        }
+                    })
+                    ->get();
                 foreach ($movements as $movement) {
                     $results[] = [
                         'id' => $movement->id,

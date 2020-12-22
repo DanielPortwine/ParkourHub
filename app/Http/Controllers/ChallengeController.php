@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Challenge;
 use App\ChallengeEntry;
 use App\ChallengeView;
+use App\Follower;
 use App\Http\Requests\CreateChallenge;
 use App\Http\Requests\EnterChallenge;
 use App\Http\Requests\UpdateChallenge;
@@ -35,6 +36,14 @@ class ChallengeController extends Controller
         }
 
         $challenges = Challenge::withCount('entries')
+            ->where(function($q) {
+                $q->where('visibility', 'public')
+                    ->orWhere(function($q1) {
+                        $q1->where('visibility', 'follower')
+                            ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
+                    })
+                    ->orWhere('user_id', Auth::id());
+            })
             ->entered(!empty($request['entered']) ? true : false)
             ->difficulty($request['difficulty'] ?? null)
             ->dateBetween([
@@ -65,7 +74,23 @@ class ChallengeController extends Controller
 
             return redirect()->route('challenge_view', $id);
         }
-        $challenge = Challenge::with(['entries'])->where('id', $id)->first();
+
+        $challenge = Challenge::with(['entries'])
+            ->where(function($q) {
+                if (Auth::id() !== 1) {
+                    $q->where('visibility', 'public')
+                        ->orWhere(function($q1) {
+                            $q1->where('visibility', 'follower')
+                                ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
+                        })
+                        ->orWhere('user_id', Auth::id());
+                }
+            })
+            ->where('id', $id)
+            ->first();
+        if (empty($challenge)) {
+            return view('errors.404');
+        }
         $entries = $challenge->entries()->orderByDesc('created_at')->paginate(10, ['*'], 'entries')->fragment('entries');
         $entered = !empty(
             $challenge->entries->where('user_id', Auth::id())->first()
@@ -95,6 +120,7 @@ class ChallengeController extends Controller
         $challenge->name = $request['name'];
         $challenge->description = $request['description'];
         $challenge->difficulty = empty($request['difficulty']) ? '0' : $request['difficulty'];
+        $challenge->visibility = $request['visibility'] ?: 'private';
         if (!empty($request['youtube'])){
             $youtube = explode('t=', str_replace(['https://youtu.be/', 'https://www.youtube.com/watch?v=', '&', '?'], '', $request['youtube']));
             $challenge->youtube = $youtube[0];
@@ -137,6 +163,7 @@ class ChallengeController extends Controller
         $challenge->name = $request['name'];
         $challenge->description = $request['description'];
         $challenge->difficulty = empty($request['difficulty']) ? '3' : $request['difficulty'];
+        $challenge->visibility = $request['visibility'] ?: 'private';
         if (!empty($request['youtube'])){
             $youtube = explode('t=', str_replace(['https://youtu.be/', 'https://www.youtube.com/watch?v=', '&', '?'], '', $request['youtube']));
             $challenge->youtube = $youtube[0];

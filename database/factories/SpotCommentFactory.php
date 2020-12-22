@@ -18,6 +18,7 @@ $factory->define(SpotComment::class, function (Faker $faker) {
         'spot_id' => Spot::inRandomOrder()->first()->id,
         'user_id' => User::inRandomOrder()->first()->id,
         'comment' => in_array($commentType, ['comment', 'imageComment']) ? $faker->realText(255) : null,
+        'visibility' => $faker->randomElement(['private', 'follower', 'public']),
         'image' => in_array($commentType, ['image', 'imageComment']) ? '/storage/images/spots/' . $faker->image('public/storage/images/spots', 640, 480, null, false) : null,
     ];
 });

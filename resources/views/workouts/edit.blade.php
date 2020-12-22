@@ -43,16 +43,13 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <div class="col-md-8 offset-md-2">
-                                        <div class="form-check">
-                                            <input class="form-check-input @error('public') is-invalid @enderror" type="checkbox" name="public" id="public" value="1" {{ $workout->public ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="public">Public</label>
-                                            @error('private')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                            @enderror
-                                        </div>
+                                    <label for="visibility" class="col-md-2 col-form-label text-md-right">Visibility</label>
+                                    <div class="col-md-8">
+                                        <select name="visibility" class="form-control">
+                                            @foreach(config('settings.privacy.privacy_content.options') as $key => $name)
+                                                <option value="{{ $key }}" @if($workout->visibility === $key)selected @endif>{{ $name }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="mb-3">

@@ -107,14 +107,16 @@
                         <li class="nav-item">
                             <a class="nav-link btn-link @if($tab === 'following')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'following']) }}" title="Following"><i class="fa fa-user-friends"></i></a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link btn-link @if($tab === 'follow_requests')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'follow_requests']) }}" title="Follow Requests"><i class="fa fa-user-clock"></i></a>
-                        </li>
+                        @if($user->id === Auth()->id())
+                            <li class="nav-item">
+                                <a class="nav-link btn-link @if($tab === 'follow_requests')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'follow_requests']) }}" title="Follow Requests"><i class="fa fa-user-clock"></i></a>
+                            </li>
+                        @endif
                     </ul>
                 </div>
                 <div class="row">
                     <div class="col">
-                        <h1 class="sedgwick text-center pt-3">{{ ucwords($tab ?? 'Spots') }}</h1>
+                        <h1 class="sedgwick text-center pt-3">{{ ucwords(str_replace('_', ' ', $tab ?? 'Spots')) }}</h1>
                     </div>
                 </div>
                 @if($tab == null || $tab === 'spots')

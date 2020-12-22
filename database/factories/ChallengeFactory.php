@@ -14,6 +14,7 @@ $factory->define(Challenge::class, function (Faker $faker) {
         'name' => $faker->word,
         'description' => $faker->realText(255),
         'difficulty' => floor($faker->numberBetween(1, 5)),
+        'visibility' => $faker->randomElement(['private', 'follower', 'public']),
         'youtube' => 'Oykjn35X3EY',
         'thumbnail' => '/storage/images/spots/' . $faker->image('public/storage/images/spots', 640, 480, null, false),
     ];

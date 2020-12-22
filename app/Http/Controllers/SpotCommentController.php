@@ -21,6 +21,7 @@ class SpotCommentController extends Controller
         $comment->spot_id = $request['spot'];
         $comment->user_id = Auth::id();
         $comment->comment = $request['comment'];
+        $comment->visibility = $request['visibility'] ?: 'private';
         if (!empty($request['youtube'])){
             $youtube = explode('t=', str_replace(['https://youtu.be/', 'https://www.youtube.com/watch?v=', '&', '?'], '', $request['youtube']));
             $comment->youtube = $youtube[0];
@@ -57,6 +58,7 @@ class SpotCommentController extends Controller
     {
         $comment = SpotComment::where('id', $id)->first();
         $comment->comment = $request['comment'];
+        $comment->visibility = $request['visibility'] ?: 'private';
         if (!empty($request['youtube'])){
             $youtube = explode('t=', str_replace(['https://youtu.be/', 'https://www.youtube.com/watch?v=', '&', '?'], '', $request['youtube']));
             $comment->youtube = $youtube[0];

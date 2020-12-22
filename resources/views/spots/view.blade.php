@@ -398,6 +398,16 @@
                                                     </div>
                                                 </div>
                                                 <div class="form-group row">
+                                                    <label for="visibility" class="col-md-2 col-form-label text-md-right">Visibility</label>
+                                                    <div class="col-md-8">
+                                                        <select name="visibility" class="form-control">
+                                                            @foreach(config('settings.privacy.privacy_content.options') as $key => $name)
+                                                                <option value="{{ $key }}" @if(setting('privacy_content', 'private') === $key)selected @endif>{{ $name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
                                                     <div class="col-md-8 offset-md-2">
                                                         <button type="submit" class="btn btn-green">Submit</button>
                                                     </div>
@@ -539,6 +549,16 @@
                                                             <strong>{{ $message }}</strong>
                                                         </span>
                                                         @enderror
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="visibility" class="col-md-2 col-form-label text-md-right">Visibility</label>
+                                                    <div class="col-md-8">
+                                                        <select name="visibility" class="form-control">
+                                                            @foreach(config('settings.privacy.privacy_content.options') as $key => $name)
+                                                                <option value="{{ $key }}" @if(setting('privacy_content', 'private') === $key)selected @endif>{{ $name }}</option>
+                                                            @endforeach
+                                                        </select>
                                                     </div>
                                                 </div>
                                                 <div class="form-group row">

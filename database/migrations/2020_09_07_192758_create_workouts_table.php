@@ -18,7 +18,7 @@ class CreateWorkoutsTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->string('name')->nullable();
             $table->string('description')->nullable();
-            $table->boolean('public')->default(false);
+            $table->enum('visibility', ['private', 'follower', 'public'])->default('private');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
