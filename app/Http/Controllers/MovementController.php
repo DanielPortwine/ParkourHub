@@ -799,7 +799,8 @@ class MovementController extends Controller
         }
 
         $results = [];
-        $movementCategories = Cache::remember('movement_categories', 86400, function() use($request) {
+        Cache::forget('movement_categories');
+        $movementCategories = Cache::remember('movement_categories_' . implode('_', $request['types']), 300, function() use($request) {
             return MovementCategory::with(['type'])->whereIn('type_id', (array)$request['types'])->get();
         });
         foreach ($movementCategories as $category) {

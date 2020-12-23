@@ -161,16 +161,17 @@
                 var type = $(this).val();
                 updateCategoriesSelect(type);
             });
-        });
-        $.ajax({
-            url: '/movements/getMovementFields',
-            success: function (response) {
-                $('.select2-movement-fields').select2({
-                    data: response,
-                    width: '100%',
-                    minimumResultsForSearch: 5,
-                });
-            },
+
+            $.ajax({
+                url: '/movements/getMovementFields',
+                success: function (response) {
+                    $('.select2-movement-fields').select2({
+                        data: response,
+                        width: '100%',
+                        minimumResultsForSearch: 5,
+                    });
+                },
+            });
         });
     </script>
 @endpush
