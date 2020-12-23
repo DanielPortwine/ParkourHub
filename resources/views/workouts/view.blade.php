@@ -19,18 +19,18 @@
                 <video controls>
                     <source src="{{ $displayMovement->video }}" type="video/{{ $displayMovement->video_type }}">
                 </video>
-                <h4 class="sedgwick top-right z-10">{{ $displayMovement->name }}</h4>
+                <h4 class="sedgwick top-right z-10 text-shadow">{{ $displayMovement->name }}</h4>
             </div>
         @elseif(!empty($displayMovement->youtube))
             <div class="content-wrapper">
                 <div class="youtube" data-id="{{ $displayMovement->youtube }}" data-start="{{ $displayMovement->youtube_start }}">
                     <span class="h-100 flex-center"><i class="fa fa-youtube-play text-shadow z-10"></i></span>
-                    <h4 class="sedgwick top-right z-10">{{ $displayMovement->name }}</h4>
+                    <h4 class="sedgwick top-right z-10 text-shadow">{{ $displayMovement->name }}</h4>
                 </div>
             </div>
         @endif
     </div>
-    <div class="grey-section">
+    <div class="grey-section section">
         <div class="container">
             <div class="row pt-4">
                 <div class="col vertical-center">
