@@ -48,7 +48,7 @@
                                     @if(!empty($equipment->image))
                                         <img class="w-100 mb-2" src="{{ $equipment->image }}" alt="Image of the {{ $equipment->name }} equipment.">
                                     @endif
-                                    <input type="file" id="image" class="form-control-file @error('image') is-invalid @enderror" name="image" required>
+                                    <input type="file" id="image" class="form-control-file @error('image') is-invalid @enderror" name="image">
                                     @error('image')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
