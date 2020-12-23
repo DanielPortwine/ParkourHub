@@ -102,9 +102,9 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="visibility" class="col-12 col-form-label">Visibility</label>
-                                <div class="col-12">
-                                    <select name="visibility" class="form-control">
+                                <label for="visibility" class="col-md-2 col-form-label text-md-right">Visibility</label>
+                                <div class="col-md-8">
+                                    <select name="visibility" class="form-control" id="visibility-select">
                                         @foreach(config('settings.privacy.privacy_content.options') as $key => $name)
                                             <option value="{{ $key }}" @if(setting('privacy_content', 'private') === $key)selected @endif>{{ $name }}</option>
                                         @endforeach
@@ -143,14 +143,21 @@
                     $('.select2-movement-category').select2({
                         data: response,
                         width: '100%',
+                        minimumResultsForSearch: 5,
                     });
                 },
             });
         }
         $(document).ready(function() {
-            $('.select2-movement-category').select2({width: '100%'});
+            $('.select2-movement-category').select2({
+                width: '100%',
+                minimumResultsForSearch: 5,
+            });
             updateCategoriesSelect(1);
-            $('.select2-movement-type').select2({width: '100%'}).change(function () {
+            $('.select2-movement-type').select2({
+                width: '100%',
+                minimumResultsForSearch: 5,
+            }).change(function () {
                 var type = $(this).val();
                 updateCategoriesSelect(type);
             });
@@ -161,6 +168,7 @@
                 $('.select2-movement-fields').select2({
                     data: response,
                     width: '100%',
+                    minimumResultsForSearch: 5,
                 });
             },
         });

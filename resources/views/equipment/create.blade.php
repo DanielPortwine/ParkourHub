@@ -60,7 +60,7 @@
                             <div class="form-group row">
                                 <label for="visibility" class="col-md-2 col-form-label text-md-right">Visibility</label>
                                 <div class="col-md-8">
-                                    <select name="visibility" class="form-control">
+                                    <select name="visibility" class="form-control" id="visibility-select">
                                         @foreach(config('settings.privacy.privacy_content.options') as $key => $name)
                                             <option value="{{ $key }}" @if(setting('privacy_content', 'private') === $key)selected @endif>{{ $name }}</option>
                                         @endforeach
@@ -83,42 +83,3 @@
 @section('footer')
     @include('components.footer')
 @endsection
-
-@push('scripts')
-    <script defer>
-        function updateCategoriesSelect(type) {
-            $('.select2-movement-category').children('option').each(function() {
-                $(this).remove();
-            });
-            $.ajax({
-                url: '/movements/getMovementCategories',
-                data: {
-                    types: [type]
-                },
-                success: function (response) {
-                    $('.select2-movement-category').select2({
-                        data: response,
-                        width: '100%',
-                    });
-                },
-            });
-        }
-        $(document).ready(function() {
-            $('.select2-movement-category').select2({width: '100%'});
-            updateCategoriesSelect(1);
-            $('.select2-movement-type').select2({width: '100%'}).change(function () {
-                var type = $(this).val();
-                updateCategoriesSelect(type);
-            });
-        });
-        $.ajax({
-            url: '/movements/getMovementFields',
-            success: function (response) {
-                $('.select2-movement-fields').select2({
-                    data: response,
-                    width: '100%',
-                });
-            },
-        });
-    </script>
-@endpush

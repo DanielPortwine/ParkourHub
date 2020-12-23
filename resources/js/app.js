@@ -634,4 +634,10 @@ $(document).ready(function() {
     // keep the footer at the bottom
     $(window).resize(updateFooterPosition);
     updateFooterPosition();
+
+    // select2
+    $('#visibility-select').select2({
+        width: '100%',
+        minimumResultsForSearch: -1,
+    });
 });

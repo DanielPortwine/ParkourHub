@@ -102,7 +102,7 @@
                         <div class="form-group row">
                             <label for="visibility" class="col-12 col-form-label">Visibility</label>
                             <div class="col-12">
-                                <select name="visibility" class="form-control">
+                                <select name="visibility" class="form-control" id="visibility-select">
                                     @foreach(config('settings.privacy.privacy_content.options') as $key => $name)
                                         <option value="{{ $key }}" @if(setting('privacy_content', 'private') === $key)selected @endif>{{ $name }}</option>
                                     @endforeach

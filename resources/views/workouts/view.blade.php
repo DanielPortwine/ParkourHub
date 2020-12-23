@@ -190,6 +190,7 @@
                 $('.select2-spots').select2({
                     data: response,
                     width: '100%',
+                    minimumResultsForSearch: 5,
                 });
             },
         });

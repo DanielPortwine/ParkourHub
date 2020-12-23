@@ -147,7 +147,7 @@
                                 <div class="col-auto pb-3">
                                     <label><strong>Sort</strong></label>
                                     <div>
-                                        <select name="sort">
+                                        <select name="sort" class="select2-sort">
                                             <option value="date_desc" @if(($_GET['sort'] ?? '') === 'date_desc')selected @endif>Newest</option>
                                             <option value="date_asc" @if(($_GET['sort'] ?? '') === 'date_asc')selected @endif>Oldest</option>
                                             @if($component === 'spot')
@@ -214,6 +214,7 @@
             $('.select2-movement-type').select2({
                 data: data,
                 width: '100%',
+                minimumResultsForSearch: 5,
             });
             if (urlParams.has('type')) {
                 $('.select2-movement-type').val(urlParams.get('type')).trigger('change');
@@ -228,6 +229,7 @@
                     $('.select2-movement-category').select2({
                         data: response,
                         width: '100%',
+                        minimumResultsForSearch: 5,
                     });
                     if (urlParams.has('category')) {
                         $('.select2-movement-category').val(urlParams.get('category')).trigger('change');
@@ -241,12 +243,18 @@
                     $('.select2-movement-equipment').select2({
                         data: response,
                         width: '100%',
+                        minimumResultsForSearch: 5,
                     });
                     if (urlParams.has('equipment')) {
                         $('.select2-movement-equipment').val(urlParams.get('equipment')).trigger('change');
                     }
                 },
             });
+
+            $('.select2-sort').select2({
+                width: '100%',
+                minimumResultsForSearch: -1,
+            })
         });
     </script>
 @endpush

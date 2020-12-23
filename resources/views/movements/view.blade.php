@@ -932,6 +932,7 @@
                     $('.select2-equipment').select2({
                         data: response,
                         width: '100%',
+                        minimumResultsForSearch: 5,
                     });
                 },
             });
@@ -947,6 +948,7 @@
                     $('.select2-movements').select2({
                         data: response,
                         width: '100%',
+                        minimumResultsForSearch: 5,
                     });
                 },
             });
@@ -959,6 +961,7 @@
                     $('.select2-movement-category').select2({
                         data: response,
                         width: '100%',
+                        minimumResultsForSearch: 5,
                     });
                 },
             });
@@ -983,6 +986,7 @@
                     $('.select2-exercises').select2({
                         data: response,
                         width: '100%',
+                        minimumResultsForSearch: 5,
                     });
                 },
             });
@@ -995,6 +999,7 @@
                     $('.select2-exercise-category').select2({
                         data: response,
                         width: '100%',
+                        minimumResultsForSearch: 5,
                     });
                 },
             });
@@ -1018,6 +1023,7 @@
                     $('.select2-movements').select2({
                         data: response,
                         width: '100%',
+                        minimumResultsForSearch: 5,
                     });
                 },
             });
@@ -1030,6 +1036,7 @@
                     $('.select2-movement-category').select2({
                         data: response,
                         width: '100%',
+                        minimumResultsForSearch: 5,
                     });
                 },
             });

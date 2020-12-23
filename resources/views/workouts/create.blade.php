@@ -45,7 +45,7 @@
                                 <div class="form-group row">
                                     <label for="visibility" class="col-md-2 col-form-label text-md-right">Visibility</label>
                                     <div class="col-md-8">
-                                        <select name="visibility" class="form-control">
+                                        <select name="visibility" class="form-control" id="visibility-select">
                                             @foreach(config('settings.privacy.privacy_content.options') as $key => $name)
                                                 <option value="{{ $key }}" @if(setting('privacy_content', 'private') === $key)selected @endif>{{ $name }}</option>
                                             @endforeach
@@ -103,6 +103,7 @@
             $('.select2-movements-' + currentCount).select2({
                 data: movements,
                 width: '100%',
+                minimumResultsForSearch: 5,
             })
             .change(function () {
                 var movement = $(this).val();

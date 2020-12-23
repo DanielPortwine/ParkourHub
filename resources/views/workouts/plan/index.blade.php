@@ -151,6 +151,7 @@
         $(document).ready(function() {
             $('.select2-repeat-frequency').select2({
                 width: '100%',
+                minimumResultsForSearch: -1,
             });
         });
         $.ajax({
@@ -159,6 +160,7 @@
                 $('.select2-workouts').select2({
                     data: response,
                     width: '100%',
+                    minimumResultsForSearch: 5,
                 });
             },
         });
