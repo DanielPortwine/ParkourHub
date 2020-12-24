@@ -57,66 +57,68 @@
         @endif
         <div id="map"></div>
         <div class="popup ol-popup" id="create-spot-popup">
-            <div class="card">
-                <div class="card-header bg-green">
-                    <span class="sedgwick">Create Spot</span>
+            @auth
+                <div class="card">
+                    <div class="card-header bg-green">
+                        <span class="sedgwick">Create Spot</span>
+                    </div>
+                    <div class="card-body bg-grey text-white">
+                        <form method="POST" action="{{ route('spot_create') }}" enctype="multipart/form-data">
+                            @csrf
+                            <input type="hidden" name="coordinates" id="coordinates">
+                            <input type="hidden" name="lat_lon" id="lat-lon">
+                            <div class="form-group row">
+                                <label for="name" class="col-12 col-form-label">Name</label>
+                                <div class="col-12">
+                                    <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" required autocomplete="name" maxlength="25">
+                                    @error('name')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="description" class="col-12 col-form-label">Description</label>
+                                <div class="col-12">
+                                    <textarea id="description" class="form-control @error('description') is-invalid @enderror" name="description" required></textarea>
+                                    @error('description')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="image" class="col-12 col-form-label">Thumbnail</label>
+                                <div class="col-12">
+                                    <input type="file" id="image" class="form-control-file @error('image') is-invalid @enderror" name="image" required>
+                                    @error('image')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="visibility" class="col-12 col-form-label">Visibility</label>
+                                <div class="col-12">
+                                    <select name="visibility" class="form-control" id="visibility-select">
+                                        @foreach(config('settings.privacy.privacy_content.options') as $key => $name)
+                                            <option value="{{ $key }}" @if(setting('privacy_content', 'private') === $key)selected @endif>{{ $name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row mb-0">
+                                <div class="col">
+                                    <button type="submit" class="btn btn-green">Save</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-                <div class="card-body bg-grey text-white">
-                    <form method="POST" action="{{ route('spot_create') }}" enctype="multipart/form-data">
-                        @csrf
-                        <input type="hidden" name="coordinates" id="coordinates">
-                        <input type="hidden" name="lat_lon" id="lat-lon">
-                        <div class="form-group row">
-                            <label for="name" class="col-12 col-form-label">Name</label>
-                            <div class="col-12">
-                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" required autocomplete="name" maxlength="25">
-                                @error('name')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="description" class="col-12 col-form-label">Description</label>
-                            <div class="col-12">
-                                <textarea id="description" class="form-control @error('description') is-invalid @enderror" name="description" required></textarea>
-                                @error('description')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="image" class="col-12 col-form-label">Thumbnail</label>
-                            <div class="col-12">
-                                <input type="file" id="image" class="form-control-file @error('image') is-invalid @enderror" name="image" required>
-                                @error('image')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="visibility" class="col-12 col-form-label">Visibility</label>
-                            <div class="col-12">
-                                <select name="visibility" class="form-control" id="visibility-select">
-                                    @foreach(config('settings.privacy.privacy_content.options') as $key => $name)
-                                        <option value="{{ $key }}" @if(setting('privacy_content', 'private') === $key)selected @endif>{{ $name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group row mb-0">
-                            <div class="col">
-                                <button type="submit" class="btn btn-green">Save</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
+            @endauth
         </div>
 
         <div class="popup ol-popup" id="view-spot-popup"></div>
