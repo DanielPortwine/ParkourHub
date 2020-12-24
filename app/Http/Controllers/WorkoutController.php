@@ -30,6 +30,7 @@ class WorkoutController extends Controller
         }
 
         $workouts = Workout::withCount('movements')
+            ->search($request['search'] ?? '')
             ->where(function($q) {
                 $q->where('visibility', 'public')
                     ->orWhere(function($q1) {

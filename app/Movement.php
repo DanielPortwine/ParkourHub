@@ -5,11 +5,13 @@ namespace App;
 use App\Traits\Reportable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Nicolaslopezj\Searchable\SearchableTrait;
 
 class Movement extends Model
 {
-    use SoftDeletes;
-    use Reportable;
+    use SoftDeletes,
+        Reportable,
+        SearchableTrait;
 
     protected $fillable = [
         'name',
@@ -18,6 +20,13 @@ class Movement extends Model
         'youtube_start',
         'video',
         'video_type',
+    ];
+
+    protected $searchable = [
+        'columns' => [
+            'name' => 10,
+            'description' => 8,
+        ],
     ];
 
     public function scopeDateBetween($query, $dates = [])

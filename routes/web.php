@@ -67,9 +67,9 @@ Route::prefix('premium')->middleware('verified')->group(function() {
 });
 
 Route::prefix('spots')->middleware('verified')->group(function() {
-    Route::get('/', 'SpotController@index')->withoutMiddleware('verified')->name('spots');
+    Route::get('/', 'SpotController@listing')->withoutMiddleware('verified')->name('spot_listing');
+    Route::get('/map', 'SpotController@index')->withoutMiddleware('verified')->name('spots');
     Route::get('/fetch', 'SpotController@fetch')->withoutMiddleware('verified')->name('spot_fetch');
-    Route::get('/all', 'SpotController@listing')->withoutMiddleware('verified')->name('spot_listing');
     Route::get('/spot/{id}/{tab?}', 'SpotController@view')->withoutMiddleware('verified')->name('spot_view');
     Route::post('/create', 'SpotController@create')->middleware('optimizeImages')->name('spot_create');
     Route::get('/edit/{id}', 'SpotController@edit')->name('spot_edit');
@@ -106,7 +106,7 @@ Route::prefix('/spot_comments')->middleware('verified')->group(function() {
 });
 
 Route::prefix('challenges')->middleware('verified')->group(function() {
-    Route::get('/all', 'ChallengeController@listing')->withoutMiddleware('verified')->name('challenge_listing');
+    Route::get('/', 'ChallengeController@listing')->withoutMiddleware('verified')->name('challenge_listing');
     Route::get('/challenge/{id}', 'ChallengeController@view')->withoutMiddleware('verified')->name('challenge_view');
     Route::post('/create', 'ChallengeController@create')->middleware('optimizeImages')->name('challenge_create');
     Route::get('/edit/{id}', 'ChallengeController@edit')->name('challenge_edit');

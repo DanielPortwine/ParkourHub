@@ -38,6 +38,7 @@ class SpotController extends Controller
         }
 
         $spots = Spot::withCount('views')
+            ->search($request['search'] ?? '')
             ->where(function($q) {
                 $q->where('visibility', 'public')
                     ->orWhere(function($q1) {

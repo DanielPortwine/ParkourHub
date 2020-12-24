@@ -5,17 +5,26 @@ namespace App;
 use App\Traits\Reportable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Nicolaslopezj\Searchable\SearchableTrait;
 
 class Equipment extends Model
 {
-    use SoftDeletes;
-    use Reportable;
+    use SoftDeletes,
+        Reportable,
+        SearchableTrait;
 
     protected $fillable = [
         'name',
         'description',
         'image',
         'required',
+    ];
+
+    protected $searchable = [
+        'columns' => [
+            'name' => 10,
+            'description' => 8,
+        ],
     ];
 
     public function scopeDateBetween($query, $dates = [])

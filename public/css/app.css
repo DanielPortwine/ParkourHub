@@ -11601,6 +11601,10 @@ body {
   display: none;
 }
 
+.site-search {
+  width: 100%;
+}
+
 .full-height {
   height: 100vh;
 }
@@ -12345,6 +12349,12 @@ input[type=checkbox]:checked + label:after {
   .map-search {
     position: absolute;
     width: 500px;
+  }
+}
+
+@media (min-width: 992px) {
+  .site-search {
+    width: 45%;
   }
 }
 

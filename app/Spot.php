@@ -6,16 +6,25 @@ use App\Traits\Reportable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
+use Nicolaslopezj\Searchable\SearchableTrait;
 
 class Spot extends Model
 {
-    use SoftDeletes;
-    use Reportable;
+    use SoftDeletes,
+        Reportable,
+        SearchableTrait;
 
     protected $fillable = [
         'name',
         'description',
         'private',
+    ];
+
+    protected $searchable = [
+        'columns' => [
+            'name' => 10,
+            'description' => 5,
+        ],
     ];
 
     public function scopeRating($query, $rating = null)

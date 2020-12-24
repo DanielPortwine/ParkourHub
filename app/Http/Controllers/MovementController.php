@@ -33,6 +33,7 @@ class MovementController extends Controller
         }
 
         $movements = Movement::withCount('spots')
+            ->search($request['search'] ?? '')
             ->where(function($q) {
                 $q->where('visibility', 'public')
                     ->orWhere(function($q1) {

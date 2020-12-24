@@ -40,39 +40,46 @@
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav mr-auto">
-
+                    <ul class="navbar-nav site-search">
+                        <form class="mt-2 mt-md-0 mr-md-2 w-100 @if(!empty($_GET['search']))d-none @endif d-md-block" id="site-search-form" action="{{ strpos(Route::currentRouteName(), '_listing') > 0 ? route(Route::currentRouteName()) : route('spot_listing') }}" method="GET">
+                            <div class="input-group w-100">
+                                <input type="text" class="form-control @error('search') is-invalid @enderror" name="search" placeholder="Search" aria-label="from" aria-describedby="from" value="{{ $_GET['search'] ?? '' }}">
+                                <div class="input-group-append">
+                                    <button type="submit" class="btn btn-green input-group-text" title="Search"><i class="fa fa-search"></i></button>
+                                </div>
+                            </div>
+                        </form>
                     </ul>
 
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ml-auto">
                         <!-- Authentication Links -->
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('spots') }}"><i class="fa fa-map nav-icon"></i>Map</a>
+                            <a class="nav-link" href="{{ route('spots') }}"><i class="fa fa-map nav-icon"></i><span class="d-md-none d-lg-inline">Map</span></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('spot_listing') }}"><i class="fa fa-map-marker nav-icon"></i>Spots</a>
+                            <a class="nav-link" href="{{ route('spot_listing') }}"><i class="fa fa-map-marker nav-icon"></i><span class="d-md-none d-lg-inline">Spots</span></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('challenge_listing') }}"><i class="fa fa-bullseye nav-icon"></i>Challenges</a>
+                            <a class="nav-link" href="{{ route('challenge_listing') }}"><i class="fa fa-bullseye nav-icon"></i><span class="d-md-none d-lg-inline">Challenges</span></a>
                         </li>
                         @guest
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('premium') }}"><i class="fa fa-diamond nav-icon text-premium"></i>Premium</a>
+                                <a class="nav-link" href="{{ route('premium') }}"><i class="fa fa-diamond nav-icon text-premium"></i><span class="d-md-none d-lg-inline">Premium</span></a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('login') }}"><i class="fa fa-user nav-icon"></i>{{ __('Login') }}</a>
+                                <a class="nav-link" href="{{ route('login') }}"><i class="fa fa-user nav-icon"></i><span class="d-md-none d-lg-inline">{{ __('Login') }}</span></a>
                             </li>
                             @if (Route::has('register'))
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}"><i class="fa fa-user-plus nav-icon"></i>{{ __('Register') }}</a>
+                                    <a class="nav-link" href="{{ route('register') }}"><i class="fa fa-user-plus nav-icon"></i><span class="d-md-none d-lg-inline">{{ __('Register') }}</span></a>
                                 </li>
                             @endif
                         @else
                             @premium
                                 <li class="nav-item dropdown">
                                     <a id="premium-dropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                        <i class="fa fa-diamond nav-icon text-premium"></i>Premium
+                                        <i class="fa fa-diamond nav-icon text-premium"></i><span class="d-md-none d-lg-inline">Premium</span>
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-right bg-grey" id="notification-menu" aria-labelledby="notification-dropdown">
                                         <a class="dropdown-item text-white" href="{{ route('workout_listing') }}"><i class="fa fa-running nav-icon"></i>Workouts</a>
@@ -120,7 +127,7 @@
                             </li>
                             <li class="nav-item dropdown">
                                 <a id="user-dropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    <i class="fa fa-user nav-icon"></i>{{ Auth::user()->name }}
+                                    <i class="fa fa-user nav-icon"></i><span class="d-md-none d-lg-inline">{{ Auth::user()->name }}</span>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right bg-grey" id="user-menu" aria-labelledby="user-dropdown">
                                     @premium

@@ -36,6 +36,7 @@ class ChallengeController extends Controller
         }
 
         $challenges = Challenge::withCount('entries')
+            ->search($request['search'] ?? '')
             ->where(function($q) {
                 $q->where('visibility', 'public')
                     ->orWhere(function($q1) {

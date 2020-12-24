@@ -13,7 +13,65 @@
             </button>
         </div>
     @endif
-    <div class="container-fluid pt-4">
+    @if(!empty($_GET['search']))
+        <div class="container bg-grey pt-2 d-block d-md-none">
+            <form class="w-100" id="site-search-form" action="{{ strpos(Route::currentRouteName(), '_listing') > 0 ? route(Route::currentRouteName()) : route('spot_listing') }}" method="GET">
+                <div class="input-group w-100">
+                    <input type="text" class="form-control @error('search') is-invalid @enderror" name="search" placeholder="Search" aria-label="from" aria-describedby="from" value="{{ $_GET['search'] ?? '' }}">
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-green input-group-text" title="Search"><i class="fa fa-search"></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <nav class="navbar navbar-expand-md navbar-dark text-white bg-grey shadow-sm">
+            <div class="container">
+                <ul class="navbar-nav flex-row justify-content-around w-100">
+                    <li class="nav-item px-2">
+                        <a class="nav-link @if(Route::currentRouteName() === 'spot_listing')active @endif" href="{{ route('spot_listing', ['search' => $_GET['search'] ?? '']) }}">
+                            <i class="fa fa-map-marker nav-icon"></i>
+                            <span class="d-none d-lg-inline">Spots</span>
+                        </a>
+                    </li>
+                    <li class="nav-item px-2">
+                        <a class="nav-link @if(Route::currentRouteName() === 'challenge_listing')active @endif" href="{{ route('challenge_listing', ['search' => $_GET['search'] ?? '']) }}">
+                            <i class="fa fa-bullseye nav-icon"></i>
+                            <span class="d-none d-lg-inline">Challenges</span>
+                        </a>
+                    </li>
+                    @premium
+                        <li class="nav-item px-2">
+                            <a class="nav-link @if(Route::currentRouteName() === 'movement_listing')active @endif" href="{{ route('movement_listing', ['search' => $_GET['search'] ?? '']) }}">
+                                <i class="fa fa-child nav-icon"></i>
+                                <span class="d-none d-lg-inline">Movements</span>
+                            </a>
+                        </li>
+                        <li class="nav-item px-2">
+                            <a class="nav-link @if(Route::currentRouteName() === 'equipment_listing')active @endif" href="{{ route('equipment_listing', ['search' => $_GET['search'] ?? '']) }}">
+                                <i class="fa fa-dumbbell nav-icon"></i>
+                                <span class="d-none d-lg-inline">Equipment</span>
+                            </a>
+                        </li>
+                        <li class="nav-item px-2">
+                            <a class="nav-link @if(Route::currentRouteName() === 'workout_listing')active @endif" href="{{ route('workout_listing', ['search' => $_GET['search'] ?? '']) }}">
+                                <i class="fa fa-running nav-icon"></i>
+                                <span class="d-none d-lg-inline">Workouts</span>
+                            </a>
+                        </li>
+                    @endpremium
+                    @auth
+                        <li class="nav-item px-2">
+                            <a class="nav-link @if(Route::currentRouteName() === 'user_listing')active @endif" href="{{ route('user_listing', ['search' => $_GET['search'] ?? '']) }}">
+                                <i class="fa fa-user nav-icon"></i>
+                                <span class="d-none d-lg-inline">Users</span>
+                            </a>
+                        </li>
+                    @endauth
+                </ul>
+            </div>
+        </nav>
+    @endif
+    <div class="container-fluid pt-4 position-relative">
         <div class="row">
             <div class="col">
                 <h1 class="sedgwick text-center pb-3">{{ $title }}</h1>
@@ -22,7 +80,7 @@
         <div class="row mb-3">
             <div class="col">
                 <div class="card">
-                    <div class="card-header bg-green sedgwick @if(empty($_GET))card-hidden-body @endif">
+                    <div class="card-header bg-green sedgwick @if(empty($_GET) || (count($_GET) === 1 && isset($_GET['search'])))card-hidden-body @endif">
                         <div class="row">
                             <div class="col">
                                 Filters
@@ -34,6 +92,9 @@
                     </div>
                     <div class="card-body bg-grey text-white">
                         <form method="GET">
+                            @if(!empty($_GET['search']))
+                                <input type="hidden" name="search" value="{{ $_GET['search'] }}">
+                            @endif
                             <div class="row">
                                 @if($component !== 'user')
                                     <div class="col-auto pb-3">
@@ -168,7 +229,7 @@
                             <div class="row">
                                 <div class="col">
                                     <button class="btn btn-green" type="submit">Filter</button>
-                                    <a class="btn btn-link" href="?">Clear</a>
+                                    <a class="btn btn-link" href="?{{ !empty($_GET['search']) ? 'search=' . $_GET['search'] : '' }}">Clear</a>
                                 </div>
                             </div>
                         </form>
@@ -187,10 +248,10 @@
             </div>
         @endforeach
         {{ $content->links() }}
+        @if(!empty($create) && $create)
+            <a class="btn btn-green z-10" style="position:absolute;top:1rem;left:1rem" href="{{ route($component . '_create') }}" title="Create New {{ ucfirst($component) }}"><i class="fa fa-plus"></i></a>
+        @endif
     </div>
-    @if(!empty($create) && $create)
-        <a class="btn btn-green z-10" style="position:absolute;top:5rem;left:1rem" href="{{ route($component . '_create') }}" title="Create New {{ ucfirst($component) }}"><i class="fa fa-plus"></i></a>
-    @endif
 @endsection
 
 @section('footer')

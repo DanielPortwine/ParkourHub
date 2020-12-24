@@ -43,7 +43,10 @@ class UserController extends Controller
             $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
         }
 
-        $users = User::whereNotNull('email_verified_at')->orderBy($sort[0], $sort[1])->paginate(20);
+        $users = User::whereNotNull('email_verified_at')
+            ->search($request['search'] ?? '')
+            ->orderBy($sort[0], $sort[1])
+            ->paginate(20);
 
         return view('content_listings', [
             'title' => 'Users',

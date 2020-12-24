@@ -3,12 +3,22 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Nicolaslopezj\Searchable\SearchableTrait;
 
 class Workout extends Model
 {
+    use SearchableTrait;
+
     protected $fillable = [
         'name',
         'description',
+    ];
+
+    protected $searchable = [
+        'columns' => [
+            'name' => 10,
+            'description' => 8,
+        ],
     ];
 
     public function scopeDateBetween($query, $dates = [])

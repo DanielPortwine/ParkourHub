@@ -7,12 +7,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Cashier\Billable;
+use Nicolaslopezj\Searchable\SearchableTrait;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use Notifiable;
-    use SoftDeletes;
-    use Billable;
+    use Notifiable,
+        SoftDeletes,
+        Billable,
+        SearchableTrait;
 
     /**
      * The attributes that are mass assignable.
@@ -39,6 +41,13 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+    ];
+
+    protected $searchable = [
+        'columns' => [
+            'name' => 10,
+            'email' => 5,
+        ],
     ];
 
     public function scopeDateBetween($query, $dates = [])
