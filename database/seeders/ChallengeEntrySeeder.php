@@ -1,13 +1,16 @@
 <?php
 
+namespace Database\Seeders;
+
 use App\Challenge;
+use App\ChallengeEntry;
 use App\User;
 use Illuminate\Database\Seeder;
 
 class ChallengeEntrySeeder extends Seeder
 {
     /**
-     * Run the database seeds.
+     * Run the database seeders.
      *
      * @return void
      */
@@ -15,7 +18,7 @@ class ChallengeEntrySeeder extends Seeder
     {
         foreach (User::pluck('id') as $user) {
             foreach (Challenge::inRandomOrder()->limit(25)->pluck('id') as $challenge) {
-                factory(App\ChallengeEntry::class)->create(['challenge_id' => $challenge, 'user_id' => $user]);
+                ChallengeEntry::factory()->create(['challenge_id' => $challenge, 'user_id' => $user]);
             }
         }
     }

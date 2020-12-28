@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use App\Movement;
 use App\MovementCategory;
 use App\MovementField;
@@ -9,13 +11,13 @@ use Illuminate\Database\Seeder;
 class MovementSeeder extends Seeder
 {
     /**
-     * Run the database seeds.
+     * Run the database seeders.
      *
      * @return void
      */
     public function run()
     {
-        $movement = factory(Movement::class)->create([
+        $movement = Movement::factory()->create([
             'category_id' => 1,
             'user_id' => 1,
             'creator_id' => 1,
@@ -29,7 +31,7 @@ class MovementSeeder extends Seeder
         $movement->fields()->attach(5); // distance
         $movement->fields()->attach(6); // height
 
-        $movement = factory(Movement::class)->create([
+        $movement = Movement::factory()->create([
             'category_id' => 1,
             'user_id' => 1,
             'creator_id' => 1,
@@ -43,7 +45,7 @@ class MovementSeeder extends Seeder
         $movement->fields()->attach(5); // distance
         $movement->fields()->attach(6); // height
 
-        $movement = factory(Movement::class)->create([
+        $movement = Movement::factory()->create([
             'category_id' => 1,
             'user_id' => 1,
             'creator_id' => 1,
@@ -57,7 +59,7 @@ class MovementSeeder extends Seeder
         $movement->fields()->attach(5); // distance
         $movement->fields()->attach(6); // height
 
-        $movement = factory(Movement::class)->create([
+        $movement = Movement::factory()->create([
             'category_id' => 1,
             'user_id' => 1,
             'creator_id' => 1,
@@ -71,7 +73,7 @@ class MovementSeeder extends Seeder
         $movement->fields()->attach(5); // distance
         $movement->fields()->attach(6); // height
 
-        $movement = factory(Movement::class)->create([
+        $movement = Movement::factory()->create([
             'category_id' => 2,
             'user_id' => 1,
             'creator_id' => 1,
@@ -83,7 +85,7 @@ class MovementSeeder extends Seeder
         $movement->fields()->attach(1); // reps
         $movement->fields()->attach(6); // height
 
-        $movement = factory(Movement::class)->create([
+        $movement = Movement::factory()->create([
             'category_id' => 2,
             'user_id' => 1,
             'creator_id' => 1,
@@ -95,7 +97,7 @@ class MovementSeeder extends Seeder
         $movement->fields()->attach(1); // reps
         $movement->fields()->attach(6); // height
 
-        $movement = factory(Movement::class)->create([
+        $movement = Movement::factory()->create([
             'category_id' => 2,
             'user_id' => 1,
             'creator_id' => 1,
@@ -107,7 +109,7 @@ class MovementSeeder extends Seeder
         $movement->fields()->attach(1); // reps
         $movement->fields()->attach(6); // height
 
-        $movement = factory(Movement::class)->create([
+        $movement = Movement::factory()->create([
             'category_id' => 2,
             'user_id' => 1,
             'creator_id' => 1,
@@ -119,7 +121,7 @@ class MovementSeeder extends Seeder
         $movement->fields()->attach(1); // reps
         $movement->fields()->attach(6); // height
 
-        $movement = factory(Movement::class)->create([
+        $movement = Movement::factory()->create([
             'category_id' => 3,
             'user_id' => 1,
             'creator_id' => 1,
@@ -130,7 +132,7 @@ class MovementSeeder extends Seeder
         ]);
         $movement->fields()->attach(1); // reps
 
-        $movement = factory(Movement::class)->create([
+        $movement = Movement::factory()->create([
             'category_id' => 3,
             'user_id' => 1,
             'creator_id' => 1,
@@ -141,7 +143,7 @@ class MovementSeeder extends Seeder
         ]);
         $movement->fields()->attach(1); // reps
 
-        $movement = factory(Movement::class)->create([
+        $movement = Movement::factory()->create([
             'category_id' => 3,
             'user_id' => 1,
             'creator_id' => 1,
@@ -152,7 +154,7 @@ class MovementSeeder extends Seeder
         ]);
         $movement->fields()->attach(1); // reps
 
-        $movement = factory(Movement::class)->create([
+        $movement = Movement::factory()->create([
             'category_id' => 3,
             'user_id' => 1,
             'creator_id' => 1,
@@ -163,7 +165,7 @@ class MovementSeeder extends Seeder
         ]);
         $movement->fields()->attach(1); // reps
 
-        $movement = factory(Movement::class)->create([
+        $movement = Movement::factory()->create([
             'category_id' => 4,
             'user_id' => 1,
             'creator_id' => 1,
@@ -174,7 +176,7 @@ class MovementSeeder extends Seeder
         ]);
         $movement->fields()->attach(1); // reps
 
-        $movement = factory(Movement::class)->create([
+        $movement = Movement::factory()->create([
             'category_id' => 6,
             'user_id' => 1,
             'creator_id' => 1,
@@ -186,7 +188,7 @@ class MovementSeeder extends Seeder
         $movement->fields()->attach(1); // reps
         $movement->fields()->attach(5); // distance
 
-        $movement = factory(Movement::class)->create([
+        $movement = Movement::factory()->create([
             'category_id' => 6,
             'user_id' => 1,
             'creator_id' => 1,
@@ -199,7 +201,7 @@ class MovementSeeder extends Seeder
         $movement->fields()->attach(2); // sticks
         $movement->fields()->attach(5); // distance
 
-        $movement = factory(Movement::class)->create([
+        $movement = Movement::factory()->create([
             'category_id' => 7,
             'user_id' => 1,
             'creator_id' => 1,
@@ -211,7 +213,7 @@ class MovementSeeder extends Seeder
         $movement->fields()->attach(1); // reps
         $movement->fields()->attach(3); // weight
 
-        $movement = factory(Movement::class)->create([
+        $movement = Movement::factory()->create([
             'category_id' => 7,
             'user_id' => 1,
             'creator_id' => 1,
@@ -223,7 +225,7 @@ class MovementSeeder extends Seeder
         $movement->fields()->attach(1); // reps
         $movement->fields()->attach(3); // weight
 
-        $movement = factory(Movement::class)->create([
+        $movement = Movement::factory()->create([
             'category_id' => 7,
             'user_id' => 1,
             'creator_id' => 1,
@@ -235,7 +237,7 @@ class MovementSeeder extends Seeder
         $movement->fields()->attach(1); // reps
         $movement->fields()->attach(3); // weight
 
-        $movement = factory(Movement::class)->create([
+        $movement = Movement::factory()->create([
             'category_id' => 7,
             'user_id' => 1,
             'creator_id' => 1,
@@ -247,7 +249,7 @@ class MovementSeeder extends Seeder
         $movement->fields()->attach(1); // reps
         $movement->fields()->attach(3); // weight
 
-        $movement = factory(Movement::class)->create([
+        $movement = Movement::factory()->create([
             'category_id' => 7,
             'user_id' => 1,
             'creator_id' => 1,
@@ -259,7 +261,7 @@ class MovementSeeder extends Seeder
         $movement->fields()->attach(1); // reps
         $movement->fields()->attach(3); // weight
 
-        $movement = factory(Movement::class)->create([
+        $movement = Movement::factory()->create([
             'category_id' => 7,
             'user_id' => 1,
             'creator_id' => 1,
@@ -271,7 +273,7 @@ class MovementSeeder extends Seeder
         $movement->fields()->attach(1); // reps
         $movement->fields()->attach(3); // weight
 
-        $movement = factory(Movement::class)->create([
+        $movement = Movement::factory()->create([
             'category_id' => 8,
             'user_id' => 1,
             'creator_id' => 1,
@@ -283,7 +285,7 @@ class MovementSeeder extends Seeder
         $movement->fields()->attach(1); // reps
         $movement->fields()->attach(3); // weight
 
-        $movement = factory(Movement::class)->create([
+        $movement = Movement::factory()->create([
             'category_id' => 8,
             'user_id' => 1,
             'creator_id' => 1,
@@ -295,7 +297,7 @@ class MovementSeeder extends Seeder
         $movement->fields()->attach(1); // reps
         $movement->fields()->attach(3); // weight
 
-        $movement = factory(Movement::class)->create([
+        $movement = Movement::factory()->create([
             'category_id' => 8,
             'user_id' => 1,
             'creator_id' => 1,
@@ -306,7 +308,7 @@ class MovementSeeder extends Seeder
         ]);
         $movement->fields()->attach(1); // reps
 
-        $movement = factory(Movement::class)->create([
+        $movement = Movement::factory()->create([
             'category_id' => 9,
             'user_id' => 1,
             'creator_id' => 1,
@@ -318,7 +320,7 @@ class MovementSeeder extends Seeder
         $movement->fields()->attach(1); // reps
         $movement->fields()->attach(3); // weight
 
-        $movement = factory(Movement::class)->create([
+        $movement = Movement::factory()->create([
             'category_id' => 9,
             'user_id' => 1,
             'creator_id' => 1,
@@ -330,7 +332,7 @@ class MovementSeeder extends Seeder
         $movement->fields()->attach(1); // reps
         $movement->fields()->attach(3); // weight
 
-        $movement = factory(Movement::class)->create([
+        $movement = Movement::factory()->create([
             'category_id' => 10,
             'user_id' => 1,
             'creator_id' => 1,
@@ -342,7 +344,7 @@ class MovementSeeder extends Seeder
         $movement->fields()->attach(4); // duration
         $movement->fields()->attach(5); // distance
 
-        $movement = factory(Movement::class)->create([
+        $movement = Movement::factory()->create([
             'category_id' => 10,
             'user_id' => 1,
             'creator_id' => 1,

@@ -1,12 +1,15 @@
 <?php
 
+namespace Database\Seeders;
+
+use App\Follower;
 use App\User;
 use Illuminate\Database\Seeder;
 
 class FollowerSeeder extends Seeder
 {
     /**
-     * Run the database seeds.
+     * Run the database seeders.
      *
      * @return void
      */
@@ -14,7 +17,7 @@ class FollowerSeeder extends Seeder
     {
         foreach (User::pluck('id') as $follower) {
             foreach (User::where('id', '!=', $follower)->inRandomOrder()->limit(25)->get() as $user) {
-                factory(App\Follower::class)->create(['user_id' => $user->id, 'follower_id' => $follower]);
+                Follower::factory()->create(['user_id' => $user->id, 'follower_id' => $follower]);
 
                 $followers = $user->followers()->count();
                 $user->followers_quantified = quantify_number($followers);

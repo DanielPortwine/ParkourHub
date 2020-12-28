@@ -1,16 +1,22 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
 use App\MovementCategory;
 use App\MovementType;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(MovementCategory::class, function (Faker $faker) {
-    return [
-        'type_id' => MovementType::inRandomOrder()->first()->id,
-        'name' => $faker->word,
-        'colour' => $faker->randomElement(['green', 'pink', 'blue', 'orange', 'yellow', 'cyan']),
-        'description' => $faker->paragraph,
-    ];
-});
+class MovementCategoryFactory extends Factory
+{
+    protected $model = MovementCategory::class;
+
+    public function definition()
+    {
+        return [
+            'type_id' => MovementType::inRandomOrder()->first()->id,
+            'name' => $this->faker->word,
+            'colour' => $this->faker->randomElement(['green', 'pink', 'blue', 'orange', 'yellow', 'cyan']),
+            'description' => $this->faker->paragraph,
+        ];
+    }
+}

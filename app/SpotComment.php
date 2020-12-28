@@ -3,13 +3,15 @@
 namespace App;
 
 use App\Traits\Reportable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class SpotComment extends Model
 {
-    use SoftDeletes;
-    use Reportable;
+    use SoftDeletes,
+        Reportable,
+        HasFactory;
 
     protected $fillable = [
         'comment',

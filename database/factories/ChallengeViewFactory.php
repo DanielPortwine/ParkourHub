@@ -1,15 +1,21 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
 use App\Challenge;
 use App\ChallengeView;
 use App\User;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(ChallengeView::class, function (Faker $faker) {
-    return [
-        'user_id' => User::inRandomOrder()->first()->id,
-        'challenge_id' => Challenge::inRandomOrder()->first()->id,
-    ];
-});
+class ChallengeViewFactory extends Factory
+{
+    protected $model = ChallengeView::class;
+
+    public function definition()
+    {
+        return [
+            'user_id' => User::inRandomOrder()->first()->id,
+            'challenge_id' => Challenge::inRandomOrder()->first()->id,
+        ];
+    }
+}

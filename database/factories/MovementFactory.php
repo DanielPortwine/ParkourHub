@@ -1,23 +1,29 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
 use App\Movement;
 use App\MovementCategory;
 use App\MovementType;
 use App\User;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(Movement::class, function (Faker $faker) {
-    return [
-        'category_id' => MovementCategory::inRandomOrder()->first()->id,
-        'user_id' => User::inRandomOrder()->first()->id,
-        'creator_id' => User::inRandomOrder()->first()->id,
-        'type_id' => MovementType::inRandomOrder()->first()->id,
-        'name' => $faker->name,
-        'description' => $faker->paragraph,
-        'visibility' => $faker->randomElement(['private', 'follower', 'public']),
-        'youtube' => $faker->randomElement(['fpX9dOcBjaQ', 'RHnXg6piz20', 'jPhuefvauuk', '_Ciuaz6duvw', 'KFfLUdnsvjY', 'Au2Zz7W99bQ', 'Mg7WANy8QE4', 'XUzkBa0p-SM']),
-        'official' => $faker->boolean,
-    ];
-});
+class MovementFactory extends Factory
+{
+    protected $model = Movement::class;
+
+    public function definition()
+    {
+        return [
+            'category_id' => MovementCategory::inRandomOrder()->first()->id,
+            'user_id' => User::inRandomOrder()->first()->id,
+            'creator_id' => User::inRandomOrder()->first()->id,
+            'type_id' => MovementType::inRandomOrder()->first()->id,
+            'name' => $this->faker->name,
+            'description' => $this->faker->paragraph,
+            'visibility' => $this->faker->randomElement(['private', 'follower', 'public']),
+            'youtube' => $this->faker->randomElement(['fpX9dOcBjaQ', 'RHnXg6piz20', 'jPhuefvauuk', '_Ciuaz6duvw', 'KFfLUdnsvjY', 'Au2Zz7W99bQ', 'Mg7WANy8QE4', 'XUzkBa0p-SM']),
+            'official' => $this->faker->boolean,
+        ];
+    }
+}

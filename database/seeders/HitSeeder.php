@@ -1,13 +1,16 @@
 <?php
 
+namespace Database\Seeders;
+
+use App\Hit;
 use App\Spot;
 use App\User;
 use Illuminate\Database\Seeder;
 
-class SpotViewSeeder extends Seeder
+class HitSeeder extends Seeder
 {
     /**
-     * Run the database seeds.
+     * Run the database seeders.
      *
      * @return void
      */
@@ -15,7 +18,7 @@ class SpotViewSeeder extends Seeder
     {
         foreach (User::pluck('id') as $user) {
             foreach (Spot::inRandomOrder()->limit(25)->pluck('id') as $spot) {
-                factory(App\SpotView::class)->create(['spot_id' => $spot, 'user_id' => $user]);
+                Hit::factory()->create(['user_id' => $user, 'spot_id' => $spot]);
             }
         }
     }

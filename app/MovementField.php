@@ -2,10 +2,13 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class MovementField extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'name',
         'input_type',

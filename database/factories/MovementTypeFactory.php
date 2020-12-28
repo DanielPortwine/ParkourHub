@@ -1,12 +1,18 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
 use App\MovementType;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(MovementType::class, function (Faker $faker) {
-    return [
-        'name' => $faker->word,
-    ];
-});
+class MovementTypeFactory extends Factory
+{
+    protected $model = MovementType::class;
+
+    public function definition()
+    {
+        return [
+            'name' => $this->faker->word,
+        ];
+    }
+}

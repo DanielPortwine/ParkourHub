@@ -1,15 +1,21 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
 use App\Follower;
 use App\User;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(Follower::class, function (Faker $faker) {
-    return [
-        'user_id' => User::inRandomOrder()->first()->id,
-        'follower_id' => User::inRandomOrder()->first()->id,
-        'accepted' => true,
-    ];
-});
+class FollowerFactory extends Factory
+{
+    protected $model = Follower::class;
+
+    public function definition()
+    {
+        return [
+            'user_id' => User::inRandomOrder()->first()->id,
+            'follower_id' => User::inRandomOrder()->first()->id,
+            'accepted' => true,
+        ];
+    }
+}

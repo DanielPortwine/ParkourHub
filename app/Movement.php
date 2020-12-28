@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Traits\Reportable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Nicolaslopezj\Searchable\SearchableTrait;
@@ -11,7 +12,8 @@ class Movement extends Model
 {
     use SoftDeletes,
         Reportable,
-        SearchableTrait;
+        SearchableTrait,
+        HasFactory;
 
     protected $fillable = [
         'name',

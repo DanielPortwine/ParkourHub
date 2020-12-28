@@ -1,15 +1,21 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
 use App\Hit;
 use App\Spot;
 use App\User;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(Hit::class, function (Faker $faker) {
-    return [
-        'user_id' => User::inRandomOrder()->first()->id,
-        'spot_id' => Spot::inRandomOrder()->first()->id,
-    ];
-});
+class HitFactory extends Factory
+{
+    protected $model = Hit::class;
+
+    public function definition()
+    {
+        return [
+            'user_id' => User::inRandomOrder()->first()->id,
+            'spot_id' => Spot::inRandomOrder()->first()->id,
+        ];
+    }
+}

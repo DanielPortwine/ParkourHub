@@ -1,18 +1,24 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
 use App\MovementField;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(MovementField::class, function (Faker $faker) {
-    $name = $faker->word;
+class MovementFieldFactory extends Factory
+{
+    protected $model = MovementField::class;
 
-    return [
-        'name' => $name,
-        'input_type' => $faker->randomElement(['number']),
-        'label' => ucfirst($name),
-        'unit' => $faker->word,
-        'small_text' => $faker->sentence,
-    ];
-});
+    public function definition()
+    {
+        $name = $this->faker->word;
+
+        return [
+            'name' => $name,
+            'input_type' => $this->faker->randomElement(['number']),
+            'label' => ucfirst($name),
+            'unit' => $this->faker->word,
+            'small_text' => $this->faker->sentence,
+        ];
+    }
+}
