@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\Visibility;
 use App\Rules\YoutubeLink;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
@@ -37,6 +38,7 @@ class CreateMovement extends FormRequest
             'youtube' => ['required_without:video', 'nullable', 'active_url', new YoutubeLink],
             'video' => 'required_without:youtube|mimes:mp4,mov,mpg,mpeg|max:500000',
             'fields' => 'required|array',
+            'visibility' => ['required', new Visibility],
         ];
     }
 

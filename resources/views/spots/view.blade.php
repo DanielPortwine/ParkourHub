@@ -228,7 +228,7 @@
                                     <div class="form-group row">
                                         <label for="visibility" class="col-md-2 col-form-label text-md-right">Visibility</label>
                                         <div class="col-md-8">
-                                            <select name="visibility" class="form-control" id="visibility-select">
+                                            <select name="visibility" class="form-control visibility-select">
                                                 @foreach(config('settings.privacy.privacy_content.options') as $key => $name)
                                                     <option value="{{ $key }}" @if(setting('privacy_content', 'private') === $key)selected @endif>{{ $name }}</option>
                                                 @endforeach
@@ -426,7 +426,7 @@
                                                 <div class="form-group row">
                                                     <label for="visibility" class="col-md-2 col-form-label text-md-right">Visibility</label>
                                                     <div class="col-md-8">
-                                                        <select name="visibility" class="form-control" id="visibility-select">
+                                                        <select name="visibility" class="form-control visibility-select">
                                                             @foreach(config('settings.privacy.privacy_content.options') as $key => $name)
                                                                 <option value="{{ $key }}" @if(setting('privacy_content', 'private') === $key)selected @endif>{{ $name }}</option>
                                                             @endforeach
@@ -580,11 +580,16 @@
                                                 <div class="form-group row">
                                                     <label for="visibility" class="col-md-2 col-form-label text-md-right">Visibility</label>
                                                     <div class="col-md-8">
-                                                        <select name="visibility" class="form-control" id="visibility-select">
+                                                        <select name="visibility" class="form-control @error('visibility') is-invalid @enderror visibility-select">
                                                             @foreach(config('settings.privacy.privacy_content.options') as $key => $name)
                                                                 <option value="{{ $key }}" @if(setting('privacy_content', 'private') === $key)selected @endif>{{ $name }}</option>
                                                             @endforeach
                                                         </select>
+                                                        @error('visibility')
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                        @enderror
                                                     </div>
                                                 </div>
                                                 <div class="form-group row">

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\Visibility;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
@@ -28,6 +29,7 @@ class CreateWorkout extends FormRequest
             'name' => 'nullable|string|max:25',
             'description' => 'nullable|string|max:255',
             'movements' => 'required|array',
+            'visibility' => ['required', new Visibility],
         ];
     }
 }

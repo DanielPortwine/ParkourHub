@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Rules\Checkbox;
+use App\Rules\Visibility;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
@@ -31,7 +32,8 @@ class CreateSpot extends FormRequest
             'lat_lon' => 'required|string',
             'name' => 'required|string|max:25',
             'description' => 'required|string|max:255',
-            'image' => 'mimes:jpg,jpeg,png|max:' . $imageMax,
+            'image' => 'required|mimes:jpg,jpeg,png|max:' . $imageMax,
+            'visibility' => ['required', new Visibility],
         ];
     }
 

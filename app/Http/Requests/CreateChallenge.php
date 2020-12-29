@@ -2,9 +2,11 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\Visibility;
 use App\Rules\YoutubeLink;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class CreateChallenge extends FormRequest
 {
@@ -43,6 +45,7 @@ class CreateChallenge extends FormRequest
             'name' => 'required|string|max:25',
             'description' => 'required|string|max:255',
             'difficulty' => 'required|integer|between:1,5',
+            'visibility' => ['required', new Visibility],
         ], $content);
     }
 

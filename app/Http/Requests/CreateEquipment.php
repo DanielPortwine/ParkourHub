@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Rules\Checkbox;
+use App\Rules\Visibility;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
@@ -30,6 +31,7 @@ class CreateEquipment extends FormRequest
             'name' => 'required|string|max:25',
             'description' => 'required|string|max:255',
             'image' => 'required|mimes:jpg,jpeg,png|max:5000',
+            'visibility' => ['required', new Visibility],
         ];
     }
 

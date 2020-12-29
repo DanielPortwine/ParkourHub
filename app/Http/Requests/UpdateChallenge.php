@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\Visibility;
 use App\Rules\YoutubeLink;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
@@ -40,6 +41,7 @@ class UpdateChallenge extends FormRequest
             'difficulty' => 'required|integer|between:1,5',
             'youtube' => ['nullable', 'active_url', new YoutubeLink],
             'thumbnail' => 'nullable|mimes:jpg,jpeg,png|max:' . $imageMax,
+            'visibility' => ['required', new Visibility],
         ], $video);
     }
 

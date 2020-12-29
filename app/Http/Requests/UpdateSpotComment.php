@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Rules\VideoImage;
+use App\Rules\Visibility;
 use App\Rules\YoutubeLink;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
@@ -39,6 +40,7 @@ class UpdateSpotComment extends FormRequest
         return array_merge([
             'comment' => 'required_without_all:youtube,video_image|nullable|string|max:255',
             'youtube' => ['required_without_all:comment,video_image', 'nullable', 'active_url', new YoutubeLink],
+            'visibility' => ['required', new Visibility],
         ], $videoImage);
     }
 

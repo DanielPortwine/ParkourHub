@@ -636,7 +636,7 @@ $(document).ready(function() {
     updateFooterPosition();
 
     // select2
-    $('#visibility-select').select2({
+    $('.visibility-select').select2({
         width: '100%',
         minimumResultsForSearch: -1,
     });
