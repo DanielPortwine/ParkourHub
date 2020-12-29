@@ -92,7 +92,7 @@ class ChallengeController extends Controller
         if (empty($challenge)) {
             return view('errors.404');
         }
-        $entries = $challenge->entries()->orderByDesc('created_at')->paginate(10, ['*'], 'entries')->fragment('entries');
+        $entries = $challenge->entries()->orderByDesc('created_at')->paginate(10, ['*'], 'entries');
         $entered = !empty(
             $challenge->entries->where('user_id', Auth::id())->first()
         );
