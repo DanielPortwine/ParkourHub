@@ -89,9 +89,9 @@
                                 <li class="nav-item">
                                     <a class="nav-link btn-link @if($tab === 'exercises')active @endif" href="{{ route('movement_view', ['id' => $originalMovement->id, 'tab' => 'exercises']) }}">Exercises</a>
                                 </li>
-                                <li class="nav-item">
+                                {{--<li class="nav-item">
                                     <a class="nav-link btn-link @if($tab === 'baseline')active @endif" href="{{ route('movement_view', ['id' => $originalMovement->id, 'tab' => 'baseline']) }}">Baseline</a>
-                                </li>
+                                </li>--}}
                             @endpremium
                         @elseif($originalMovement->type_id === 2)
                             @premium
@@ -107,9 +107,9 @@
                                 <li class="nav-item">
                                     <a class="nav-link btn-link @if($tab === 'moves')active @endif" href="{{ route('movement_view', ['id' => $originalMovement->id, 'tab' => 'moves']) }}">Moves</a>
                                 </li>
-                                <li class="nav-item">
+                                {{--<li class="nav-item">
                                     <a class="nav-link btn-link @if($tab === 'baseline')active @endif" href="{{ route('movement_view', ['id' => $originalMovement->id, 'tab' => 'baseline']) }}">Baseline</a>
-                                </li>
+                                </li>--}}
                             @endpremium
                         @endif
                     </ul>
