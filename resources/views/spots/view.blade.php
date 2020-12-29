@@ -14,11 +14,11 @@
         </div>
     @endif
     <div class="container p-0">
-        @if(!empty($spot->image))
-            <div class="content-wrapper">
+        <div class="content-wrapper">
+            @if(!empty($spot->image))
                 <img class="full-content-content" src="{{ $spot->image }}" alt="Image of the {{ $spot->name }} spot.">
-            </div>
-        @endif
+            @endif
+        </div>
     </div>
     <div class="section grey-section">
         <div class="container">

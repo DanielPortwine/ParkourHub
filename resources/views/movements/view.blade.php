@@ -14,19 +14,17 @@
         </div>
     @endif
     <div class="container p-0">
-        @if(!empty($originalMovement->video))
-            <div class="content-wrapper">
+        <div class="content-wrapper">
+            @if(!empty($originalMovement->video))
                 <video controls>
                     <source src="{{ $originalMovement->video }}" type="video/{{ $originalMovement->video_type }}">
                 </video>
-            </div>
-        @elseif(!empty($originalMovement->youtube))
-            <div class="content-wrapper">
+            @elseif(!empty($originalMovement->youtube))
                 <div class="youtube" data-id="{{ $originalMovement->youtube }}" data-start="{{ $originalMovement->youtube_start }}">
                     <span class="h-100 flex-center"><i class="fa fa-youtube-play text-shadow z-10"></i></span>
                 </div>
-            </div>
-        @endif
+            @endif
+        </div>
     </div>
     <div class="section grey-section">
         <div class="container">

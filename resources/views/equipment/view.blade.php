@@ -14,11 +14,11 @@
         </div>
     @endif
     <div class="container p-0">
-        @if(!empty($equipment->image))
-            <div class="content-wrapper">
+        <div class="content-wrapper">
+            @if(!empty($equipment->image))
                 <img class="full-content-content" src="{{ $equipment->image }}" alt="Image of the {{ $equipment->name }} challenge.">
-            </div>
-        @endif
+            @endif
+        </div>
     </div>
     <div class="section grey-section">
         <div class="container">

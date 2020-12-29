@@ -15,11 +15,11 @@
     @endif
     <div class="container p-0">
         <div id="full-content-title">
-            @if(!empty($challenge->thumbnail))
-                <div class="content-wrapper">
+            <div class="content-wrapper">
+                @if(!empty($challenge->thumbnail))
                     <img class="full-content-content" src="{{ $challenge->thumbnail }}" alt="Image of the {{ $challenge->name }} challenge.">
-                </div>
-            @endif
+                @endif
+            </div>
         </div>
         <div class="d-none" id="full-content-video">
             <div class="content-wrapper">
