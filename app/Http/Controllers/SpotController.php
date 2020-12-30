@@ -362,7 +362,11 @@ class SpotController extends Controller
                     ->orWhere('description', 'like', '%' . $search . '%');
             })
             ->where(function($query) {
-                $query->where('private', false)
+                $query->where('visibility', 'public')
+                    ->orWhere(function($q) {
+                        $q->where('visibility', 'follower')
+                            ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
+                    })
                     ->orWhere('user_id', Auth::id());
             })
             ->limit(20)

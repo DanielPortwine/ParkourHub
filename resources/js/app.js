@@ -60,7 +60,7 @@ function searchAddress(search) {
                 $addressResults.html('');
                 for (var address in response) {
                     address = (response[address]);
-                    $addressResults.append($('<div class="row btn text-white w-100 text-left" onclick="window.location = `/spots?search=' + search + '&bounding=' + address.boundingbox + '`"><div class="col">' + address.display_name + '</div></div>'));
+                    $addressResults.append($('<div class="row btn text-white w-100 text-left" onclick="window.location = `/spots/map?search=' + search + '&bounding=' + address.boundingbox + '`"><div class="col">' + address.display_name + '</div></div>'));
                 }
                 $('#map-search-results').removeClass('d-none').show();
                 $('#map-search-results-addresses').removeClass('d-none');
@@ -83,7 +83,7 @@ function searchSpot(search) {
                 $spotResults.html('');
                 for (var spot in response) {
                     spot = (response[spot]);
-                    $spotResults.append($('<div class="row btn text-white w-100 text-left" onclick="window.location = `/spots?search=' + search + '&spot=' + spot.id + '`"><div class="col">' + spot.name + ' by ' + spot.user.name + '</div></div>'));
+                    $spotResults.append($('<div class="row btn text-white w-100 text-left" onclick="window.location = `/spots/map?search=' + search + '&spot=' + spot.id + '`"><div class="col">' + spot.name + ' by ' + spot.user.name + '</div></div>'));
                 }
                 $('#map-search-results').removeClass('d-none').show();
                 $('#map-search-results-spots').removeClass('d-none');
