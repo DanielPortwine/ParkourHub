@@ -190,63 +190,7 @@ function setBoundingBox(latLonArray, map, highlight = false) {
     }
 }
 
-function setRating(rating, shape) {
-    var $rating = $('#rating-' + shape + '-' + rating),
-        selected = 'fa-' + shape,
-        unselected = 'fa-' + shape + '-o';
-    if (shape === 'star') {
-        $('#rating').val(rating);
-    } else if (shape === 'circle') {
-        $('#difficulty').val(rating);
-    }
-    // if the selected shape is the highest previously selected, unselect it, otherwise select it
-    if ($rating.hasClass(selected) && $('#rating-' + shape + '-' + (rating < 5 ? (rating + 1) : rating)).hasClass(unselected)) {
-        $rating.addClass(unselected).removeClass(selected);
-    } else {
-        $rating.addClass(selected).removeClass(unselected);
-    }
-    // update the rest of the shapes
-    for (var value = 1; value <= 5; value++) {
-        if (value === rating) {
-            continue;
-        }
-        var $value = $('#rating-' + shape + '-' + value);
-        if (value < rating) {
-            $value.addClass(selected).removeClass(unselected);
-        } else {
-            $value.addClass(unselected).removeClass(selected);
-        }
-    }
-}
-
-function updateFooterPosition() {
-    let $footer = $('#footer'),
-        $nav = $('.navbar'),
-        $body = $('body'),
-        $window = $(window);
-
-    if (($body.height() + $footer.height() + $nav.height()) < $window.height()) {
-        $footer.css('bottom', 0);
-    } else {
-        $footer.css('bottom', '');
-    }
-}
-
-$(document).ready(function() {
-    lazyload();
-    var $window = $(window);
-    $window.scroll(function() {
-        if ($window.scrollTop() > 100) {
-            $('#scroll-arrow').fadeOut();
-        }
-    });
-
-    $('.require-confirmation').click(function() {
-        $(this).hide();
-        $(this).siblings('.confirmation-button').removeClass('d-none');
-        $(this).siblings('.confirmation-text').removeClass('d-none');
-    });
-
+function loadSpotMap() {
     var popupOptions = {
             positioning: 'bottom-center',
             autoPan: true,
@@ -449,6 +393,69 @@ $(document).ready(function() {
         $mapSearchClear.addClass('d-none');
     });
     checkInputClear($mapSearchInput, $mapSearchClear);
+}
+
+function setRating(rating, shape) {
+    var $rating = $('#rating-' + shape + '-' + rating),
+        selected = 'fa-' + shape,
+        unselected = 'fa-' + shape + '-o';
+    if (shape === 'star') {
+        $('#rating').val(rating);
+    } else if (shape === 'circle') {
+        $('#difficulty').val(rating);
+    }
+    // if the selected shape is the highest previously selected, unselect it, otherwise select it
+    if ($rating.hasClass(selected) && $('#rating-' + shape + '-' + (rating < 5 ? (rating + 1) : rating)).hasClass(unselected)) {
+        $rating.addClass(unselected).removeClass(selected);
+    } else {
+        $rating.addClass(selected).removeClass(unselected);
+    }
+    // update the rest of the shapes
+    for (var value = 1; value <= 5; value++) {
+        if (value === rating) {
+            continue;
+        }
+        var $value = $('#rating-' + shape + '-' + value);
+        if (value < rating) {
+            $value.addClass(selected).removeClass(unselected);
+        } else {
+            $value.addClass(unselected).removeClass(selected);
+        }
+    }
+}
+
+function updateFooterPosition() {
+    let $footer = $('#footer'),
+        $nav = $('.navbar'),
+        $body = $('body'),
+        $window = $(window);
+
+    if (($body.height() + $footer.height() + $nav.height()) < $window.height()) {
+        $footer.css('bottom', 0);
+    } else {
+        $footer.css('bottom', '');
+    }
+}
+
+$(document).ready(function() {
+    lazyload();
+    var $window = $(window);
+    $window.scroll(function() {
+        if ($window.scrollTop() > 100) {
+            $('#scroll-arrow').fadeOut();
+        }
+    });
+
+    $('.require-confirmation').click(function() {
+        $(this).hide();
+        $(this).siblings('.confirmation-button').removeClass('d-none');
+        $(this).siblings('.confirmation-text').removeClass('d-none');
+    });
+
+    // load the map if the element is present
+    if ($('#map').length) {
+        loadSpotMap();
+    }
 
     // search for a city to use as the user's hometown
     $('#hometown-form').submit(function(e) {
