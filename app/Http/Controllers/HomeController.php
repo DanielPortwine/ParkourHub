@@ -31,32 +31,45 @@ class HomeController extends Controller
     public function index()
     {
         $followedUsers = Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray();
-        $followedSpots = Spot::whereIn('user_id', $followedUsers)
+        $followedSpots = Spot::withCount('views')
+            ->with(['reviews', 'reports', 'hits', 'user'])
+            ->whereIn('user_id', $followedUsers)
             ->orderByDesc('created_at')
             ->limit(5)
             ->get();
-        $followedChallenges = Challenge::whereIn('user_id', $followedUsers)
+        $followedChallenges = Challenge::withCount('entries')
+            ->with(['entries', 'reports', 'user'])
+            ->whereIn('user_id', $followedUsers)
             ->orderByDesc('created_at')
             ->limit(5)
             ->get();
-        $hits = Hit::where('user_id', Auth::id())
+        $hits = Hit::with(['spot', 'user'])
+            ->where('user_id', Auth::id())
+            ->whereHas('spot')
             ->whereNull('completed_at')
             ->inRandomOrder()
             ->limit(4)
             ->pluck('spot_id')
             ->toArray();
-        $hitlist = Spot::whereIn('id', $hits)->limit(4)->get();
+        $hitlist = Spot::withCount('views')
+            ->with(['reviews', 'reports', 'hits', 'user'])
+            ->whereIn('id', $hits)
+            ->limit(4)
+            ->get();
         $hometownBoundaries = explode(',', Auth::user()->hometown_bounding);
         $hometownName = explode(',', Auth::user()->hometown_name)[0];
         if (count($hometownBoundaries) !== 4) {
             $hometownBoundaries = [0, 0, 0, 0];
         }
-        $hometownSpots = Spot::whereBetween('latitude', [$hometownBoundaries[0], $hometownBoundaries[1]])
+        $hometownSpots = Spot::withCount('views')
+            ->with(['reviews', 'reports', 'hits', 'user'])
+            ->whereBetween('latitude', [$hometownBoundaries[0], $hometownBoundaries[1]])
             ->whereBetween('longitude', [$hometownBoundaries[2], $hometownBoundaries[3]])
             ->orderByDesc('created_at')
             ->limit(5)
             ->get();
-        $userStats = Cache::remember('user_home_stats', 600, function() {
+        $userStats = [];
+        /*$userStats = Cache::remember('user_home_stats', 600, function() {
             return [
                 'spotsCreated' => count(Spot::where('user_id', Auth::id())->get()),
                 'challengesCreated' => count(Challenge::where('user_id', Auth::id())->get()),
@@ -66,8 +79,9 @@ class HomeController extends Controller
                 'following' => count(Auth::user()->following),
                 'age' => Carbon::parse(User::where('id', Auth::id())->pluck('created_at')[0])->diffInDays(Carbon::now()),
             ];
-        });
-        $hometownChallenges = Challenge::with(['spot'])
+        });*/
+        $hometownChallenges = Challenge::withCount('entries')
+            ->with(['entries', 'reports', 'user'])
             ->where('user_id', Auth::id())
             ->whereHas('spot', function($q) use ($hometownBoundaries) {
                 $q->whereBetween('latitude', [$hometownBoundaries[0], $hometownBoundaries[1]])

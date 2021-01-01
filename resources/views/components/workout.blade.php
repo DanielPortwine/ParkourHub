@@ -24,8 +24,8 @@
         </div>
         <div class="row">
             <div class="col">
-                @php $movementsCount = $workout->movements()->where('recorded_workout_id', null)->count() @endphp
-                {{ $movementsCount === 1 ? $movementsCount . ' movement' : $workout->movementsCount . ' movements' }} | {{ $workout->created_at->diffForHumans() }}
+                @php $movementsCount = $workout->movements_count @endphp
+                {{ $movementsCount === 1 ? $movementsCount . ' movement' : $movementsCount . ' movements' }} | {{ $workout->created_at->diffForHumans() }}
             </div>
         </div>
     </div>

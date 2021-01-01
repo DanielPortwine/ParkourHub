@@ -36,6 +36,7 @@ class ChallengeController extends Controller
         }
 
         $challenges = Challenge::withCount('entries')
+            ->with(['entries', 'reports', 'user'])
             ->search($request['search'] ?? '')
             ->entered(!empty($request['entered']) ? true : false)
             ->difficulty($request['difficulty'] ?? null)
@@ -68,13 +69,13 @@ class ChallengeController extends Controller
             return redirect()->route('challenge_view', $id);
         }
 
-        $challenge = Challenge::with(['entries'])
+        $challenge = Challenge::with(['entries', 'spot', 'reports', 'user'])
             ->where('id', $id)
             ->first();
         if (empty($challenge)) {
             return view('errors.404');
         }
-        $entries = $challenge->entries()->orderByDesc('created_at')->paginate(10, ['*'], 'entries');
+        $entries = $challenge->entries()->with(['reports', 'user'])->orderByDesc('created_at')->paginate(10, ['*'], 'entries');
         $entered = !empty(
             $challenge->entries->where('user_id', Auth::id())->first()
         );

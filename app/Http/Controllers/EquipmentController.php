@@ -28,7 +28,9 @@ class EquipmentController extends Controller
             $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
         }
 
-        $equipment = Equipment::search($request['search'] ?? '')
+        $equipment = Equipment::withCount(['movements'])
+            ->with(['movements', 'reports', 'user'])
+            ->search($request['search'] ?? '')
             ->dateBetween([
                 'from' => $request['date_from'] ?? null,
                 'to' => $request['date_to'] ?? null

@@ -33,7 +33,8 @@ class MovementController extends Controller
             $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
         }
 
-        $movements = Movement::withCount('spots')
+        $movements = Movement::withCount(['spots', 'moves'])
+            ->with(['spots', 'moves', 'reports', 'user'])
             ->search($request['search'] ?? '')
             ->dateBetween([
                 'from' => $request['date_from'] ?? null,
@@ -62,12 +63,7 @@ class MovementController extends Controller
     public function view($id, $tab = null)
     {
         $movement = Movement::with([
-                'spots',
-                'progressions',
-                'advancements',
-                'exercises',
-                'moves',
-                'equipment',
+                $tab,
                 'category',
                 'fields',
             ])
@@ -84,9 +80,28 @@ class MovementController extends Controller
         $advancementID = null;
         $baselineFields = null;
         if (!empty($request['spots']) && (($tab == null && $movement->type_id === 1) || $tab === 'spots')) {
-            $spots = $movement->spots()->paginate(20, ['*'], 'spots');
+            $spots = $movement->spots()
+                ->withCount('views')
+                ->with(['reviews', 'reports', 'hits', 'user'])
+                ->paginate(20, ['*'], 'spots');
         } else if (($tab == null && $movement->type_id === 1) || $tab === 'spots') {
-            $spots = $movement->spots()->limit(4)->get();
+            $spots = $movement->spots()
+                ->withCount('views')
+                ->with(['reviews', 'reports', 'hits', 'user'])
+                ->limit(4)
+                ->get();
+        }
+        if (!empty($request['equipment']) && (($tab == null && $movement->type_id === 2) || $tab === 'equipment')) {
+            $equipment = $movement->equipment()
+                ->withCount(['movements'])
+                ->with(['movements', 'reports', 'user'])
+                ->paginate(20, ['*'], 'equipment');
+        } else if (($tab == null && $movement->type_id === 2) || $tab === 'equipment') {
+            $equipment = $movement->equipment()
+                ->withCount(['movements'])
+                ->with(['movements', 'reports', 'user'])
+                ->limit(4)
+                ->get();
         }
         if (!empty($request['progressions']) && $tab === 'progressions') {
             $progressions = $movement->progressions()->paginate(20, ['*'], 'progressions');
@@ -107,11 +122,6 @@ class MovementController extends Controller
             $moves = $movement->moves()->paginate(20, ['*'], 'moves');
         } else if ($tab === 'moves') {
             $moves = $movement->moves()->limit(4)->get();
-        }
-        if (!empty($request['equipment']) && (($tab == null && $movement->type_id === 2) || $tab === 'equipment')) {
-            $equipment = $movement->equipment()->paginate(20, ['*'], 'equipment');
-        } else if (($tab == null && $movement->type_id === 2) || $tab === 'equipment') {
-            $equipment = $movement->equipment()->limit(4)->get();
         }
         if ($tab === 'baseline') {
             if (count(Auth::user()->baselineMovementFields()->where('movement_id', $id)->get())) {

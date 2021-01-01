@@ -30,6 +30,7 @@ class WorkoutController extends Controller
         }
 
         $workouts = Workout::withCount('movements')
+            ->with(['movements', 'bookmarks', 'user'])
             ->search($request['search'] ?? '')
             ->dateBetween([
                 'from' => $request['date_from'] ?? null,
@@ -59,6 +60,7 @@ class WorkoutController extends Controller
 
         $userID = Auth::id();
         $workouts = Workout::withCount('movements')
+            ->with(['movements', 'bookmarks', 'user'])
             ->where('user_id', $userID)
             ->dateBetween([
                 'from' => $request['date_from'] ?? null,
@@ -89,21 +91,29 @@ class WorkoutController extends Controller
             return redirect()->route('workout_view', $id);
         }
 
-        $workout = Workout::with(['user'])
+        $workout = Workout::with(['user', 'movements', 'bookmarks'])
             ->where('id', $id)
             ->first();
 
-        $workoutMovements = $workout->movements()
-            ->with([
-                'movement',
-                'fields',
-                'fields.field',
-            ])
-            ->paginate(20);
-        $recordedWorkouts = RecordedWorkout::where('workout_id', $id)->where('user_id', Auth::id())->paginate(10);
-        $spots = $workout->spots()
-            ->orderByDesc('created_at')
-            ->paginate(20);
+        if ($tab === null || $tab === 'movements') {
+            $workoutMovements = $workout->movements()
+                ->with([
+                    'movement',
+                    'fields',
+                    'fields.field',
+                ])
+                ->paginate(20);
+        } else if ($tab === 'recorded') {
+            $recordedWorkouts = RecordedWorkout::where('workout_id', $id)
+                ->where('user_id', Auth::id())
+                ->paginate(20);
+        } else if ($tab === 'spots') {
+            $spots = $workout->spots()
+                ->withCount('views')
+                ->with(['reviews', 'reports', 'hits', 'user'])
+                ->orderByDesc('created_at')
+                ->paginate(20);
+        }
 
         $displayMovement = $workout->movements()
             ->with(['movement'])
@@ -119,9 +129,9 @@ class WorkoutController extends Controller
 
         return view('workouts.view', [
             'workout' => $workout,
-            'workoutMovements' => $workoutMovements,
-            'recordedWorkouts' => $recordedWorkouts,
-            'spots' => $spots,
+            'workoutMovements' => $workoutMovements ?? null,
+            'recordedWorkouts' => $recordedWorkouts ?? null,
+            'spots' => $spots ?? null,
             'request' => $request,
             'tab' => $tab,
             'displayMovement' => $displayMovement,
@@ -302,6 +312,7 @@ class WorkoutController extends Controller
         $workouts = Auth::user()
             ->bookmarks()
             ->withCount('movements')
+            ->with(['movements', 'bookmarks', 'user'])
             ->dateBetween([
                 'from' => $request['date_from'] ?? null,
                 'to' => $request['date_to'] ?? null
