@@ -115,6 +115,19 @@
 @push('scripts')
     <script defer>
         var count = {{ count($workout->movements) + 1 ?: 1 }};
+        function updateFooterPosition() {
+            let $footer = $('#footer'),
+                $nav = $('.navbar'),
+                $body = $('body'),
+                $window = $(window);
+
+            if (($body.height() + $footer.height() + $nav.height()) < $window.height()) {
+                $footer.css('bottom', 0);
+            } else {
+                $footer.css('bottom', '');
+            }
+        }
+
         function addMovementSelection(buttonCount = 0) {
             if (buttonCount > 0) {
                 $('.btn-' + buttonCount).remove();
@@ -179,11 +192,13 @@
                                     '<a class="btn btn-sm btn-green btn-' + currentCount + '" title="Add Movement" onclick="addMovementSelection(' + currentCount + ')"><i class="fa fa-plus"></i></a>'
                                 );
                             }
+                            updateFooterPosition();
                         }
                     },
                 });
             });
             count++;
+            updateFooterPosition();
         }
         if ({{ count($workout->movements) }} > 0) {
             for (x=1;x<={{ count($workout->movements) }};x++) {
