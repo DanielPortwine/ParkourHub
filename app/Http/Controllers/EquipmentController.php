@@ -148,23 +148,4 @@ class EquipmentController extends Controller
 
         return back()->with('status', 'Successfully discarded reports against this content');
     }
-
-    public function getEquipment(Request $request)
-    {
-        if (!$request->ajax()) {
-            return back();
-        }
-
-        $results = [];
-        $equipments = Equipment::get();
-
-        foreach ($equipments as $equipment) {
-            $results[] = [
-                'id' => $equipment->id,
-                'text' => $equipment->name,
-            ];
-        }
-
-        return $results;
-    }
 }

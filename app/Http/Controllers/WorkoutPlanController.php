@@ -85,29 +85,4 @@ class WorkoutPlanController extends Controller
 
         return back()->with('status', 'Successfully removed workout from plan');
     }
-
-    public function getUserWorkouts(Request $request)
-    {
-        if (!$request->ajax()) {
-            return back();
-        }
-
-        $workouts = Workout::with('planUsers')
-            ->where('user_id', Auth::id())
-            ->orWhereHas('planUsers', function($q) {
-                $q->where('users.id', Auth::id());
-            })
-            ->orderByDesc('name')
-            ->get();
-
-        $results = [];
-        foreach ($workouts as $workout) {
-            $results[] = [
-                'id' => $workout->id,
-                'text' => $workout->name ?: 'Workout ' . date('d/m/Y', strtotime($workout->created_at)),
-            ];
-        }
-
-        return $results;
-    }
 }

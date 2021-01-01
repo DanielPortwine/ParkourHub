@@ -357,24 +357,4 @@ class SpotController extends Controller
 
         return back()->with('status', 'Successfully linked workout with spot');
     }
-
-    public function getSpots(Request $request)
-    {
-        if (!$request->ajax()) {
-            return back();
-        }
-
-        $results = [];
-        $workoutSpots = Workout::where('id', $request['workout'])->first()->spots()->pluck('spots.id')->toArray();
-        $spots = Spot::whereNotIn('id', $workoutSpots)->get();
-
-        foreach ($spots as $spot) {
-            $results[] = [
-                'id' => $spot->id,
-                'text' => $spot->name,
-            ];
-        }
-
-        return $results;
-    }
 }

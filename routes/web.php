@@ -83,7 +83,6 @@ Route::prefix('spots')->middleware('verified')->group(function() {
     Route::post('/add_movement/{spot}', 'SpotController@addMovement')->name('spot_add_movement');
     Route::get('/remove_movement/{spotID}/{movement}', 'SpotController@removeMovement')->name('spot_remove_movement');
     Route::post('/link_workout', 'SpotController@linkWorkout')->name('spot_workout_link');
-    Route::get('/getSpots', 'SpotController@getSpots')->name('spots_get');
 });
 
 Route::prefix('/reviews')->middleware('verified')->group(function() {
@@ -139,10 +138,6 @@ Route::prefix('movements')->middleware(['verified', 'isPremium'])->group(functio
     Route::get('/officialise/{id}', 'MovementController@officialise')->name('movement_officialise');
     Route::get('/unofficialise/{id}', 'MovementController@unofficialise')->name('movement_unofficialise');
     Route::post('/set_movement_baseline', 'MovementController@setMovementBaseline')->name('set_movement_baseline');
-    Route::get('/getMovements', 'MovementController@getMovements')->name('movement_search');
-    Route::get('/getMovementCategories', 'MovementController@getMovementCategories')->name('movement_category_search');
-    Route::get('/getMovementFields', 'MovementController@getMovementFields')->name('movement_field_search');
-    Route::get('/getFieldsFromMovement', 'MovementController@getFieldsFromMovement')->name('field_from_movement_search');
 });
 
 Route::prefix('equipment')->middleware(['verified', 'isPremium'])->group(function() {
@@ -155,7 +150,6 @@ Route::prefix('equipment')->middleware(['verified', 'isPremium'])->group(functio
     Route::get('/delete/{id}', 'EquipmentController@delete')->name('equipment_delete');
     Route::get('/report/{equipment}', 'EquipmentController@report')->name('equipment_report');
     Route::get('/discard_reports/{equipment}', 'EquipmentController@discardReports')->name('equipment_report_discard');
-    Route::get('/getEquipment', 'EquipmentController@getEquipment')->name('equipment_search');
 });
 
 Route::prefix('workouts')->middleware(['verified', 'isPremium'])->group(function() {
@@ -172,7 +166,6 @@ Route::prefix('workouts')->middleware(['verified', 'isPremium'])->group(function
     Route::get('/unbookmark/{id}', 'WorkoutController@unbookmark')->name('workout_unbookmark');
     Route::get('/getMovementFields', 'WorkoutController@getMovementFields')->name('movement_fields_search');
     Route::get('/deleteMovement/{id}', 'WorkoutController@deleteMovement')->name('workout_movement_delete');
-    Route::get('/getWorkouts', 'WorkoutController@getWorkouts')->name('workout_search');
     Route::prefix('recorded')->group(function() {
         Route::get('/', 'RecordedWorkoutController@index')->name('recorded_workout_listing');
         Route::get('/view/{id}', 'RecordedWorkoutController@view')->name('recorded_workout_view');
@@ -186,7 +179,6 @@ Route::prefix('workouts')->middleware(['verified', 'isPremium'])->group(function
         Route::get('/', 'WorkoutPlanController@index')->name('workout_plan');
         Route::post('/', 'WorkoutPlanController@addWorkout')->name('add_workout_to_plan');
         Route::get('/remove_workout/{id}', 'WorkoutPlanController@removeWorkout')->name('workout_plan_remove_workout');
-        Route::get('/getUserWorkouts', 'WorkoutPlanController@getUserWorkouts')->name('user_workout_search');
     });
 });
 
