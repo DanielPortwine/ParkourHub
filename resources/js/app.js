@@ -634,7 +634,7 @@ $(document).ready(function() {
         }
     });
 
-    $('#add-movement-button').click(function() {
+    $('.add-movement-button').click(function() {
         $('#add-movement-container').slideDown();
     })
 
@@ -643,8 +643,12 @@ $(document).ready(function() {
     updateFooterPosition();
 
     // select2
-    $('.visibility-select').select2({
+    $('.select2-no-search').select2({
         width: '100%',
         minimumResultsForSearch: -1,
+    });
+    $('.select2-5-results').select2({
+        width: '100%',
+        minimumResultsForSearch: 5,
     });
 });

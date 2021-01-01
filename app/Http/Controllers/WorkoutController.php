@@ -160,6 +160,11 @@ class WorkoutController extends Controller
             ->first()
             ->movement;
 
+        $linkableSpots = null;
+        if ($tab === 'spots') {
+            $linkableSpots = Spot::whereNotIn('id', $workout->spots()->pluck('spots.id')->toArray())->get();
+        }
+
 
         return view('workouts.view', [
             'workout' => $workout,
@@ -169,12 +174,17 @@ class WorkoutController extends Controller
             'request' => $request,
             'tab' => $tab,
             'displayMovement' => $displayMovement,
+            'linkableSpots' => $linkableSpots,
         ]);
     }
 
     public function create()
     {
-        return view('workouts.create');
+        $movements = Movement::get();
+
+        return view('workouts.create', [
+            'movements' => $movements,
+        ]);
     }
 
     public function store(CreateWorkout $request)
@@ -259,8 +269,11 @@ class WorkoutController extends Controller
             ->where('id', $id)
             ->first();
 
+        $movements = Movement::get();
+
         return view('workouts.edit', [
             'workout' => $workout,
+            'movements' => $movements,
         ]);
     }
 

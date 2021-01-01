@@ -88,13 +88,17 @@
                             <div class="form-group row">
                                 <label class="col-md-2 col-form-label text-md-right">Fields</label>
                                 <div class="col-md-8 vertical-center">
-                                    <select class="select2-movement-fields" name="fields[]" multiple="multiple"></select>
+                                    <select class="select2-no-search" name="fields[]" multiple="multiple">
+                                        @foreach($movementFields as $field)
+                                            <option value="{{ $field->id }}" @if(in_array($field->id, $movement->fields()->pluck('movement_field_id')->toArray()))selected @endif>{{ $field->name }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="visibility" class="col-md-2 col-form-label text-md-right">Visibility</label>
                                 <div class="col-md-8">
-                                    <select name="visibility" class="form-control visibility-select">
+                                    <select name="visibility" class="form-control select2-no-search">
                                         @foreach(config('settings.privacy.privacy_content.options') as $key => $name)
                                             <option value="{{ $key }}" @if($movement->visibility === $key)selected @endif>{{ $name }}</option>
                                         @endforeach
@@ -119,26 +123,3 @@
 @section('footer')
     @include('components.footer')
 @endsection
-
-@push('scripts')
-    <script defer>
-        $.ajax({
-            url: '/movements/getMovementFields',
-            success: function (response) {
-                $('.select2-movement-fields').select2({
-                    data: response,
-                    width: '100%',
-                });
-                $.ajax({
-                    url: '/movements/getFieldsFromMovement',
-                    data: {
-                        id: {{ $movement->id }},
-                    },
-                    success: function(response) {
-                        $('.select2-movement-fields').val(response).trigger('change');
-                    },
-                });
-            },
-        });
-    </script>
-@endpush

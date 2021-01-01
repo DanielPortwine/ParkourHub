@@ -188,27 +188,35 @@
                                 @elseif($component === 'movement')
                                     <div class="col-auto pb-3">
                                         <label><strong>Type</strong></label>
-                                        <select class="select2-movement-type" name="type">
+                                        <select class="select2-5-results" name="type">
                                             <option></option>
+                                            <option value="1" @if(($_GET['type'] ?? '') == 1)selected @endif>Move</option>
+                                            <option value="2" @if(($_GET['type'] ?? '') == 2)selected @endif>Exercise</option>
                                         </select>
                                     </div>
                                     <div class="col-auto pb-3">
                                         <label><strong>Category</strong></label>
-                                        <select class="select2-movement-category" name="category">
+                                        <select class="select2-5-results" name="category">
                                             <option></option>
+                                            @foreach($movementCategories as $category)
+                                                <option value="{{ $category->id }}" @if(($_GET['category'] ?? '') == $category->id)selected @endif>{{ $category->name }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                     <div class="col-auto pb-3">
                                         <label><strong>Equipment</strong></label>
-                                        <select class="select2-movement-equipment" name="equipment">
+                                        <select class="select2-5-results" name="equipment">
                                             <option></option>
+                                            @foreach($equipments as $equipment)
+                                                <option value="{{ $equipment->id }}" @if(($_GET['equipment'] ?? '') == $equipment->id)selected @endif>{{ $equipment->name }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                 @endif
                                 <div class="col-auto pb-3">
                                     <label><strong>Sort</strong></label>
                                     <div>
-                                        <select name="sort" class="select2-sort">
+                                        <select name="sort" class="select2-no-search">
                                             <option value="date_desc" @if(($_GET['sort'] ?? '') === 'date_desc')selected @endif>Newest</option>
                                             <option value="date_asc" @if(($_GET['sort'] ?? '') === 'date_asc')selected @endif>Oldest</option>
                                             @if($component === 'spot')
@@ -257,65 +265,3 @@
 @section('footer')
     @include('components.footer')
 @endsection
-
-@push('scripts')
-    <script defer>
-        $(document).ready(function() {
-            var urlParams = new URLSearchParams(window.location.search),
-                data = [
-                {
-                    id: 1,
-                    text: 'Move',
-                },
-                {
-                    id: 2,
-                    text: 'Exercise',
-                }
-            ];
-            $('.select2-movement-type').select2({
-                data: data,
-                width: '100%',
-                minimumResultsForSearch: 5,
-            });
-            if (urlParams.has('type')) {
-                $('.select2-movement-type').val(urlParams.get('type')).trigger('change');
-            }
-
-            $.ajax({
-                url: '/movements/getMovementCategories',
-                data: {
-                    types: [1, 2]
-                },
-                success: function (response) {
-                    $('.select2-movement-category').select2({
-                        data: response,
-                        width: '100%',
-                        minimumResultsForSearch: 5,
-                    });
-                    if (urlParams.has('category')) {
-                        $('.select2-movement-category').val(urlParams.get('category')).trigger('change');
-                    }
-                },
-            });
-
-            $.ajax({
-                url: '/equipment/getEquipment',
-                success: function (response) {
-                    $('.select2-movement-equipment').select2({
-                        data: response,
-                        width: '100%',
-                        minimumResultsForSearch: 5,
-                    });
-                    if (urlParams.has('equipment')) {
-                        $('.select2-movement-equipment').val(urlParams.get('equipment')).trigger('change');
-                    }
-                },
-            });
-
-            $('.select2-sort').select2({
-                width: '100%',
-                minimumResultsForSearch: -1,
-            })
-        });
-    </script>
-@endpush

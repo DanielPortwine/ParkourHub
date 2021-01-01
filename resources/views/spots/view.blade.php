@@ -121,7 +121,7 @@
                         </div>
                     </div>
                     <div class="col-auto">
-                        <a class="btn btn-sm btn-green" id="add-movement-button"><i class="fa fa-plus"></i></a>
+                        <a class="btn btn-sm btn-green add-movement-button" data-id="{{ $spot->id }}"><i class="fa fa-plus"></i></a>
                     </div>
                 </div>
                 <div class="row pb-3">
@@ -136,7 +136,11 @@
                             <div class="form-group row">
                                 <label class="col-md-2 col-form-label text-md-right">Select a Movement</label>
                                 <div class="col-md-8 vertical-center">
-                                    <select class="select2-movements" id="spot-{{ $spot->id }}" name="movement"></select>
+                                    <select class="select2-5-results" id="spot-{{ $spot->id }}" name="movement">
+                                        @foreach($linkableMovements as $movement)
+                                            <option value="{{ $movement->id }}">{{ $movement->name }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                                 <div class="col-md-2"><button type="submit" class="btn btn-green">Add</button></div>
                             </div>
@@ -160,7 +164,11 @@
                                     <div class="form-group row">
                                         <label class="col-md-2 col-form-label text-md-right">Category</label>
                                         <div class="col-md-8 vertical-center">
-                                            <select class="select2-movement-category @error('category') is-invalid border-danger @enderror" name="category"></select>
+                                            <select class="select2-5-results @error('category') is-invalid border-danger @enderror" name="category">
+                                                @foreach($movementCategories as $category)
+                                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                                @endforeach
+                                            </select>
                                             @error('category')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -217,7 +225,11 @@
                                     <div class="form-group row">
                                         <label class="col-md-2 col-form-label text-md-right">Fields</label>
                                         <div class="col-md-8 vertical-center">
-                                            <select class="select2-movement-fields @error('fields') is-invalid border-danger @enderror" name="fields[]" multiple="multiple"></select>
+                                            <select class="select2-no-search @error('fields') is-invalid border-danger @enderror" name="fields[]" multiple="multiple">
+                                                @foreach($movementFields as $field)
+                                                    <option value="{{ $field->id }}">{{ $field->name }}</option>
+                                                @endforeach
+                                            </select>
                                             @error('fields')
                                             <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -228,7 +240,7 @@
                                     <div class="form-group row">
                                         <label for="visibility" class="col-md-2 col-form-label text-md-right">Visibility</label>
                                         <div class="col-md-8">
-                                            <select name="visibility" class="form-control visibility-select">
+                                            <select name="visibility" class="form-control select2-no-search">
                                                 @foreach(config('settings.privacy.privacy_content.options') as $key => $name)
                                                     <option value="{{ $key }}" @if(setting('privacy_content', 'private') === $key)selected @endif>{{ $name }}</option>
                                                 @endforeach
@@ -426,7 +438,7 @@
                                                 <div class="form-group row">
                                                     <label for="visibility" class="col-md-2 col-form-label text-md-right">Visibility</label>
                                                     <div class="col-md-8">
-                                                        <select name="visibility" class="form-control visibility-select">
+                                                        <select name="visibility" class="form-control select2-no-search">
                                                             @foreach(config('settings.privacy.privacy_content.options') as $key => $name)
                                                                 <option value="{{ $key }}" @if(setting('privacy_content', 'private') === $key)selected @endif>{{ $name }}</option>
                                                             @endforeach
@@ -580,7 +592,7 @@
                                                 <div class="form-group row">
                                                     <label for="visibility" class="col-md-2 col-form-label text-md-right">Visibility</label>
                                                     <div class="col-md-8">
-                                                        <select name="visibility" class="form-control @error('visibility') is-invalid @enderror visibility-select">
+                                                        <select name="visibility" class="form-control select2-no-search @error('visibility') is-invalid @enderror">
                                                             @foreach(config('settings.privacy.privacy_content.options') as $key => $name)
                                                                 <option value="{{ $key }}" @if(setting('privacy_content', 'private') === $key)selected @endif>{{ $name }}</option>
                                                             @endforeach
@@ -652,7 +664,11 @@
                                             <div class="form-group row">
                                                 <label for="title" class="col-md-2 col-form-label text-md-right">Workout</label>
                                                 <div class="col-md-8">
-                                                    <select class="select2-workouts" name="workout"></select>
+                                                    <select class="select2-5-results" name="workout">
+                                                        @foreach($linkableWorkouts as $workout)
+                                                            <option value="{{ $workout->id }}">{{ $workout->name }}</option>
+                                                        @endforeach
+                                                    </select>
                                                     <small>Select a workout that can be completed at this spot.</small>
                                                     @error('workout')
                                                     <span class="invalid-feedback" role="alert">
@@ -705,59 +721,3 @@
 @section('footer')
     @include('components.footer')
 @endsection
-
-@push('scripts')
-    <script defer>
-        var urlParams = new URLSearchParams(window.location.search);
-        $.ajax({
-            url: '/movements/getMovements',
-            data: {
-                link: 'spotMove',
-                id: {{ $spot->id }},
-            },
-            success: function (response) {
-                $('.select2-movements').select2({
-                    data: response,
-                    width: '100%',
-                    minimumResultsForSearch: 5,
-                });
-            },
-        });
-        $.ajax({
-            url: '/movements/getMovementCategories',
-            data: {
-                types: [1]
-            },
-            success: function (response) {
-                $('.select2-movement-category').select2({
-                    data: response,
-                    width: '100%',
-                    minimumResultsForSearch: 5,
-                });
-            },
-        });
-        $.ajax({
-            url: '/movements/getMovementFields',
-            success: function (response) {
-                $('.select2-movement-fields').select2({
-                    data: response,
-                    width: '100%',
-                    minimumResultsForSearch: 5,
-                });
-            },
-        });
-        $.ajax({
-            url: '/workouts/getWorkouts',
-            data: {
-                spot: {{ $spot->id }}
-            },
-            success: function (response) {
-                $('.select2-workouts').select2({
-                    data: response,
-                    width: '100%',
-                    minimumResultsForSearch: 5,
-                });
-            },
-        });
-    </script>
-@endpush

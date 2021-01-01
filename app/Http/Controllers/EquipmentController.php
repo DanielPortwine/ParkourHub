@@ -6,6 +6,9 @@ use App\Equipment;
 use App\Follower;
 use App\Http\Requests\CreateEquipment;
 use App\Http\Requests\UpdateEquipment;
+use App\Movement;
+use App\MovementCategory;
+use App\MovementField;
 use App\Report;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -92,10 +95,19 @@ class EquipmentController extends Controller
                 ->get();
         }
 
+        $linkableMovements = Movement::where('id', '!=', $id)
+            ->whereNotIn('id', $equipment->movements()->pluck('movements.id')->toArray())
+            ->where('type_id', 2)
+            ->orderBy('category_id')
+            ->get();
+        $movementCategories = MovementCategory::where('type_id', 2)->get();
+
         return view('equipment.view', [
             'equipment' => $equipment,
             'movements' => $movements,
             'request' => $request,
+            'linkableMovements' => $linkableMovements,
+            'movementCategories' => $movementCategories,
         ]);
     }
 

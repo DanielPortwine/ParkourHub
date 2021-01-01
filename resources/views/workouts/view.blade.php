@@ -137,7 +137,11 @@
                                             <div class="form-group row">
                                                 <label for="title" class="col-md-2 col-form-label text-md-right">Spot</label>
                                                 <div class="col-md-8">
-                                                    <select class="select2-spots" name="spot"></select>
+                                                    <select class="select2-5-results" name="spot">
+                                                        @foreach($linkableSpots as $spot)
+                                                            <option value="{{ $spot->id }}">{{ $spot->name }}</option>
+                                                        @endforeach
+                                                    </select>
                                                     <small>Select a spot that this workout can be completed at.</small>
                                                     @error('spot')
                                                     <span class="invalid-feedback" role="alert">
@@ -178,21 +182,3 @@
 @section('footer')
     @include('components.footer')
 @endsection
-
-@push('scripts')
-    <script defer>
-        $.ajax({
-            url: '/spots/getSpots',
-            data: {
-                workout: {{ $workout->id }}
-            },
-            success: function (response) {
-                $('.select2-spots').select2({
-                    data: response,
-                    width: '100%',
-                    minimumResultsForSearch: 5,
-                });
-            },
-        });
-    </script>
-@endpush

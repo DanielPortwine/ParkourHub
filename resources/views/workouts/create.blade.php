@@ -45,7 +45,7 @@
                                 <div class="form-group row">
                                     <label for="visibility" class="col-md-2 col-form-label text-md-right">Visibility</label>
                                     <div class="col-md-8">
-                                        <select name="visibility" class="form-control visibility-select">
+                                        <select name="visibility" class="form-control select2-no-search">
                                             @foreach(config('settings.privacy.privacy_content.options') as $key => $name)
                                                 <option value="{{ $key }}" @if(setting('privacy_content', 'private') === $key)selected @endif>{{ $name }}</option>
                                             @endforeach
@@ -78,14 +78,13 @@
 @endsection
 
 @push('scripts')
-    <script defer>
-        var count = 1,
-            movements;
+    <script>
+        let count = 1;
         function addMovementSelection(buttonCount = 0) {
             if (buttonCount > 0) {
                 $('.btn-' + buttonCount).remove();
             }
-            var currentCount = count;
+            let currentCount = count;
             $('.movements-container').append(
                 '<div class="movement" id="movement-' + currentCount + '">\n' +
                 '    <div class="form-group row">\n' +
@@ -101,26 +100,37 @@
                 '</div>'
             );
             $('.select2-movements-' + currentCount).select2({
-                data: movements,
+                data: [
+                    {
+                        'id':'',
+                        'text':'',
+                    },
+                    @foreach($movements->pluck('name', 'id')->toArray() as $id => $name)
+                        {
+                            'id':'{{ $id }}',
+                            'text':'{{ $name }}'
+                        },
+                    @endforeach
+                ],
                 width: '100%',
                 minimumResultsForSearch: 5,
             })
             .change(function () {
-                var movement = $(this).val();
+                let movement = $(this).val();
                 $.ajax({
                     url: '/workouts/getMovementFields',
                     data: {
                         movement: movement,
                     },
                     success: function (response) {
-                        $('.movement-fields-' + currentCount).html('');
+                        let $fieldsContainer = $('.movement-fields-' + currentCount)
+                        $fieldsContainer.html('');
                         if (response) {
-                            $fieldsContainer = $('.movement-fields-' + currentCount)
                             $fieldsContainer.append(
                                 '<div class="row"></div>'
                             );
-                            for (field in response) {
-                                var field = response[field];
+                            for (data in response) {
+                                let field = response[data];
                                 $('.movement-fields-' + currentCount + ' .row').append(
                                     '<div class="col-lg">\n' +
                                     '    <label>' + field.label + '</label><br>\n' +
@@ -140,15 +150,7 @@
             });
             count++;
         }
-        $.ajax({
-            url: '/movements/getMovements',
-            data: {
-                link: 'AllMovements',
-            },
-            success: function (response) {
-                movements = response;
-                addMovementSelection();
-            },
-        });
+
+        $(document).ready(addMovementSelection);
     </script>
 @endpush

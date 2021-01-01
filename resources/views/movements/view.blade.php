@@ -149,7 +149,7 @@
                             <div class="row mb-4">
                                 <div class="col">
                                     <div class="card @error('equipment') border-danger @enderror ">
-                                        <div class="card-header bg-green sedgwick card-hidden-body">
+                                        <div class="card-header bg-green sedgwick card-hidden-body movement-equipment-link-card-header" data-id="{{ $originalMovement->id }}">
                                             <div class="row">
                                                 <div class="col">
                                                     Link A Piece Of Equipment
@@ -166,7 +166,12 @@
                                                 <div class="form-group row">
                                                     <label for="title" class="col-md-2 col-form-label text-md-right">Equipment</label>
                                                     <div class="col-md-8">
-                                                        <select class="select2-equipment" name="equipment"></select>
+                                                        <select class="select2-5-results" name="equipment">
+                                                            <option></option>
+                                                            @foreach($linkableEquipment as $equipment)
+                                                                <option value="{{ $equipment->id }}">{{ $equipment->name }}</option>
+                                                            @endforeach
+                                                        </select>
                                                         <small>Select a piece of equipment that is either required or helpful for completing this exercise.</small>
                                                         @error('progression')
                                                         <span class="invalid-feedback" role="alert">
@@ -273,7 +278,7 @@
                             <div class="row mb-4">
                                 <div class="col">
                                     <div class="card @error('progression') border-danger @enderror ">
-                                        <div class="card-header bg-green sedgwick card-hidden-body">
+                                        <div class="card-header bg-green sedgwick card-hidden-body movements-link-card-header" data-id="{{ $originalMovement->id }}" data-type="{{ $originalMovement->type_id }}">
                                             <div class="row">
                                                 <div class="col">
                                                     Link A Progression
@@ -290,7 +295,12 @@
                                                 <div class="form-group row">
                                                     <label for="title" class="col-md-2 col-form-label text-md-right">Movement</label>
                                                     <div class="col-md-8">
-                                                        <select class="select2-movements" name="progression"></select>
+                                                        <select class="select2-5-results" name="progression">
+                                                            <option></option>
+                                                            @foreach($linkableMovements as $linkableMovement)
+                                                                <option value="{{ $linkableMovement->id }}">{{ $linkableMovement->name }}</option>
+                                                            @endforeach
+                                                        </select>
                                                         <small>Select a movement that will make this movement easier by mastering it.</small>
                                                         @error('progression')
                                                         <span class="invalid-feedback" role="alert">
@@ -322,7 +332,11 @@
                                                         <div class="form-group row">
                                                             <label class="col-md-2 col-form-label text-md-right">Category</label>
                                                             <div class="col-md-8 vertical-center">
-                                                                <select class="select2-movement-category" name="category"></select>
+                                                                <select class="select2-5-results" name="category">
+                                                                    @foreach($movementCategories as $category)
+                                                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                                                    @endforeach
+                                                                </select>
                                                             </div>
                                                         </div>
                                                         <div class="form-group row">
@@ -374,7 +388,11 @@
                                                         <div class="form-group row">
                                                             <label class="col-md-2 col-form-label text-md-right">Fields</label>
                                                             <div class="col-md-8 vertical-center">
-                                                                <select class="select2-movement-fields" name="fields[]" multiple="multiple"></select>
+                                                                <select class="select2-no-search" name="fields[]" multiple="multiple">
+                                                                    @foreach($movementFields as $field)
+                                                                        <option value="{{ $field->id }}">{{ $field->name }}</option>
+                                                                    @endforeach
+                                                                </select>
                                                             </div>
                                                         </div>
                                                         <div class="form-group row">
@@ -423,7 +441,7 @@
                             <div class="row mb-4">
                                 <div class="col">
                                     <div class="card @error('advancement') border-danger @enderror ">
-                                        <div class="card-header bg-green sedgwick card-hidden-body">
+                                        <div class="card-header bg-green sedgwick card-hidden-body movements-link-card-header" data-id="{{ $originalMovement->id }}" data-type="{{ $originalMovement->type_id }}">
                                             <div class="row">
                                                 <div class="col">
                                                     Link An Advancement
@@ -440,7 +458,12 @@
                                                 <div class="form-group row">
                                                     <label for="title" class="col-md-2 col-form-label text-md-right">Movement</label>
                                                     <div class="col-md-8">
-                                                        <select class="select2-movements" name="advancement"></select>
+                                                        <select class="select2-5-results" name="advancement">
+                                                            <option></option>
+                                                            @foreach($linkableMovements as $linkableMovement)
+                                                                <option value="{{ $linkableMovement->id }}">{{ $linkableMovement->name }}</option>
+                                                            @endforeach
+                                                        </select>
                                                         <small>Select a movement that will be made easier by mastering this movement.</small>
                                                         @error('progression')
                                                         <span class="invalid-feedback" role="alert">
@@ -472,7 +495,11 @@
                                                         <div class="form-group row">
                                                             <label class="col-md-2 col-form-label text-md-right">Category</label>
                                                             <div class="col-md-8 vertical-center">
-                                                                <select class="select2-movement-category" name="category"></select>
+                                                                <select class="select2-5-results" name="category">
+                                                                    @foreach($movementCategories as $category)
+                                                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                                                    @endforeach
+                                                                </select>
                                                             </div>
                                                         </div>
                                                         <div class="form-group row">
@@ -524,7 +551,11 @@
                                                         <div class="form-group row">
                                                             <label class="col-md-2 col-form-label text-md-right">Fields</label>
                                                             <div class="col-md-8 vertical-center">
-                                                                <select class="select2-movement-fields" name="fields[]" multiple="multiple"></select>
+                                                                <select class="select2-no-search" name="fields[]" multiple="multiple">
+                                                                    @foreach($movementFields as $field)
+                                                                        <option value="{{ $field->id }}">{{ $field->name }}</option>
+                                                                    @endforeach
+                                                                </select>
                                                             </div>
                                                         </div>
                                                         <div class="form-group row">
@@ -573,7 +604,7 @@
                             <div class="row mb-4">
                                 <div class="col">
                                     <div class="card @error('exercise') border-danger @enderror @error('category') border-danger @enderror @error('name') border-danger @enderror @error('description') border-danger @enderror @error('video') border-danger @enderror @error('youtube') border-danger @enderror">
-                                        <div class="card-header bg-green sedgwick card-hidden-body">
+                                        <div class="card-header bg-green sedgwick card-hidden-body movements-link-card-header" data-id="{{ $originalMovement->id }}" data-type="2">
                                             <div class="row">
                                                 <div class="col">
                                                     Link An Exercise
@@ -740,7 +771,12 @@
                                             <div class="form-group row">
                                                 <label for="title" class="col-md-2 col-form-label text-md-right">Move</label>
                                                 <div class="col-md-8">
-                                                    <select class="select2-movements" name="move"></select>
+                                                    <select class="select2-5-results" name="move">
+                                                        <option></option>
+                                                        @foreach($linkableMovements as $linkableMovement)
+                                                            <option value="{{ $linkableMovement->id }}">{{ $linkableMovement->name }}</option>
+                                                        @endforeach
+                                                    </select>
                                                     <small>Select a move that will be improved by training this exercise.</small>
                                                     @error('move')
                                                     <span class="invalid-feedback" role="alert">
@@ -772,7 +808,11 @@
                                                     <div class="form-group row">
                                                         <label class="col-md-2 col-form-label text-md-right">Category</label>
                                                         <div class="col-md-8 vertical-center">
-                                                            <select class="select2-movement-category" name="category"></select>
+                                                            <select class="select2-5-results" name="category">
+                                                                @foreach($movementCategories as $category)
+                                                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                                                @endforeach
+                                                            </select>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
@@ -824,7 +864,11 @@
                                                     <div class="form-group row">
                                                         <label class="col-md-2 col-form-label text-md-right">Fields</label>
                                                         <div class="col-md-8 vertical-center">
-                                                            <select class="select2-movement-fields" name="fields[]" multiple="multiple"></select>
+                                                            <select class="select2-no-search" name="fields[]" multiple="multiple">
+                                                                @foreach($movementFields as $field)
+                                                                    <option value="{{ $field->id }}">{{ $field->name }}</option>
+                                                                @endforeach
+                                                            </select>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row">
@@ -915,138 +959,3 @@
 @section('footer')
     @include('components.footer')
 @endsection
-
-@push('scripts')
-    <script defer>
-        var urlParams = new URLSearchParams(window.location.search);
-        @if(($tab == null && $originalMovement->type_id === 2) || $tab === 'equipment')
-            $.ajax({
-                url: '/movements/getMovements',
-                data: {
-                    link: 'exerciseEquipment',
-                    id: {{ $originalMovement->id }},
-                },
-                success: function (response) {
-                    $('.select2-equipment').select2({
-                        data: response,
-                        width: '100%',
-                        minimumResultsForSearch: 5,
-                    });
-                },
-            });
-        @elseif($tab === 'progressions' || $tab === 'advancements')
-            $.ajax({
-                url: '/movements/getMovements',
-                data: {
-                    link: 'progressionAdvancement',
-                    id: {{ $originalMovement->id }},
-                    type: '{{ $originalMovement->type_id }}'
-                },
-                success: function (response) {
-                    $('.select2-movements').select2({
-                        data: response,
-                        width: '100%',
-                        minimumResultsForSearch: 5,
-                    });
-                },
-            });
-            $.ajax({
-                url: '/movements/getMovementCategories',
-                data: {
-                    types: [{{ $originalMovement->type_id }}]
-                },
-                success: function (response) {
-                    $('.select2-movement-category').select2({
-                        data: response,
-                        width: '100%',
-                        minimumResultsForSearch: 5,
-                    });
-                },
-            });
-            $.ajax({
-                url: '/movements/getMovementFields',
-                success: function (response) {
-                    $('.select2-movement-fields').select2({
-                        data: response,
-                        width: '100%',
-                    });
-                },
-            });
-        @elseif($tab === 'exercises')
-            $.ajax({
-                url: '/movements/getMovements',
-                data: {
-                    link: 'moveExercise',
-                    id: {{ $originalMovement->id }},
-                    type: 2,
-                },
-                success: function (response) {
-                    $('.select2-exercises').select2({
-                        data: response,
-                        width: '100%',
-                        minimumResultsForSearch: 5,
-                    });
-                },
-            });
-            $.ajax({
-                url: '/movements/getMovementCategories',
-                data: {
-                    types: [2]
-                },
-                success: function (response) {
-                    $('.select2-exercise-category').select2({
-                        data: response,
-                        width: '100%',
-                        minimumResultsForSearch: 5,
-                    });
-                },
-            });
-            $.ajax({
-                url: '/movements/getMovementFields',
-                success: function (response) {
-                    $('.select2-movement-fields').select2({
-                        data: response,
-                        width: '100%',
-                    });
-                },
-            });
-        @elseif($tab === 'moves')
-            $.ajax({
-                url: '/movements/getMovements',
-                data: {
-                    link: 'exerciseMove',
-                    id: {{ $originalMovement->id }},
-                },
-                success: function (response) {
-                    $('.select2-movements').select2({
-                        data: response,
-                        width: '100%',
-                        minimumResultsForSearch: 5,
-                    });
-                },
-            });
-            $.ajax({
-                url: '/movements/getMovementCategories',
-                data: {
-                    types: [1]
-                },
-                success: function (response) {
-                    $('.select2-movement-category').select2({
-                        data: response,
-                        width: '100%',
-                        minimumResultsForSearch: 5,
-                    });
-                },
-            });
-            $.ajax({
-                url: '/movements/getMovementFields',
-                success: function (response) {
-                    $('.select2-movement-fields').select2({
-                        data: response,
-                        width: '100%',
-                    });
-                },
-            });
-        @endif
-    </script>
-@endpush

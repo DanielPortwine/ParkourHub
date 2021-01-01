@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Follower;
 use App\Http\Requests\AddWorkoutToPlan;
 use App\Workout;
 use Carbon\Carbon;
@@ -38,9 +39,18 @@ class WorkoutPlanController extends Controller
             $weeks[$lastWeekKey][] = null;
         }
 
+        $addableWorkouts = Workout::where('visibility', 'public')
+            ->orWhere(function($q1) {
+                $q1->where('visibility', 'follower')
+                    ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
+            })
+            ->orWhere('user_id', Auth::id())
+            ->get();
+
         return view('workouts.plan.index', [
             'weeks' => $weeks,
             'date' => $monthDate,
+            'addableWorkouts' => $addableWorkouts,
         ]);
     }
 

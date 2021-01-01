@@ -156,7 +156,7 @@
                                 <div class="form-group row">
                                     <label for="{{ $settingKey }}" class="col-md-2 col-form-label text-md-right">{{ $setting['title'] }}</label>
                                     <div class="col-md-8">
-                                        <select id="{{ $settingKey }}" class="form-control @error($settingKey) is-invalid @enderror" name="notifications[{{ $settingKey }}]" required form="notification-form">
+                                        <select id="{{ $settingKey }}" class="form-control select2-no-search @error($settingKey) is-invalid @enderror" name="notifications[{{ $settingKey }}]" required form="notification-form">
                                             @foreach(config('settings.notification_channels') as $key => $name)
                                                 <option value="{{ $key }}" @if(!empty($settings[$settingKey]) && $settings[$settingKey] === $key)selected @endif>{{ $name }}</option>
                                             @endforeach
@@ -186,7 +186,7 @@
                                 <div class="form-group row">
                                     <label for="{{ $settingKey }}" class="col-md-2 col-form-label text-md-right">{{ $setting['title'] }}</label>
                                     <div class="col-md-8">
-                                        <select id="{{ $settingKey }}" class="form-control @error($settingKey) is-invalid @enderror" name="privacy[{{ $settingKey }}]" required form="privacy-form">
+                                        <select id="{{ $settingKey }}" class="form-control select2-no-search @error($settingKey) is-invalid @enderror" name="privacy[{{ $settingKey }}]" required form="privacy-form">
                                             @foreach($setting['options'] as $key => $name)
                                                 <option value="{{ $key }}" @if(!empty($settings[$settingKey]) && $settings[$settingKey] === $key)selected @endif>{{ $name }}</option>
                                             @endforeach

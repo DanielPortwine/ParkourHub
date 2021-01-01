@@ -19,4 +19,9 @@ class MovementType extends Model
     {
         return $this->hasMany('App\Movement');
     }
+
+    public function categories()
+    {
+        return $this->hasMany('App\MovementCategory', 'type_id', 'id');
+    }
 }

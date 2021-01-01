@@ -8,6 +8,9 @@ use App\Http\Requests\AddMovement;
 use App\Http\Requests\CreateSpot;
 use App\Http\Requests\SearchMap;
 use App\Http\Requests\UpdateSpot;
+use App\Movement;
+use App\MovementCategory;
+use App\MovementField;
 use App\Notifications\SpotCreated;
 use App\Spot;
 use App\SpotView;
@@ -256,6 +259,16 @@ class SpotController extends Controller
                 $hit = Auth()->user()->hits->where('spot_id', $id)->first();
             }
 
+            $linkableMovements = Movement::where('type_id', 1)
+                ->whereNotIn('id', $spot->movements()->pluck('movements.id')->toArray())
+                ->get();
+            $movementCategories = MovementCategory::where('type_id', 1)->get();
+            $movementFields = MovementField::get();
+            $linkableWorkouts = null;
+            if ($tab === 'workouts') {
+                $linkableWorkouts = Workout::get();
+            }
+
             return view('spots.view', [
                 'spot' => $spot,
                 'request' => $request,
@@ -266,6 +279,10 @@ class SpotController extends Controller
                 'tab' => $tab,
                 'movements' => $spot->movements,
                 'hit' => $hit,
+                'linkableMovements' => $linkableMovements,
+                'movementCategories' => $movementCategories,
+                'movementFields' => $movementFields,
+                'linkableWorkouts' => $linkableWorkouts,
             ]);
         }
     }

@@ -82,7 +82,12 @@
                                 <div class="form-group row">
                                     <label for="title" class="col-md-2 col-form-label text-md-right">Exercise</label>
                                     <div class="col-md-8">
-                                        <select class="select2-movements" name="movement"></select>
+                                        <select class="select2-5-results" name="movement">
+                                            <option></option>
+                                            @foreach($linkableMovements as $movement)
+                                                <option value="{{ $movement->id }}">{{ $movement->name }}</option>
+                                            @endforeach
+                                        </select>
                                         <small>Select an exercise that uses this equipment.</small>
                                         @error('movement')
                                         <span class="invalid-feedback" role="alert">
@@ -113,7 +118,11 @@
                                         <div class="form-group row">
                                             <label class="col-md-2 col-form-label text-md-right">Category</label>
                                             <div class="col-md-8 vertical-center">
-                                                <select class="select2-movement-category" name="category"></select>
+                                                <select class="select2-5-results" name="category">
+                                                    @foreach($movementCategories as $category)
+                                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                                    @endforeach
+                                                </select>
                                             </div>
                                         </div>
                                         <div class="form-group row">
@@ -211,38 +220,3 @@
 @section('footer')
     @include('components.footer')
 @endsection
-
-@push('scripts')
-    <script defer>
-        var urlParams = new URLSearchParams(window.location.search);
-        $.ajax({
-            url: '/movements/getMovements',
-            data: {
-                link: 'equipmentExercise',
-                id: {{ $equipment->id }},
-                type: 2,
-            },
-            success: function (response) {
-                $('.select2-movements').select2({
-                    data: response,
-                    width: '100%',
-                    minimumResultsForSearch: 5,
-                });
-            },
-        });
-
-        $.ajax({
-            url: '/movements/getMovementCategories',
-            data: {
-                types: [2]
-            },
-            success: function (response) {
-                $('.select2-movement-category').select2({
-                    data: response,
-                    width: '100%',
-                    minimumResultsForSearch: 5,
-                });
-            },
-        });
-    </script>
-@endpush

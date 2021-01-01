@@ -36,7 +36,11 @@
                             <div class="form-group row vertical-center">
                                 <label for="workout" class="col-md-2 col-form-label text-md-right">Workout</label>
                                 <div class="col-md-8">
-                                    <select class="select2-workouts @error('workout') is-invalid border-danger @enderror" name="workout"></select>
+                                    <select class="select2-5-results @error('workout') is-invalid border-danger @enderror" name="workout">
+                                        @foreach($addableWorkouts as $workout)
+                                            <option value="{{ $workout->id }}">{{ $workout->name }}</option>
+                                        @endforeach
+                                    </select>
                                     @error('workout')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -57,7 +61,7 @@
                                 <div class="col-md-2 d-lg-none"></div>
                                 <label for="repeat-frequency" class="col-lg-1 col-md-2 col-form-label text-md-right">Repeat</label>
                                 <div class="col-lg-2 col-md-8 vertical-center">
-                                    <select class="select2-repeat-frequency @error('repeat_frequency') is-invalid border-danger @enderror" name="repeat_frequency">
+                                    <select class="select2-no-search @error('repeat_frequency') is-invalid border-danger @enderror" name="repeat_frequency">
                                         <option value="">Never</option>
                                         <option value="weekly">Weekly</option>
                                         <option value="other">Every Other Day</option>
@@ -145,24 +149,3 @@
 @section('footer')
     @include('components.footer')
 @endsection
-
-@push('scripts')
-    <script defer>
-        $(document).ready(function() {
-            $('.select2-repeat-frequency').select2({
-                width: '100%',
-                minimumResultsForSearch: -1,
-            });
-        });
-        $.ajax({
-            url: '/workouts/plan/getUserWorkouts',
-            success: function (response) {
-                $('.select2-workouts').select2({
-                    data: response,
-                    width: '100%',
-                    minimumResultsForSearch: 5,
-                });
-            },
-        });
-    </script>
-@endpush

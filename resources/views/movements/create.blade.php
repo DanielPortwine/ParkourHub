@@ -22,9 +22,10 @@
                             <div class="form-group row">
                                 <label class="col-md-2 col-form-label text-md-right">Type</label>
                                 <div class="col-md-8 vertical-center">
-                                    <select class="select2-movement-type @error('type') is-invalid border-danger @enderror" name="type">
-                                        <option value="1">Move</option>
-                                        <option value="2">Exercise</option>
+                                    <select class="select2-5-results select2-movement-type @error('type') is-invalid border-danger @enderror" name="type">
+                                        @foreach($movementTypes as $type)
+                                            <option value="{{ $type->id }}">{{ $type->name }}</option>
+                                        @endforeach
                                     </select>
                                     @error('type')
                                     <span class="invalid-feedback" role="alert">
@@ -36,7 +37,11 @@
                             <div class="form-group row">
                                 <label class="col-md-2 col-form-label text-md-right">Category</label>
                                 <div class="col-md-8 vertical-center">
-                                    <select class="select2-movement-category @error('category') is-invalid border-danger @enderror" name="category"></select>
+                                    @foreach($movementTypes as $type)
+                                        <div class="w-100">
+                                            <select class="@error('category') is-invalid border-danger @enderror" name="category" id="category-select-{{ strtolower($type->name) }}" style="display:none"></select>
+                                        </div>
+                                    @endforeach
                                     @error('category')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -93,7 +98,11 @@
                             <div class="form-group row">
                                 <label class="col-md-2 col-form-label text-md-right">Fields</label>
                                 <div class="col-md-8 vertical-center">
-                                    <select class="select2-movement-fields @error('fields') is-invalid border-danger @enderror" name="fields[]" multiple="multiple"></select>
+                                    <select class="select2-no-search @error('fields') is-invalid border-danger @enderror" name="fields[]" multiple="multiple">
+                                        @foreach($movementFields as $field)
+                                            <option value="{{ $field->id }}">{{ $field->name }}</option>
+                                        @endforeach
+                                    </select>
                                     @error('fields')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -104,7 +113,7 @@
                             <div class="form-group row">
                                 <label for="visibility" class="col-md-2 col-form-label text-md-right">Visibility</label>
                                 <div class="col-md-8">
-                                    <select name="visibility" class="form-control visibility-select">
+                                    <select name="visibility" class="form-control select2-no-search">
                                         @foreach(config('settings.privacy.privacy_content.options') as $key => $name)
                                             <option value="{{ $key }}" @if(setting('privacy_content', 'private') === $key)selected @endif>{{ $name }}</option>
                                         @endforeach
@@ -129,48 +138,33 @@
 @endsection
 
 @push('scripts')
-    <script defer>
+    <script>
         function updateCategoriesSelect(type) {
-            $('.select2-movement-category').children('option').each(function() {
-                $(this).remove();
-            });
-            $.ajax({
-                url: '/movements/getMovementCategories',
-                data: {
-                    types: [type]
-                },
-                success: function (response) {
-                    $('.select2-movement-category').select2({
-                        data: response,
+            let $select;
+            @foreach($movementTypes as $type)
+                $select = $('#category-select-{{ strtolower($type->name) }}');
+                $select.parent().hide();
+                if (type == {{ $type->id }}) {
+                    $select.select2({
+                        data: [
+                            @foreach($type->categories()->pluck('name', 'id')->toArray() as $id => $name)
+                                {
+                                    'id':'{{ $id }}',
+                                    'text':'{{ $name }}'
+                                },
+                            @endforeach
+                        ],
                         width: '100%',
                         minimumResultsForSearch: 5,
-                    });
-                },
-            });
+                    }).parent().show();
+                }
+            @endforeach
         }
         $(document).ready(function() {
-            $('.select2-movement-category').select2({
-                width: '100%',
-                minimumResultsForSearch: 5,
-            });
             updateCategoriesSelect(1);
-            $('.select2-movement-type').select2({
-                width: '100%',
-                minimumResultsForSearch: 5,
-            }).change(function () {
-                var type = $(this).val();
+            $('.select2-movement-type').change(function () {
+                let type = $(this).val();
                 updateCategoriesSelect(type);
-            });
-
-            $.ajax({
-                url: '/movements/getMovementFields',
-                success: function (response) {
-                    $('.select2-movement-fields').select2({
-                        data: response,
-                        width: '100%',
-                        minimumResultsForSearch: 5,
-                    });
-                },
             });
         });
     </script>

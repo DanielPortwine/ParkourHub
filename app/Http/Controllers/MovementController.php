@@ -12,6 +12,7 @@ use App\Http\Requests\UpdateMovement;
 use App\Movement;
 use App\MovementCategory;
 use App\MovementField;
+use App\MovementType;
 use App\Report;
 use App\Spot;
 use Illuminate\Http\Request;
@@ -53,11 +54,16 @@ class MovementController extends Controller
             ->orderBy($sort[0], $sort[1])
             ->paginate(20);
 
+        $movementCategories = MovementCategory::get();
+        $equipments = Equipment::get();
+
         return view('content_listings', [
             'title' => 'Movements',
             'content' => $movements,
             'component' => 'movement',
             'create' => true,
+            'movementCategories' => $movementCategories,
+            'equipments' => $equipments,
         ]);
     }
 
@@ -324,12 +330,52 @@ class MovementController extends Controller
                 $baselineFields = $movement->fields;
             }
         }
+        $linkableEquipment = null;
+        $linkableMovements = null;
+        $movementCategories = null;
+        $movementFields = null;
         switch ($tab) {
+            case null:
+            case 'equipment':
+                $linkableEquipment = Equipment::get();
+                break;
             case 'progressions':
                 $advancementID = $movement->id;
+                $linkableMovements = Movement::where('id', '!=', $id)
+                    ->whereNotIn('id', array_merge($movement->progressions()->pluck('movements.id')->toArray(), $movement->advancements()->pluck('movements.id')->toArray()))
+                    ->where('type_id', $movement->type_id)
+                    ->orderBy('category_id')
+                    ->get();
+                $movementCategories = MovementCategory::where('type_id', $movement->type_id)->get();
+                $movementFields = MovementField::get();
                 break;
             case 'advancements':
                 $progressionID = $movement->id;
+                $linkableMovements = Movement::where('id', '!=', $id)
+                    ->whereNotIn('id', array_merge($movement->progressions()->pluck('movements.id')->toArray(), $movement->advancements()->pluck('movements.id')->toArray()))
+                    ->where('type_id', $movement->type_id)
+                    ->orderBy('category_id')
+                    ->get();
+                $movementCategories = MovementCategory::where('type_id', $movement->type_id)->get();
+                $movementFields = MovementField::get();
+                break;
+            case 'exercises':
+                $linkableMovements = Movement::where('id', '!=', $id)
+                    ->whereNotIn('id', $movement->exercises()->pluck('movements.id')->toArray())
+                    ->where('type_id', 2)
+                    ->orderBy('category_id')
+                    ->get();
+                $movementCategories = MovementCategory::where('type_id', $movement->type_id)->get();
+                $movementFields = MovementField::get();
+                break;
+            case 'moves':
+                $linkableMovements = Movement::where('id', '!=', $id)
+                    ->whereNotIn('id', $movement->moves()->pluck('movements.id')->toArray())
+                    ->where('type_id', 1)
+                    ->orderBy('category_id')
+                    ->get();
+                $movementCategories = MovementCategory::where('type_id', $movement->type_id)->get();
+                $movementFields = MovementField::get();
                 break;
         }
         $linkType = '';
@@ -355,12 +401,22 @@ class MovementController extends Controller
             'equipments' => $equipment,
             'baselineFields' => $baselineFields,
             'tab' => $tab,
+            'linkableEquipment' => $linkableEquipment,
+            'linkableMovements' => $linkableMovements,
+            'movementCategories' => $movementCategories,
+            'movementFields' => $movementFields,
         ]);
     }
 
     public function create()
     {
-        return view('movements.create');
+        $movementTypes = MovementType::with(['categories'])->get();
+        $movementFields = MovementField::get();
+
+        return view('movements.create', [
+            'movementTypes' => $movementTypes,
+            'movementFields' => $movementFields,
+        ]);
     }
 
     public function store(CreateMovement $request)
@@ -409,7 +465,12 @@ class MovementController extends Controller
             return redirect()->route('movement_view', $id);
         }
 
-        return view('movements.edit', ['movement' => $movement]);
+        $movementFields = MovementField::get();
+
+        return view('movements.edit', [
+            'movement' => $movement,
+            'movementFields' => $movementFields,
+        ]);
     }
 
     public function update(UpdateMovement $request, $id)

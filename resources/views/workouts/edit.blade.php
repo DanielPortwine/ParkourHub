@@ -45,7 +45,7 @@
                                 <div class="form-group row">
                                     <label for="visibility" class="col-md-2 col-form-label text-md-right">Visibility</label>
                                     <div class="col-md-8">
-                                        <select name="visibility" class="form-control visibility-select">
+                                        <select name="visibility" class="form-control select2-no-search">
                                             @foreach(config('settings.privacy.privacy_content.options') as $key => $name)
                                                 <option value="{{ $key }}" @if($workout->visibility === $key)selected @endif>{{ $name }}</option>
                                             @endforeach
@@ -114,8 +114,7 @@
 
 @push('scripts')
     <script defer>
-        var count = {{ count($workout->movements) + 1 ?: 1 }},
-            movements;
+        var count = {{ count($workout->movements) + 1 ?: 1 }};
         function addMovementSelection(buttonCount = 0) {
             if (buttonCount > 0) {
                 $('.btn-' + buttonCount).remove();
@@ -136,7 +135,18 @@
                 '</div>'
             );
             $('.select2-movements-' + currentCount).select2({
-                data: movements,
+                data: [
+                    {
+                        'id':'',
+                        'text':'',
+                    },
+                    @foreach($movements->pluck('name', 'id')->toArray() as $id => $name)
+                        {
+                            'id':'{{ $id }}',
+                            'text':'{{ $name }}'
+                        },
+                    @endforeach
+                ],
                 width: '100%',
                 minimumResultsForSearch: 5,
             })
@@ -175,57 +185,60 @@
             });
             count++;
         }
-        $.ajax({
-            url: '/movements/getMovements',
-            data: {
-                link: 'AllMovements',
-            },
-            success: function (response) {
-                movements = response;
-                if ({{ count($workout->movements) }} > 0) {
-                    for (x=1;x<={{ count($workout->movements) }};x++) {
-                        $('.select2-movements-' + x).select2({
-                            data: movements,
-                            width: '100%',
-                            minimumResultsForSearch: 5,
-                        })
-                        .change(function () {
-                            var movement = $(this).val();
-                            $.ajax({
-                                url: '/workouts/getMovementFields',
-                                data: {
-                                    movement: movement,
-                                },
-                                success: function (response) {
-                                    $('.movement-entry-fields-' + x).html('');
-                                    if (response) {
-                                        $fieldsContainer = $('.movement-entry-fields-' + x)
-                                        $fieldsContainer.append(
-                                            '<div class="row"></div>'
-                                        );
-                                        for (field in response) {
-                                            var field = response[field];
-                                            $('.movement-entry-fields-' + x + ' .row').append(
-                                                '<div class="col-md">\n' +
-                                                '    <label>' + field.label + '</label><br>\n' +
-                                                '    <input class="form-control" type="' + field.type + '" name="movements[' + x + '][fields][' + field.id + ']" placeholder="' + field.unit + '">\n' +
-                                                '    <small>' + field.smallText + '</small>\n' +
-                                                '</div>'
-                                            );
-                                        }
-                                        if (x === count - 1) {
-                                            $fieldsContainer.append(
-                                                '<a class="btn btn-sm btn-green btn-' + x + '" title="Add Movement" onclick="addMovementSelection(' + x + ')"><i class="fa fa-plus"></i></a>'
-                                            );
-                                        }
-                                    }
-                                },
-                            });
-                        });
-                    }
-                }
-                addMovementSelection();
-            },
-        });
+        if ({{ count($workout->movements) }} > 0) {
+            for (x=1;x<={{ count($workout->movements) }};x++) {
+                $('.select2-movements-' + x).select2({
+                    data: [
+                        {
+                            'id':'',
+                            'text':'',
+                        },
+                        @foreach($movements->pluck('name', 'id')->toArray() as $id => $name)
+                            {
+                                'id':'{{ $id }}',
+                                'text':'{{ $name }}'
+                            },
+                        @endforeach
+                    ],
+                    width: '100%',
+                    minimumResultsForSearch: 5,
+                })
+                .change(function () {
+                    var movement = $(this).val();
+                    $.ajax({
+                        url: '/workouts/getMovementFields',
+                        data: {
+                            movement: movement,
+                        },
+                        success: function (response) {
+                            $('.movement-entry-fields-' + x).html('');
+                            if (response) {
+                                $fieldsContainer = $('.movement-entry-fields-' + x)
+                                $fieldsContainer.append(
+                                    '<div class="row"></div>'
+                                );
+                                for (field in response) {
+                                    var field = response[field];
+                                    $('.movement-entry-fields-' + x + ' .row').append(
+                                        '<div class="col-md">\n' +
+                                        '    <label>' + field.label + '</label><br>\n' +
+                                        '    <input class="form-control" type="' + field.type + '" name="movements[' + x + '][fields][' + field.id + ']" placeholder="' + field.unit + '">\n' +
+                                        '    <small>' + field.smallText + '</small>\n' +
+                                        '</div>'
+                                    );
+                                }
+                                if (x === count - 1) {
+                                    $fieldsContainer.append(
+                                        '<a class="btn btn-sm btn-green btn-' + x + '" title="Add Movement" onclick="addMovementSelection(' + x + ')"><i class="fa fa-plus"></i></a>'
+                                    );
+                                }
+                            }
+                        },
+                    });
+                });
+            }
+        }
+
+        $(document).ready(addMovementSelection);
     </script>
 @endpush
