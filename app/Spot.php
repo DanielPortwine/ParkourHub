@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Scopes\VisibilityScope;
 use App\Traits\Reportable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -19,7 +20,7 @@ class Spot extends Model
     protected $fillable = [
         'name',
         'description',
-        'private',
+        'visibility',
     ];
 
     protected $searchable = [
@@ -28,6 +29,11 @@ class Spot extends Model
             'description' => 5,
         ],
     ];
+
+    protected static function booted()
+    {
+        static::addGlobalScope(new VisibilityScope);
+    }
 
     public function scopeRating($query, $rating = null)
     {

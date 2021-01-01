@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Scopes\VisibilityScope;
 use App\Traits\Reportable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -22,6 +23,7 @@ class Movement extends Model
         'youtube_start',
         'video',
         'video_type',
+        'visibility',
     ];
 
     protected $searchable = [
@@ -30,6 +32,11 @@ class Movement extends Model
             'description' => 8,
         ],
     ];
+
+    protected static function booted()
+    {
+        static::addGlobalScope(new VisibilityScope);
+    }
 
     public function scopeDateBetween($query, $dates = [])
     {

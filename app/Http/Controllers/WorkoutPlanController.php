@@ -39,13 +39,7 @@ class WorkoutPlanController extends Controller
             $weeks[$lastWeekKey][] = null;
         }
 
-        $addableWorkouts = Workout::where('visibility', 'public')
-            ->orWhere(function($q1) {
-                $q1->where('visibility', 'follower')
-                    ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
-            })
-            ->orWhere('user_id', Auth::id())
-            ->get();
+        $addableWorkouts = Workout::get();
 
         return view('workouts.plan.index', [
             'weeks' => $weeks,

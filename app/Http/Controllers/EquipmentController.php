@@ -33,14 +33,6 @@ class EquipmentController extends Controller
                 'from' => $request['date_from'] ?? null,
                 'to' => $request['date_to'] ?? null
             ])
-            ->where(function($q) {
-                $q->where('visibility', 'public')
-                    ->orWhere(function($q1) {
-                        $q1->where('visibility', 'follower')
-                            ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
-                    })
-                    ->orWhere('user_id', Auth::id());
-            })
             ->orderBy($sort[0], $sort[1])
             ->paginate(20);
 
@@ -53,46 +45,11 @@ class EquipmentController extends Controller
     }
     public function view(Request $request, $id)
     {
-        $equipment = Equipment::with(['movements'])
-            ->where(function($q) {
-                if (Auth::id() !== 1) {
-                    $q->where('visibility', 'public')
-                        ->orWhere(function($q1) {
-                            $q1->where('visibility', 'follower')
-                                ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
-                        })
-                        ->orWhere('user_id', Auth::id());
-                }
-            })
-            ->where('id', $id)
-            ->first();
+        $equipment = Equipment::with(['movements'])->where('id', $id)->first();
         if (!empty($request['movements'])) {
-            $movements = $equipment->movements()
-                ->where(function($q) {
-                    if (Auth::id() !== 1) {
-                        $q->where('visibility', 'public')
-                            ->orWhere(function($q1) {
-                                $q1->where('visibility', 'follower')
-                                    ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
-                            })
-                            ->orWhere('user_id', Auth::id());
-                    }
-                })
-                ->paginate(20, ['*'], 'movements');
+            $movements = $equipment->movements()->paginate(20, ['*'], 'movements');
         } else {
-            $movements = $equipment->movements()
-                ->where(function($q) {
-                    if (Auth::id() !== 1) {
-                        $q->where('visibility', 'public')
-                            ->orWhere(function($q1) {
-                                $q1->where('visibility', 'follower')
-                                    ->whereIn('movements.user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
-                            })
-                            ->orWhere('movements.user_id', Auth::id());
-                    }
-                })
-                ->limit(4)
-                ->get();
+            $movements = $equipment->movements()->limit(4)->get();
         }
 
         $linkableMovements = Movement::where('id', '!=', $id)

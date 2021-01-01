@@ -31,14 +31,6 @@ class WorkoutController extends Controller
 
         $workouts = Workout::withCount('movements')
             ->search($request['search'] ?? '')
-            ->where(function($q) {
-                $q->where('visibility', 'public')
-                    ->orWhere(function($q1) {
-                        $q1->where('visibility', 'follower')
-                            ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
-                    })
-                    ->orWhere('user_id', Auth::id());
-            })
             ->dateBetween([
                 'from' => $request['date_from'] ?? null,
                 'to' => $request['date_to'] ?? null
@@ -98,16 +90,6 @@ class WorkoutController extends Controller
         }
 
         $workout = Workout::with(['user'])
-            ->where(function($q) {
-                if (Auth::id() !== 1) {
-                    $q->where('visibility', 'public')
-                        ->orWhere(function($q1) {
-                            $q1->where('visibility', 'follower')
-                                ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
-                        })
-                        ->orWhere('user_id', Auth::id());
-                }
-            })
             ->where('id', $id)
             ->first();
 
@@ -117,45 +99,14 @@ class WorkoutController extends Controller
                 'fields',
                 'fields.field',
             ])
-            ->whereHas('movement', function($query) {
-                return $query->where(function($q1) {
-                    $q1->where('visibility', 'public')
-                        ->orWhere(function($q2) {
-                            $q2->where('visibility', 'follower')
-                                ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
-                        })
-                        ->orWhere('user_id', Auth::id());
-                });
-            })
             ->paginate(20);
         $recordedWorkouts = RecordedWorkout::where('workout_id', $id)->where('user_id', Auth::id())->paginate(10);
         $spots = $workout->spots()
-            ->where(function($q) {
-                if (Auth::id() !== 1) {
-                    $q->where('visibility', 'public')
-                        ->orWhere(function($q1) {
-                            $q1->where('visibility', 'follower')
-                                ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
-                        })
-                        ->orWhere('user_id', Auth::id());
-                }
-            })
             ->orderByDesc('created_at')
             ->paginate(20);
 
         $displayMovement = $workout->movements()
-            ->with(['movement' => function($query) {
-                $query->where(function($q) {
-                    if (Auth::id() !== 1) {
-                        $q->where('visibility', 'public')
-                            ->orWhere(function($q1) {
-                                $q1->where('visibility', 'follower')
-                                    ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
-                            })
-                            ->orWhere('user_id', Auth::id());
-                    }
-                });
-            }])
+            ->with(['movement'])
             ->inRandomOrder()
             ->first()
             ->movement;

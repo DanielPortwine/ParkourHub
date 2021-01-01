@@ -70,58 +70,14 @@ class UserController extends Controller
         }
 
         $user = User::with([
-            'spots' => function($q) {
-                $q->where('visibility', 'public')
-                    ->orWhere(function($q1) {
-                        $q1->where('visibility', 'follower')
-                            ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
-                    })
-                    ->orWhere('user_id', Auth::id());
-            },
-            'hits' => function($q) {
-                $q->whereHas('spot', function ($q1) {
-                    return $q1->where('visibility', 'public')
-                        ->orWhere(function($q2) {
-                            $q2->where('visibility', 'follower')
-                                ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
-                        })
-                        ->orWhere('user_id', Auth::id());
-                });
-            },
+            'spots',
+            'hits',
             'reviews',
-            'spotComments' => function($q) {
-                $q->where('visibility', 'public')
-                    ->orWhere(function($q1) {
-                        $q1->where('visibility', 'follower')
-                            ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
-                    })
-                    ->orWhere('user_id', Auth::id());
-            },
-            'challenges' => function($q) {
-                $q->where('visibility', 'public')
-                    ->orWhere(function($q1) {
-                        $q1->where('visibility', 'follower')
-                            ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
-                    })
-                    ->orWhere('user_id', Auth::id());
-            },
+            'spotComments',
+            'challenges',
             'challengeEntries',
-            'movements' => function($q) {
-                $q->where('visibility', 'public')
-                    ->orWhere(function($q1) {
-                        $q1->where('visibility', 'follower')
-                            ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
-                    })
-                    ->orWhere('user_id', Auth::id());
-            },
-            'equipment' => function($q) {
-                $q->where('visibility', 'public')
-                    ->orWhere(function($q1) {
-                        $q1->where('visibility', 'follower')
-                            ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
-                    })
-                    ->orWhere('user_id', Auth::id());
-            },
+            'movements',
+            'equipment',
             'followers',
             'following',
         ])
@@ -131,49 +87,17 @@ class UserController extends Controller
         $spots = $hits = $reviews = $comments = $challenges = $entries = $movements = $equipment = $followers = $following = $followRequests = null;
         if ($tab == null || $tab === 'spots') {
             $spots = $user->spots()
-                ->where(function($q) {
-                    if (Auth::id() !== 1) {
-                        $q->where('visibility', 'public')
-                            ->orWhere(function($q1) {
-                                $q1->where('visibility', 'follower')
-                                    ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
-                            })
-                            ->orWhere('user_id', Auth::id());
-                    }
-                })
                 ->orderByDesc('rating')
                 ->limit(4)
                 ->get();
         }
         if ($tab === 'hitlist') {
             $hits = $user->hits()
-                ->whereHas('spot', function($q) {
-                    return $q->where(function($q1) {
-                        if (Auth::id() !== 1) {
-                            $q1->where('visibility', 'public')
-                                ->orWhere(function($q2) {
-                                    $q2->where('visibility', 'follower')
-                                        ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
-                                })
-                                ->orWhere('user_id', Auth::id());
-                        }
-                    });
-                })
                 ->orderByDesc('created_at')
                 ->limit(4)
                 ->pluck('spot_id')
                 ->toArray();
             $hits = Spot::whereIn('id', $hits)
-                ->where(function($q) {
-                    if (Auth::id() !== 1) {
-                        $q->where('visibility', 'public')
-                            ->orWhere(function($q1) {
-                                $q1->where('visibility', 'follower')
-                                    ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
-                            })
-                            ->orWhere('user_id', Auth::id());
-                    }
-                })
                 ->limit(4)
                 ->get();
         }
@@ -182,32 +106,12 @@ class UserController extends Controller
         }
         if ($tab === 'comments') {
             $comments = $user->spotComments()
-                ->where(function($q) {
-                    if (Auth::id() !== 1) {
-                        $q->where('visibility', 'public')
-                            ->orWhere(function($q1) {
-                                $q1->where('visibility', 'follower')
-                                    ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
-                            })
-                            ->orWhere('user_id', Auth::id());
-                    }
-                })
                 ->orderByDesc('created_at')
                 ->limit(4)
                 ->get();
         }
         if ($tab === 'challenges') {
             $challenges = $user->challenges()
-                ->where(function($q) {
-                    if (Auth::id() !== 1) {
-                        $q->where('visibility', 'public')
-                            ->orWhere(function($q1) {
-                                $q1->where('visibility', 'follower')
-                                    ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
-                            })
-                            ->orWhere('user_id', Auth::id());
-                    }
-                })
                 ->orderByDesc('created_at')
                 ->limit(4)
                 ->get();
@@ -217,32 +121,12 @@ class UserController extends Controller
         }
         if ($tab === 'movements') {
             $movements = $user->movements()
-                ->where(function($q) {
-                    if (Auth::id() !== 1) {
-                        $q->where('visibility', 'public')
-                            ->orWhere(function($q1) {
-                                $q1->where('visibility', 'follower')
-                                    ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
-                            })
-                            ->orWhere('user_id', Auth::id());
-                    }
-                })
                 ->orderByDesc('created_at')
                 ->limit(4)
                 ->get();
         }
         if ($tab === 'equipment') {
             $equipment = $user->equipment()
-                ->where(function($q) {
-                    if (Auth::id() !== 1) {
-                        $q->where('visibility', 'public')
-                            ->orWhere(function($q1) {
-                                $q1->where('visibility', 'follower')
-                                    ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
-                            })
-                            ->orWhere('user_id', Auth::id());
-                    }
-                })
                 ->orderByDesc('created_at')
                 ->limit(4)
                 ->get();

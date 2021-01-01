@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Scopes\VisibilityScope;
 use App\Traits\Reportable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -17,7 +18,7 @@ class Equipment extends Model
         'name',
         'description',
         'image',
-        'required',
+        'visibility',
     ];
 
     protected $searchable = [
@@ -26,6 +27,11 @@ class Equipment extends Model
             'description' => 8,
         ],
     ];
+
+    protected static function booted()
+    {
+        static::addGlobalScope(new VisibilityScope);
+    }
 
     public function scopeDateBetween($query, $dates = [])
     {

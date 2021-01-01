@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Scopes\VisibilityScope;
 use Illuminate\Database\Eloquent\Model;
 use Nicolaslopezj\Searchable\SearchableTrait;
 
@@ -12,6 +13,7 @@ class Workout extends Model
     protected $fillable = [
         'name',
         'description',
+        'visibility',
     ];
 
     protected $searchable = [
@@ -20,6 +22,11 @@ class Workout extends Model
             'description' => 8,
         ],
     ];
+
+    protected static function booted()
+    {
+        static::addGlobalScope(new VisibilityScope);
+    }
 
     public function scopeDateBetween($query, $dates = [])
     {

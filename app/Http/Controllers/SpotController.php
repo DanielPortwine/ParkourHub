@@ -12,6 +12,7 @@ use App\Movement;
 use App\MovementCategory;
 use App\MovementField;
 use App\Notifications\SpotCreated;
+use App\Scopes\VisibilityScope;
 use App\Spot;
 use App\SpotView;
 use App\Workout;
@@ -43,14 +44,6 @@ class SpotController extends Controller
         $spots = Spot::withCount('views')
             ->with(['reviews', 'reports', 'hits', 'user'])
             ->search($request['search'] ?? '')
-            ->where(function($q) {
-                $q->where('visibility', 'public')
-                    ->orWhere(function($q1) {
-                        $q1->where('visibility', 'follower')
-                            ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
-                    })
-                    ->orWhere('user_id', Auth::id());
-            })
             ->hitlist(!empty($request['on_hitlist']) ? true : false)
             ->ticked(!empty($request['ticked_hitlist']) ? true : false)
             ->rating($request['rating'] ?? null)
@@ -86,58 +79,12 @@ class SpotController extends Controller
 
         $spot = Spot::with([
             'user',
-            'movements' => function($query) {
-                $query->where(function($q) {
-                    $q->where('visibility', 'public')
-                        ->orWhere(function($q1) {
-                            $q1->where('visibility', 'follower')
-                                ->whereIn('movements.user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
-                        })
-                        ->orWhere('movements.user_id', Auth::id());
-                });
-            },
+            'movements',
             'reviews',
-            'comments' => function($query) {
-                $query->where(function($q) {
-                    $q->where('visibility', 'public')
-                        ->orWhere(function($q1) {
-                            $q1->where('visibility', 'follower')
-                                ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
-                        })
-                        ->orWhere('user_id', Auth::id());
-                });
-            },
-            'challenges' => function($query) {
-                $query->where(function($q) {
-                    $q->where('visibility', 'public')
-                        ->orWhere(function($q1) {
-                            $q1->where('visibility', 'follower')
-                                ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
-                        })
-                        ->orWhere('user_id', Auth::id());
-                });
-            },
-            'workouts' => function($query) {
-                $query->where(function($q) {
-                    $q->where('visibility', 'public')
-                        ->orWhere(function($q1) {
-                            $q1->where('visibility', 'follower')
-                                ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
-                        })
-                        ->orWhere('user_id', Auth::id());
-                });
-            },
+            'comments',
+            'challenges',
+            'workouts',
         ])
-            ->where(function($q) {
-                if (Auth::id() !== 1) {
-                    $q->where('visibility', 'public')
-                        ->orWhere(function($q1) {
-                            $q1->where('visibility', 'follower')
-                                ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
-                        })
-                        ->orWhere('user_id', Auth::id());
-                }
-            })
             ->where('id', $id)
             ->first();
 
@@ -158,90 +105,30 @@ class SpotController extends Controller
             }
             if (!empty($request['comments']) && $tab === 'comments') {
                 $comments = $spot->comments()
-                    ->where(function($q) {
-                        if (Auth::id() !== 1) {
-                            $q->where('visibility', 'public')
-                                ->orWhere(function($q1) {
-                                    $q1->where('visibility', 'follower')
-                                        ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
-                                })
-                                ->orWhere('user_id', Auth::id());
-                        }
-                    })
                     ->orderByDesc('created_at')
                     ->paginate(20, ['*'], 'comments');
             } else if ($tab === 'comments') {
                 $comments = $spot->comments()
-                    ->where(function($q) {
-                        if (Auth::id() !== 1) {
-                            $q->where('visibility', 'public')
-                                ->orWhere(function($q1) {
-                                    $q1->where('visibility', 'follower')
-                                        ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
-                                })
-                                ->orWhere('user_id', Auth::id());
-                        }
-                    })
                     ->orderByDesc('created_at')
                     ->limit(4)
                     ->get();
             }
             if (!empty($request['challenges']) && $tab === 'challenges') {
                 $challenges = $spot->challenges()
-                    ->where(function($q) {
-                        if (Auth::id() !== 1) {
-                            $q->where('visibility', 'public')
-                                ->orWhere(function($q1) {
-                                    $q1->where('visibility', 'follower')
-                                        ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
-                                })
-                                ->orWhere('user_id', Auth::id());
-                        }
-                    })
                     ->orderByDesc('created_at')
                     ->paginate(20, ['*'], 'challenges');
             } else if ($tab === 'challenges') {
                 $challenges = $spot->challenges()
-                    ->where(function($q) {
-                        if (Auth::id() !== 1) {
-                            $q->where('visibility', 'public')
-                                ->orWhere(function($q1) {
-                                    $q1->where('visibility', 'follower')
-                                        ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
-                                })
-                                ->orWhere('user_id', Auth::id());
-                        }
-                    })
                     ->orderByDesc('created_at')
                     ->limit(4)
                     ->get();
             }
             if (!empty($request['workouts']) && $tab === 'workouts') {
                 $workouts = $spot->workouts()
-                    ->where(function($q) {
-                        if (Auth::id() !== 1) {
-                            $q->where('visibility', 'public')
-                                ->orWhere(function($q1) {
-                                    $q1->where('visibility', 'follower')
-                                        ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
-                                })
-                                ->orWhere('user_id', Auth::id());
-                        }
-                    })
                     ->orderByDesc('created_at')
                     ->paginate(20, ['*'], 'workouts');
             } else if ($tab === 'workouts') {
                 $workouts = $spot->workouts()
-                    ->where(function($q) {
-                        if (Auth::id() !== 1) {
-                            $q->where('visibility', 'public')
-                                ->orWhere(function($q1) {
-                                    $q1->where('visibility', 'follower')
-                                        ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
-                                })
-                                ->orWhere('user_id', Auth::id());
-                        }
-                    })
                     ->orderByDesc('created_at')
                     ->limit(4)
                     ->get();
@@ -289,15 +176,7 @@ class SpotController extends Controller
 
     public function fetch()
     {
-        $spots = Spot::where(function($q) {
-            $q->where('visibility', 'public')
-                ->orWhere(function($q1) {
-                    $q1->where('visibility', 'follower')
-                        ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
-                })
-                ->orWhere('user_id', Auth::id());
-        })
-            ->get();
+        $spots = Spot::get();
 
         return $spots;
     }
@@ -372,20 +251,8 @@ class SpotController extends Controller
 
     public function search(SearchMap $request)
     {
-        $search = $request['search'];
         $spots = Spot::with(['user'])
-            ->where(function($query) use($search) {
-                $query->where('name', 'like', '%' . $search . '%')
-                    ->orWhere('description', 'like', '%' . $search . '%');
-            })
-            ->where(function($query) {
-                $query->where('visibility', 'public')
-                    ->orWhere(function($q) {
-                        $q->where('visibility', 'follower')
-                            ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
-                    })
-                    ->orWhere('user_id', Auth::id());
-            })
+            ->search($request['search'] ?? null)
             ->limit(20)
             ->get();
 

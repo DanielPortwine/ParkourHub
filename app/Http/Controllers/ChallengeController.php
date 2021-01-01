@@ -37,14 +37,6 @@ class ChallengeController extends Controller
 
         $challenges = Challenge::withCount('entries')
             ->search($request['search'] ?? '')
-            ->where(function($q) {
-                $q->where('visibility', 'public')
-                    ->orWhere(function($q1) {
-                        $q1->where('visibility', 'follower')
-                            ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
-                    })
-                    ->orWhere('user_id', Auth::id());
-            })
             ->entered(!empty($request['entered']) ? true : false)
             ->difficulty($request['difficulty'] ?? null)
             ->dateBetween([
@@ -77,16 +69,6 @@ class ChallengeController extends Controller
         }
 
         $challenge = Challenge::with(['entries'])
-            ->where(function($q) {
-                if (Auth::id() !== 1) {
-                    $q->where('visibility', 'public')
-                        ->orWhere(function($q1) {
-                            $q1->where('visibility', 'follower')
-                                ->whereIn('user_id', Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray());
-                        })
-                        ->orWhere('user_id', Auth::id());
-                }
-            })
             ->where('id', $id)
             ->first();
         if (empty($challenge)) {
