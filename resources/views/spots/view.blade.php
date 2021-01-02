@@ -369,9 +369,9 @@
                         @if(!empty($request['reviews']))
                             {{ $reviews->links() }}
                         @endif
-                        @if ($spot->reviews()->withText()->count() === 0)
+                        @if ($spotReviewsWithTextCount === 0)
                             <p class="mb-0">This spot has no reviews yet.@auth Create one by clicking 'Submit Review' above. @else <a class="btn-link" href="/login">Login</a> or <a class="btn-link" href="/register">Register</a> to create one. @endauth</p>
-                        @elseif($spot->reviews()->withText()->count() > 4)
+                        @elseif($spotReviewsWithTextCount > 4)
                             <div class="col text-center mb-4">
                                 @if(empty($request['reviews']))
                                     <a class="btn btn-green w-75" href="?reviews=1">More</a>

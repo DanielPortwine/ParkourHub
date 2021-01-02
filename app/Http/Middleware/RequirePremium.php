@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class RequirePremium
 {
@@ -16,7 +17,10 @@ class RequirePremium
      */
     public function handle($request, Closure $next)
     {
-        if (!Auth::user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium')) {
+        $isPremium = Cache::remember('premium_' . Auth::id(), 3600, function() {
+            return (Auth::check() && Auth::user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium')) ? true : false;
+        });
+        if (!$isPremium) {
             return redirect('premium');
         }
 

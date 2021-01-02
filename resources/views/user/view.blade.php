@@ -168,9 +168,9 @@
                                 @endforeach
                             </div>
                         @endforeach
-                        @if ($user->reviews()->withText()->count() === 0)
+                        @if ($userReviewsWithTextCount === 0)
                             <p class="mb-0">{{ $user->id === Auth()->id() ? 'You have ' : 'This user has ' }}no reviews.</p>
-                        @elseif($user->reviews()->withText()->count() > 6)
+                        @elseif($userReviewsWithTextCount > 6)
                             <div class="col text-center mb-4">
                                 <a class="btn btn-green w-75" href="{{ route('user_reviews') }}">More</a>
                             </div>

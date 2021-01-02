@@ -91,14 +91,19 @@
                                 </li>
                             @endpremium
                             <li class="nav-item dropdown">
+                                @php
+                                    $unreadNotifications = Cache::remember('unread_notifications_' . Auth::id(), 300, function() {
+                                        return Auth::user()->unreadNotifications;
+                                    });
+                                @endphp
                                 <a id="notification-dropdown" class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    <i class="fa {{ count(Auth()->user()->unreadNotifications) > 0 ? 'fa-bell' : 'fa-bell-o' }} nav-icon"></i><span class="d-md-none">Notifications</span>
+                                    <i class="fa {{ count($unreadNotifications) > 0 ? 'fa-bell' : 'fa-bell-o' }} nav-icon"></i><span class="d-md-none">Notifications</span>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right bg-grey" id="notification-menu" aria-labelledby="notification-dropdown">
-                                    @if(count(Auth()->user()->unreadNotifications) == 0)
+                                    @if(count($unreadNotifications) == 0)
                                         <a class="dropdown-item text-white no-hover">No new notifications</a>
                                     @endif
-                                    @foreach(Auth()->user()->unreadNotifications as $notification)
+                                    @foreach($unreadNotifications as $notification)
                                         @if(!empty($notification->data['review']))
                                             <a class="dropdown-item text-white" href="{{ route('spot_view', ['id' => $notification->data['review']['spot_id'], 'notification' => $notification->id]) }}">New review on {{ $notification->data['review']['spot']['name'] }}</a>
                                         @elseif(!empty($notification->data['comment']))

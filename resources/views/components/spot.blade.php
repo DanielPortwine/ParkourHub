@@ -7,9 +7,6 @@ $hit = $spot->hits->where('user_id', Auth()->id() ?: null)->first()
         @if(isset($hit) && $hit->completed_at != null)
             <i class="fa fa-check-square-o text-shadow" title="{{ Carbon\Carbon::parse($hit->completed_at)->diffForHumans() }}"></i>
         @endif
-        @if($spot->private)
-            <i class="fa fa-lock text-shadow" title="Private"></i>
-        @endif
     </div>
     <div class="content-wrapper">
         @if(!empty($spot->image))

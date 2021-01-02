@@ -62,13 +62,21 @@ class MovementController extends Controller
 
     public function view($id, $tab = null)
     {
-        $movement = Movement::with([
-                $tab,
+        $movement = Cache::remember('movement_view_' . $id, 60, function() use($id) {
+            return Movement::with([
                 'category',
                 'fields',
+                'reports',
+                'spots',
+                'equipment',
+                'progressions',
+                'advancements',
+                'exercises',
+                'moves',
             ])
-            ->where('id', $id)
-            ->first();
+                ->where('id', $id)
+                ->first();
+        });
 
         $spots = null;
         $progressions = null;
@@ -80,48 +88,72 @@ class MovementController extends Controller
         $advancementID = null;
         $baselineFields = null;
         if (!empty($request['spots']) && (($tab == null && $movement->type_id === 1) || $tab === 'spots')) {
-            $spots = $movement->spots()
-                ->withCount('views')
-                ->with(['reviews', 'reports', 'hits', 'user'])
-                ->paginate(20, ['*'], 'spots');
+            $spots = Cache::remember('movement_spots_' . $id . '_page_' . $request['spots'], 60, function() use($movement) {
+                return $movement->spots()
+                    ->withCount('views')
+                    ->with(['reviews', 'reports', 'hits', 'user'])
+                    ->paginate(20, ['*'], 'spots');
+            });
         } else if (($tab == null && $movement->type_id === 1) || $tab === 'spots') {
-            $spots = $movement->spots()
-                ->withCount('views')
-                ->with(['reviews', 'reports', 'hits', 'user'])
-                ->limit(4)
-                ->get();
+            $spots = Cache::remember('movement_spots_' . $id, 60, function() use($movement) {
+                return $movement->spots()
+                    ->withCount('views')
+                    ->with(['reviews', 'reports', 'hits', 'user'])
+                    ->limit(4)
+                    ->get();
+            });
         }
         if (!empty($request['equipment']) && (($tab == null && $movement->type_id === 2) || $tab === 'equipment')) {
-            $equipment = $movement->equipment()
-                ->withCount(['movements'])
-                ->with(['movements', 'reports', 'user'])
-                ->paginate(20, ['*'], 'equipment');
+            $equipment = Cache::remember('movement_equipment_' . $id . '_page_' . $request['equipment'], 60, function() use($movement) {
+                return $movement->equipment()
+                    ->withCount(['movements'])
+                    ->with(['movements', 'reports', 'user'])
+                    ->paginate(20, ['*'], 'equipment');
+            });
         } else if (($tab == null && $movement->type_id === 2) || $tab === 'equipment') {
-            $equipment = $movement->equipment()
-                ->withCount(['movements'])
-                ->with(['movements', 'reports', 'user'])
-                ->limit(4)
-                ->get();
+            $equipment = Cache::remember('movement_equipment_' . $id, 60, function() use($movement) {
+                return $movement->equipment()
+                    ->withCount(['movements'])
+                    ->with(['movements', 'reports', 'user'])
+                    ->limit(4)
+                    ->get();
+            });
         }
         if (!empty($request['progressions']) && $tab === 'progressions') {
-            $progressions = $movement->progressions()->paginate(20, ['*'], 'progressions');
+            $progressions = Cache::remember('movement_progressions_' . $id . '_page_' . $request['progressions'], 60, function() use($movement) {
+                return $movement->progressions()->paginate(20, ['*'], 'progressions');
+            });
         } else if ($tab === 'progressions') {
-            $progressions = $movement->progressions()->limit(4)->get();
+            $progressions = Cache::remember('movement_progressions_' . $id, 60, function() use($movement) {
+                return $movement->progressions()->limit(4)->get();
+            });
         }
         if (!empty($request['advancements']) && $tab === 'advancements') {
-            $advancements = $movement->advancements()->paginate(20, ['*'], 'advancements');
+            $advancements = Cache::remember('movement_advancements_' . $id . '_page_' . $request['advancements'], 60, function() use($movement) {
+                return $movement->advancements()->paginate(20, ['*'], 'advancements');
+            });
         } else if ($tab === 'advancements') {
-            $advancements = $movement->advancements()->limit(4)->get();
+            $advancements = Cache::remember('movement_advancements_' . $id, 60, function() use($movement) {
+                return $movement->advancements()->limit(4)->get();
+            });
         }
         if (!empty($request['exercises']) && $tab === 'exercises') {
-            $exercises = $movement->exercises()->paginate(20, ['*'], 'exercises');
+            $exercises = Cache::remember('movement_exercises_' . $id . '_page_' . $request['exercises'], 60, function() use($movement) {
+                return $movement->exercises()->paginate(20, ['*'], 'exercises');
+            });
         } else if ($tab === 'exercises') {
-            $exercises = $movement->exercises()->limit(4)->get();
+            $exercises = Cache::remember('movement_exercises_' . $id, 60, function() use($movement) {
+                return $movement->exercises()->limit(4)->get();
+            });
         }
         if (!empty($request['moves']) && $tab === 'moves') {
-            $moves = $movement->moves()->paginate(20, ['*'], 'moves');
+            $moves = Cache::remember('movement_moves_' . $id . '_page_' . $request['moves'], 60, function() use($movement) {
+                return $movement->moves()->paginate(20, ['*'], 'moves');
+            });
         } else if ($tab === 'moves') {
-            $moves = $movement->moves()->limit(4)->get();
+            $moves = Cache::remember('movement_moves_' . $id, 60, function() use($movement) {
+                return $movement->moves()->limit(4)->get();
+            });
         }
         if ($tab === 'baseline') {
             if (count(Auth::user()->baselineMovementFields()->where('movement_id', $id)->get())) {
@@ -137,45 +169,71 @@ class MovementController extends Controller
         switch ($tab) {
             case null:
             case 'equipment':
-                $linkableEquipment = Equipment::get();
+                $linkableEquipment = Cache::remember('equipment', 60, function() {
+                    return Equipment::get();
+                });
                 break;
             case 'progressions':
                 $advancementID = $movement->id;
-                $linkableMovements = Movement::where('id', '!=', $id)
-                    ->whereNotIn('id', array_merge($movement->progressions()->pluck('movements.id')->toArray(), $movement->advancements()->pluck('movements.id')->toArray()))
-                    ->where('type_id', $movement->type_id)
-                    ->orderBy('category_id')
-                    ->get();
-                $movementCategories = MovementCategory::where('type_id', $movement->type_id)->get();
-                $movementFields = MovementField::get();
+                $linkableMovements = Cache::remember('movement_linkable_progressions_advancements_' . $id, 60, function() use($movement, $id) {
+                    return Movement::where('id', '!=', $id)
+                        ->whereNotIn('id', array_merge($movement->progressions()->pluck('movements.id')->toArray(), $movement->advancements()->pluck('movements.id')->toArray()))
+                        ->where('type_id', $movement->type_id)
+                        ->orderBy('category_id')
+                        ->get();
+                });
+                $movementCategories = Cache::remember('movement_categories_' . $movement->type_id, 86400, function() use($movement) {
+                    return MovementCategory::where('type_id', $movement->type_id)->get();
+                });
+                $movementFields = Cache::remember('movement_fields', 86400, function() {
+                    return MovementField::get();
+                });
                 break;
             case 'advancements':
                 $progressionID = $movement->id;
-                $linkableMovements = Movement::where('id', '!=', $id)
-                    ->whereNotIn('id', array_merge($movement->progressions()->pluck('movements.id')->toArray(), $movement->advancements()->pluck('movements.id')->toArray()))
-                    ->where('type_id', $movement->type_id)
-                    ->orderBy('category_id')
-                    ->get();
-                $movementCategories = MovementCategory::where('type_id', $movement->type_id)->get();
-                $movementFields = MovementField::get();
+                $linkableMovements = Cache::remember('movement_linkable_progressions_advancements_' . $id, 60, function() use($movement, $id) {
+                    return Movement::where('id', '!=', $id)
+                        ->whereNotIn('id', array_merge($movement->progressions()->pluck('movements.id')->toArray(), $movement->advancements()->pluck('movements.id')->toArray()))
+                        ->where('type_id', $movement->type_id)
+                        ->orderBy('category_id')
+                        ->get();
+                });
+                $movementCategories = Cache::remember('movement_categories_' . $movement->type_id, 86400, function() use($movement) {
+                    return MovementCategory::where('type_id', $movement->type_id)->get();
+                });
+                $movementFields = Cache::remember('movement_fields', 86400, function() {
+                    return MovementField::get();
+                });
                 break;
             case 'exercises':
-                $linkableMovements = Movement::where('id', '!=', $id)
-                    ->whereNotIn('id', $movement->exercises()->pluck('movements.id')->toArray())
-                    ->where('type_id', 2)
-                    ->orderBy('category_id')
-                    ->get();
-                $movementCategories = MovementCategory::where('type_id', $movement->type_id)->get();
-                $movementFields = MovementField::get();
+                $linkableMovements = Cache::remember('movement_linkable_exercises_' . $id, 60, function() use($movement, $id) {
+                    return Movement::where('id', '!=', $id)
+                        ->whereNotIn('id', $movement->exercises()->pluck('movements.id')->toArray())
+                        ->where('type_id', 2)
+                        ->orderBy('category_id')
+                        ->get();
+                });
+                $movementCategories = Cache::remember('movement_categories_' . $movement->type_id, 86400, function() use($movement) {
+                    return MovementCategory::where('type_id', $movement->type_id)->get();
+                });
+                $movementFields = Cache::remember('movement_fields', 86400, function() {
+                    return MovementField::get();
+                });
                 break;
             case 'moves':
-                $linkableMovements = Movement::where('id', '!=', $id)
-                    ->whereNotIn('id', $movement->moves()->pluck('movements.id')->toArray())
-                    ->where('type_id', 1)
-                    ->orderBy('category_id')
-                    ->get();
-                $movementCategories = MovementCategory::where('type_id', $movement->type_id)->get();
-                $movementFields = MovementField::get();
+                $linkableMovements = Cache::remember('movement_linkable_moves_' . $id, 60, function() use($movement, $id) {
+                    return Movement::where('id', '!=', $id)
+                        ->whereNotIn('id', $movement->moves()->pluck('movements.id')->toArray())
+                        ->where('type_id', 1)
+                        ->orderBy('category_id')
+                        ->get();
+                });
+                $movementCategories = Cache::remember('movement_categories_' . $movement->type_id, 86400, function() use($movement) {
+                    return MovementCategory::where('type_id', $movement->type_id)->get();
+                });
+                $movementFields = Cache::remember('movement_fields', 86400, function() {
+                    return MovementField::get();
+                });
                 break;
         }
         $linkType = '';

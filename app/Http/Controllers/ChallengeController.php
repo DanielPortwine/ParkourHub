@@ -69,18 +69,20 @@ class ChallengeController extends Controller
             return redirect()->route('challenge_view', $id);
         }
 
-        $challenge = Challenge::with(['entries', 'spot', 'reports', 'user'])
-            ->where('id', $id)
-            ->first();
+        $challenge = Cache::remember('challenge_view_' . $id, 60, function() use($id) {
+            return Challenge::with(['entries', 'views', 'spot', 'reports', 'user'])
+                ->where('id', $id)
+                ->first();
+        });
         if (empty($challenge)) {
             return view('errors.404');
         }
-        $entries = $challenge->entries()->with(['reports', 'user'])->orderByDesc('created_at')->paginate(10, ['*'], 'entries');
-        $entered = !empty(
-            $challenge->entries->where('user_id', Auth::id())->first()
-        );
+        $entries = Cache::remember('challenge_entries_' . $id, 60, function() use($challenge) {
+            return $challenge->entries()->with(['challenge', 'reports', 'user'])->orderByDesc('created_at')->paginate(10, ['*'], 'entries');
+        });
+        $entered = !empty($challenge->entries->where('user_id', Auth::id())->first());
         $winner = $challenge->entries->where('winner', true)->first();
-        $usersViewed = $challenge->entries->pluck('user_id')->toArray();
+        $usersViewed = $challenge->views->pluck('user_id')->toArray();
         if (Auth::check() && !in_array(Auth::id(), $usersViewed) && Auth::id() !== $challenge->user_id) {
             $view = new ChallengeView;
             $view->challenge_id = $id;

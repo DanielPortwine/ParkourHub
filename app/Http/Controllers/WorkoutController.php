@@ -91,41 +91,53 @@ class WorkoutController extends Controller
             return redirect()->route('workout_view', $id);
         }
 
-        $workout = Workout::with(['user', 'movements', 'bookmarks'])
-            ->where('id', $id)
-            ->first();
-
-        if ($tab === null || $tab === 'movements') {
-            $workoutMovements = $workout->movements()
-                ->with([
-                    'movement',
-                    'fields',
-                    'fields.field',
-                ])
-                ->paginate(20);
-        } else if ($tab === 'recorded') {
-            $recordedWorkouts = RecordedWorkout::where('workout_id', $id)
-                ->where('user_id', Auth::id())
-                ->paginate(20);
-        } else if ($tab === 'spots') {
-            $spots = $workout->spots()
-                ->withCount('views')
-                ->with(['reviews', 'reports', 'hits', 'user'])
-                ->orderByDesc('created_at')
-                ->paginate(20);
-        }
-
-        $displayMovement = $workout->movements()
-            ->with(['movement'])
-            ->inRandomOrder()
-            ->first()
-            ->movement;
+        $workout = Cache::remember('workout_view_' . $id, 60, function() use($id) {
+            return Workout::with(['user', 'movements', 'bookmarks', 'spots'])
+                ->where('id', $id)
+                ->first();
+        });
 
         $linkableSpots = null;
-        if ($tab === 'spots') {
-            $linkableSpots = Spot::whereNotIn('id', $workout->spots()->pluck('spots.id')->toArray())->get();
+        if ($tab === null || $tab === 'movements') {
+            $workoutMovements = Cache::remember('workout_movements_' . $id, 60, function() use($workout) {
+                return $workout->movements()
+                    ->with([
+                        'moves',
+                        'reports',
+                        'user',
+                        'spots',
+                        'fields',
+                    ])
+                    ->whereNull('recorded_workout_id')
+                    ->paginate(20);
+            });
+        } else if ($tab === 'recorded') {
+            $recordedWorkouts = Cache::remember('workout_recorded_' . $id, 60, function() use($id) {
+                return RecordedWorkout::where('workout_id', $id)
+                    ->with(['workout', 'movements'])
+                    ->where('user_id', Auth::id())
+                    ->paginate(20);
+            });
+        } else if ($tab === 'spots') {
+            $spots = Cache::remember('workout_spots_' . $id, 60, function() use($workout) {
+                return $workout->spots()
+                    ->withCount('views')
+                    ->with(['reviews', 'reports', 'hits', 'user'])
+                    ->orderByDesc('created_at')
+                    ->paginate(20);
+            });
+            $linkableSpots = Cache::remember('workout_linkable_spots_' . $id, 60, function() use($workout) {
+                return Spot::whereNotIn('id', $workout->spots()->pluck('spots.id')->toArray())->get();
+            });
         }
 
+        $displayMovement = Cache::remember('workout_display_movement_' . $id, 60, function() use($workout) {
+            return $workout->movements()
+                ->with(['movement'])
+                ->inRandomOrder()
+                ->first()
+                ->movement;
+        });
 
         return view('workouts.view', [
             'workout' => $workout,

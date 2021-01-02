@@ -4,9 +4,6 @@
             @if(isset($hit) && $hit->completed_at != null)
                 <i class="fa fa-check-square-o text-shadow" title="{{ Carbon\Carbon::parse($hit->completed_at)->diffForHumans() }}"></i>
             @endif
-            @if($review->spot->private)
-                <i class="fa fa-lock text-shadow" title="Private"></i>
-            @endif
         </div>
     @endif
     @if(isset($user) && $user === true)

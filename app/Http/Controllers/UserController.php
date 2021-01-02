@@ -69,76 +69,141 @@ class UserController extends Controller
             return redirect()->route('user_view', $id);
         }
 
-        $user = User::with([
-            'spots',
-            'hits',
-            'reviews',
-            'spotComments',
-            'challenges',
-            'challengeEntries',
-            'movements',
-            'equipment',
-            'followers',
-            'following',
-        ])
-            ->where('id', $id)
-            ->first();
+        $user = Cache::remember('user_view_' . $id, 60, function() use($id) {
+            return User::with([
+                'spots',
+                'reports',
+                'hits',
+                'reviews',
+                'spotComments',
+                'challenges',
+                'challengeEntries',
+                'movements',
+                'equipment',
+                'followers',
+                'following',
+            ])
+                ->where('id', $id)
+                ->first();
+        });
 
         $spots = $hits = $reviews = $comments = $challenges = $entries = $movements = $equipment = $followers = $following = $followRequests = null;
         if ($tab == null || $tab === 'spots') {
-            $spots = $user->spots()
-                ->orderByDesc('rating')
-                ->limit(4)
-                ->get();
+            $spots = Cache::remember('user_spots_' . $id, 60, function() use($user) {
+                return $user->spots()
+                    ->with(['hits', 'reviews', 'reports', 'user'])
+                    ->orderByDesc('rating')
+                    ->limit(4)
+                    ->get();
+            });
         }
         if ($tab === 'hitlist') {
-            $hits = $user->hits()
-                ->orderByDesc('created_at')
-                ->limit(4)
-                ->pluck('spot_id')
-                ->toArray();
-            $hits = Spot::whereIn('id', $hits)
-                ->limit(4)
-                ->get();
+            $hits = Cache::remember('user_hits_' . $id, 60, function() use($user) {
+                return $user->hits()
+                    ->whereHas('spot')
+                    ->orderByDesc('created_at')
+                    ->limit(4)
+                    ->pluck('spot_id')
+                    ->toArray();
+            });
+            $hits = Cache::remember('user_hitlist_' . $id, 60, function() use($hits) {
+                return Spot::with(['hits', 'reviews', 'reports', 'user'])
+                    ->whereIn('id', $hits)
+                    ->limit(4)
+                    ->get();
+            });
         }
         if ($tab === 'reviews') {
-            $reviews = $user->reviews()->whereNotNull('title')->orderByDesc('created_at')->limit(6)->get();
+            $reviews = Cache::remember('user_reviews_' . $id, 60, function() use($user) {
+                return $user->reviews()
+                    ->with(['spot', 'user', 'reports'])
+                    ->whereHas('spot')
+                    ->whereNotNull('title')
+                    ->orderByDesc('created_at')
+                    ->limit(6)
+                    ->get();
+            });
+            $userReviewsWithTextCount = Cache::remember('user_reviews_with_text_count_' . $id, 60, function() use($user) {
+                return $user->reviews()->withText()->count();
+            });
         }
         if ($tab === 'comments') {
-            $comments = $user->spotComments()
-                ->orderByDesc('created_at')
-                ->limit(4)
-                ->get();
+            $comments = Cache::remember('user_comments_' . $id, 60, function() use($user) {
+                return $user->spotComments()
+                    ->with(['reports', 'user'])
+                    ->orderByDesc('created_at')
+                    ->limit(4)
+                    ->get();
+            });
         }
         if ($tab === 'challenges') {
-            $challenges = $user->challenges()
-                ->orderByDesc('created_at')
-                ->limit(4)
-                ->get();
+            $challenges = Cache::remember('user_challenges_' . $id, 60, function() use($user) {
+                return $user->challenges()
+                    ->withCount('entries')
+                    ->with(['entries', 'reports', 'spot', 'user'])
+                    ->whereHas('spot')
+                    ->orderByDesc('created_at')
+                    ->limit(4)
+                    ->get();
+            });
         }
         if ($tab === 'entries') {
-            $entries = $user->challengeEntries()->orderByDesc('created_at')->limit(4)->get();
+            $entries = Cache::remember('user_entries_' . $id, 60, function() use($user) {
+                return $user->challengeEntries()
+                    ->with(['challenge', 'reports', 'user'])
+                    ->whereHas('challenge')
+                    ->orderByDesc('created_at')
+                    ->limit(4)
+                    ->get();
+            });
         }
         if ($tab === 'movements') {
-            $movements = $user->movements()
-                ->orderByDesc('created_at')
-                ->limit(4)
-                ->get();
+            $movements = Cache::remember('user_movements_' . $id, 60, function() use($user) {
+                return $user->movements()
+                    ->with(['reports', 'moves', 'user', 'spots'])
+                    ->orderByDesc('created_at')
+                    ->limit(4)
+                    ->get();
+            });
         }
         if ($tab === 'equipment') {
-            $equipment = $user->equipment()
-                ->orderByDesc('created_at')
-                ->limit(4)
-                ->get();
+            $equipment = Cache::remember('user_equipment_' . $id, 60, function() use($user) {
+                return $user->equipment()
+                    ->withCount(['movements'])
+                    ->with(['movements', 'reports', 'user'])
+                    ->orderByDesc('created_at')
+                    ->limit(4)
+                    ->get();
+            });
         }
         if ($tab === 'followers') {
-            $followers = $user->followers()->where('accepted', true)->orderByDesc('created_at')->limit(10)->get();
+            $followers = Cache::remember('user_followers_' . $id, 60, function() use($user) {
+                return $user->followers()
+                    ->with('followers')
+                    ->where('accepted', true)
+                    ->orderByDesc('created_at')
+                    ->limit(10)
+                    ->get();
+            });
         }
         if ($tab === 'following') {
-            $following = $user->following()->orderByDesc('created_at')->limit(10)->get();
+            $following = Cache::remember('user_following_' . $id, 60, function() use($user) {
+                return $user->following()
+                    ->with('followers')
+                    ->orderByDesc('created_at')
+                    ->limit(10)
+                    ->get();
+            });
         }
         if ($tab === 'follow_requests') {
-            $followRequests = $user->followers()->where('accepted', false)->orderByDesc('created_at')->limit(10)->get();
+            $followRequests = Cache::remember('user_follow_requests_' . $id, 300, function() use($user) {
+                return $user->followers()
+                    ->with('followers')
+                    ->where('accepted', false)
+                    ->orderByDesc('created_at')
+                    ->limit(10)
+                    ->get();
+            });
         }
 
         $showHometown = !empty($user->hometown_name) && (
@@ -167,6 +232,7 @@ class UserController extends Controller
             'followRequests' => $followRequests,
             'tab' => $tab,
             'showHometown' => $showHometown,
+            'userReviewsWithTextCount' => $userReviewsWithTextCount ?? 0,
         ]);
     }
 
