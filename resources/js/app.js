@@ -552,7 +552,7 @@ $(document).ready(function() {
     // youtube lazyload
     $.each($('.youtube'), function() {
         var image = $('<img>', {
-            src: 'https://img.youtube.com/vi/' + $(this).attr('data-id') + '/maxresdefault.jpg',
+            src: 'https://img.youtube.com/vi/' + $(this).attr('data-id') + '/hqdefault.jpg',
         });
         $(this).append(image);
         $(this).click(function() {
