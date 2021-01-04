@@ -3,10 +3,8 @@
 @push('title')
     @if(empty($recordedWorkout->workout))
         Deleted Workout - Workout
-    @elseif(!empty($recordedWorkout->workout->name))
-        {{ $recordedWorkout->workout->name }} - Workout
     @else
-        Workout {{ $recordedWorkout->workout->id }} - Workout
+        Workout {{ $recordedWorkout->workout->name }} - Workout
     @endif |
 @endpush
 
@@ -27,10 +25,8 @@
                 <h1 class="sedgwick mb-0">
                     @if(empty($recordedWorkout->workout))
                         Deleted Workout
-                    @elseif(!empty($recordedWorkout->workout->name))
-                        {{ $recordedWorkout->workout->name }}
                     @else
-                        Workout {{ $recordedWorkout->workout->id }}
+                        Workout {{ $recordedWorkout->workout->name }}
                     @endif
                 </h1>
             </div>

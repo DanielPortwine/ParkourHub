@@ -5,10 +5,8 @@
                 <a class="btn-link large-text sedgwick" href="{{ route('recorded_workout_view', $recorded_workout->id) }}">
                     @if(empty($recorded_workout->workout))
                         Deleted Workout
-                    @elseif(!empty($recorded_workout->workout->name))
-                        {{ $recorded_workout->workout->name }}
                     @else
-                        Workout {{ $recorded_workout->workout->id }}
+                        Workout {{ $recorded_workout->workout->name }}
                     @endif
                 </a>
             </div>

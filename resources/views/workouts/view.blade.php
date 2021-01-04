@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
-@push('title'){{ $workout->name ?: 'Workout ' . date('d/m/Y', strtotime($workout->created_at)) }} - Workout | @endpush
+@push('title'){{ $workout->name }} - Workout | @endpush
 
-@section('description')View the '{{ $workout->name ?: 'Workout ' . date('d/m/Y', strtotime($workout->created_at)) }}' workout on Parkour Hub.@endsection
+@section('description')View the '{{ $workout->name }}' workout on Parkour Hub.@endsection
 
 @section('content')
     @if (session('status'))
@@ -34,7 +34,7 @@
         <div class="container">
             <div class="row pt-4">
                 <div class="col vertical-center">
-                    <h1 class="sedgwick mb-0">{{ $workout->name ?: 'Workout ' . date('d/m/Y', strtotime($workout->created_at)) }}</h1>
+                    <h1 class="sedgwick mb-0">{{ $workout->name }}</h1>
                 </div>
                 <div class="col-auto vertical-center">
                     @if ($workout->user->id === Auth()->id())

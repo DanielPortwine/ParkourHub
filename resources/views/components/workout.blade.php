@@ -2,7 +2,7 @@
     <div class="py-3 px-4">
         <div class="row">
             <div class="col-md vertical-center">
-                <a class="btn-link large-text sedgwick" href="{{ route('workout_view', $workout->id) }}">{{ $workout->name ?: 'Workout ' . date('d/m/Y', strtotime($workout->created_at)) }}</a>
+                <a class="btn-link large-text sedgwick" href="{{ route('workout_view', $workout->id) }}">{{ $workout->name  }}</a>
             </div>
             <div class="col-md-auto vertical-center">
                 <div>

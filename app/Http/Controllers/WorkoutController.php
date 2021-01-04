@@ -101,13 +101,7 @@ class WorkoutController extends Controller
         if ($tab === null || $tab === 'movements') {
             $workoutMovements = Cache::remember('workout_movements_' . $id, 60, function() use($workout) {
                 return $workout->movements()
-                    ->with([
-                        'moves',
-                        'reports',
-                        'user',
-                        'spots',
-                        'fields',
-                    ])
+                    ->with(['fields'])
                     ->whereNull('recorded_workout_id')
                     ->paginate(20);
             });
@@ -165,7 +159,7 @@ class WorkoutController extends Controller
         $userId = Auth::id();
         $workout = new Workout;
         $workout->user_id = $userId;
-        $workout->name = $request['name'] ?: null;
+        $workout->name = $request['name'];
         $workout->description = $request['description'] ?: null;
         $workout->visibility = $request['visibility'] ?: 'private';
         $workout->save();
@@ -254,7 +248,7 @@ class WorkoutController extends Controller
     {
         $userId = Auth::id();
         $workout = Workout::where('id', $id)->first();
-        $workout->name = $request['name'] ?: null;
+        $workout->name = $request['name'];
         $workout->description = $request['description'] ?: null;
         $workout->visibility = $request['visibility'] ?: 'private';
         $workout->save();
@@ -406,7 +400,7 @@ class WorkoutController extends Controller
         foreach ($workouts as $workout) {
             $results[] = [
                 'id' => $workout->id,
-                'text' => $workout->name ?: 'Workout ' . date('d/m/Y', strtotime($workout->created_at)),
+                'text' => $workout->name,
             ];
         }
 

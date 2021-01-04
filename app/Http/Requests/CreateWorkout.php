@@ -26,7 +26,7 @@ class CreateWorkout extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'nullable|string|max:25',
+            'name' => 'required|string|max:25',
             'description' => 'nullable|string|max:255',
             'movements' => 'required|array',
             'visibility' => ['required', new Visibility],

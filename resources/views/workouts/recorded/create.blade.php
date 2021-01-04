@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@push('title')Record a Workout {{ '- ' . $workout->name ?: '' }} | @endpush
+@push('title')Record a Workout {{ '- ' . $workout->name }} | @endpush
 
 @section('content')
     @if (session('status'))
@@ -15,7 +15,7 @@
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header bg-green sedgwick">Record a Workout{{ ' - ' . $workout->name ?: '' }}</div>
+                    <div class="card-header bg-green sedgwick">Record a Workout{{ ' - ' . $workout->name }}</div>
                     <div class="card-body bg-grey text-white">
                         <div class="mb-3">
                             <form method="POST">
