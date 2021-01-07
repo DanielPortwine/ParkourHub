@@ -18,8 +18,8 @@ class CreateMovementsFieldsTable extends Migration
             $table->unsignedBigInteger('movement_id');
             $table->unsignedBigInteger('movement_field_id');
 
-            $table->foreign('movement_id')->references('id')->on('movements');
-            $table->foreign('movement_field_id')->references('id')->on('movement_fields');
+            $table->foreign('movement_id')->references('id')->on('movements')->onDelete('cascade');
+            $table->foreign('movement_field_id')->references('id')->on('movement_fields')->onDelete('cascade');
         });
     }
 

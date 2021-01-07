@@ -73,6 +73,32 @@ class ReviewController extends Controller
         return back()->with('status', 'Successfully deleted review');
     }
 
+    public function recover($id)
+    {
+        $review = Review::onlyTrashed()->where('id', $id)->first();
+
+        if ($review->user_id !== Auth::id()) {
+            return back();
+        }
+
+        $review->restore();
+
+        return back()->with('status', 'Successfully recovered review.');
+    }
+
+    public function remove($id)
+    {
+        $review = Review::onlyTrashed()->where('id', $id)->first();
+
+        if ($review->user_id !== Auth::id()) {
+            return back();
+        }
+
+        $review->forceDelete();
+
+        return back()->with('status', 'Successfully removed review forever.');
+    }
+
     public function report(Review $review)
     {
         $review->report();

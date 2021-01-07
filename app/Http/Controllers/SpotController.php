@@ -79,17 +79,24 @@ class SpotController extends Controller
         }
 
         $spot = Cache::remember('spot_view_' . $id, 60, function() use($id) {
-            return Spot::with([
-                'user',
-                'reviews',
-                'reports',
-                'movements',
-                'comments',
-                'challenges',
-                'workouts',
-            ])
+            $spot = Spot::withTrashed()
+                ->with([
+                    'user',
+                    'reviews',
+                    'reports',
+                    'movements',
+                    'comments',
+                    'challenges',
+                    'workouts',
+                ])
                 ->where('id', $id)
                 ->first();
+
+            if ($spot->deleted_at !== null && Auth::id() !== $spot->user_id) {
+                return [];
+            }
+
+            return $spot;
         });
 
         if ($request->ajax()){
@@ -301,6 +308,32 @@ class SpotController extends Controller
         }
 
         return $redirect->with('status', 'Successfully deleted spot');
+    }
+
+    public function recover(Request $request, $id)
+    {
+        $spot = Spot::onlyTrashed()->where('id', $id)->first();
+
+        if ($spot->user_id !== Auth::id()) {
+            return back();
+        }
+
+        $spot->restore();
+
+        return back()->with('status', 'Successfully recovered spot.');
+    }
+
+    public function remove(Request $request, $id)
+    {
+        $spot = Spot::onlyTrashed()->where('id', $id)->first();
+
+        if ($spot->user_id !== Auth::id()) {
+            return back();
+        }
+
+        $spot->forceDelete();
+
+        return back()->with('status', 'Successfully removed spot forever.');
     }
 
     public function search(SearchMap $request)

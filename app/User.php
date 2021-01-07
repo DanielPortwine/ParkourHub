@@ -120,6 +120,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany('App\Equipment');
     }
 
+    public function workouts()
+    {
+        return $this->hasMany('App\Workout');
+    }
+
     public function bookmarks()
     {
         return $this->belongsToMany('App\Workout', 'workout_bookmarks');

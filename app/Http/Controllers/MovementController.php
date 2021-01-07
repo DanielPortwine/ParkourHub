@@ -63,19 +63,26 @@ class MovementController extends Controller
     public function view($id, $tab = null)
     {
         $movement = Cache::remember('movement_view_' . $id, 60, function() use($id) {
-            return Movement::with([
-                'category',
-                'fields',
-                'reports',
-                'spots',
-                'equipment',
-                'progressions',
-                'advancements',
-                'exercises',
-                'moves',
-            ])
+            $movement = Movement::withTrashed()
+                ->with([
+                    'category',
+                    'fields',
+                    'reports',
+                    'spots',
+                    'equipment',
+                    'progressions',
+                    'advancements',
+                    'exercises',
+                    'moves',
+                ])
                 ->where('id', $id)
                 ->first();
+
+            if ($movement->deleted_at !== null && Auth::id() !== $movement->user_id) {
+                return [];
+            }
+
+            return $movement;
         });
 
         $spots = null;
@@ -381,6 +388,32 @@ class MovementController extends Controller
         }
 
         return $redirect->with('status', 'Successfully deleted movement');
+    }
+
+    public function recover(Request $request, $id)
+    {
+        $movement = Movement::onlyTrashed()->where('id', $id)->first();
+
+        if ($movement->user_id !== Auth::id()) {
+            return back();
+        }
+
+        $movement->restore();
+
+        return back()->with('status', 'Successfully recovered movement.');
+    }
+
+    public function remove(Request $request, $id)
+    {
+        $movement = Movement::onlyTrashed()->where('id', $id)->first();
+
+        if ($movement->user_id !== Auth::id()) {
+            return back();
+        }
+
+        $movement->forceDelete();
+
+        return back()->with('status', 'Successfully removed movement forever.');
     }
 
     public function report(Movement $movement)

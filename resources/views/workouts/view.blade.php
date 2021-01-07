@@ -37,14 +37,19 @@
                     <h1 class="sedgwick mb-0">{{ $workout->name }}</h1>
                 </div>
                 <div class="col-auto vertical-center">
-                    @if ($workout->user->id === Auth()->id())
-                        <a class="btn text-white" href="{{ route('workout_edit', $workout->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
-                    @endif
-                    <a class="btn text-white" href="{{ route('recorded_workout_create', $workout->id) }}" title="Record"><i class="fa fa-calendar-plus-o"></i></a>
-                    @if($workout->bookmarks->contains(Auth()->id()))
-                        <a class="btn text-white" href="{{ route('workout_unbookmark', $workout->id) }}" title="Remove Bookmark"><i class="fa fa-bookmark"></i></a>
+                    @if($workout->deleted_at === null)
+                        @if ($workout->user->id === Auth()->id())
+                            <a class="btn text-white" href="{{ route('workout_edit', $workout->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
+                        @endif
+                        <a class="btn text-white" href="{{ route('recorded_workout_create', $workout->id) }}" title="Record"><i class="fa fa-calendar-plus-o"></i></a>
+                        @if($workout->bookmarks->contains(Auth()->id()))
+                            <a class="btn text-white" href="{{ route('workout_unbookmark', $workout->id) }}" title="Remove Bookmark"><i class="fa fa-bookmark"></i></a>
+                        @else
+                            <a class="btn text-white" href="{{ route('workout_bookmark', $workout->id) }}" title="Bookmark"><i class="fa fa-bookmark-o"></i></a>
+                        @endif
                     @else
-                        <a class="btn text-white" href="{{ route('workout_bookmark', $workout->id) }}" title="Bookmark"><i class="fa fa-bookmark-o"></i></a>
+                        <a class="btn text-white" href="{{ route('workout_recover', $workout->id) }}" title="Recover"><i class="fa fa-history"></i></a>
+                        <a class="btn text-white" href="{{ route('workout_remove', $workout->id) }}" title="Remove Forever"><i class="fa fa-trash"></i></a>
                     @endif
                 </div>
             </div>
@@ -117,47 +122,49 @@
                     </div>
                 @elseif($tab === 'spots')
                     <div class="card-body bg-black">
-                        <div class="row mb-4">
-                            <div class="col">
-                                <div class="card @error('workout') border-danger @enderror">
-                                    <div class="card-header bg-green sedgwick card-hidden-body">
-                                        <div class="row">
-                                            <div class="col">
-                                                Link Spot
-                                            </div>
-                                            <div class="col-auto">
-                                                <i class="fa fa-caret-down"></i>
+                        @if($workout->deleted_at === null)
+                            <div class="row mb-4">
+                                <div class="col">
+                                    <div class="card @error('workout') border-danger @enderror">
+                                        <div class="card-header bg-green sedgwick card-hidden-body">
+                                            <div class="row">
+                                                <div class="col">
+                                                    Link Spot
+                                                </div>
+                                                <div class="col-auto">
+                                                    <i class="fa fa-caret-down"></i>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="card-body bg-grey text-white">
-                                        <form method="POST" action="{{ route('spot_workout_link') }}" enctype="multipart/form-data">
-                                            @csrf
-                                            <input type="hidden" name="workout" value="{{ $workout->id }}">
-                                            <div class="form-group row">
-                                                <label for="title" class="col-md-2 col-form-label text-md-right">Spot</label>
-                                                <div class="col-md-8">
-                                                    <select class="select2-5-results" name="spot">
-                                                        @foreach($linkableSpots as $spot)
-                                                            <option value="{{ $spot->id }}">{{ $spot->name }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                    <small>Select a spot that this workout can be completed at.</small>
-                                                    @error('spot')
-                                                    <span class="invalid-feedback" role="alert">
-                                                        <strong>{{ $message }}</strong>
-                                                    </span>
-                                                    @enderror
+                                        <div class="card-body bg-grey text-white">
+                                            <form method="POST" action="{{ route('spot_workout_link') }}" enctype="multipart/form-data">
+                                                @csrf
+                                                <input type="hidden" name="workout" value="{{ $workout->id }}">
+                                                <div class="form-group row">
+                                                    <label for="title" class="col-md-2 col-form-label text-md-right">Spot</label>
+                                                    <div class="col-md-8">
+                                                        <select class="select2-5-results" name="spot">
+                                                            @foreach($linkableSpots as $spot)
+                                                                <option value="{{ $spot->id }}">{{ $spot->name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                        <small>Select a spot that this workout can be completed at.</small>
+                                                        @error('spot')
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                        @enderror
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <button type="submit" class="btn btn-green">Link</button>
+                                                    </div>
                                                 </div>
-                                                <div class="col-md-2">
-                                                    <button type="submit" class="btn btn-green">Link</button>
-                                                </div>
-                                            </div>
-                                        </form>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        @endif
                         {{ $spots->links() }}
                         @foreach($spots->chunk(2) as $chunk)
                             <div class="row">

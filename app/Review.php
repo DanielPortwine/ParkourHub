@@ -57,9 +57,4 @@ class Review extends Model
     {
         return $this->belongsTo('App\Spot');
     }
-
-    public function reports()
-    {
-        return $this->morphMany('App\Report', 'reportable');
-    }
 }

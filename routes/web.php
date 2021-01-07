@@ -44,7 +44,8 @@ Route::prefix('user')->middleware('verified')->group(function() {
     Route::get('/challenges', 'UserController@challenges')->name('user_challenges');
     Route::get('/entries', 'UserController@entries')->name('user_entries');
     Route::get('/movements', 'UserController@movements')->middleware('isPremium')->name('user_movements');
-    Route::get('/equipment', 'UserController@Equipment')->middleware('isPremium')->name('user_equipment');
+    Route::get('/equipment', 'UserController@equipment')->middleware('isPremium')->name('user_equipment');
+    Route::get('/bin/{tab?}', 'UserController@bin')->name('user_bin');
     Route::get('/fetch_hometown_bounding', 'UserController@fetchHometownBounding');
     Route::get('/follow/{id}', 'UserController@follow')->name('user_follow');
     Route::get('/unfollow/{id}', 'UserController@unfollow')->name('user_unfollow');
@@ -74,6 +75,8 @@ Route::prefix('spots')->middleware('verified')->group(function() {
     Route::get('/edit/{id}', 'SpotController@edit')->name('spot_edit');
     Route::post('/edit/{id}', 'SpotController@update')->middleware('optimizeImages')->name('spot_update');
     Route::get('/delete/{id}/{from?}', 'SpotController@delete')->name('spot_delete');
+    Route::get('/recover/{id}', 'SpotController@recover')->name('spot_recover');
+    Route::get('/remove/{id}', 'SpotController@remove')->name('spot_remove');
     Route::get('/search', 'SpotController@search')->withoutMiddleware('verified')->name('spot_search');
     Route::get('/add_to_hitlist/{id}', 'SpotController@addToHitlist')->name('add_to_hitlist');
     Route::get('/remove_from_hitlist/{id}', 'SpotController@removeFromHitlist')->name('remove_from_hitlist');
@@ -90,6 +93,8 @@ Route::prefix('/reviews')->middleware('verified')->group(function() {
     Route::get('/edit/{id}', 'ReviewController@edit')->name('review_edit');
     Route::post('/edit/{id}', 'ReviewController@update')->name('review_update');
     Route::get('/delete/{id}/{from?}', 'ReviewController@delete')->name('review_delete');
+    Route::get('/recover/{id}', 'ReviewController@recover')->name('review_recover');
+    Route::get('/remove/{id}', 'ReviewController@remove')->name('review_remove');
     Route::get('/report/{review}', 'ReviewController@report')->name('review_report');
     Route::get('/discard_reports/{review}', 'ReviewController@discardReports')->name('review_report_discard');
 });
@@ -99,6 +104,8 @@ Route::prefix('/spot_comments')->middleware('verified')->group(function() {
     Route::get('/edit/{id}', 'SpotCommentController@edit')->name('spot_comment_edit');
     Route::post('/edit/{id}', 'SpotCommentController@update')->middleware('optimizeImages')->name('spot_comment_update');
     Route::get('/delete/{id}/{from?}', 'SpotCommentController@delete')->name('spot_comment_delete');
+    Route::get('/recover/{id}', 'SpotCommentController@recover')->name('spot_comment_recover');
+    Route::get('/remove/{id}', 'SpotCommentController@remove')->name('spot_comment_remove');
     Route::get('/report/{spotComment}', 'SpotCommentController@report')->name('spot_comment_report');
     Route::get('/discard_reports/{spotComment}', 'SpotCommentController@discardReports')->name('spot_comment_report_discard');
 });
@@ -110,6 +117,8 @@ Route::prefix('challenges')->middleware('verified')->group(function() {
     Route::get('/edit/{id}', 'ChallengeController@edit')->name('challenge_edit');
     Route::post('/edit/{id}', 'ChallengeController@update')->middleware('optimizeImages')->name('challenge_update');
     Route::get('/delete/{id}/{redirect?}', 'ChallengeController@delete')->name('challenge_delete');
+    Route::get('/recover/{id}', 'ChallengeController@recover')->name('challenge_recover');
+    Route::get('/remove/{id}', 'ChallengeController@remove')->name('challenge_remove');
     Route::post('/enter/{id}', 'ChallengeController@enter')->name('challenge_enter');
     Route::get('/win/{id}', 'ChallengeController@win')->name('challenge_win');
     Route::get('/report/{challenge}', 'ChallengeController@report')->name('challenge_report');
@@ -127,6 +136,8 @@ Route::prefix('movements')->middleware(['verified', 'isPremium'])->group(functio
     Route::get('/edit/{id}', 'MovementController@edit')->name('movement_edit');
     Route::post('/edit/{id}', 'MovementController@update')->name('movement_update');
     Route::get('/delete/{id}/{redirect?}', 'MovementController@delete')->name('movement_delete');
+    Route::get('/recover/{id}', 'MovementController@recover')->name('movement_recover');
+    Route::get('/remove/{id}', 'MovementController@remove')->name('movement_remove');
     Route::get('/report/{movement}', 'MovementController@report')->name('movement_report');
     Route::get('/discard_reports/{movement}', 'MovementController@discardReports')->name('movement_report_discard');
     Route::post('/link_progression', 'MovementController@linkProgression')->name('movements_link');
@@ -148,6 +159,8 @@ Route::prefix('equipment')->middleware(['verified', 'isPremium'])->group(functio
     Route::get('/edit/{id}', 'EquipmentController@edit')->name('equipment_edit');
     Route::post('/edit/{id}', 'EquipmentController@update')->name('equipment_update');
     Route::get('/delete/{id}', 'EquipmentController@delete')->name('equipment_delete');
+    Route::get('/recover/{id}', 'EquipmentController@recover')->name('equipment_recover');
+    Route::get('/remove/{id}', 'EquipmentController@remove')->name('equipment_remove');
     Route::get('/report/{equipment}', 'EquipmentController@report')->name('equipment_report');
     Route::get('/discard_reports/{equipment}', 'EquipmentController@discardReports')->name('equipment_report_discard');
 });
@@ -161,6 +174,8 @@ Route::prefix('workouts')->middleware(['verified', 'isPremium'])->group(function
     Route::get('/edit/{id}', 'WorkoutController@edit')->name('workout_edit');
     Route::post('/edit/{id}', 'WorkoutController@update')->name('workout_update');
     Route::get('/delete/{id}', 'WorkoutController@delete')->name('workout_delete');
+    Route::get('/recover/{id}', 'WorkoutController@recover')->name('workout_recover');
+    Route::get('/remove/{id}', 'WorkoutController@remove')->name('workout_remove');
     Route::get('/bookmarks', 'WorkoutController@bookmarks')->name('workout_bookmark_listing');
     Route::get('/bookmark/{id}', 'WorkoutController@bookmark')->name('workout_bookmark');
     Route::get('/unbookmark/{id}', 'WorkoutController@unbookmark')->name('workout_unbookmark');

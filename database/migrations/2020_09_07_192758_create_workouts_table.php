@@ -20,6 +20,7 @@ class CreateWorkoutsTable extends Migration
             $table->string('description')->nullable();
             $table->enum('visibility', ['private', 'follower', 'public'])->default('private');
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });

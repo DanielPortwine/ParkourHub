@@ -589,6 +589,118 @@ class UserController extends Controller
         ]);
     }
 
+    public function bin(Request $request, $tab = null)
+    {
+        $id = Auth::id();
+        $user = User::with([
+            'spots' => function($q) {
+                $q->onlyTrashed();
+            },
+            'reviews' => function($q) {
+                $q->onlyTrashed();
+            },
+            'spotComments' => function($q) {
+                $q->onlyTrashed();
+            },
+            'challenges' => function($q) {
+                $q->onlyTrashed();
+            },
+            'challengeEntries' => function($q) {
+                $q->onlyTrashed();
+            },
+            'movements' => function($q) {
+                $q->onlyTrashed();
+            },
+            'equipment' => function($q) {
+                $q->onlyTrashed();
+            },
+            'workouts' => function($q) {
+                $q->onlyTrashed();
+            }
+        ])
+            ->where('id', $id)
+            ->first();
+
+        $spots = $reviews = $comments = $challenges = $entries = $movements = $equipment = $workouts = null;
+        if ($tab == null || $tab === 'spots') {
+            $spots = $user->spots()
+                ->onlyTrashed()
+                ->with(['hits', 'reviews', 'reports', 'user'])
+                ->orderByDesc('deleted_at')
+                ->paginate(20);
+        }
+        if ($tab === 'reviews') {
+            $reviews = $user->reviews()
+                ->onlyTrashed()
+                ->with(['spot', 'user', 'reports'])
+                ->whereHas('spot')
+                ->whereNotNull('title')
+                ->orderByDesc('deleted_at')
+                ->paginate(40);
+        }
+        if ($tab === 'comments') {
+            $comments = $user->spotComments()
+                ->onlyTrashed()
+                ->with(['reports', 'user'])
+                ->orderByDesc('deleted_at')
+                ->paginate(20);
+        }
+        if ($tab === 'challenges') {
+            $challenges = $user->challenges()
+                ->onlyTrashed()
+                ->withCount('entries')
+                ->with(['entries', 'reports', 'spot', 'user'])
+                ->whereHas('spot')
+                ->orderByDesc('deleted_at')
+                ->paginate(20);
+        }
+        if ($tab === 'entries') {
+            $entries = $user->challengeEntries()
+                ->onlyTrashed()
+                ->with(['challenge', 'reports', 'user'])
+                ->whereHas('challenge')
+                ->orderByDesc('deleted_at')
+                ->paginate(20);
+        }
+        if ($tab === 'movements') {
+            $movements = $user->movements()
+                ->onlyTrashed()
+                ->with(['reports', 'moves', 'user', 'spots'])
+                ->orderByDesc('deleted_at')
+                ->paginate(20);
+        }
+        if ($tab === 'equipment') {
+            $equipment = $user->equipment()
+                ->onlyTrashed()
+                ->withCount(['movements'])
+                ->with(['movements', 'reports', 'user'])
+                ->orderByDesc('deleted_at')
+                ->paginate(20);
+        }
+        if ($tab === 'workouts') {
+            $workouts = $user->workouts()
+                ->onlyTrashed()
+                ->withCount(['movements'])
+                ->with(['movements', 'user'])
+                ->orderByDesc('deleted_at')
+                ->paginate(20);
+        }
+
+        return view('user.bin', [
+            'user' => $user,
+            'request' => $request,
+            'spots' => $spots,
+            'reviews' => $reviews,
+            'comments' => $comments,
+            'challenges' => $challenges,
+            'entries' => $entries,
+            'movements' => $movements,
+            'equipments' => $equipment,
+            'workouts' => $workouts,
+            'tab' => $tab,
+        ]);
+    }
+
     public function fetchHometownBounding(Request $request)
     {
         if (!$request->ajax()) {

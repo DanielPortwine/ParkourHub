@@ -41,7 +41,7 @@
             </div>
             <div class="col-lg-auto vertical-center pl-0">
                 <div>
-                    @if($entry->challenge->user_id === Auth()->id() && !$entry->challenge->won)
+                    @if(!empty($challenge) && $challenge->user_id === Auth()->id() && !$challenge->won)
                         <a class="btn text-white" href="{{ route('challenge_win', $entry->id) }}" title="Select Winner"><i class="fa fa-trophy"></i></a>
                     @endif
                     <a class="btn text-white" href="{{ route('entry_report', $entry->id) }}" title="Report"><i class="fa fa-flag"></i></a>
@@ -51,7 +51,7 @@
                             <a class="btn text-white" href="{{ route('entry_report_discard', $entry->id) }}" title="Discard Reports"><i class="fa fa-balance-scale"></i></a>
                         @endif
                     @endif
-                    <a class="btn text-white" href="{{ route('spots', ['spot' => $entry->challenge->spot_id]) }}" title="Locate Spot"><i class="fa fa-map-marker"></i></a>
+                    <a class="btn text-white" href="{{ route('spots', ['spot' => $challenge->spot_id ?? $entry->challenge->spot_id]) }}" title="Locate Spot"><i class="fa fa-map-marker"></i></a>
                 </div>
             </div>
         </div>

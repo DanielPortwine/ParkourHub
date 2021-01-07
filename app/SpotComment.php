@@ -49,9 +49,4 @@ class SpotComment extends Model
     {
         return $this->belongsTo('App\User');
     }
-
-    public function reports()
-    {
-        return $this->morphMany('App\Report', 'reportable');
-    }
 }

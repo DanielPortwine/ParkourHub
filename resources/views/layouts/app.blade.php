@@ -158,6 +158,7 @@
                                             <a class="dropdown-item text-white" href="{{ route('hometown_challenges') }}"><i class="fa fa-bullseye nav-icon nav-spacer"></i>Challenges</a>
                                         </div>
                                     @endif
+                                    <a class="dropdown-item text-white" href="{{ route('user_bin') }}"><i class="fa fa-trash nav-icon"></i>Bin</a>
                                     <a class="dropdown-item text-white" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">

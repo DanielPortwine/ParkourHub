@@ -28,17 +28,22 @@
                 </div>
                 <div class="col-auto vertical-center">
                     <div>
-                        @if ($equipment->user->id === Auth()->id())
-                            <a class="btn text-white" href="{{ route('equipment_edit', $equipment->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
-                        @endif
-                        <a class="btn text-white" href="{{ route('equipment_report', $equipment->id) }}" title="Report"><i class="fa fa-flag"></i></a>
-                        @if(Auth()->id() === 1)
-                            <a class="btn text-white" href="{{ route('equipment_delete', $equipment->id) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
-                            @if(count($equipment->reports) > 0)
-                                <a class="btn text-white" href="{{ route('equipment_report_discard', $equipment->id) }}" title="Discard Reports"><i class="fa fa-balance-scale"></i></a>
+                        @if($equipment->deleted_at === null)
+                            @if ($equipment->user->id === Auth()->id())
+                                <a class="btn text-white" href="{{ route('equipment_edit', $equipment->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
                             @endif
+                            <a class="btn text-white" href="{{ route('equipment_report', $equipment->id) }}" title="Report"><i class="fa fa-flag"></i></a>
+                            @if(Auth()->id() === 1)
+                                <a class="btn text-white" href="{{ route('equipment_delete', $equipment->id) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
+                                @if(count($equipment->reports) > 0)
+                                    <a class="btn text-white" href="{{ route('equipment_report_discard', $equipment->id) }}" title="Discard Reports"><i class="fa fa-balance-scale"></i></a>
+                                @endif
+                            @endif
+                            <a class="btn text-white" href="{{ route('movement_listing', ['equipment' => $equipment->id]) }}" title="View Exercises With Equipment"><i class="fa fa-child"></i></a>
+                        @else
+                            <a class="btn text-white" href="{{ route('equipment_recover', $equipment->id) }}" title="Recover"><i class="fa fa-history"></i></a>
+                            <a class="btn text-white" href="{{ route('equipment_remove', $equipment->id) }}" title="Remove Forever"><i class="fa fa-trash"></i></a>
                         @endif
-                        <a class="btn text-white" href="{{ route('movement_listing', ['equipment' => $equipment->id]) }}" title="View Exercises With Equipment"><i class="fa fa-child"></i></a>
                     </div>
                 </div>
             </div>
@@ -62,127 +67,129 @@
                     <h2 class="sedgwick subtitle">Exercises</h2>
                 </div>
             </div>
-            <div class="row mb-4">
-                <div class="col">
-                    <div class="card @error('movement') border-danger @enderror @error('category') border-danger @enderror @error('name') border-danger @enderror @error('description') border-danger @enderror @error('video') border-danger @enderror @error('youtube') border-danger @enderror ">
-                        <div class="card-header bg-green sedgwick card-hidden-body">
-                            <div class="row">
-                                <div class="col">
-                                    Link An Exercise
-                                </div>
-                                <div class="col-auto">
-                                    <i class="fa fa-caret-down"></i>
+            @if($equipment->deleted_at === null)
+                <div class="row mb-4">
+                    <div class="col">
+                        <div class="card @error('movement') border-danger @enderror @error('category') border-danger @enderror @error('name') border-danger @enderror @error('description') border-danger @enderror @error('video') border-danger @enderror @error('youtube') border-danger @enderror ">
+                            <div class="card-header bg-green sedgwick card-hidden-body">
+                                <div class="row">
+                                    <div class="col">
+                                        Link An Exercise
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fa fa-caret-down"></i>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="card-body bg-grey text-white">
-                            <form method="POST" action="{{ route('movement_equipment_link') }}" enctype="multipart/form-data">
-                                @csrf
-                                <input type="hidden" name="equipment" value="{{ $equipment->id }}">
-                                <div class="form-group row">
-                                    <label for="title" class="col-md-2 col-form-label text-md-right">Exercise</label>
-                                    <div class="col-md-8">
-                                        <select class="select2-5-results" name="movement">
-                                            <option></option>
-                                            @foreach($linkableMovements as $movement)
-                                                <option value="{{ $movement->id }}">{{ $movement->name }}</option>
-                                            @endforeach
-                                        </select>
-                                        <small>Select an exercise that uses this equipment.</small>
-                                        @error('movement')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                        @enderror
-                                    </div>
-                                    <div class="col-md-2">
-                                        <button type="submit" class="btn btn-green">Link</button>
-                                    </div>
-                                </div>
-                            </form>
-                            <div class="card @error('category') border-danger @enderror @error('name') border-danger @enderror @error('description') border-danger @enderror @error('video') border-danger @enderror @error('youtube') border-danger @enderror">
-                                <div class="card-header bg-green sedgwick card-hidden-body">
-                                    <div class="row">
-                                        <div class="col">
-                                            Can't find what you're looking for?
+                            <div class="card-body bg-grey text-white">
+                                <form method="POST" action="{{ route('movement_equipment_link') }}" enctype="multipart/form-data">
+                                    @csrf
+                                    <input type="hidden" name="equipment" value="{{ $equipment->id }}">
+                                    <div class="form-group row">
+                                        <label for="title" class="col-md-2 col-form-label text-md-right">Exercise</label>
+                                        <div class="col-md-8">
+                                            <select class="select2-5-results" name="movement">
+                                                <option></option>
+                                                @foreach($linkableMovements as $movement)
+                                                    <option value="{{ $movement->id }}">{{ $movement->name }}</option>
+                                                @endforeach
+                                            </select>
+                                            <small>Select an exercise that uses this equipment.</small>
+                                            @error('movement')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                            @enderror
                                         </div>
-                                        <div class="col-auto">
-                                            <i class="fa fa-caret-down"></i>
+                                        <div class="col-md-2">
+                                            <button type="submit" class="btn btn-green">Link</button>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="card-body bg-grey text-white">
-                                    <form method="POST" action="{{ route('movement_store') }}" enctype="multipart/form-data">
-                                        @csrf
-                                        <input type="hidden" name="equipment" value="{{ $equipment->id }}">
-                                        <div class="form-group row">
-                                            <label class="col-md-2 col-form-label text-md-right">Category</label>
-                                            <div class="col-md-8 vertical-center">
-                                                <select class="select2-5-results" name="category">
-                                                    @foreach($movementCategories as $category)
-                                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="name" class="col-md-2 col-form-label text-md-right">Name</label>
-                                            <div class="col-md-8">
-                                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" autocomplete="title" maxlength="25" value="{{ old('name') }}" required>
-                                                @error('name')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="description" class="col-md-2 col-form-label text-md-right">Description</label>
-                                            <div class="col-md-8">
-                                                <textarea id="description" class="form-control @error('description') is-invalid @enderror" name="description" maxlength="255">{{ old('description') }}</textarea>
-                                                @error('description')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                                @enderror
-                                            </div>
-                                        </div>
+                                </form>
+                                <div class="card @error('category') border-danger @enderror @error('name') border-danger @enderror @error('description') border-danger @enderror @error('video') border-danger @enderror @error('youtube') border-danger @enderror">
+                                    <div class="card-header bg-green sedgwick card-hidden-body">
                                         <div class="row">
-                                            <label class="col-md-2 col-form-label text-md-right">YouTube or Video</label>
-                                            <div class="col-md-4">
-                                                <input type="text" id="youtube" class="form-control @error('youtube') is-invalid @enderror" name="youtube" autocomplete="youtube" placeholder="e.g. https://youtu.be/QDIVrf2ZW0s" value="{{ old('youtube') }}">
-                                                @error('youtube')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                                @enderror
+                                            <div class="col">
+                                                Can't find what you're looking for?
                                             </div>
-                                            <div class="col-md-4">
-                                                <input type="file" id="video" class="form-control-file @error('video') is-invalid @enderror" name="video">
-                                                @error('video')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                                @enderror
+                                            <div class="col-auto">
+                                                <i class="fa fa-caret-down"></i>
                                             </div>
                                         </div>
-                                        <div class="form-group row">
-                                            <div class="col offset-md-2">
-                                                <small>The video must contain a demonstration of the exercise and nothing else!</small>
+                                    </div>
+                                    <div class="card-body bg-grey text-white">
+                                        <form method="POST" action="{{ route('movement_store') }}" enctype="multipart/form-data">
+                                            @csrf
+                                            <input type="hidden" name="equipment" value="{{ $equipment->id }}">
+                                            <div class="form-group row">
+                                                <label class="col-md-2 col-form-label text-md-right">Category</label>
+                                                <div class="col-md-8 vertical-center">
+                                                    <select class="select2-5-results" name="category">
+                                                        @foreach($movementCategories as $category)
+                                                            <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <div class="col-md-8 offset-md-2">
-                                                <button type="submit" class="btn btn-green">Create & Link</button>
+                                            <div class="form-group row">
+                                                <label for="name" class="col-md-2 col-form-label text-md-right">Name</label>
+                                                <div class="col-md-8">
+                                                    <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" autocomplete="title" maxlength="25" value="{{ old('name') }}" required>
+                                                    @error('name')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                    @enderror
+                                                </div>
                                             </div>
-                                        </div>
-                                    </form>
+                                            <div class="form-group row">
+                                                <label for="description" class="col-md-2 col-form-label text-md-right">Description</label>
+                                                <div class="col-md-8">
+                                                    <textarea id="description" class="form-control @error('description') is-invalid @enderror" name="description" maxlength="255">{{ old('description') }}</textarea>
+                                                    @error('description')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <label class="col-md-2 col-form-label text-md-right">YouTube or Video</label>
+                                                <div class="col-md-4">
+                                                    <input type="text" id="youtube" class="form-control @error('youtube') is-invalid @enderror" name="youtube" autocomplete="youtube" placeholder="e.g. https://youtu.be/QDIVrf2ZW0s" value="{{ old('youtube') }}">
+                                                    @error('youtube')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                    @enderror
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <input type="file" id="video" class="form-control-file @error('video') is-invalid @enderror" name="video">
+                                                    @error('video')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <div class="col offset-md-2">
+                                                    <small>The video must contain a demonstration of the exercise and nothing else!</small>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <div class="col-md-8 offset-md-2">
+                                                    <button type="submit" class="btn btn-green">Create & Link</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            @endif
             @if(!empty($request['movements']))
                 {{ $movements->links() }}
             @endif

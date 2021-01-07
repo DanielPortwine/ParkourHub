@@ -70,9 +70,22 @@ class ChallengeController extends Controller
         }
 
         $challenge = Cache::remember('challenge_view_' . $id, 60, function() use($id) {
-            return Challenge::with(['entries', 'views', 'spot', 'reports', 'user'])
+            $challenge = Challenge::withTrashed()
+                ->with([
+                    'entries',
+                    'views',
+                    'spot',
+                    'reports',
+                    'user'
+                ])
                 ->where('id', $id)
                 ->first();
+
+            if ($challenge->deleted_at !== null && Auth::id() !== $challenge->user_id) {
+                return [];
+            }
+
+            return $challenge;
         });
         if (empty($challenge)) {
             return view('errors.404');
@@ -179,6 +192,32 @@ class ChallengeController extends Controller
         }
 
         return $redirect->with('status', 'Successfully deleted challenge');
+    }
+
+    public function recover(Request $request, $id)
+    {
+        $challenge = Challenge::onlyTrashed()->where('id', $id)->first();
+
+        if ($challenge->user_id !== Auth::id()) {
+            return back();
+        }
+
+        $challenge->restore();
+
+        return back()->with('status', 'Successfully recovered challenge.');
+    }
+
+    public function remove(Request $request, $id)
+    {
+        $challenge = Challenge::onlyTrashed()->where('id', $id)->first();
+
+        if ($challenge->user_id !== Auth::id()) {
+            return back();
+        }
+
+        $challenge->forceDelete();
+
+        return back()->with('status', 'Successfully removed challenge forever.');
     }
 
     public function enter(EnterChallenge $request, $id)

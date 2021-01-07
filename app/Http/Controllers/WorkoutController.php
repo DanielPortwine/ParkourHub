@@ -92,9 +92,21 @@ class WorkoutController extends Controller
         }
 
         $workout = Cache::remember('workout_view_' . $id, 60, function() use($id) {
-            return Workout::with(['user', 'movements', 'bookmarks', 'spots'])
+            $workout = Workout::withTrashed()
+                ->with([
+                    'user',
+                    'movements',
+                    'bookmarks',
+                    'spots',
+                ])
                 ->where('id', $id)
                 ->first();
+
+            if ($workout->deleted_at !== null && Auth::id() !== $workout->user_id) {
+                return [];
+            }
+
+            return $workout;
         });
 
         $linkableSpots = null;
@@ -302,6 +314,32 @@ class WorkoutController extends Controller
         }
 
         return redirect()->route('workout_listing')->with('status', 'Successfully deleted workout');
+    }
+
+    public function recover(Request $request, $id)
+    {
+        $workout = Workout::onlyTrashed()->where('id', $id)->first();
+
+        if ($workout->user_id !== Auth::id()) {
+            return back();
+        }
+
+        $workout->restore();
+
+        return back()->with('status', 'Successfully recovered workout.');
+    }
+
+    public function remove(Request $request, $id)
+    {
+        $workout = Workout::onlyTrashed()->where('id', $id)->first();
+
+        if ($workout->user_id !== Auth::id()) {
+            return back();
+        }
+
+        $workout->forceDelete();
+
+        return back()->with('status', 'Successfully removed workout forever.');
     }
 
     public function bookmarks(Request $request)

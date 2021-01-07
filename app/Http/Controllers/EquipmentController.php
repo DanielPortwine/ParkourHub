@@ -48,7 +48,19 @@ class EquipmentController extends Controller
     public function view(Request $request, $id)
     {
         $equipment = Cache::remember('equipment_view_' . $id, 60, function() use($id) {
-            return Equipment::with(['movements', 'reports'])->where('id', $id)->first();
+            $equipment = Equipment::withTrashed()
+                ->with([
+                    'movements',
+                    'reports',
+                ])
+                ->where('id', $id)
+                ->first();
+
+            if ($equipment->deleted_at !== null && Auth::id() !== $equipment->user_id) {
+                return [];
+            }
+
+            return $equipment;
         });
         if (!empty($request['movements'])) {
             $movements = Cache::remember('equipment_movements_' . $id . '_page_' . $request['movements'], 60, function() use($equipment) {
@@ -142,6 +154,32 @@ class EquipmentController extends Controller
         }
 
         return $redirect->with('status', 'Successfully deleted equipment');
+    }
+
+    public function recover(Request $request, $id)
+    {
+        $equipment = Equipment::onlyTrashed()->where('id', $id)->first();
+
+        if ($equipment->user_id !== Auth::id()) {
+            return back();
+        }
+
+        $equipment->restore();
+
+        return back()->with('status', 'Successfully recovered equipment.');
+    }
+
+    public function remove(Request $request, $id)
+    {
+        $equipment = Equipment::onlyTrashed()->where('id', $id)->first();
+
+        if ($equipment->user_id !== Auth::id()) {
+            return back();
+        }
+
+        $equipment->forceDelete();
+
+        return back()->with('status', 'Successfully removed equipment forever.');
     }
 
     public function report(Equipment $equipment)

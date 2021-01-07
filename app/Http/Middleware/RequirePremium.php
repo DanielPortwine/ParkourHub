@@ -17,7 +17,7 @@ class RequirePremium
      */
     public function handle($request, Closure $next)
     {
-        $isPremium = Cache::remember('premium_' . Auth::id(), 3600, function() {
+        $isPremium = Cache::remember('premium_' . Auth::id(), 30, function() {
             return (Auth::check() && Auth::user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium')) ? true : false;
         });
         if (!$isPremium) {

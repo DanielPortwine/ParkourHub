@@ -4,11 +4,13 @@ namespace App;
 
 use App\Scopes\VisibilityScope;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Nicolaslopezj\Searchable\SearchableTrait;
 
 class Workout extends Model
 {
-    use SearchableTrait;
+    use SoftDeletes,
+        SearchableTrait;
 
     protected $fillable = [
         'name',

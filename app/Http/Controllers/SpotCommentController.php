@@ -97,6 +97,32 @@ class SpotCommentController extends Controller
         return back()->with('status', 'Successfully deleted comment');
     }
 
+    public function recover(Request $request, $id)
+    {
+        $comment = SpotComment::onlyTrashed()->where('id', $id)->first();
+
+        if ($comment->user_id !== Auth::id()) {
+            return back();
+        }
+
+        $comment->restore();
+
+        return back()->with('status', 'Successfully recovered comment.');
+    }
+
+    public function remove(Request $request, $id)
+    {
+        $comment = SpotComment::onlyTrashed()->where('id', $id)->first();
+
+        if ($comment->user_id !== Auth::id()) {
+            return back();
+        }
+
+        $comment->forceDelete();
+
+        return back()->with('status', 'Successfully removed comment forever.');
+    }
+
     public function report(SpotComment $spotComment)
     {
         $spotComment->report();

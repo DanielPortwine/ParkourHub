@@ -49,17 +49,22 @@
                     </div>
                 </div>
                 <div class="col-auto verical-center">
-                    @auth
-                        <a class="btn text-white" href="{{ route('challenge_report', $challenge->id) }}" title="Report"><i class="fa fa-flag"></i></a>
-                    @endauth
-                    @if(Auth()->id() === 1)
-                        <a class="btn text-white" href="{{ route('challenge_delete', $challenge->id) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
-                        @if(count($challenge->reports) > 0)
-                            <a class="btn text-white" href="{{ route('challenge_report_discard', $challenge->id) }}" title="Discard Reports"><i class="fa fa-balance-scale"></i></a>
+                    @if($challenge->deleted_at === null)
+                        @auth
+                            <a class="btn text-white" href="{{ route('challenge_report', $challenge->id) }}" title="Report"><i class="fa fa-flag"></i></a>
+                        @endauth
+                        @if(Auth()->id() === 1)
+                            <a class="btn text-white" href="{{ route('challenge_delete', $challenge->id) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
+                            @if(count($challenge->reports) > 0)
+                                <a class="btn text-white" href="{{ route('challenge_report_discard', $challenge->id) }}" title="Discard Reports"><i class="fa fa-balance-scale"></i></a>
+                            @endif
                         @endif
+                        <a class="btn text-white" id="switch-title-button" title="Watch Video"><i class="fa fa-film"></i></a>
+                        <a class="btn text-white" href="{{ route('spots', ['spot' => $challenge->spot->id]) }}" title="Locate Spot"><i class="fa fa-map-marker"></i></a>
+                    @else
+                        <a class="btn text-white" href="{{ route('challenge_recover', $challenge->id) }}" title="Recover"><i class="fa fa-history"></i></a>
+                        <a class="btn text-white" href="{{ route('challenge_remove', $challenge->id) }}" title="Remove Forever"><i class="fa fa-trash"></i></a>
                     @endif
-                    <a class="btn text-white" id="switch-title-button" title="Watch Video"><i class="fa fa-film"></i></a>
-                    <a class="btn text-white" href="{{ route('spots', ['spot' => $challenge->spot->id]) }}" title="Locate Spot"><i class="fa fa-map-marker"></i></a>
                 </div>
             </div>
             <div class="row pb-3 border-subtle">
@@ -80,7 +85,7 @@
                     @endif
                     <a class="btn-link large-text sedgwick" href="{{ route('user_view', $challenge->user->id) }}">{{ $challenge->user->name }}</a>
                 </div>
-                @if ($challenge->user->id === Auth()->id())
+                @if ($challenge->user->id === Auth()->id() && $challenge->deleted_at === null)
                     <div class="col-auto">
                         <a class="btn text-white" href="{{ route('challenge_edit', $challenge->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
                     </div>
@@ -114,7 +119,7 @@
                     </div>
                 </div>
             @endif
-            @auth
+            @if(auth()->check() && $challenge->deleted_at === null)
                 <div class="row mb-4">
                     <div class="col">
                         <div class="card">
@@ -184,9 +189,9 @@
                         </div>
                     </div>
                 </div>
-            @else
+            @elseif($challenge->deleted_at === null)
                 <a class="btn-link" href="/login">Login</a> or <a class="btn-link" href="/register">Register</a> to enter.
-            @endauth
+            @endif
         </div>
         <div class="container">
             {{ $entries->links() }}
