@@ -177,6 +177,10 @@ class EquipmentController extends Controller
             return back();
         }
 
+        if (!empty($equipment->image)) {
+            Storage::disk('public')->delete(str_replace('storage/', '', $equipment->image));
+        }
+
         $equipment->forceDelete();
 
         return back()->with('status', 'Successfully removed equipment forever.');

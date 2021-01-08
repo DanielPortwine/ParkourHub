@@ -339,7 +339,16 @@ class UserController extends Controller
 
     public function delete()
     {
-        User::where('id', Auth::id())->forceDelete();
+        $user = User::where('id', Auth::id())->first();
+
+        if (!empty($user->profile_image)) {
+            Storage::disk('public')->delete(str_replace('storage/', '', $user->profile_image));
+        }
+        if (!empty($user->cover_image)) {
+            Storage::disk('public')->delete(str_replace('storage/', '', $user->cover_image));
+        }
+
+        $user->forceDelete();
 
         return redirect()->route('welcome');
     }

@@ -331,6 +331,10 @@ class SpotController extends Controller
             return back();
         }
 
+        if (!empty($spot->image)) {
+            Storage::disk('public')->delete(str_replace('storage/', '', $spot->image));
+        }
+
         $spot->forceDelete();
 
         return back()->with('status', 'Successfully removed spot forever.');

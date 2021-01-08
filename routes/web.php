@@ -126,6 +126,8 @@ Route::prefix('challenges')->middleware('verified')->group(function() {
     Route::get('/entries/report/{challengeEntry}', 'ChallengeController@reportEntry')->name('entry_report');
     Route::get('/entries/discard_reports/{challengeEntry}', 'ChallengeController@discardEntryReports')->name('entry_report_discard');
     Route::get('/entries/delete/{challengeEntry}', 'ChallengeController@deleteEntry')->name('entry_delete');
+    Route::get('/entries/recover/{id}', 'ChallengeController@recoverEntry')->name('entry_recover');
+    Route::get('/entries/remove/{id}', 'ChallengeController@removeEntry')->name('entry_remove');
 });
 
 Route::prefix('movements')->middleware(['verified', 'isPremium'])->group(function() {

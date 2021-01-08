@@ -40,6 +40,12 @@
                         <span class="d-none d-lg-inline">Challenges</span>
                     </a>
                 </li>
+                <li class="nav-item px-2">
+                    <a class="nav-link @if($tab === 'entries')active @endif" href="{{ route('user_bin', ['tab' => 'entries']) }}">
+                        <i class="fa fa-trophy nav-icon"></i>
+                        <span class="d-none d-lg-inline">Entries</span>
+                    </a>
+                </li>
                 @premium
                     <li class="nav-item px-2">
                         <a class="nav-link @if($tab === 'movements')active @endif" href="{{ route('user_bin', ['tab' => 'movements']) }}">

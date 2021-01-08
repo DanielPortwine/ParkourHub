@@ -13,7 +13,6 @@ use App\Notifications\ChallengeCreated;
 use App\Notifications\ChallengeEntered;
 use App\Notifications\ChallengeWon;
 use App\Notifications\SpotChallenged;
-use App\Report;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -215,6 +214,13 @@ class ChallengeController extends Controller
             return back();
         }
 
+        if (!empty($challenge->thumbnail)) {
+            Storage::disk('public')->delete(str_replace('storage/', '', $challenge->thumbnail));
+        }
+        if (!empty($challenge->video)) {
+            Storage::disk('public')->delete(str_replace('storage/', '', $challenge->video));
+        }
+
         $challenge->forceDelete();
 
         return back()->with('status', 'Successfully removed challenge forever.');
@@ -305,5 +311,35 @@ class ChallengeController extends Controller
         $challengeEntry->delete();
 
         return redirect()->route('challenge_listing')->with('status', 'Successfully deleted entry');
+    }
+
+    public function recoverEntry(Request $request, $id)
+    {
+        $entry = ChallengeEntry::onlyTrashed()->where('id', $id)->first();
+
+        if ($entry->user_id !== Auth::id()) {
+            return back();
+        }
+
+        $entry->restore();
+
+        return back()->with('status', 'Successfully recovered entry.');
+    }
+
+    public function removeEntry(Request $request, $id)
+    {
+        $entry = ChallengeEntry::onlyTrashed()->where('id', $id)->first();
+
+        if ($entry->user_id !== Auth::id()) {
+            return back();
+        }
+
+        if (!empty($entry->video)) {
+            Storage::disk('public')->delete(str_replace('storage/', '', $entry->video));
+        }
+
+        $entry->forceDelete();
+
+        return back()->with('status', 'Successfully removed entry forever.');
     }
 }

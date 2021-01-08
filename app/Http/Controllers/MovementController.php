@@ -411,6 +411,10 @@ class MovementController extends Controller
             return back();
         }
 
+        if (!empty($movement->video)) {
+            Storage::disk('public')->delete(str_replace('storage/', '', $movement->video));
+        }
+
         $movement->forceDelete();
 
         return back()->with('status', 'Successfully removed movement forever.');

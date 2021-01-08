@@ -118,6 +118,13 @@ class SpotCommentController extends Controller
             return back();
         }
 
+        if (!empty($comment->image)) {
+            Storage::disk('public')->delete(str_replace('storage/', '', $comment->image));
+        }
+        if (!empty($comment->video)) {
+            Storage::disk('public')->delete(str_replace('storage/', '', $comment->video));
+        }
+
         $comment->forceDelete();
 
         return back()->with('status', 'Successfully removed comment forever.');
