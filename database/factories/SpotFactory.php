@@ -32,7 +32,7 @@ class SpotFactory extends Factory
             'coordinates' => $coordinates->x . ',' . $coordinates->y,
             'latitude' => $lat,
             'longitude' => $lon,
-            'image' => $this->faker->image('public/storage/images/spots', 640, 480, null, true),
+            'image' => str_replace('public', '', $this->faker->image('public/storage/images/spots', 640, 480, null, true)),
         ];
     }
 }

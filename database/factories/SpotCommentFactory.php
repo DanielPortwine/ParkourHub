@@ -24,7 +24,7 @@ class SpotCommentFactory extends Factory
             'user_id' => User::inRandomOrder()->first()->id,
             'comment' => in_array($commentType, ['comment', 'imageComment']) ? $this->faker->realText(255) : null,
             'visibility' => $this->faker->randomElement(['private', 'follower', 'public']),
-            'image' => in_array($commentType, ['image', 'imageComment']) ? $this->faker->image('public/storage/images/spot_comments', 640, 480, null, true) : null,
+            'image' => in_array($commentType, ['image', 'imageComment']) ? str_replace('public', '', $this->faker->image('public/storage/images/spot_comments', 640, 480, null, true)) : null,
         ];
     }
 }

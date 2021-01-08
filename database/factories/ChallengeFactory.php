@@ -21,7 +21,7 @@ class ChallengeFactory extends Factory
             'difficulty' => floor($this->faker->numberBetween(1, 5)),
             'visibility' => $this->faker->randomElement(['private', 'follower', 'public']),
             'youtube' => 'Oykjn35X3EY',
-            'thumbnail' => $this->faker->image('public/storage/images/challenges', 640, 480, null, true),
+            'thumbnail' => str_replace('public', '', $this->faker->image('public/storage/images/challenges', 640, 480, null, true)),
         ];
     }
 }
