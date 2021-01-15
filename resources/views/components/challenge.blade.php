@@ -24,7 +24,9 @@
                         <a class="btn text-white" href="{{ route('challenge_report_discard', $challenge->id) }}" title="Discard Reports"><i class="fa fa-balance-scale"></i></a>
                     @endif
                 @endif
-                <a class="btn text-white" href="{{ route('spots', ['spot' => $challenge->spot_id]) }}" title="Locate Spot"><i class="fa fa-map-marker"></i></a>
+                @if(!empty($challenge->spot))
+                    <a class="btn text-white" href="{{ route('spots', ['spot' => $challenge->spot_id]) }}" title="Locate Spot"><i class="fa fa-map-marker"></i></a>
+                @endif
             </div>
         </div>
         <div class="row">

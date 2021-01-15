@@ -8,9 +8,9 @@
     @endif
     @if(isset($user) && $user === true)
         <div class="content-wrapper">
-            @if(!empty($review->spot->image))
+            @if(!empty($review->spot) && !empty($review->spot->image))
                 <a href="{{ route('spot_view', $review->spot->id) }}">
-                    <img class="lazyload" data-src="{{ $review->spot->image }}" alt="Image of spot {{ $review->spot }} for review {{ $review->title }}.">
+                    <img class="lazyload" data-src="{{ $review->spot->image }}" alt="Image of spot {{ $review->spot->name }} for review {{ $review->title }}.">
                 </a>
             @endif
         </div>
@@ -18,7 +18,7 @@
     <div class="card-header bg-grey card-hidden-body">
         <div class="row">
             <div class="col sedgwick">
-                @if(isset($user))
+                @if(isset($user) && !empty($review->spot))
                     <a class="btn-link" href="{{ route('spot_view', $review->spot_id) }}">{{ $review->spot->name }}</a>
                 @else
                     <span>{{ $review->title }}</span>
@@ -61,12 +61,12 @@
         <div class="row">
             <div class="col-md vertical-center">
                 @if(!isset($user))
-                    @if(!empty($spot->user->profile_image))
+                    @if(!empty($review->user->profile_image))
                         <div class="profile-image-wrapper--component pr-3">
-                            <a href="{{ $spot->user->profile_image }}"><img src="{{ $spot->user->profile_image }}" alt="Profile image of the user named {{ $spot->user->name }}."></a>
+                            <a href="{{ $review->user->profile_image }}"><img src="{{ $review->user->profile_image }}" alt="Profile image of the user named {{ $review->user->name }}."></a>
                         </div>
                     @endif
-                    <a class="btn-link large-text sedgwick" href="{{ route('user_view', $spot->user->id) }}">{{ $spot->user->name }}</a>
+                    <a class="btn-link large-text sedgwick" href="{{ route('user_view', $review->user->id) }}">{{ $review->user->name }}</a>
                 @endif
             </div>
             <div class="col-auto d-none d-lg-flex">

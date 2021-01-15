@@ -114,6 +114,7 @@ class WorkoutController extends Controller
             $workoutMovements = Cache::remember('workout_movements_' . $id, 60, function() use($workout) {
                 return $workout->movements()
                     ->with(['fields'])
+                    ->whereHas('movement')
                     ->whereNull('recorded_workout_id')
                     ->paginate(20);
             });
@@ -140,6 +141,7 @@ class WorkoutController extends Controller
         $displayMovement = Cache::remember('workout_display_movement_' . $id, 60, function() use($workout) {
             return $workout->movements()
                 ->with(['movement'])
+                ->whereHas('movement')
                 ->inRandomOrder()
                 ->first()
                 ->movement;
@@ -241,7 +243,8 @@ class WorkoutController extends Controller
     {
         $workout = Workout::with([
                 'movements' => function($q) {
-                    $q->where('recorded_workout_id', null);
+                    $q->where('recorded_workout_id', null)
+                        ->whereHas('movement');
                 },
                 'movements.fields',
             ])

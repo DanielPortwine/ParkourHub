@@ -60,7 +60,9 @@
                             @endif
                         @endif
                         <a class="btn text-white" id="switch-title-button" title="Watch Video"><i class="fa fa-film"></i></a>
-                        <a class="btn text-white" href="{{ route('spots', ['spot' => $challenge->spot->id]) }}" title="Locate Spot"><i class="fa fa-map-marker"></i></a>
+                        @if(!empty($challenge->spot))
+                            <a class="btn text-white" href="{{ route('spots', ['spot' => $challenge->spot->id]) }}" title="Locate Spot"><i class="fa fa-map-marker"></i></a>
+                        @endif
                     @else
                         <a class="btn text-white" href="{{ route('challenge_recover', $challenge->id) }}" title="Recover"><i class="fa fa-history"></i></a>
                         <a class="btn text-white" href="{{ route('challenge_remove', $challenge->id) }}" title="Remove Forever"><i class="fa fa-trash"></i></a>

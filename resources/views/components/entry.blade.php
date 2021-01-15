@@ -18,7 +18,7 @@
     <div class="py-3 px-4">
         <div class="row border-subtle">
             <div class="col-lg vertical-center">
-                @if(!isset($challenge))
+                @if(!isset($challenge) && !empty($entry->challenge))
                     <a class="btn-link h3 mb-0 sedgwick" href="{{ route('challenge_view', $entry->challenge->id) }}">
                         @if($entry->winner)
                             <i class="fa fa-trophy"></i>
@@ -51,7 +51,9 @@
                             <a class="btn text-white" href="{{ route('entry_report_discard', $entry->id) }}" title="Discard Reports"><i class="fa fa-balance-scale"></i></a>
                         @endif
                     @endif
-                    <a class="btn text-white" href="{{ route('spots', ['spot' => $challenge->spot_id ?? $entry->challenge->spot_id]) }}" title="Locate Spot"><i class="fa fa-map-marker"></i></a>
+                    @if(!empty($entry->challenge) && !empty($entry->challenge->spot))
+                        <a class="btn text-white" href="{{ route('spots', ['spot' => $entry->challenge->spot_id]) }}" title="Locate Spot"><i class="fa fa-map-marker"></i></a>
+                    @endif
                 </div>
             </div>
         </div>
