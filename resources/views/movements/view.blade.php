@@ -94,9 +94,6 @@
                                 <li class="nav-item">
                                     <a class="nav-link btn-link @if($tab === 'exercises')active @endif" href="{{ route('movement_view', ['id' => $originalMovement->id, 'tab' => 'exercises']) }}">Exercises</a>
                                 </li>
-                                {{--<li class="nav-item">
-                                    <a class="nav-link btn-link @if($tab === 'baseline')active @endif" href="{{ route('movement_view', ['id' => $originalMovement->id, 'tab' => 'baseline']) }}">Baseline</a>
-                                </li>--}}
                             @endpremium
                         @elseif($originalMovement->type_id === 2)
                             @premium
@@ -112,11 +109,16 @@
                                 <li class="nav-item">
                                     <a class="nav-link btn-link @if($tab === 'moves')active @endif" href="{{ route('movement_view', ['id' => $originalMovement->id, 'tab' => 'moves']) }}">Moves</a>
                                 </li>
-                                {{--<li class="nav-item">
-                                    <a class="nav-link btn-link @if($tab === 'baseline')active @endif" href="{{ route('movement_view', ['id' => $originalMovement->id, 'tab' => 'baseline']) }}">Baseline</a>
-                                </li>--}}
                             @endpremium
                         @endif
+                        @premium
+                            <li class="nav-item">
+                                <a class="nav-link btn-link @if($tab === 'history')active @endif" href="{{ route('movement_view', ['id' => $originalMovement->id, 'tab' => 'history']) }}">History</a>
+                            </li>
+                            {{--<li class="nav-item">
+                                <a class="nav-link btn-link @if($tab === 'baseline')active @endif" href="{{ route('movement_view', ['id' => $originalMovement->id, 'tab' => 'baseline']) }}">Baseline</a>
+                            </li>--}}
+                        @endpremium
                     </ul>
                 </div>
                 @if(($tab == null && $originalMovement->type_id === 1) || $tab === 'spots')
@@ -964,6 +966,29 @@
                                 </form>
                             </div>
                         </div>
+                    </div>
+                @elseif($tab === 'history')
+                    <div class="card-body bg-black">
+                        @if(!empty($request['history']))
+                            {{ $history->links() }}
+                        @endif
+                        @foreach($history as $workoutMovement)
+                            @include('components.workout_movement')
+                        @endforeach
+                        @if(!empty($request['history']))
+                            {{ $history->links() }}
+                        @endif
+                        @if (count($history) === 0)
+                            <p class="mb-0">You haven't completed any workouts with this movement in yet.</p>
+                        @elseif(count($history) > 4)
+                            <div class="col text-center mb-4">
+                                @if(empty($request['history']))
+                                    <a class="btn btn-green w-75" href="?moves=1">More</a>
+                                @else
+                                    <a class="btn btn-green w-75" href="{{ route('movement_view', $originalMovement->id) }}">Less</a>
+                                @endif
+                            </div>
+                        @endif
                     </div>
                 @endif
             </div>

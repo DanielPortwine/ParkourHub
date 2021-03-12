@@ -103,6 +103,11 @@ class Movement extends Model
         return $this->belongsToMany('App\Spot', 'spots_movements');
     }
 
+    public function workouts()
+    {
+        return $this->hasMany('App\WorkoutMovement');
+    }
+
     public function progressions()
     {
         return $this->belongsToMany('App\Movement', 'movements_progressions', 'advancement_id', 'progression_id');

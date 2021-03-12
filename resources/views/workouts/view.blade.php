@@ -84,18 +84,7 @@
                     <div class="card-body bg-black">
                         @if(count($workoutMovements))
                             @foreach($workoutMovements as $workoutMovement)
-                                <div class="card mb-3">
-                                    <div class="card-header bg-grey sedgwick">
-                                        <a class="btn-link" href="{{ route('movement_view', $workoutMovement->movement->id) }}">{{ $workoutMovement->movement->name }}</a>
-                                    </div>
-                                    <div class="card-body bg-grey text-white">
-                                        <div class="row">
-                                            @foreach($workoutMovement->fields as $field)
-                                                <div class="col-md">{{ $field->field->label . ': ' . $field->value }}</div>
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                </div>
+                                @include('components.workout_movement')
                             @endforeach
                         @else
                             There are no movements in this workout.

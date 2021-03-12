@@ -93,6 +93,7 @@ class MovementController extends Controller
         $equipment = null;
         $progressionID = null;
         $advancementID = null;
+        $history = null;
         $baselineFields = null;
         if (!empty($request['spots']) && (($tab == null && $movement->type_id === 1) || $tab === 'spots')) {
             $spots = Cache::remember('movement_spots_' . $id . '_page_' . $request['spots'], 60, function() use($movement) {
@@ -160,6 +161,15 @@ class MovementController extends Controller
         } else if ($tab === 'moves') {
             $moves = Cache::remember('movement_moves_' . $id, 60, function() use($movement) {
                 return $movement->moves()->limit(4)->get();
+            });
+        }
+        if (!empty($request['history']) && $tab === 'history') {
+            $history = Cache::remember('movement_history_' . $id . 'user_' . Auth::id() . '_page_' . $request['history'], 60, function() use($movement) {
+                return $movement->workouts()->where('user_id', Auth::id())->whereNotNull('recorded_workout_id')->orderBy('created_at', 'desc')->paginate(20, ['*'], 'history');
+            });
+        } else if ($tab === 'history') {
+            $history = Cache::remember('movement_moves_' . $id, 60, function() use($movement) {
+                return $movement->workouts()->where('user_id', Auth::id())->whereNotNull('recorded_workout_id')->orderBy('created_at', 'desc')->limit(4)->get();
             });
         }
         if ($tab === 'baseline') {
@@ -264,6 +274,7 @@ class MovementController extends Controller
             'exercises' => $exercises,
             'moves' => $moves,
             'equipments' => $equipment,
+            'history' => $history,
             'baselineFields' => $baselineFields,
             'tab' => $tab,
             'linkableEquipment' => $linkableEquipment,
