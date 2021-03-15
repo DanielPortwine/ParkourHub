@@ -132,7 +132,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function planWorkouts()
     {
-        return $this->belongsToMany('App\Workout', 'workout_plans')->withPivot('id', 'date');
+        return $this->belongsToMany('App\Workout', 'workout_plans')->withPivot('id', 'date', 'recorded_workout_id');
     }
 
     public function baselineMovementFields()

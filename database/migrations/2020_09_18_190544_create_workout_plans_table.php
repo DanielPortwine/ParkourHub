@@ -17,6 +17,7 @@ class CreateWorkoutPlansTable extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('workout_id');
+            $table->unsignedBigInteger('recorded_workout_id')->nullable();
             $table->date('date');
         });
     }

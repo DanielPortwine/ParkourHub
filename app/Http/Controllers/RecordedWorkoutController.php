@@ -8,6 +8,7 @@ use App\RecordedWorkout;
 use App\Workout;
 use App\WorkoutMovement;
 use App\WorkoutMovementField;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -84,6 +85,17 @@ class RecordedWorkoutController extends Controller
         $recordedWorkout->user_id = $userId;
         $recordedWorkout->workout_id = $workoutId;
         $recordedWorkout->save();
+
+        $todaysWorkout = Auth::user()->planWorkouts()
+            ->withPivot(['workout_id', 'recorded_workout_id', 'date'])
+            ->where('workout_id', $workoutId)
+            ->whereNull('recorded_workout_id')
+            ->where('date', Carbon::now()->format('Y-m-d'))
+            ->first();
+        if(!empty($todaysWorkout)) {
+            $todaysWorkout->pivot->recorded_workout_id = $recordedWorkout->id;
+            $todaysWorkout->pivot->save();
+        }
 
         foreach ($request['movements'] as $movementRequest) {
             if (count($movementRequest) === 1) {

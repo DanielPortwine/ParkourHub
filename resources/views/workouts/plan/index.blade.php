@@ -126,10 +126,16 @@
                                 </div>
                                 <div class="card-body calendar-card-body bg-grey text-white p-1">
                                     @foreach($day['workouts'] as $workout)
-                                        <div class="badge text-left btn-green w-100 p-1 overflow-hidden">
-                                            <a class="text-white" href="{{ route('workout_plan_remove_workout', $workout->pivot->id) }}"><i class="fa fa-times"></i></a>
-                                            <a class="text-white" href="{{ route('workout_view', $workout->id) }}">{{ $workout->name }}</a>
-                                        </div>
+                                        @if(empty($workout->pivot->recorded_workout_id))
+                                            <div class="badge text-left btn-green w-100 p-1 overflow-hidden">
+                                                <a class="text-white" href="{{ route('workout_plan_remove_workout', $workout->pivot->id) }}"><i class="fa fa-times"></i></a>
+                                                <a class="text-white" href="{{ route('workout_view', $workout->id) }}">{{ $workout->name }}</a>
+                                            </div>
+                                        @else
+                                            <div class="badge text-left btn-grey w-100 p-1 overflow-hidden">
+                                                <a class="text-white" href="{{ route('recorded_workout_view', $workout->pivot->recorded_workout_id) }}"><i class="fa fa-check"></i> {{ $workout->name }}</a>
+                                            </div>
+                                        @endif
                                     @endforeach
                                 </div>
                             </div>

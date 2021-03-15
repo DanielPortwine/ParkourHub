@@ -65,6 +65,6 @@ class Workout extends Model
 
     public function planUsers()
     {
-        return $this->belongsToMany('App\User', 'workout_plans')->withPivot('id', 'date');
+        return $this->belongsToMany('App\User', 'workout_plans')->withPivot('id', 'date', 'recorded_workout_id');
     }
 }
