@@ -78,6 +78,7 @@ class UserController extends Controller
                 'spotComments',
                 'challenges',
                 'challengeEntries',
+                'workouts',
                 'movements',
                 'equipment',
                 'followers',
@@ -87,7 +88,7 @@ class UserController extends Controller
                 ->first();
         });
 
-        $spots = $hits = $reviews = $comments = $challenges = $entries = $movements = $equipment = $followers = $following = $followRequests = null;
+        $spots = $hits = $reviews = $comments = $challenges = $entries = $workouts = $movements = $equipment = $followers = $following = $followRequests = null;
         if ($tab == null || $tab === 'spots') {
             $spots = Cache::remember('user_spots_' . $id, 60, function() use($user) {
                 return $user->spots()
@@ -152,6 +153,15 @@ class UserController extends Controller
                 return $user->challengeEntries()
                     ->with(['challenge', 'reports', 'user'])
                     ->whereHas('challenge')
+                    ->orderByDesc('created_at')
+                    ->limit(4)
+                    ->get();
+            });
+        }
+        if ($tab === 'workouts') {
+            $workouts = Cache::remember('user_workouts_' . $id, 60, function() use($user) {
+                return $user->workouts()
+                    ->with(['movements', 'user', 'spots'])
                     ->orderByDesc('created_at')
                     ->limit(4)
                     ->get();
@@ -225,6 +235,7 @@ class UserController extends Controller
             'comments' => $comments,
             'challenges' => $challenges,
             'entries' => $entries,
+            'workouts' => $workouts,
             'movements' => $movements,
             'equipments' => $equipment,
             'followers' => $followers,

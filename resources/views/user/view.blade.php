@@ -95,6 +95,9 @@
                         </li>
                         @premium
                             <li class="nav-item">
+                                <a class="nav-link btn-link @if($tab === 'workouts')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'workouts']) }}" title="Workouts"><i class="fa fa-running"></i></a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link btn-link @if($tab === 'movements')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'movements']) }}" title="Movements"><i class="fa fa-child"></i></a>
                             </li>
                             <li class="nav-item">
@@ -230,6 +233,25 @@
                         @elseif(count($user->challengeEntries) > 4)
                             <div class="col text-center mb-4">
                                 <a class="btn btn-green w-75" href="{{ route('user_entries') }}">More</a>
+                            </div>
+                        @endif
+                    </div>
+                @elseif($tab === 'workouts')
+                    <div class="card-body bg-black">
+                        @foreach($workouts->chunk(2) as $chunk)
+                            <div class="row">
+                                @foreach($chunk as $workout)
+                                    <div class="col-md-6 mb-4">
+                                        @include('components.workout')
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endforeach
+                        @if (count($user->workouts) === 0)
+                            <p class="mb-0">{{ $user->id === Auth()->id() ? 'You have ' : 'This user has ' }}no workouts.</p>
+                        @elseif(count($user->workouts) > 4)
+                            <div class="col text-center mb-4">
+                                <a class="btn btn-green w-75" href="{{ route('user_workouts') }}">More</a>
                             </div>
                         @endif
                     </div>
