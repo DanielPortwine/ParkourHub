@@ -18,14 +18,14 @@ class MovementFieldSeeder extends Seeder
             'name' => 'reps',
             'input_type' => 'number',
             'label' => 'Reps',
-            'unit' => 'reps',
+            'unit' => '',
             'small_text' => 'Number of times the movement was completed',
         ]);
         MovementField::factory()->create([
             'name' => 'sticks',
             'input_type' => 'number',
             'label' => 'Sticks',
-            'unit' => 'sticks',
+            'unit' => '',
             'small_text' => 'Number of reps that were stuck',
         ]);
         MovementField::factory()->create([

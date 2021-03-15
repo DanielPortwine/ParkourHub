@@ -26,6 +26,8 @@ class DatabaseSeeder extends Seeder
         $this->call(MovementTypeSeeder::class);
         $this->call(MovementCategorySeeder::class);
         $this->call(MovementFieldSeeder::class);
+        $this->call(EquipmentSeeder::class);
         $this->call(MovementSeeder::class);
+        $this->call(WorkoutSeeder::class);
     }
 }

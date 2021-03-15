@@ -248,6 +248,8 @@ class MovementSeeder extends Seeder
         ]);
         $movement->fields()->attach(1); // reps
         $movement->fields()->attach(3); // weight
+        $movement->equipment()->attach(1, ['user_id' => 1]); // dumbbells
+        $movement->equipment()->attach(2, ['user_id' => 1]); // barbell
 
         $movement = Movement::factory()->create([
             'category_id' => 7,
@@ -260,6 +262,7 @@ class MovementSeeder extends Seeder
         ]);
         $movement->fields()->attach(1); // reps
         $movement->fields()->attach(3); // weight
+        $movement->equipment()->attach(1, ['user_id' => 1]); // dumbbells
 
         $movement = Movement::factory()->create([
             'category_id' => 7,
@@ -272,6 +275,8 @@ class MovementSeeder extends Seeder
         ]);
         $movement->fields()->attach(1); // reps
         $movement->fields()->attach(3); // weight
+        $movement->equipment()->attach(1, ['user_id' => 1]); // dumbbells
+        $movement->equipment()->attach(2, ['user_id' => 1]); // barbell
 
         $movement = Movement::factory()->create([
             'category_id' => 8,
@@ -296,6 +301,7 @@ class MovementSeeder extends Seeder
         ]);
         $movement->fields()->attach(1); // reps
         $movement->fields()->attach(3); // weight
+        $movement->equipment()->attach(1, ['user_id' => 1]); // dumbbells
 
         $movement = Movement::factory()->create([
             'category_id' => 8,
@@ -331,6 +337,8 @@ class MovementSeeder extends Seeder
         ]);
         $movement->fields()->attach(1); // reps
         $movement->fields()->attach(3); // weight
+        $movement->equipment()->attach(1, ['user_id' => 1]); // dumbbells
+        $movement->equipment()->attach(2, ['user_id' => 1]); // barbell
 
         $movement = Movement::factory()->create([
             'category_id' => 10,
