@@ -162,6 +162,7 @@ class UserController extends Controller
             $workouts = Cache::remember('user_workouts_' . $id, 60, function() use($user) {
                 return $user->workouts()
                     ->with(['movements', 'user', 'spots'])
+                    ->withCount('movements')
                     ->orderByDesc('created_at')
                     ->limit(4)
                     ->get();
