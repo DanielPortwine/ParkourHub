@@ -135,11 +135,8 @@
                         @endforeach
                         @if (count($user->spots) === 0)
                             <p class="mb-0">{{ $user->id === Auth()->id() ? 'You have ' : 'This user has ' }}no spots.</p>
-                        @elseif(count($user->spots) > 4)
-                            <div class="col text-center mb-4">
-                                <a class="btn btn-green w-75" href="{{ route('user_spots') }}">More</a>
-                            </div>
                         @endif
+                        {{ $spots->links() }}
                     </div>
                 @elseif($tab === 'hitlist')
                     <div class="card-body bg-black">
@@ -154,11 +151,8 @@
                         @endforeach
                         @if (count($user->hits) === 0)
                             <p class="mb-0">{{ $user->id === Auth()->id() ? 'You have ' : 'This user has ' }}no hits.</p>
-                        @elseif(count($user->hits) > 4)
-                            <div class="col text-center mb-4">
-                                <a class="btn btn-green w-75" href="{{ route('user_hitlist') }}">More</a>
-                            </div>
                         @endif
+                        {{ $hits->links() }}
                     </div>
                 @elseif($tab === 'reviews')
                     <div class="card-body bg-black">
@@ -173,11 +167,8 @@
                         @endforeach
                         @if ($userReviewsWithTextCount === 0)
                             <p class="mb-0">{{ $user->id === Auth()->id() ? 'You have ' : 'This user has ' }}no reviews.</p>
-                        @elseif($userReviewsWithTextCount > 6)
-                            <div class="col text-center mb-4">
-                                <a class="btn btn-green w-75" href="{{ route('user_reviews') }}">More</a>
-                            </div>
                         @endif
+                        {{ $reviews->links() }}
                     </div>
                 @elseif($tab === 'comments')
                     <div class="card-body bg-black">
@@ -192,11 +183,8 @@
                         @endforeach
                         @if (count($user->spotComments) === 0)
                             <p class="mb-0">{{ $user->id === Auth()->id() ? 'You have ' : 'This user has ' }}no comments.</p>
-                        @elseif(count($user->spotComments) > 4)
-                            <div class="col text-center mb-4">
-                                <a class="btn btn-green w-75" href="{{ route('user_comments') }}">More</a>
-                            </div>
                         @endif
+                        {{ $comments->links() }}
                     </div>
                 @elseif($tab === 'challenges')
                     <div class="card-body bg-black">
@@ -211,11 +199,8 @@
                         @endforeach
                         @if (count($user->challenges) === 0)
                             <p class="mb-0">{{ $user->id === Auth()->id() ? 'You have ' : 'This user has ' }}no challenges.</p>
-                        @elseif(count($user->challenges) > 4)
-                            <div class="col text-center mb-4">
-                                <a class="btn btn-green w-75" href="{{ route('user_challenges') }}">More</a>
-                            </div>
                         @endif
+                        {{ $challenges->links() }}
                     </div>
                 @elseif($tab === 'entries')
                     <div class="card-body bg-black">
@@ -230,11 +215,8 @@
                         @endforeach
                         @if (count($user->challengeEntries) === 0)
                             <p class="mb-0">{{ $user->id === Auth()->id() ? 'You have ' : 'This user has ' }}not entered any challenges.</p>
-                        @elseif(count($user->challengeEntries) > 4)
-                            <div class="col text-center mb-4">
-                                <a class="btn btn-green w-75" href="{{ route('user_entries') }}">More</a>
-                            </div>
                         @endif
+                        {{ $entries->links() }}
                     </div>
                 @elseif($tab === 'workouts')
                     <div class="card-body bg-black">
@@ -249,11 +231,8 @@
                         @endforeach
                         @if (count($user->workouts) === 0)
                             <p class="mb-0">{{ $user->id === Auth()->id() ? 'You have ' : 'This user has ' }}no workouts.</p>
-                        @elseif(count($user->workouts) > 4)
-                            <div class="col text-center mb-4">
-                                <a class="btn btn-green w-75" href="{{ route('user_workouts') }}">More</a>
-                            </div>
                         @endif
+                        {{ $workouts->links() }}
                     </div>
                 @elseif($tab === 'movements')
                     <div class="card-body bg-black">
@@ -268,11 +247,8 @@
                         @endforeach
                         @if (count($user->movements) === 0)
                             <p class="mb-0">{{ $user->id === Auth()->id() ? 'You have ' : 'This user has ' }}no movements.</p>
-                        @elseif(count($user->movements) > 4)
-                            <div class="col text-center mb-4">
-                                <a class="btn btn-green w-75" href="{{ route('user_movements') }}">More</a>
-                            </div>
                         @endif
+                        {{ $movements->links() }}
                     </div>
                 @elseif($tab === 'equipment')
                     <div class="card-body bg-black">
@@ -287,11 +263,8 @@
                         @endforeach
                         @if (count($user->equipment) === 0)
                             <p class="mb-0">{{ $user->id === Auth()->id() ? 'You have ' : 'This user has ' }}no equipment.</p>
-                        @elseif(count($user->equipment) > 4)
-                            <div class="col text-center mb-4">
-                                <a class="btn btn-green w-75" href="{{ route('user_equipment') }}">More</a>
-                            </div>
                         @endif
+                        {{ $equipments->links() }}
                     </div>
                 @elseif($tab === 'followers')
                     @php $pageUser = $user @endphp
@@ -308,11 +281,8 @@
                         @php $user = $pageUser @endphp
                         @if ($user->followers()->where('accepted', true)->count() === 0)
                             <p class="mb-0">{{ $user->id === Auth()->id() ? 'You have ' : 'This user has ' }}no followers.</p>
-                        @elseif($user->followers()->where('accepted', true)->count() > 10)
-                            <div class="col text-center mb-4">
-                                <a class="btn btn-green w-75" href="{{ route('user_followers') }}">More</a>
-                            </div>
                         @endif
+                        {{ $followers->links() }}
                     </div>
                 @elseif($tab === 'following')
                     @php $pageUser = $user @endphp
@@ -329,11 +299,8 @@
                         @php $user = $pageUser @endphp
                         @if (count($user->following) === 0)
                             <p class="mb-0">{{ $user->id === Auth()->id() ? 'You are ' : 'This user is ' }}not following anyone.</p>
-                        @elseif(count($user->following) > 10)
-                            <div class="col text-center mb-4">
-                                <a class="btn btn-green w-75" href="{{ route('user_following') }}">More</a>
-                            </div>
                         @endif
+                        {{ $following->links() }}
                     </div>
                 @elseif($tab === 'follow_requests' && Auth()->id() === $user->id)
                     @php $pageUser = $user @endphp
@@ -350,11 +317,8 @@
                         @php $user = $pageUser @endphp
                         @if ($user->followers()->where('accepted', false)->count() === 0)
                             <p class="mb-0">{{ $user->id === Auth()->id() ? 'You have ' : 'This user has ' }}no follow requests.</p>
-                        @elseif($user->followers()->where('accepted', false)->count() > 10)
-                            <div class="col text-center mb-4">
-                                <a class="btn btn-green w-75" href="{{ route('user_follow_requests') }}">More</a>
-                            </div>
                         @endif
+                        {{ $followRequests->links() }}
                     </div>
                 @endif
             </div>

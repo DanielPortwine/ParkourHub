@@ -35,7 +35,7 @@ class ChallengeController extends Controller
         }
 
         $challenges = Challenge::withCount('entries')
-            ->with(['entries', 'reports', 'user'])
+            ->with(['entries', 'reports', 'user', 'spot'])
             ->search($request['search'] ?? '')
             ->whereHas('spot')
             ->entered(!empty($request['entered']) ? true : false)
