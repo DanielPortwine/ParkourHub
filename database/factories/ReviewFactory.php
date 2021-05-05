@@ -19,6 +19,7 @@ class ReviewFactory extends Factory
             'rating' => floor($this->faker->numberBetween(1, 5)),
             'title' => $this->faker->word,
             'review' => $this->faker->realText(255),
+            'visibility' => $this->faker->randomElement(['private', 'follower', 'public']),
         ];
     }
 }

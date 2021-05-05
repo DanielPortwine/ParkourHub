@@ -20,6 +20,7 @@ class CreateReviewsTable extends Migration
             $table->enum('rating', ['0', '1', '2', '3', '4', '5'])->default('0');
             $table->string('title')->nullable();
             $table->string('review')->nullable();
+            $table->enum('visibility', ['private', 'follower', 'public'])->default('private');
             $table->timestamps();
             $table->softDeletes();
 

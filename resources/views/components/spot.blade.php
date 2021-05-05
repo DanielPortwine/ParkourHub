@@ -55,12 +55,12 @@ $hit = $spot->hits->where('user_id', Auth()->id() ?: null)->first()
                 <a class="btn-link large-text sedgwick" href="{{ route('user_view', $spot->user->id) }}">{{ $spot->user->name }}</a>
             </div>
             <div class="col-lg-auto vertical-center pt-2 pt-lg-0">
-                @if(count($spot->reviews))
+                @if(count($spot->reviews()->withoutGlobalScope(\App\Scopes\VisibilityScope::class)->get()))
                     <div>
                         @for($star = 1; $star <= 5; $star++)
                             <i class="rating-star pr-1 fa {{ $star <= $spot->rating ? 'fa-star' : 'fa-star-o' }}"></i>
                         @endfor
-                        <span>({{ count($spot->reviews) }})</span>
+                        <span>({{ count($spot->reviews()->withoutGlobalScope(\App\Scopes\VisibilityScope::class)->get()) }})</span>
                     </div>
                 @else
                     <span>No reviews</span>

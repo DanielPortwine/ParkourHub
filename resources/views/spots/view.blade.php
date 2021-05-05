@@ -26,13 +26,13 @@
                 <div class="col vertical-center">
                     <h1 class="sedgwick mb-0">{{ $spot->name }}</h1>
                 </div>
-                @if(count($spot->reviews))
+                @if(count($spot->reviews()->withoutGlobalScope(\App\Scopes\VisibilityScope::class)->get()))
                     <div class="col-auto vertical-center d-md-flex d-none">
                         <div>
                             @for($star = 1; $star <= 5; $star++)
-                                <i class="rating-star pr-1 fa {{ $star <= round($spot->reviews->sum('rating') / count($spot->reviews)) ? 'fa-star' : 'fa-star-o' }}"></i>
+                                <i class="rating-star pr-1 fa {{ $star <= $spot->rating ? 'fa-star' : 'fa-star-o' }}"></i>
                             @endfor
-                            <span>({{ count($spot->reviews) }})</span>
+                            <span>({{ count($spot->reviews()->withoutGlobalScope(\App\Scopes\VisibilityScope::class)->get()) }})</span>
                         </div>
                     </div>
                 @else
@@ -66,12 +66,12 @@
                 </div>
             </div>
             <div class="row pb-3 border-subtle">
-                @if(count($spot->reviews))
+                @if(count($spot->reviews()->withoutGlobalScope(\App\Scopes\VisibilityScope::class)->get()))
                     <div class="col vertical-center d-md-none d-flex">
                         @for($star = 1; $star <= 5; $star++)
-                            <i class="rating-star pr-1 fa {{ $star <= round($spot->reviews->sum('rating') / count($spot->reviews)) ? 'fa-star' : 'fa-star-o' }}"></i>
+                            <i class="rating-star pr-1 fa {{ $star <= $spot->rating ? 'fa-star' : 'fa-star-o' }}"></i>
                         @endfor
-                        <span>({{ count($spot->reviews) }})</span>
+                        <span>({{ count($spot->reviews()->withoutGlobalScope(\App\Scopes\VisibilityScope::class)->get()) }})</span>
                     </div>
                 @else
                     <div class="col-auto vertical-center d-md-none d-flex">

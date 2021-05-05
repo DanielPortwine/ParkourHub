@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateReview;
 use App\Http\Requests\UpdateReview;
 use App\Notifications\SpotReviewed;
-use App\Report;
 use App\Review;
+use App\Scopes\VisibilityScope;
 use App\Spot;
 use App\User;
 use Illuminate\Support\Facades\Auth;
@@ -25,7 +25,7 @@ class ReviewController extends Controller
         );
 
         $spot = Spot::where('id', $request['spot'])->first();
-        $spot->rating = round($spot->reviews->sum('rating') / count($spot->reviews));
+        $spot->rating = round($spot->reviews()->withoutGlobalScope(VisibilityScope::class)->get()->sum('rating') / count($spot->reviews()->withoutGlobalScope(VisibilityScope::class)->get()));
         $spot->save();
 
         // notify the spot creator that someone created a review
@@ -52,8 +52,8 @@ class ReviewController extends Controller
         $review->review = !empty($request['review']) ? $request['review'] : null;
         $review->save();
 
-        $spot = Spot::where('id', $request['spot'])->first();
-        $spot->rating = round($spot->reviews->sum('rating') / count($spot->reviews));
+        $spot = Spot::where('id', $review->spot_id)->first();
+        $spot->rating = round($spot->reviews()->withoutGlobalScope(VisibilityScope::class)->get()->sum('rating') / count($spot->reviews()->withoutGlobalScope(VisibilityScope::class)->get()));
         $spot->save();
 
         return back()->with('status', 'Successfully updated review');
@@ -67,7 +67,7 @@ class ReviewController extends Controller
             $review->delete();
         }
 
-        $spot->rating = count($spot->reviews) ? round($spot->reviews->sum('rating') / count($spot->reviews)) : null;
+        $spot->rating = count($spot->reviews) ? round($spot->reviews->sum('rating') / count($spot->reviews()->withoutGlobalScopes([VisibilityScope::class])->get())) : null;
         $spot->save();
 
         return back()->with('status', 'Successfully deleted review');
