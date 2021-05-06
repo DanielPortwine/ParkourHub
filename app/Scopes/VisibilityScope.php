@@ -21,7 +21,7 @@ class VisibilityScope implements Scope
     public function apply(Builder $builder, Model $model)
     {
         $tableName = $model->getTable();
-        $followers = Cache::remember('visibility_followers_' . $tableName . '_' . Auth::id(), 300, function() {
+        $followers = Cache::remember('visibility_followers_' . $tableName . '_' . Auth::id(), 30, function() {
             return Follower::where('follower_id', Auth::id())->where('accepted', true)->pluck('user_id')->toArray();
         });
         $builder->where('visibility', 'public')

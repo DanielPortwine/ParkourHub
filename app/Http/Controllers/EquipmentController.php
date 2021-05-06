@@ -47,40 +47,29 @@ class EquipmentController extends Controller
     }
     public function view(Request $request, $id)
     {
-        $equipment = Cache::remember('equipment_view_' . $id, 60, function() use($id) {
-            $equipment = Equipment::withTrashed()
-                ->with([
-                    'movements',
-                    'reports',
-                ])
-                ->where('id', $id)
-                ->first();
+        $equipment = Equipment::withTrashed()
+            ->with([
+                'movements',
+                'reports',
+            ])
+            ->where('id', $id)
+            ->first();
 
-            if ($equipment->deleted_at !== null && Auth::id() !== $equipment->user_id) {
-                return [];
-            }
-
-            return $equipment;
-        });
-        if (!empty($request['movements'])) {
-            $movements = Cache::remember('equipment_movements_' . $id . '_page_' . $request['movements'], 60, function() use($equipment) {
-                return $equipment->movements()->paginate(20, ['*'], 'movements');
-            });
-        } else {
-            $movements = Cache::remember('equipment_movements_' . $id, 60, function() use($equipment) {
-                return $equipment->movements()->limit(4)->get();
-            });
+        if (empty($equipment) || ($equipment->deleted_at !== null && Auth::id() !== $equipment->user_id)) {
+            return view('errors.404');
         }
 
-        $linkableMovements = Cache::remember('equipment_linkable_movements_' . $id, 60, function() use($equipment, $id) {
-            return Movement::whereNotIn('id', $equipment->movements()->pluck('movements.id')->toArray())
+        if (!empty($request['movements'])) {
+            $movements = $equipment->movements()->paginate(20, ['*'], 'movements');
+        } else {
+            $movements = $equipment->movements()->limit(4)->get();
+        }
+
+        $linkableMovements = Movement::whereNotIn('id', $equipment->movements()->pluck('movements.id')->toArray())
                 ->where('type_id', 2)
                 ->orderBy('category_id')
                 ->get();
-        });
-        $movementCategories = Cache::remember('movement_categories_2', 60, function() {
-            return MovementCategory::where('type_id', 2)->get();
-        });
+        $movementCategories = MovementCategory::where('type_id', 2)->get();
 
         return view('equipment.view', [
             'equipment' => $equipment,

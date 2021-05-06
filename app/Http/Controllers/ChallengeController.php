@@ -69,30 +69,22 @@ class ChallengeController extends Controller
             return redirect()->route('challenge_view', $id);
         }
 
-        $challenge = Cache::remember('challenge_view_' . $id, 60, function() use($id) {
-            $challenge = Challenge::withTrashed()
-                ->with([
-                    'entries',
-                    'views',
-                    'spot',
-                    'reports',
-                    'user'
-                ])
-                ->where('id', $id)
-                ->first();
+        $challenge = Challenge::withTrashed()
+            ->with([
+                'entries',
+                'views',
+                'spot',
+                'reports',
+                'user'
+            ])
+            ->where('id', $id)
+            ->first();
 
-            if ($challenge->deleted_at !== null && Auth::id() !== $challenge->user_id) {
-                return [];
-            }
-
-            return $challenge;
-        });
-        if (empty($challenge)) {
+        if (empty($challenge) || ($challenge->deleted_at !== null && Auth::id() !== $challenge->user_id)) {
             return view('errors.404');
         }
-        $entries = Cache::remember('challenge_entries_' . $id, 60, function() use($challenge) {
-            return $challenge->entries()->with(['challenge', 'reports', 'user'])->orderByDesc('created_at')->paginate(10, ['*'], 'entries');
-        });
+
+        $entries = $challenge->entries()->with(['challenge', 'reports', 'user'])->orderByDesc('created_at')->paginate(10, ['*'], 'entries');
         $entered = !empty($challenge->entries->where('user_id', Auth::id())->first());
         $winner = $challenge->entries->where('winner', true)->first();
         $usersViewed = $challenge->views->pluck('user_id')->toArray();

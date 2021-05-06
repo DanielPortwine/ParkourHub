@@ -69,140 +69,114 @@ class UserController extends Controller
             return redirect()->route('user_view', $id);
         }
 
-        $user = Cache::remember('user_view_' . $id, 60, function() use($id) {
-            return User::with([
-                'spots',
-                'reports',
-                'hits',
-                'reviews',
-                'spotComments',
-                'challenges',
-                'challengeEntries',
-                'workouts',
-                'movements',
-                'equipment',
-                'followers',
-                'following',
-            ])
-                ->where('id', $id)
-                ->first();
-        });
+        $user = User::with([
+            'spots',
+            'reports',
+            'hits',
+            'reviews',
+            'spotComments',
+            'challenges',
+            'challengeEntries',
+            'workouts',
+            'movements',
+            'equipment',
+            'followers',
+            'following',
+        ])
+            ->where('id', $id)
+            ->first();
+
+        if (empty($user) || ($user->deleted_at !== null && Auth::id() !== $user->id)) {
+            return view('errors.404');
+        }
 
         $spots = $hits = $reviews = $comments = $challenges = $entries = $workouts = $movements = $equipments = $followers = $following = $followRequests = null;
         if ($tab == null || $tab === 'spots') {
-            $spots = Cache::remember('user_spots_' . $id . '_page_' . $request->get('page'), 60, function() use($user) {
-                return $user->spots()
-                    ->with(['hits', 'reviews', 'reports', 'user'])
-                    ->orderByDesc('rating')
-                    ->paginate(10);
-            });
+            $spots = $user->spots()
+                ->with(['hits', 'reviews', 'reports', 'user'])
+                ->orderByDesc('rating')
+                ->paginate(10);
         }
         if ($tab === 'hitlist') {
-            $hits = Cache::remember('user_hits_' . $id, 60, function() use($user) {
-                return $user->hits()
-                    ->whereHas('spot')
-                    ->orderByDesc('created_at')
-                    ->pluck('spot_id')
-                    ->toArray();
-            });
-            $hits = Cache::remember('user_hitlist_' . $id . '_page_' . $request->get('page'), 60, function() use($hits) {
-                return Spot::with(['hits', 'reviews', 'reports', 'user'])
-                    ->whereIn('id', $hits)
-                    ->paginate(10);
-            });
+            $hits = $user->hits()
+                ->whereHas('spot')
+                ->orderByDesc('created_at')
+                ->pluck('spot_id')
+                ->toArray();
+            $hits = Spot::with(['hits', 'reviews', 'reports', 'user'])
+                ->whereIn('id', $hits)
+                ->paginate(10);
         }
         if ($tab === 'reviews') {
-            $reviews = Cache::remember('user_reviews_' . $id . '_page_' . $request->get('page'), 60, function() use($user) {
-                return $user->reviews()
-                    ->with(['spot', 'user', 'reports'])
-                    ->whereHas('spot')
-                    ->whereNotNull('title')
-                    ->orderByDesc('created_at')
-                    ->paginate(20);
-            });
-            $userReviewsWithTextCount = Cache::remember('user_reviews_with_text_count_' . $id, 60, function() use($user) {
-                return $user->reviews()->withText()->count();
-            });
+            $reviews = $user->reviews()
+                ->with(['spot', 'user', 'reports'])
+                ->whereHas('spot')
+                ->whereNotNull('title')
+                ->orderByDesc('created_at')
+                ->paginate(20);
+            $userReviewsWithTextCount = $user->reviews()->withText()->count();
         }
         if ($tab === 'comments') {
             $linkSpotOnComment = true;
-            $comments = Cache::remember('user_comments_' . $id . '_page_' . $request->get('page'), 60, function() use($user) {
-                return $user->spotComments()
-                    ->with(['reports', 'user'])
-                    ->orderByDesc('created_at')
-                    ->paginate(10);
-            });
+            $comments = $user->spotComments()
+                ->with(['reports', 'user'])
+                ->orderByDesc('created_at')
+                ->paginate(10);
         }
         if ($tab === 'challenges') {
-            $challenges = Cache::remember('user_challenges_' . $id . '_page_' . $request->get('page'), 60, function() use($user) {
-                return $user->challenges()
-                    ->withCount('entries')
-                    ->with(['entries', 'reports', 'spot', 'user'])
-                    ->whereHas('spot')
-                    ->orderByDesc('created_at')
-                    ->paginate(10);
-            });
+            $challenges = $user->challenges()
+                ->withCount('entries')
+                ->with(['entries', 'reports', 'spot', 'user'])
+                ->whereHas('spot')
+                ->orderByDesc('created_at')
+                ->paginate(10);
         }
         if ($tab === 'entries') {
-            $entries = Cache::remember('user_entries_' . $id . '_page_' . $request->get('page'), 60, function() use($user) {
-                return $user->challengeEntries()
-                    ->with(['challenge', 'reports', 'user'])
-                    ->whereHas('challenge')
-                    ->orderByDesc('created_at')
-                    ->paginate(10);
-            });
+            $entries = $user->challengeEntries()
+                ->with(['challenge', 'reports', 'user'])
+                ->whereHas('challenge')
+                ->orderByDesc('created_at')
+                ->paginate(10);
         }
         if ($tab === 'workouts') {
-            $workouts = Cache::remember('user_workouts_' . $id . '_page_' . $request->get('page'), 60, function() use($user) {
-                return $user->workouts()
-                    ->with(['movements', 'user', 'spots'])
-                    ->withCount('movements')
-                    ->orderByDesc('created_at')
-                    ->paginate(10);
-            });
+            $workouts = $user->workouts()
+                ->with(['movements', 'user', 'spots'])
+                ->withCount('movements')
+                ->orderByDesc('created_at')
+                ->paginate(10);
         }
         if ($tab === 'movements') {
-            $movements = Cache::remember('user_movements_' . $id . '_page_' . $request->get('page'), 60, function() use($user) {
-                return $user->movements()
-                    ->with(['reports', 'moves', 'user', 'spots'])
-                    ->orderByDesc('created_at')
-                    ->paginate(10);
-            });
+            $movements = $user->movements()
+                ->with(['reports', 'moves', 'user', 'spots'])
+                ->orderByDesc('created_at')
+                ->paginate(10);
         }
         if ($tab === 'equipment') {
-            $equipments = Cache::remember('user_equipment_' . $id . '_page_' . $request->get('page'), 60, function() use($user) {
-                return $user->equipment()
-                    ->withCount(['movements'])
-                    ->with(['movements', 'reports', 'user'])
-                    ->orderByDesc('created_at')
-                    ->paginate(10);
-            });
+            $equipments = $user->equipment()
+                ->withCount(['movements'])
+                ->with(['movements', 'reports', 'user'])
+                ->orderByDesc('created_at')
+                ->paginate(10);
         }
         if ($tab === 'followers') {
-            $followers = Cache::remember('user_followers_' . $id . '_page_' . $request->get('page'), 60, function() use($user) {
-                return $user->followers()
-                    ->with('followers')
-                    ->where('accepted', true)
-                    ->orderByDesc('created_at')
-                    ->paginate(10);
-            });
+            $followers = $user->followers()
+                ->with('followers')
+                ->where('accepted', true)
+                ->orderByDesc('created_at')
+                ->paginate(10);
         }
         if ($tab === 'following') {
-            $following = Cache::remember('user_following_' . $id . '_page_' . $request->get('page'), 60, function() use($user) {
-                return $user->following()
-                    ->with('followers')
-                    ->orderByDesc('created_at')
-                    ->paginate(10);
-            });
+            $following = $user->following()
+                ->with('followers')
+                ->orderByDesc('created_at')
+                ->paginate(10);
         }
         if ($tab === 'follow_requests') {
-            $followRequests = Cache::remember('user_follow_requests_' . $id . '_page_' . $request->get('page'), 300, function() use($user) {
-                return $user->followers()
-                    ->with('followers')
-                    ->where('accepted', false)
-                    ->orderByDesc('created_at')
-                    ->paginate(10);
-            });
+            $followRequests = $user->followers()
+                ->with('followers')
+                ->where('accepted', false)
+                ->orderByDesc('created_at')
+                ->paginate(10);
         }
 
         $showHometown = !empty($user->hometown_name) && (

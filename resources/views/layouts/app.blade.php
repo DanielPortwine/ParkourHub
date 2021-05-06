@@ -92,9 +92,7 @@
                             @endpremium
                             <li class="nav-item dropdown">
                                 @php
-                                    $unreadNotifications = Cache::remember('unread_notifications_' . Auth::id(), 300, function() {
-                                        return Auth::user()->unreadNotifications;
-                                    });
+                                    $unreadNotifications = Auth::user()->unreadNotifications;
                                 @endphp
                                 <a id="notification-dropdown" class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     <i class="fa {{ count($unreadNotifications) > 0 ? 'fa-bell' : 'fa-bell-o' }} nav-icon"></i><span class="d-md-none">Notifications</span>
