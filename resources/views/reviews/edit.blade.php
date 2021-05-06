@@ -60,6 +60,16 @@
                                 </div>
                             </div>
                             <div class="form-group row">
+                                <label for="visibility" class="col-md-2 col-form-label text-md-right">Visibility</label>
+                                <div class="col-md-8">
+                                    <select name="visibility" class="form-control select2-no-search">
+                                        @foreach(config('settings.privacy.privacy_content.options') as $key => $name)
+                                            <option value="{{ $key }}" @if($review->visibility === $key)selected @endif>{{ $name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
                                 <div class="col-md-8 offset-md-2">
                                     <button type="submit" class="btn btn-green">Submit</button>
                                     <a class="btn btn-danger require-confirmation float-right">Delete</a>

@@ -21,6 +21,7 @@ class ReviewController extends Controller
                 'rating' => empty($request['rating']) ? '0' : $request['rating'],
                 'title' => !empty($request['title']) ? $request['title'] : null,
                 'review' => !empty($request['review']) ? $request['review'] : null,
+                'visibility' => !empty($request['visibility']) ? $request['visibility'] : 'private',
             ]
         );
 
@@ -50,6 +51,7 @@ class ReviewController extends Controller
         $review->rating = empty($request['rating']) ? '0' : $request['rating'];
         $review->title = !empty($request['title']) ? $request['title'] : null;
         $review->review = !empty($request['review']) ? $request['review'] : null;
+        $review->visibility = !empty($request['visibility']) ? $request['visibility'] : 'private';
         $review->save();
 
         $spot = Spot::where('id', $review->spot_id)->first();
