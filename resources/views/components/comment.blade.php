@@ -38,6 +38,9 @@
                 @if($comment->user_id === Auth()->id())
                     <a class="btn text-white" href="{{ route('spot_comment_edit', $comment->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
                 @endif
+                @if(!empty($linkSpotOnComment) && $linkSpotOnComment)
+                        <a class="btn text-white" href="{{ route('spot_view', $comment->spot_id) }}" title="View Spot"><i class="fa fa-map-marker"></i></a>
+                @endif
                 @auth
                     <a class="btn text-white" href="{{ route('spot_comment_report', $comment->id) }}" title="Report"><i class="fa fa-flag"></i></a>
                 @endauth

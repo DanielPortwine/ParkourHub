@@ -25,6 +25,9 @@
             </div>
             <div class="col-lg-auto vertical-center pl-0">
                 <a class="btn text-white" href="{{ route('spot_comment_recover', $comment->id) }}" title="Recover"><i class="fa fa-history"></i></a>
+                @if(!empty($linkSpotOnComment) && $linkSpotOnComment)
+                    <a class="btn text-white" href="{{ route('spot_view', $comment->spot_id) }}" title="View Spot"><i class="fa fa-map-marker"></i></a>
+                @endif
                 <a class="btn text-white" href="{{ route('spot_comment_remove', $comment->id) }}" title="Remove Forever"><i class="fa fa-trash"></i></a>
             </div>
         </div>

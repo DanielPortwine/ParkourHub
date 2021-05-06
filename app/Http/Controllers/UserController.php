@@ -125,6 +125,7 @@ class UserController extends Controller
             });
         }
         if ($tab === 'comments') {
+            $linkSpotOnComment = true;
             $comments = Cache::remember('user_comments_' . $id . '_page_' . $request->get('page'), 60, function() use($user) {
                 return $user->spotComments()
                     ->with(['reports', 'user'])
@@ -221,6 +222,7 @@ class UserController extends Controller
             'hits' => $hits,
             'reviews' => $reviews,
             'comments' => $comments,
+            'linkSpotOnComment' => $linkSpotOnComment ?? false,
             'challenges' => $challenges,
             'entries' => $entries,
             'workouts' => $workouts,
@@ -647,6 +649,7 @@ class UserController extends Controller
                 ->paginate(40);
         }
         if ($tab === 'comments') {
+            $linkSpotOnComment = true;
             $comments = $user->spotComments()
                 ->onlyTrashed()
                 ->with(['reports', 'user'])
@@ -700,6 +703,7 @@ class UserController extends Controller
             'spots' => $spots,
             'reviews' => $reviews,
             'comments' => $comments,
+            'linkSpotOnComment' => $linkSpotOnComment ?? false,
             'challenges' => $challenges,
             'entries' => $entries,
             'movements' => $movements,
