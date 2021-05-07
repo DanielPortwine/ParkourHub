@@ -63,7 +63,7 @@
         <div class="container">
             <div class="row mt-3">
                 <div class="col">
-                    <h1 class="text-center sedgwick">Only £8/month - Cancel anytime</h1>
+                    <h1 class="text-center sedgwick">Only £5/month - Cancel anytime</h1>
                 </div>
             </div>
         </div>
@@ -148,7 +148,7 @@
                         </div>
                         <div class="row my-3">
                             <div class="col text-center">
-                                <p class="mb-0">Become a <span class="text-premium">premium member</span> now and get instant access to all the above features for just £8/month.</p>
+                                <p class="mb-0">Become a <span class="text-premium">premium member</span> now and get instant access to all the above features for just £5/month.</p>
                             </div>
                         </div>
                         <div class="row my-4">
@@ -223,7 +223,7 @@
                         </div>
                         <div class="row my-3">
                             <div class="col text-center">
-                                <p class="mb-0">Restart your membership for just £8/month.</p>
+                                <p class="mb-0">Restart your membership for just £5/month.</p>
                             </div>
                         </div>
                         <div class="row my-4">
@@ -257,7 +257,7 @@
                         </div>
                         <div class="row my-3">
                             <div class="col text-center">
-                                <p class="mb-0">Your membership will auto-renew at £8 on {{ $nextInvoiceDate }}.</p>
+                                <p class="mb-0">Your membership will auto-renew at £5 on {{ $nextInvoiceDate }}.</p>
                             </div>
                         </div>
                         <div class="row my-4">
