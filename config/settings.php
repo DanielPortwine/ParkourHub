@@ -59,6 +59,15 @@ return [
                 'anybody' => 'Anybody',
             ]
         ],
+        'privacy_follow_lists' => [
+            'title' => 'Follow Lists',
+            'description' => 'view your followers and who you follow.',
+            'options' => [
+                'nobody' => 'Nobody',
+                'follower' => 'Followers',
+                'anybody' => 'Anybody',
+            ]
+        ],
         'privacy_hometown' => [
             'title' => 'Hometown',
             'description' => 'view your hometown.',

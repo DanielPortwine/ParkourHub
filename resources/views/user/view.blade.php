@@ -104,12 +104,18 @@
                                 <a class="nav-link btn-link @if($tab === 'equipment')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'equipment']) }}" title="Equipment"><i class="fa fa-dumbbell"></i></a>
                             </li>
                         @endpremium
-                        <li class="nav-item">
-                            <a class="nav-link btn-link @if($tab === 'followers')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'followers']) }}" title="Followers"><i class="fa fa-users"></i></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link btn-link @if($tab === 'following')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'following']) }}" title="Following"><i class="fa fa-user-friends"></i></a>
-                        </li>
+                        @php
+                            $followListsSetting = setting('privacy_follow_lists', 'nobody', $user->id);
+                            $settingFollowers = $user->followers()->pluck('follower_id')->toArray();
+                        @endphp
+                        @if($user->id === Auth()->id() || $followListsSetting === 'anybody' || ($followListsSetting === 'follower' && in_array(Auth()->id(), $settingFollowers)))
+                            <li class="nav-item">
+                                <a class="nav-link btn-link @if($tab === 'followers')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'followers']) }}" title="Followers"><i class="fa fa-users"></i></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link btn-link @if($tab === 'following')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'following']) }}" title="Following"><i class="fa fa-user-friends"></i></a>
+                            </li>
+                        @endif
                         @if($user->id === Auth()->id())
                             <li class="nav-item">
                                 <a class="nav-link btn-link @if($tab === 'follow_requests')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'follow_requests']) }}" title="Follow Requests"><i class="fa fa-user-clock"></i></a>
@@ -266,7 +272,7 @@
                         @endif
                         {{ $equipments->links() }}
                     </div>
-                @elseif($tab === 'followers')
+                @elseif($tab === 'followers' && ($user->id === Auth()->id() || $followListsSetting === 'anybody' || ($followListsSetting === 'follower' && in_array(Auth()->id(), $settingFollowers))))
                     @php $pageUser = $user @endphp
                     <div class="card-body bg-black">
                         @foreach($followers->chunk(2) as $chunk)
@@ -284,7 +290,7 @@
                         @endif
                         {{ $followers->links() }}
                     </div>
-                @elseif($tab === 'following')
+                @elseif($tab === 'following' && ($user->id === Auth()->id() || $followListsSetting === 'anybody' || ($followListsSetting === 'follower' && in_array(Auth()->id(), $settingFollowers))))
                     @php $pageUser = $user @endphp
                     <div class="card-body bg-black">
                         @foreach($following->chunk(2) as $chunk)
