@@ -14,10 +14,15 @@
                     @if ($user->id === Auth()->id())
                         <a class="btn text-white" href="{{ route('user_manage') }}" title="Manage"><i class="fa fa-pencil"></i></a>
                     @else
-                        @if(!empty($title) && $title === 'Follow Requests')
+                        @php
+                            $followSetting = setting('privacy_follow', 'nobody', Auth()->id());
+                            $followRequests = Auth()->user()->followers()->where('accepted', false)->pluck('follower_id')->toArray();
+                            $followers = Auth()->user()->followers()->where('accepted', true)->pluck('follower_id')->toArray();
+                        @endphp
+                        @if(in_array($user->id, $followRequests))
                             <a class="accept-follower-button btn text-white" href="{{ route('user_accept_follower', $user->id) }}" title="Accept Follower"><i class="fa fa-check"></i></a>
                             <a class="reject-follower-button btn text-white" href="{{ route('user_reject_follower', $user->id) }}" title="Reject Follower"><i class="fa fa-times"></i></a>
-                        @elseif(!empty($title) && $title === 'Followers')
+                        @elseif(in_array($user->id, $followers))
                             <a class="btn text-white" href="{{ route('user_remove_follower', $user->id) }}" title="Remove Follower"><i class="fa fa-ban"></i></a>
                         @endif
                         @php
