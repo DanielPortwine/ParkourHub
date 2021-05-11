@@ -138,6 +138,10 @@ class RecordedWorkoutController extends Controller
 
     public function update(UpdateRecordedWorkout $request, $id)
     {
+        if (!empty($request['delete'])) {
+            return $this->delete($id, $request['redirect']);
+        }
+
         $recordedWorkout = RecordedWorkout::where('id', $id)->first();
 
         $fields = WorkoutMovementField::whereIn('id', array_keys($request['fields']))
@@ -151,10 +155,13 @@ class RecordedWorkoutController extends Controller
             $field->save();
         }
 
-        return back()->with('status', 'Successfully updated recorded workout');
+        return back()->with([
+            'status' => 'Successfully updated recorded workout',
+            'redirect' => $request['redirect'],
+        ]);
     }
 
-    public function delete($id)
+    public function delete($id, $redirect = null)
     {
         $recordedWorkout = RecordedWorkout::where('id', $id)->first();
 
@@ -162,6 +169,10 @@ class RecordedWorkoutController extends Controller
             $recordedWorkout->delete();
         }
 
-        return redirect()->route('recorded_workout_listing')->with('status', 'Successfully deleted recorded workout');
+        if (!empty($redirect)) {
+            return redirect($redirect)->with('status', 'Successfully deleted recorded workout');
+        }
+
+        return back()->with('status', 'Successfully deleted recorded workout');
     }
 }

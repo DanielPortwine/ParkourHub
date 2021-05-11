@@ -150,6 +150,10 @@ class ChallengeController extends Controller
 
     public function update(UpdateChallenge $request, $id)
     {
+        if (!empty($request['delete'])) {
+            return $this->delete($id, $request['redirect']);
+        }
+
         $challenge = Challenge::where('id', $id)->first();
         $challenge->name = $request['name'];
         $challenge->description = $request['description'];
@@ -169,7 +173,10 @@ class ChallengeController extends Controller
         }
         $challenge->save();
 
-        return back()->with('status', 'Successfully updated challenge');
+        return back()->with([
+            'status' => 'Successfully updated challenge',
+            'redirect' => $request['redirect'],
+        ]);
     }
 
     public function delete($id, $redirect = null)
@@ -179,11 +186,11 @@ class ChallengeController extends Controller
             $challenge->delete();
         }
 
-        if (empty($redirect)) {
-            $redirect = redirect()->route('challenge_listing');
+        if (!empty($redirect)) {
+            return redirect($redirect)->with('status', 'Successfully deleted challenge');
         }
 
-        return $redirect->with('status', 'Successfully deleted challenge');
+        return back()->with('status', 'Successfully deleted challenge');
     }
 
     public function recover(Request $request, $id)

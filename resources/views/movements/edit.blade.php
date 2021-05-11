@@ -109,7 +109,8 @@
                                 <div class="col-md-8 offset-md-2">
                                     <button type="submit" class="btn btn-green">Save</button>
                                     <a class="btn btn-danger require-confirmation float-right">Delete</a>
-                                    <a class="btn btn-danger d-none confirmation-button float-right" href="{{ route('movement_delete', $movement->id) }}">Confirm</a>
+                                    <input type="hidden" name="redirect" value="{{ session('redirect') ?? url()->previous() }}">
+                                    <input type="submit" class="btn btn-danger d-none confirmation-button float-right" name="delete" value="Confirm">
                                 </div>
                             </div>
                         </form>

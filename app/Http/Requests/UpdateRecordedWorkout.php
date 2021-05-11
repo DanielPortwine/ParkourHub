@@ -26,6 +26,8 @@ class UpdateRecordedWorkout extends FormRequest
     {
         return [
             'fields' => 'required|array',
+            'delete' => 'sometimes',
+            'redirect' => 'sometimes|url',
         ];
     }
 }

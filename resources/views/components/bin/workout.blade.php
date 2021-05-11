@@ -18,7 +18,7 @@
         </div>
         <div class="row">
             <div class="col">
-                Deleted {{ $workout->created_at->diffForHumans() }}
+                Deleted {{ $workout->deleted_at->diffForHumans() }}
             </div>
         </div>
     </div>

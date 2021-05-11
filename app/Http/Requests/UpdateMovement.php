@@ -32,6 +32,8 @@ class UpdateMovement extends FormRequest
             'video' => 'mimes:mp4,mov,mpg,mpeg|max:500000',
             'fields' => 'required|array',
             'visibility' => ['required', new Visibility],
+            'delete' => 'sometimes',
+            'redirect' => 'sometimes|url',
         ];
     }
 

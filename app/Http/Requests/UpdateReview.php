@@ -27,6 +27,8 @@ class UpdateReview extends FormRequest
             'rating' => 'required|integer|between:0,5',
             'title' => 'nullable|string|max:25',
             'review' => 'nullable|string|max:255',
+            'delete' => 'sometimes',
+            'redirect' => 'sometimes|url',
         ];
     }
 }

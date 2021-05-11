@@ -41,6 +41,8 @@ class UpdateSpotComment extends FormRequest
             'comment' => 'required_without_all:youtube,video_image|nullable|string|max:255',
             'youtube' => ['required_without_all:comment,video_image', 'nullable', 'active_url', new YoutubeLink],
             'visibility' => ['required', new Visibility],
+            'delete' => 'sometimes',
+            'redirect' => 'sometimes|url',
         ], $videoImage);
     }
 

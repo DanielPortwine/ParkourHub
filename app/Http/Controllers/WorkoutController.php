@@ -247,6 +247,10 @@ class WorkoutController extends Controller
 
     public function update(CreateWorkout $request, $id)
     {
+        if (!empty($request['delete'])) {
+            return $this->delete($id, $request['redirect']);
+        }
+
         $userId = Auth::id();
         $workout = Workout::where('id', $id)->first();
         $workout->name = $request['name'];
@@ -291,10 +295,13 @@ class WorkoutController extends Controller
             }
         }
 
-        return redirect()->route('workout_view', $workout->id)->with('status', 'Successfully updated workout');
+        return back()->with([
+            'status' => 'Successfully updated workout',
+            'redirect' => $request['redirect'],
+        ]);
     }
 
-    public function delete($id)
+    public function delete($id, $redirect = null)
     {
         $workout = Workout::where('id', $id)->first();
 
@@ -302,7 +309,11 @@ class WorkoutController extends Controller
             $workout->delete();
         }
 
-        return redirect()->route('workout_listing')->with('status', 'Successfully deleted workout');
+        if (!empty($redirect)) {
+            return redirect($redirect)->with('status', 'Successfully deleted workout');
+        }
+
+        return back()->with('status', 'Successfully deleted workout');
     }
 
     public function recover(Request $request, $id)

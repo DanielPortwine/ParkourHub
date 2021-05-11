@@ -30,6 +30,8 @@ class CreateWorkout extends FormRequest
             'description' => 'nullable|string|max:255',
             'movements' => 'required|array',
             'visibility' => ['required', new Visibility],
+            'delete' => 'sometimes',
+            'redirect' => 'sometimes|url',
         ];
     }
 }

@@ -74,7 +74,7 @@ Route::prefix('spots')->middleware('verified')->group(function() {
     Route::post('/create', 'SpotController@create')->middleware('optimizeImages')->name('spot_create');
     Route::get('/edit/{id}', 'SpotController@edit')->name('spot_edit');
     Route::post('/edit/{id}', 'SpotController@update')->middleware('optimizeImages')->name('spot_update');
-    Route::get('/delete/{id}/{from?}', 'SpotController@delete')->name('spot_delete');
+    Route::get('/delete/{id}', 'SpotController@delete')->name('spot_delete');
     Route::get('/recover/{id}', 'SpotController@recover')->name('spot_recover');
     Route::get('/remove/{id}', 'SpotController@remove')->name('spot_remove');
     Route::get('/search', 'SpotController@search')->withoutMiddleware('verified')->name('spot_search');
@@ -92,7 +92,7 @@ Route::prefix('/reviews')->middleware('verified')->group(function() {
     Route::post('/create', 'ReviewController@create')->name('review_create');
     Route::get('/edit/{id}', 'ReviewController@edit')->name('review_edit');
     Route::post('/edit/{id}', 'ReviewController@update')->name('review_update');
-    Route::get('/delete/{id}/{from?}', 'ReviewController@delete')->name('review_delete');
+    Route::get('/delete/{id}', 'ReviewController@delete')->name('review_delete');
     Route::get('/recover/{id}', 'ReviewController@recover')->name('review_recover');
     Route::get('/remove/{id}', 'ReviewController@remove')->name('review_remove');
     Route::get('/report/{review}', 'ReviewController@report')->name('review_report');
@@ -103,7 +103,7 @@ Route::prefix('/spot_comments')->middleware('verified')->group(function() {
     Route::post('/create', 'SpotCommentController@create')->middleware('optimizeImages')->name('spot_comment_create');
     Route::get('/edit/{id}', 'SpotCommentController@edit')->name('spot_comment_edit');
     Route::post('/edit/{id}', 'SpotCommentController@update')->middleware('optimizeImages')->name('spot_comment_update');
-    Route::get('/delete/{id}/{from?}', 'SpotCommentController@delete')->name('spot_comment_delete');
+    Route::get('/delete/{id}', 'SpotCommentController@delete')->name('spot_comment_delete');
     Route::get('/recover/{id}', 'SpotCommentController@recover')->name('spot_comment_recover');
     Route::get('/remove/{id}', 'SpotCommentController@remove')->name('spot_comment_remove');
     Route::get('/report/{spotComment}', 'SpotCommentController@report')->name('spot_comment_report');
@@ -116,7 +116,7 @@ Route::prefix('challenges')->middleware('verified')->group(function() {
     Route::post('/create', 'ChallengeController@create')->middleware('optimizeImages')->name('challenge_create');
     Route::get('/edit/{id}', 'ChallengeController@edit')->name('challenge_edit');
     Route::post('/edit/{id}', 'ChallengeController@update')->middleware('optimizeImages')->name('challenge_update');
-    Route::get('/delete/{id}/{redirect?}', 'ChallengeController@delete')->name('challenge_delete');
+    Route::get('/delete/{id}', 'ChallengeController@delete')->name('challenge_delete');
     Route::get('/recover/{id}', 'ChallengeController@recover')->name('challenge_recover');
     Route::get('/remove/{id}', 'ChallengeController@remove')->name('challenge_remove');
     Route::post('/enter/{id}', 'ChallengeController@enter')->name('challenge_enter');
@@ -137,7 +137,7 @@ Route::prefix('movements')->middleware(['verified', 'isPremium'])->group(functio
     Route::post('/create', 'MovementController@store')->name('movement_store');
     Route::get('/edit/{id}', 'MovementController@edit')->name('movement_edit');
     Route::post('/edit/{id}', 'MovementController@update')->name('movement_update');
-    Route::get('/delete/{id}/{redirect?}', 'MovementController@delete')->name('movement_delete');
+    Route::get('/delete/{id}', 'MovementController@delete')->name('movement_delete');
     Route::get('/recover/{id}', 'MovementController@recover')->name('movement_recover');
     Route::get('/remove/{id}', 'MovementController@remove')->name('movement_remove');
     Route::get('/report/{movement}', 'MovementController@report')->name('movement_report');

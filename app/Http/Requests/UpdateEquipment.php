@@ -31,6 +31,8 @@ class UpdateEquipment extends FormRequest
             'description' => 'required|string|max:255',
             'image' => 'mimes:jpg,jpeg,png|max:5000',
             'visibility' => ['required', new Visibility],
+            'delete' => 'sometimes',
+            'redirect' => 'sometimes|url',
         ];
     }
 

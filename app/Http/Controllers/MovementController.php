@@ -309,6 +309,10 @@ class MovementController extends Controller
 
     public function update(UpdateMovement $request, $id)
     {
+        if (!empty($request['delete'])) {
+            return $this->delete($id, $request['redirect']);
+        }
+
         $movement = Movement::with(['fields'])->where('id', $id)->first();
         if ($movement->user_id != Auth::id()) {
             return redirect()->route('movement_view', $id);
@@ -342,7 +346,10 @@ class MovementController extends Controller
             }
         }
 
-        return back()->with('status', 'Successfully updated movement');
+        return back()->with([
+            'status' => 'Successfully updated movement',
+            'redirect' => $request['redirect'],
+        ]);
     }
 
     public function delete($id, $redirect = null)
@@ -352,11 +359,11 @@ class MovementController extends Controller
             $movement->delete();
         }
 
-        if (empty($redirect)) {
-            $redirect = redirect()->route('movement_listing');
+        if (!empty($redirect)) {
+            return redirect($redirect)->with('status', 'Successfully deleted movement');
         }
 
-        return $redirect->with('status', 'Successfully deleted movement');
+        return back()->with('status', 'Successfully deleted movement');
     }
 
     public function recover(Request $request, $id)

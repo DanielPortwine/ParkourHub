@@ -116,6 +116,10 @@ class EquipmentController extends Controller
 
     public function update(UpdateEquipment $request, $id)
     {
+        if (!empty($request['delete'])) {
+            return $this->delete($id, $request['redirect']);
+        }
+
         $equipment = Equipment::where('id', $id)->first();
         if ($equipment->user_id != Auth::id()) {
             return redirect()->route('movement_view', $id);
@@ -128,7 +132,10 @@ class EquipmentController extends Controller
         }
         $equipment->save();
 
-        return back()->with('status', 'Successfully updated movement');
+        return back()->with([
+            'status' => 'Successfully updated equipment',
+            'redirect' => $request['redirect'],
+        ]);
     }
 
     public function delete($id, $redirect = null)
@@ -138,11 +145,11 @@ class EquipmentController extends Controller
             $equipment->delete();
         }
 
-        if (empty($redirect)) {
-            $redirect = redirect()->route('equipment_listing');
+        if (!empty($redirect)) {
+            return redirect($redirect)->with('status', 'Successfully deleted equipment');
         }
 
-        return $redirect->with('status', 'Successfully deleted equipment');
+        return back()->with('status', 'Successfully deleted equipment');
     }
 
     public function recover(Request $request, $id)

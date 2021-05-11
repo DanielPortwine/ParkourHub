@@ -253,6 +253,10 @@ class SpotController extends Controller
 
     public function update(UpdateSpot $request, $id)
     {
+        if (!empty($request['delete'])) {
+            return $this->delete($id, $request['redirect']);
+        }
+
         $spot = Spot::where('id', $id)->first();
         if ($spot->user_id != Auth::id()) {
             return redirect()->route('spot_view', $id);
@@ -266,7 +270,10 @@ class SpotController extends Controller
         }
         $spot->save();
 
-        return back()->with('status', 'Spot updated successfully');
+        return back()->with([
+            'status' => 'Successfully updated spot',
+            'redirect' => $request['redirect'],
+        ]);
     }
 
     public function delete($id, $redirect = null)
@@ -275,11 +282,12 @@ class SpotController extends Controller
         if ($spot->user_id === Auth::id()) {
             $spot->delete();
         }
-        if (empty($redirect)) {
-            $redirect = redirect()->route('spot_listing');
+
+        if (!empty($redirect)) {
+            return redirect($redirect)->with('status', 'Successfully deleted spot');
         }
 
-        return $redirect->with('status', 'Successfully deleted spot');
+        return back()->with('status', 'Successfully deleted spot');
     }
 
     public function recover(Request $request, $id)

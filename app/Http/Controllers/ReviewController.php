@@ -47,6 +47,10 @@ class ReviewController extends Controller
 
     public function update(UpdateReview $request, $id)
     {
+        if (!empty($request['delete'])) {
+            return $this->delete($id, $request['redirect']);
+        }
+
         $review = Review::where('id', $id)->first();
         $review->rating = empty($request['rating']) ? '0' : $request['rating'];
         $review->title = !empty($request['title']) ? $request['title'] : null;
@@ -58,10 +62,13 @@ class ReviewController extends Controller
         $spot->rating = round($spot->reviews()->withoutGlobalScope(VisibilityScope::class)->get()->sum('rating') / count($spot->reviews()->withoutGlobalScope(VisibilityScope::class)->get()));
         $spot->save();
 
-        return back()->with('status', 'Successfully updated review');
+        return back()->with([
+            'status' => 'Successfully updated review',
+            'redirect' => $request['redirect'],
+        ]);
     }
 
-    public function delete($id)
+    public function delete($id, $redirect = null)
     {
         $review = Review::where('id', $id)->first();
         $spot = Spot::where('id', $review->spot_id)->first();
@@ -71,6 +78,10 @@ class ReviewController extends Controller
 
         $spot->rating = count($spot->reviews) ? round($spot->reviews->sum('rating') / count($spot->reviews()->withoutGlobalScopes([VisibilityScope::class])->get())) : null;
         $spot->save();
+
+        if (!empty($redirect)) {
+            return redirect($redirect)->with('status', 'Successfully deleted review');
+        }
 
         return back()->with('status', 'Successfully deleted review');
     }

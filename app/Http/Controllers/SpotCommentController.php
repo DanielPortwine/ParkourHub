@@ -56,6 +56,10 @@ class SpotCommentController extends Controller
 
     public function update(UpdateSpotComment $request, $id)
     {
+        if (!empty($request['delete'])) {
+            return $this->delete($id, $request['redirect']);
+        }
+
         $comment = SpotComment::where('id', $id)->first();
         $comment->comment = $request['comment'];
         $comment->visibility = $request['visibility'] ?: 'private';
@@ -83,15 +87,22 @@ class SpotCommentController extends Controller
         }
         $comment->save();
 
-        return back()->with('status', 'Successfully updated comment');
+        return back()->with([
+            'status' => 'Successfully updated comment',
+            'redirect' => $request['redirect'],
+        ]);
 
     }
 
-    public function delete($id)
+    public function delete($id, $redirect = null)
     {
         $comment = SpotComment::where('id', $id)->first();
         if ($comment->user_id === Auth::id()) {
             $comment->delete();
+        }
+
+        if (!empty($redirect)) {
+            return redirect($redirect)->with('status', 'Successfully deleted comment');
         }
 
         return back()->with('status', 'Successfully deleted comment');

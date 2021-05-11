@@ -42,6 +42,8 @@ class UpdateChallenge extends FormRequest
             'youtube' => ['nullable', 'active_url', new YoutubeLink],
             'thumbnail' => 'nullable|mimes:jpg,jpeg,png|max:' . $imageMax,
             'visibility' => ['required', new Visibility],
+            'delete' => 'sometimes',
+            'redirect' => 'sometimes|url',
         ], $video);
     }
 

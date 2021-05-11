@@ -32,6 +32,8 @@ class UpdateSpot extends FormRequest
             'description' => 'required|string|max:255',
             'image' => 'mimes:jpg,jpeg,png|max:' . $imageMax,
             'visibility' => ['required', new Visibility],
+            'delete' => 'sometimes',
+            'redirect' => 'sometimes|url',
         ];
     }
 
