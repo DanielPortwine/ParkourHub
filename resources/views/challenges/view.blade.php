@@ -53,12 +53,12 @@
                         @auth
                             <a class="btn text-white" href="{{ route('challenge_report', $challenge->id) }}" title="Report"><i class="fa fa-flag"></i></a>
                         @endauth
-                        @if(Auth()->id() === 1)
+                        @can('delete content')
                             <a class="btn text-white" href="{{ route('challenge_delete', $challenge->id) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
                             @if(count($challenge->reports) > 0)
                                 <a class="btn text-white" href="{{ route('challenge_report_discard', $challenge->id) }}" title="Discard Reports"><i class="fa fa-balance-scale"></i></a>
                             @endif
-                        @endif
+                        @endcan
                         <a class="btn text-white" id="switch-title-button" title="Watch Video"><i class="fa fa-film"></i></a>
                         @if(!empty($challenge->spot))
                             <a class="btn text-white" href="{{ route('spots', ['spot' => $challenge->spot->id]) }}" title="Locate Spot"><i class="fa fa-map-marker"></i></a>

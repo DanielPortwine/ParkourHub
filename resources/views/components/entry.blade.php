@@ -45,12 +45,12 @@
                         <a class="btn text-white" href="{{ route('challenge_win', $entry->id) }}" title="Select Winner"><i class="fa fa-trophy"></i></a>
                     @endif
                     <a class="btn text-white" href="{{ route('entry_report', $entry->id) }}" title="Report"><i class="fa fa-flag"></i></a>
-                    @if(Auth()->id() === 1)
+                    @can('delete content')
                         <a class="btn text-white" href="{{ route('entry_delete', $entry->id) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
                         @if(count($entry->reports) > 0)
                             <a class="btn text-white" href="{{ route('entry_report_discard', $entry->id) }}" title="Discard Reports"><i class="fa fa-balance-scale"></i></a>
                         @endif
-                    @endif
+                    @endcan
                     @if(!empty($entry->challenge) && !empty($entry->challenge->spot))
                         <a class="btn text-white" href="{{ route('spots', ['spot' => $entry->challenge->spot_id]) }}" title="Locate Spot"><i class="fa fa-map-marker"></i></a>
                     @endif

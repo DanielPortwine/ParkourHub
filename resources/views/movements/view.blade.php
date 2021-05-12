@@ -39,12 +39,12 @@
                                 <a class="btn text-white" href="{{ route('movement_edit', $originalMovement->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
                             @endif
                             <a class="btn text-white" href="{{ route('movement_report', $originalMovement->id) }}" title="Report"><i class="fa fa-flag"></i></a>
-                            @if(Auth()->id() === 1)
+                            @can('delete content')
                                 <a class="btn text-white" href="{{ route('movement_delete', $originalMovement->id) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
                                 @if(count($originalMovement->reports) > 0)
                                     <a class="btn text-white" href="{{ route('movement_report_discard', $originalMovement->id) }}" title="Discard Reports"><i class="fa fa-balance-scale"></i></a>
                                 @endif
-                            @endif
+                            @endcan
                             @if(!$originalMovement->official)
                                 <a class="btn text-white" href="{{ route('movement_officialise', $originalMovement->id) }}" title="Officialise"><i class="fa fa-gavel"></i></a>
                             @else

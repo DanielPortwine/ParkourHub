@@ -139,6 +139,11 @@
                     </div>
                 </div>
             @else
+                @if(Auth()->user()->hasPermissionTo('access premium'))
+                        <div class="alert alert-warning position-static mt-4">
+                            <p class="mb-0 text-black-50"><strong>You have free access to <span class="text-premium">premium</span> services! You can cancel below if you previously signed up for <span class="text-premium">premium</span> membership or continue your membership if you'd like to support the site.</strong></p>
+                        </div>
+                @endif
                 @if(!Auth()->user()->hasDefaultPaymentMethod())
                     @if(!Auth()->user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium')  || Auth()->user()->subscription('premium')->ended())
                         <div class="row my-3">

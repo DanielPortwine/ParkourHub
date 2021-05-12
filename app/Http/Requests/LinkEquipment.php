@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class LinkEquipment extends FormRequest
 {
@@ -14,7 +15,7 @@ class LinkEquipment extends FormRequest
      */
     public function authorize()
     {
-        return Auth::user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium');
+        return Auth::user()->isPremium();
     }
 
     /**

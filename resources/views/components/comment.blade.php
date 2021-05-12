@@ -44,12 +44,12 @@
                 @auth
                     <a class="btn text-white" href="{{ route('spot_comment_report', $comment->id) }}" title="Report"><i class="fa fa-flag"></i></a>
                 @endauth
-                @if(Auth()->id() === 1)
+                @can('delete content')
                     <a class="btn text-white" href="{{ route('spot_comment_delete', $comment->id) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
                     @if(count($comment->reports) > 0)
                         <a class="btn text-white" href="{{ route('spot_comment_report_discard', $comment->id) }}" title="Discard Reports"><i class="fa fa-balance-scale"></i></a>
                     @endif
-                @endif
+                @endcan
             </div>
         </div>
         <div class="row @if(!empty($comment->comment))border-subtle mb-2 @endif">

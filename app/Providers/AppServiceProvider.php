@@ -31,9 +31,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Blade::if('premium', function () {
-            return Cache::remember('premium_' . Auth::id(), 10, function() {
-                return (Auth::check() && Auth::user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium')) ? true : false;
-            });
+            return Auth::check() && Auth::user()->isPremium();
         });
 
         Paginator::useBootstrap();

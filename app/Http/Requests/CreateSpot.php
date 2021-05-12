@@ -26,7 +26,7 @@ class CreateSpot extends FormRequest
      */
     public function rules()
     {
-        $imageMax = Auth::user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium') ? '5000' : '500';
+        $imageMax = Auth::user()->isPremium() ? '5000' : '500';
         return [
             'coordinates' => 'required|string',
             'lat_lon' => 'required|string',
@@ -45,7 +45,7 @@ class CreateSpot extends FormRequest
     public function messages()
     {
         $messages = [];
-        if (Auth::user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium')) {
+        if (Auth::user()->isPremium()) {
             $messages = [
                 'image.max' => 'The image must be less than 5MB',
             ];

@@ -25,7 +25,7 @@ class EnterChallenge extends FormRequest
      */
     public function rules()
     {
-        if (Auth::user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium')) {
+        if (Auth::user()->isPremium()) {
             $rules = [
                 'youtube' => ['required_without:video', 'nullable', 'active_url', new YoutubeLink],
                 'video' => 'required_without:youtube|mimes:mp4,mov,mpg,mpeg|max:500000',
@@ -46,7 +46,7 @@ class EnterChallenge extends FormRequest
      */
     public function messages()
     {
-        if (Auth::user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium')) {
+        if (Auth::user()->isPremium()) {
             return [
                 'youtube.required_without' => 'You must provide either a Youtube link or video file',
                 'video.required_without' => 'You must provide either a video file or Youtube link',

@@ -28,7 +28,7 @@ class UpdateUser extends FormRequest
      */
     public function rules()
     {
-        $imageMax = Auth::user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium') ? '5000' : '500';
+        $imageMax = Auth::user()->isPremium() ? '5000' : '500';
         return [
             'name' => ['sometimes', 'string', 'max:25', new NotAutoUsername],
             'email' => ['required_with:account_form', 'string', 'email', 'max:255', new UniqueOrOldEmail],
@@ -49,7 +49,7 @@ class UpdateUser extends FormRequest
     public function messages()
     {
         $messages = [];
-        if (Auth::user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium')) {
+        if (Auth::user()->isPremium()) {
             $messages = [
                 'profile_image.max' => 'The image must be less than 5MB',
                 'cover_image.max' => 'The image must be less than 5MB',

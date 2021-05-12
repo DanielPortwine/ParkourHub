@@ -216,7 +216,7 @@ class WorkoutController extends Controller
         if ($workout->visibility !== 'private') {
             $followers = Auth::user()->followers()->get();
             foreach ($followers as $follower) {
-                if (in_array(setting('notifications_new_workout', 'on-site', $follower->id), ['on-site', 'email', 'email-site']) && $follower->subscribedToPlan(env('STRIPE_PLAN'), 'premium')) {
+                if (in_array(setting('notifications_new_workout', 'on-site', $follower->id), ['on-site', 'email', 'email-site']) && $follower->isPremium()) {
                     $follower->notify(new NewWorkout($workout));
                 }
             }
@@ -289,7 +289,7 @@ class WorkoutController extends Controller
         if ($workout->public) {
             $bookmarkers = $workout->bookmarks;
             foreach ($bookmarkers as $bookmarker) {
-                if (in_array(setting('notifications_workout_updated', 'on-site', $bookmarker->id), ['on-site', 'email', 'email-site']) && $bookmarker->subscribedToPlan(env('STRIPE_PLAN'), 'premium')) {
+                if (in_array(setting('notifications_workout_updated', 'on-site', $bookmarker->id), ['on-site', 'email', 'email-site']) && $bookmarker->isPremium()) {
                     $bookmarker->notify(new WorkoutUpdated($workout));
                 }
             }

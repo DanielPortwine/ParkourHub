@@ -7,8 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Laravel\Cashier\Billable;
 use Nicolaslopezj\Searchable\SearchableTrait;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -16,7 +19,8 @@ class User extends Authenticatable implements MustVerifyEmail
         SoftDeletes,
         Billable,
         SearchableTrait,
-        HasFactory;
+        HasFactory,
+        HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -64,6 +68,16 @@ class User extends Authenticatable implements MustVerifyEmail
 
         return $query;
     }
+
+    public function isPremium()
+    {
+        $isPremium = Cache::remember('premium_' . Auth::id(), 10, function() {
+            return Auth::user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium') || Auth::user()->hasPermissionTo('access premium');
+        });
+
+        return $isPremium;
+    }
+
 
     public function spots()
     {

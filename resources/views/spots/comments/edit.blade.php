@@ -32,7 +32,7 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label class="col-md-2 col-form-label text-md-right">Youtube{{ Auth()->user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium') ? ', Video' : '' }} or Image</label>
+                                <label class="col-md-2 col-form-label text-md-right">Youtube{{ Auth()->user()->isPremium() ? ', Video' : '' }} or Image</label>
                                 <div class="col-md-8">
                                     @if(!empty($comment->youtube))
                                         <div class="form-group row">

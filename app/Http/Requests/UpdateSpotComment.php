@@ -27,7 +27,7 @@ class UpdateSpotComment extends FormRequest
      */
     public function rules()
     {
-        if (Auth::user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium')) {
+        if (Auth::user()->isPremium()) {
             $videoImage = [
                 'video_image' => ['required_without_all:comment,youtube', 'nullable', 'mimes:jpg,jpeg,png,mp4,mov,mpg,mpeg', new VideoImage],
             ];
@@ -53,7 +53,7 @@ class UpdateSpotComment extends FormRequest
      */
     public function messages()
     {
-        $extraFileTypes = Auth::user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium') ? ', mp4, mov, mpg, mpeg' : '';
+        $extraFileTypes = Auth::user()->isPremium() ? ', mp4, mov, mpg, mpeg' : '';
         return [
             'comment.required_without_all' => 'You must enter at least one of the fields',
             'youtube.required_without_all' => 'You must enter at least one of the fields',

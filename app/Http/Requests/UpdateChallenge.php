@@ -28,7 +28,7 @@ class UpdateChallenge extends FormRequest
     {
         $imageMax = '500';
         $video = [];
-        if (Auth::user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium')) {
+        if (Auth::user()->isPremium()) {
             $imageMax = '50000';
             $video = [
                 'video' => 'mimes:mp4,mov,mpg,mpeg|max:500000'
@@ -55,7 +55,7 @@ class UpdateChallenge extends FormRequest
     public function messages()
     {
         $messages = [];
-        if (Auth::user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium')) {
+        if (Auth::user()->isPremium()) {
             $messages = [
                 'video.max' => 'The video must be less than 500MB',
                 'thumbnail.max' => 'The thumbnail must be less than 5MB',

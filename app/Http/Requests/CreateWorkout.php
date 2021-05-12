@@ -15,7 +15,7 @@ class CreateWorkout extends FormRequest
      */
     public function authorize()
     {
-        return Auth::user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium');
+        return Auth::user()->isPremium();
     }
 
     /**

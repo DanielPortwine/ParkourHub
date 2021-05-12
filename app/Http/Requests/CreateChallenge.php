@@ -27,7 +27,7 @@ class CreateChallenge extends FormRequest
      */
     public function rules()
     {
-        if (Auth::user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium')) {
+        if (Auth::user()->isPremium()) {
             $content = [
                 'youtube' => ['required_without:video', 'nullable', 'active_url', new YoutubeLink],
                 'video' => 'required_without:youtube|mimes:mp4,mov,mpg,mpeg|max:500000',
@@ -57,7 +57,7 @@ class CreateChallenge extends FormRequest
     public function messages()
     {
         $messages = [];
-        if (Auth::user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium')) {
+        if (Auth::user()->isPremium()) {
             $messages = [
                 'youtube.required_without' => 'You must provide either a Youtube link or video file',
                 'video.required_without' => 'You must provide either a video file or Youtube link',

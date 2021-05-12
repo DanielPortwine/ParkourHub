@@ -48,12 +48,12 @@
                     <a class="btn text-white" href="{{ route('review_edit', $review->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
                 @endif
                 <a class="btn text-white" href="{{ route('review_report', $review->id) }}" title="Report"><i class="fa fa-flag"></i></a>
-                @if(Auth()->id() === 1)
+                @can('delete content')
                     <a class="btn text-white" href="{{ route('review_delete', $review->id) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
                     @if(count($review->reports) > 0)
                         <a class="btn text-white" href="{{ route('review_report_discard', $review->id) }}" title="Discard Reports"><i class="fa fa-balance-scale"></i></a>
                     @endif
-                @endif
+                @endcan
             </div>
         </div>
     </div>
@@ -74,12 +74,12 @@
                     <a class="btn text-white" href="{{ route('review_edit', $review->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
                 @endif
                 <a class="btn text-white" href="{{ route('review_report', $review->id) }}" title="Report"><i class="fa fa-flag"></i></a>
-                @if(Auth()->id() === 1)
+                @can('delete content')
                     <a class="btn text-white" href="{{ route('review_delete', $review->id) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
                     @if(count($review->reports) > 0)
                         <a class="btn text-white" href="{{ route('review_report_discard', $review->id) }}" title="Discard Reports"><i class="fa fa-balance-scale"></i></a>
                     @endif
-                @endif
+                @endcan
             </div>
         </div>
         @if(isset($user))
