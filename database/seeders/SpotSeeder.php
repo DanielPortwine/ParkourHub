@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Spot;
-use App\User;
+use App\Models\Spot;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class SpotSeeder extends Seeder

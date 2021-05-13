@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Challenge;
-use App\User;
+use App\Models\Challenge;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class ChallengeSeeder extends Seeder

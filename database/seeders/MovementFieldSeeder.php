@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\MovementField;
+use App\Models\MovementField;
 use Illuminate\Database\Seeder;
 
 class MovementFieldSeeder extends Seeder

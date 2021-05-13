@@ -2,10 +2,10 @@
 
 namespace Database\Factories;
 
-use App\Movement;
-use App\MovementCategory;
-use App\MovementType;
-use App\User;
+use App\Models\Movement;
+use App\Models\MovementCategory;
+use App\Models\MovementType;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class MovementFactory extends Factory

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Challenge;
-use App\ChallengeEntry;
-use App\ChallengeView;
-use App\Follower;
+use App\Models\Challenge;
+use App\Models\ChallengeEntry;
+use App\Models\ChallengeView;
+use App\Models\Follower;
 use App\Http\Requests\CreateChallenge;
 use App\Http\Requests\EnterChallenge;
 use App\Http\Requests\UpdateChallenge;
@@ -13,7 +13,7 @@ use App\Notifications\ChallengeCreated;
 use App\Notifications\ChallengeEntered;
 use App\Notifications\ChallengeWon;
 use App\Notifications\SpotChallenged;
-use App\User;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;

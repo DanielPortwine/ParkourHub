@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use App\Scopes\VisibilityScope;
 use App\Traits\Reportable;
@@ -50,11 +50,11 @@ class Equipment extends Model
 
     public function user()
     {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo('App\Models\User');
     }
 
     public function movements()
     {
-        return $this->belongsToMany('App\Movement', 'movements_equipments', 'equipment_id', 'movement_id');
+        return $this->belongsToMany('App\Models\Movement', 'movements_equipments', 'equipment_id', 'movement_id');
     }
 }

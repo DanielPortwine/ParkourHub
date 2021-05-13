@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Follower;
-use App\Hit;
+use App\Models\Follower;
+use App\Models\Hit;
 use App\Http\Requests\AddMovement;
 use App\Http\Requests\CreateSpot;
 use App\Http\Requests\SearchMap;
 use App\Http\Requests\UpdateSpot;
-use App\Movement;
-use App\MovementCategory;
-use App\MovementField;
+use App\Models\Movement;
+use App\Models\MovementCategory;
+use App\Models\MovementField;
 use App\Notifications\SpotCreated;
 use App\Scopes\VisibilityScope;
-use App\Spot;
-use App\SpotView;
-use App\Workout;
+use App\Models\Spot;
+use App\Models\SpotView;
+use App\Models\Workout;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

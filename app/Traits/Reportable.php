@@ -2,7 +2,7 @@
 
 namespace App\Traits;
 
-use App\Report;
+use App\Models\Report;
 use Illuminate\Support\Facades\Auth;
 
 trait Reportable

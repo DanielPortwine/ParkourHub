@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Follower;
+use App\Models\Follower;
 use App\Http\Requests\AddWorkoutToPlan;
-use App\Workout;
+use App\Models\Workout;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Movement;
-use App\User;
-use App\Workout;
-use App\WorkoutMovement;
-use App\WorkoutMovementField;
+use App\Models\Movement;
+use App\Models\User;
+use App\Models\Workout;
+use App\Models\WorkoutMovement;
+use App\Models\WorkoutMovementField;
 use Illuminate\Database\Seeder;
 
 class WorkoutSeeder extends Seeder

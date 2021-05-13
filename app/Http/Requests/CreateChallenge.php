@@ -41,7 +41,7 @@ class CreateChallenge extends FormRequest
         }
 
         return array_merge([
-            'spot' => 'required|integer|exists:App\Spot,id',
+            'spot' => 'required|integer|exists:App\Models\Spot,id',
             'name' => 'required|string|max:25',
             'description' => 'required|string|max:255',
             'difficulty' => 'required|integer|between:1,5',

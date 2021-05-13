@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,11 +15,11 @@ class WorkoutMovementField extends Model
 
     public function workoutMovement()
     {
-        return $this->belongsTo('App\WorkoutMovement');
+        return $this->belongsTo('App\Models\WorkoutMovement');
     }
 
     public function field()
     {
-        return $this->belongsTo('App\MovementField', 'movement_field_id', 'id');
+        return $this->belongsTo('App\Models\MovementField', 'movement_field_id', 'id');
     }
 }

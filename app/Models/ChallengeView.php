@@ -1,28 +1,28 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class SpotView extends Model
+class ChallengeView extends Model
 {
     use HasFactory;
 
     public $timestamps = false;
 
     protected $fillable = [
-        'spot_id',
+        'challenge_id',
         'user_id',
     ];
 
-    public function spot()
+    public function challenge()
     {
-        return $this->belongsTo('App\Spot');
+        return $this->belongsTo('App\Models\Challenge');
     }
 
     public function user()
     {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo('App\Models\User');
     }
 }

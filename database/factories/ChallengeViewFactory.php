@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
-use App\Challenge;
-use App\ChallengeView;
-use App\User;
+use App\Models\Challenge;
+use App\Models\ChallengeView;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ChallengeViewFactory extends Factory

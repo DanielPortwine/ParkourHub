@@ -1,35 +1,40 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use App\Scopes\VisibilityScope;
+use App\Traits\Reportable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Nicolaslopezj\Searchable\SearchableTrait;
 
-class Workout extends Model
+class Review extends Model
 {
     use SoftDeletes,
-        SearchableTrait,
+        Reportable,
         HasFactory;
 
     protected $fillable = [
-        'name',
-        'description',
+        'spot_id',
+        'user_id',
+        'rating',
+        'title',
+        'review',
         'visibility',
-    ];
-
-    protected $searchable = [
-        'columns' => [
-            'name' => 10,
-            'description' => 8,
-        ],
     ];
 
     protected static function booted()
     {
         static::addGlobalScope(new VisibilityScope);
+    }
+
+    public function scopeRating($query, $rating = null)
+    {
+        if (!empty($rating)) {
+            return $query->where('rating', $rating);
+        }
+
+        return $query;
     }
 
     public function scopeDateBetween($query, $dates = [])
@@ -45,28 +50,18 @@ class Workout extends Model
         return $query;
     }
 
+    public function scopeWithText($query)
+    {
+        return $query->whereNotNull('title')->orWhereNotNull('review');
+    }
+
     public function user()
     {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo('App\Models\User');
     }
 
-    public function movements()
+    public function spot()
     {
-        return $this->hasMany('App\WorkoutMovement');
-    }
-
-    public function bookmarks()
-    {
-        return $this->belongsToMany('App\User', 'workout_bookmarks');
-    }
-
-    public function spots()
-    {
-        return $this->belongsToMany('App\Spot', 'spots_workouts');
-    }
-
-    public function planUsers()
-    {
-        return $this->belongsToMany('App\User', 'workout_plans')->withPivot('id', 'date', 'recorded_workout_id');
+        return $this->belongsTo('App\Models\Spot');
     }
 }

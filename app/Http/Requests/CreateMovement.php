@@ -28,10 +28,10 @@ class CreateMovement extends FormRequest
     {
         return [
             'type' => 'required|integer',
-            'spot' => 'integer|exists:App\Spot,id',
-            'progression' => 'integer|exists:App\Movement,id',
-            'advancement' => 'integer|exists:App\Movement,id',
-            'move' => 'integer|exists:App\Movement,id',
+            'spot' => 'integer|exists:App\Models\Spot,id',
+            'progression' => 'integer|exists:App\Models\Movement,id',
+            'advancement' => 'integer|exists:App\Models\Movement,id',
+            'move' => 'integer|exists:App\Models\Movement,id',
             'category' => 'required|integer',
             'name' => 'required|string|max:25',
             'description' => 'required|string|max:255',

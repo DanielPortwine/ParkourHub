@@ -25,8 +25,8 @@ class LinkExercise extends FormRequest
     public function rules()
     {
         return [
-            'move' => 'required|integer|exists:App\Movement,id',
-            'exercise' => 'required|integer|exists:App\Movement,id',
+            'move' => 'required|integer|exists:App\Models\Movement,id',
+            'exercise' => 'required|integer|exists:App\Models\Movement,id',
         ];
     }
 }

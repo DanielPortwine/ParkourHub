@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Challenge;
-use App\ChallengeEntry;
-use App\User;
+use App\Models\Challenge;
+use App\Models\ChallengeEntry;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class ChallengeEntrySeeder extends Seeder

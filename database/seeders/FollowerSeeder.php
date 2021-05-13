@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Follower;
-use App\User;
+use App\Models\Follower;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class FollowerSeeder extends Seeder

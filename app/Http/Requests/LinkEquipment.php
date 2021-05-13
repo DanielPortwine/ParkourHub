@@ -26,8 +26,8 @@ class LinkEquipment extends FormRequest
     public function rules()
     {
         return [
-            'movement' => 'required|integer|exists:App\Movement,id',
-            'equipment' => 'required|integer|exists:App\Equipment,id',
+            'movement' => 'required|integer|exists:App\Models\Movement,id',
+            'equipment' => 'required|integer|exists:App\Models\Equipment,id',
         ];
     }
 }

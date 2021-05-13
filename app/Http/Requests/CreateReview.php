@@ -24,7 +24,7 @@ class CreateReview extends FormRequest
     public function rules()
     {
         return [
-            'spot' => 'required|integer|exists:App\Spot,id',
+            'spot' => 'required|integer|exists:App\Models\Spot,id',
             'rating' => 'required|integer|between:0,5',
             'title' => 'nullable|required_with:review|string|max:25',
             'review' => 'nullable|string|max:255',

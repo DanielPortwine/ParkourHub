@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Equipment;
-use App\Follower;
+use App\Models\Equipment;
+use App\Models\Follower;
 use App\Http\Requests\CreateMovement;
 use App\Http\Requests\LinkEquipment;
 use App\Http\Requests\LinkExercise;
 use App\Http\Requests\LinkMovements;
 use App\Http\Requests\UpdateMovement;
-use App\Movement;
-use App\MovementCategory;
-use App\MovementField;
-use App\MovementType;
-use App\Report;
-use App\Spot;
+use App\Models\Movement;
+use App\Models\MovementCategory;
+use App\Models\MovementField;
+use App\Models\MovementType;
+use App\Models\Report;
+use App\Models\Spot;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;

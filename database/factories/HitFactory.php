@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
-use App\Hit;
-use App\Spot;
-use App\User;
+use App\Models\Hit;
+use App\Models\Spot;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class HitFactory extends Factory

@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -21,16 +21,16 @@ class RecordedWorkout extends Model
 
     public function user()
     {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo('App\Models\User');
     }
 
     public function workout()
     {
-        return $this->belongsTo('App\Workout');
+        return $this->belongsTo('App\Models\Workout');
     }
 
     public function movements()
     {
-        return $this->hasMany('App\WorkoutMovement');
+        return $this->hasMany('App\Models\WorkoutMovement');
     }
 }

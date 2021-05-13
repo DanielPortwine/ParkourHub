@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Follower;
+use App\Models\Follower;
 use App\Http\Requests\CreateWorkout;
-use App\Movement;
+use App\Models\Movement;
 use App\Notifications\NewWorkout;
 use App\Notifications\WorkoutUpdated;
-use App\RecordedWorkout;
-use App\Spot;
-use App\Workout;
-use App\WorkoutMovement;
-use App\WorkoutMovementField;
+use App\Models\RecordedWorkout;
+use App\Models\Spot;
+use App\Models\Workout;
+use App\Models\WorkoutMovement;
+use App\Models\WorkoutMovementField;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;

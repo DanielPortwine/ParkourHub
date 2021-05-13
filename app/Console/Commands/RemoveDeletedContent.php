@@ -2,13 +2,13 @@
 
 namespace App\Console\Commands;
 
-use App\Challenge;
-use App\Equipment;
-use App\Movement;
-use App\Review;
-use App\Spot;
-use App\SpotComment;
-use App\Workout;
+use App\Models\Challenge;
+use App\Models\Equipment;
+use App\Models\Movement;
+use App\Models\Review;
+use App\Models\Spot;
+use App\Models\SpotComment;
+use App\Models\Workout;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 

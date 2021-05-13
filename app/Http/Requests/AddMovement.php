@@ -24,7 +24,7 @@ class AddMovement extends FormRequest
     public function rules()
     {
         return [
-            'movement' => 'required|integer|exists:App\Movement,id',
+            'movement' => 'required|integer|exists:App\Models\Movement,id',
         ];
     }
 }

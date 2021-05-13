@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use App\Scopes\VisibilityScope;
 use App\Traits\Reportable;
@@ -8,33 +8,23 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Review extends Model
+class SpotComment extends Model
 {
     use SoftDeletes,
         Reportable,
         HasFactory;
 
     protected $fillable = [
-        'spot_id',
-        'user_id',
-        'rating',
-        'title',
-        'review',
+        'comment',
+        'image',
+        'youtube',
+        'video',
         'visibility',
     ];
 
     protected static function booted()
     {
         static::addGlobalScope(new VisibilityScope);
-    }
-
-    public function scopeRating($query, $rating = null)
-    {
-        if (!empty($rating)) {
-            return $query->where('rating', $rating);
-        }
-
-        return $query;
     }
 
     public function scopeDateBetween($query, $dates = [])
@@ -50,18 +40,13 @@ class Review extends Model
         return $query;
     }
 
-    public function scopeWithText($query)
+    public function spot()
     {
-        return $query->whereNotNull('title')->orWhereNotNull('review');
+        return $this->belongsTo('App\Models\Spot');
     }
 
     public function user()
     {
-        return $this->belongsTo('App\User');
-    }
-
-    public function spot()
-    {
-        return $this->belongsTo('App\Spot');
+        return $this->belongsTo('App\Models\User');
     }
 }

@@ -25,7 +25,7 @@ class AddWorkoutToPlan extends FormRequest
     public function rules()
     {
         return [
-            'workout' => 'required|exists:App\Workout,id',
+            'workout' => 'required|exists:App\Models\Workout,id',
             'date' => 'required|date',
             'repeat_frequency' => 'required_with:repeat_until',
             'repeat_until' => 'nullable|required_with:repeat_frequency|after:date',

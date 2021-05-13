@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
-use App\Spot;
-use App\SpotView;
-use App\User;
+use App\Models\Spot;
+use App\Models\SpotView;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class SpotViewFactory extends Factory

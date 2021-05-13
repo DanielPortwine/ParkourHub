@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Spot;
-use App\User;
+use App\Models\Spot;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use proj4php\Point;
 use proj4php\Proj;

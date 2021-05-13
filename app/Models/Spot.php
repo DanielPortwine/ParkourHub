@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use App\Scopes\VisibilityScope;
 use App\Traits\Reportable;
@@ -106,41 +106,41 @@ class Spot extends Model
 
     public function user()
     {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo('App\Models\User');
     }
 
     public function hits()
     {
-        return $this->hasMany('App\Hit');
+        return $this->hasMany('App\Models\Hit');
     }
 
     public function reviews()
     {
-        return $this->hasMany('App\Review');
+        return $this->hasMany('App\Models\Review');
     }
 
     public function comments()
     {
-        return $this->hasMany('App\SpotComment');
+        return $this->hasMany('App\Models\SpotComment');
     }
 
     public function challenges()
     {
-        return $this->hasMany('App\Challenge');
+        return $this->hasMany('App\Models\Challenge');
     }
 
     public function views()
     {
-        return $this->hasMany('App\SpotView');
+        return $this->hasMany('App\Models\SpotView');
     }
 
     public function movements()
     {
-        return $this->belongsToMany('App\Movement', 'spots_movements');
+        return $this->belongsToMany('App\Models\Movement', 'spots_movements');
     }
 
     public function workouts()
     {
-        return $this->belongsToMany('App\Workout', 'spots_workouts');
+        return $this->belongsToMany('App\Models\Workout', 'spots_workouts');
     }
 }

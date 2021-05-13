@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Challenge;
-use App\ChallengeEntry;
-use App\Report;
-use App\Review;
-use App\Spot;
-use App\SpotComment;
+use App\Models\Challenge;
+use App\Models\ChallengeEntry;
+use App\Models\Report;
+use App\Models\Review;
+use App\Models\Spot;
+use App\Models\SpotComment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 

@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Challenge;
-use App\Follower;
-use App\Hit;
-use App\Spot;
-use App\User;
+use App\Models\Challenge;
+use App\Models\Follower;
+use App\Models\Hit;
+use App\Models\Spot;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;

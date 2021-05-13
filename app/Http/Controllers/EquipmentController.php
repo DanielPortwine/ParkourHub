@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Equipment;
-use App\Follower;
+use App\Models\Equipment;
+use App\Models\Follower;
 use App\Http\Requests\CreateEquipment;
 use App\Http\Requests\UpdateEquipment;
-use App\Movement;
-use App\MovementCategory;
-use App\MovementField;
-use App\Report;
+use App\Models\Movement;
+use App\Models\MovementCategory;
+use App\Models\MovementField;
+use App\Models\Report;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;

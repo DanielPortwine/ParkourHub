@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\MovementType;
+use App\Models\MovementType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class MovementTypeFactory extends Factory

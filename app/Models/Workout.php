@@ -1,25 +1,30 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use App\Scopes\VisibilityScope;
-use App\Traits\Reportable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Nicolaslopezj\Searchable\SearchableTrait;
 
-class SpotComment extends Model
+class Workout extends Model
 {
     use SoftDeletes,
-        Reportable,
+        SearchableTrait,
         HasFactory;
 
     protected $fillable = [
-        'comment',
-        'image',
-        'youtube',
-        'video',
+        'name',
+        'description',
         'visibility',
+    ];
+
+    protected $searchable = [
+        'columns' => [
+            'name' => 10,
+            'description' => 8,
+        ],
     ];
 
     protected static function booted()
@@ -40,13 +45,28 @@ class SpotComment extends Model
         return $query;
     }
 
-    public function spot()
-    {
-        return $this->belongsTo('App\Spot');
-    }
-
     public function user()
     {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo('App\Models\User');
+    }
+
+    public function movements()
+    {
+        return $this->hasMany('App\Models\WorkoutMovement');
+    }
+
+    public function bookmarks()
+    {
+        return $this->belongsToMany('App\Models\User', 'workout_bookmarks');
+    }
+
+    public function spots()
+    {
+        return $this->belongsToMany('App\Models\Spot', 'spots_workouts');
+    }
+
+    public function planUsers()
+    {
+        return $this->belongsToMany('App\Models\User', 'workout_plans')->withPivot('id', 'date', 'recorded_workout_id');
     }
 }

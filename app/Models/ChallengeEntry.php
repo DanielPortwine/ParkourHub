@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use App\Traits\Reportable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -42,11 +42,11 @@ class ChallengeEntry extends Model
 
     public function challenge()
     {
-        return $this->belongsTo('App\Challenge');
+        return $this->belongsTo('App\Models\Challenge');
     }
 
     public function user()
     {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo('App\Models\User');
     }
 }

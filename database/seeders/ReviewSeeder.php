@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Review;
+use App\Models\Review;
 use App\Scopes\VisibilityScope;
-use App\Spot;
-use App\User;
+use App\Models\Spot;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class ReviewSeeder extends Seeder

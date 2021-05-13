@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\MovementField;
+use App\Models\MovementField;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class MovementFieldFactory extends Factory

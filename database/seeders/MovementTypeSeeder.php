@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\MovementType;
+use App\Models\MovementType;
 use Illuminate\Database\Seeder;
 
 class MovementTypeSeeder extends Seeder

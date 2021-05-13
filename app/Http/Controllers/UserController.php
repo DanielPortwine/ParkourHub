@@ -2,21 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Challenge;
-use App\ChallengeEntry;
-use App\Equipment;
-use App\Follower;
+use App\Models\Challenge;
+use App\Models\ChallengeEntry;
+use App\Models\Equipment;
+use App\Models\Follower;
 use App\Http\Requests\Subscribe;
 use App\Http\Requests\UpdateUser;
-use App\Movement;
+use App\Models\Movement;
 use App\Notifications\UserFollowed;
 use App\Notifications\UserFollowRequested;
-use App\Review;
-use App\Spot;
-use App\SpotComment;
-use App\Subscriber;
-use App\User;
-use App\UserSettingsLog;
+use App\Models\Review;
+use App\Models\Spot;
+use App\Models\SpotComment;
+use App\Models\Subscriber;
+use App\Models\User;
+use App\Models\UserSettingsLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;

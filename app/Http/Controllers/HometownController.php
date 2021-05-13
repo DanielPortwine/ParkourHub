@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Challenge;
-use App\Spot;
+use App\Models\Challenge;
+use App\Models\Spot;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;

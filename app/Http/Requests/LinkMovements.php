@@ -25,8 +25,8 @@ class LinkMovements extends FormRequest
     public function rules()
     {
         return [
-            'progression' => 'required|integer|exists:App\Movement,id',
-            'advancement' => 'required|integer|exists:App\Movement,id',
+            'progression' => 'required|integer|exists:App\Models\Movement,id',
+            'advancement' => 'required|integer|exists:App\Models\Movement,id',
         ];
     }
 }

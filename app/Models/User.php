@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -81,81 +81,81 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function spots()
     {
-        return $this->hasMany('App\Spot');
+        return $this->hasMany('App\Models\Spot');
     }
 
     public function hits()
     {
-        return $this->hasMany('App\Hit');
+        return $this->hasMany('App\Models\Hit');
     }
 
     public function reviews()
     {
-        return $this->hasMany('App\Review');
+        return $this->hasMany('App\Models\Review');
     }
 
     public function spotComments()
     {
-        return $this->hasMany('App\SpotComment');
+        return $this->hasMany('App\Models\SpotComment');
     }
 
     public function challenges()
     {
-        return $this->hasMany('App\Challenge');
+        return $this->hasMany('App\Models\Challenge');
     }
 
     public function challengeEntries()
     {
-        return $this->hasMany('App\ChallengeEntry');
+        return $this->hasMany('App\Models\ChallengeEntry');
     }
 
     public function followers()
     {
-        return $this->belongsToMany('App\User', 'user_followers', 'user_id', 'follower_id');
+        return $this->belongsToMany('App\Models\User', 'user_followers', 'user_id', 'follower_id');
     }
 
     public function following()
     {
-        return $this->belongsToMany('App\User', 'user_followers', 'follower_id', 'user_id');
+        return $this->belongsToMany('App\Models\User', 'user_followers', 'follower_id', 'user_id');
     }
 
     public function reports()
     {
-        return $this->hasMany('App\Report');
+        return $this->hasMany('App\Models\Report');
     }
 
     public function movements()
     {
-        return $this->hasMany('App\Movement');
+        return $this->hasMany('App\Models\Movement');
     }
 
     public function equipment()
     {
-        return $this->hasMany('App\Equipment');
+        return $this->hasMany('App\Models\Equipment');
     }
 
     public function workouts()
     {
-        return $this->hasMany('App\Workout');
+        return $this->hasMany('App\Models\Workout');
     }
 
     public function bookmarks()
     {
-        return $this->belongsToMany('App\Workout', 'workout_bookmarks');
+        return $this->belongsToMany('App\Models\Workout', 'workout_bookmarks');
     }
 
     public function planWorkouts()
     {
-        return $this->belongsToMany('App\Workout', 'workout_plans')->withPivot('id', 'date', 'recorded_workout_id');
+        return $this->belongsToMany('App\Models\Workout', 'workout_plans')->withPivot('id', 'date', 'recorded_workout_id');
     }
 
     public function baselineMovementFields()
     {
-        return $this->belongsToMany('App\MovementField', 'users_movements_baseline');
+        return $this->belongsToMany('App\Models\MovementField', 'users_movements_baseline');
     }
 
     public function settingsLog()
     {
-        return $this->hasMany('App\UserSettingsLog');
+        return $this->hasMany('App\Models\UserSettingsLog');
     }
 }

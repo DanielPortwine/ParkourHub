@@ -38,7 +38,7 @@ class CreateSpotComment extends FormRequest
         }
 
         return array_merge([
-            'spot' => 'required|integer|exists:App\Spot,id',
+            'spot' => 'required|integer|exists:App\Models\Spot,id',
             'comment' => 'required_without_all:youtube,video_image|nullable|string|max:255',
             'youtube' => ['required_without_all:comment,video_image', 'nullable', 'active_url', new YoutubeLink],
             'visibility' => ['required', new Visibility],

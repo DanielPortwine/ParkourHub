@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use App\Scopes\VisibilityScope;
 use App\Traits\Reportable;
@@ -86,21 +86,21 @@ class Challenge extends Model
 
     public function entries()
     {
-        return $this->hasMany('App\ChallengeEntry');
+        return $this->hasMany('App\Models\ChallengeEntry');
     }
 
     public function spot()
     {
-        return $this->belongsTo('App\Spot');
+        return $this->belongsTo('App\Models\Spot');
     }
 
     public function user()
     {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo('App\Models\User');
     }
 
     public function views()
     {
-        return $this->hasMany('App\ChallengeView');
+        return $this->hasMany('App\Models\ChallengeView');
     }
 }

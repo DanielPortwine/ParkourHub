@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateRecordedWorkout;
 use App\Http\Requests\UpdateRecordedWorkout;
-use App\RecordedWorkout;
-use App\Workout;
-use App\WorkoutMovement;
-use App\WorkoutMovementField;
+use App\Models\RecordedWorkout;
+use App\Models\Workout;
+use App\Models\WorkoutMovement;
+use App\Models\WorkoutMovementField;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use App\Scopes\VisibilityScope;
 use App\Traits\Reportable;
@@ -85,56 +85,56 @@ class Movement extends Model
 
     public function category()
     {
-        return $this->belongsTo('App\MovementCategory');
+        return $this->belongsTo('App\Models\MovementCategory');
     }
 
     public function type()
     {
-        return $this->belongsTo('App\MovementType');
+        return $this->belongsTo('App\Models\MovementType');
     }
 
     public function user()
     {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo('App\Models\User');
     }
 
     public function spots()
     {
-        return $this->belongsToMany('App\Spot', 'spots_movements');
+        return $this->belongsToMany('App\Models\Spot', 'spots_movements');
     }
 
     public function workouts()
     {
-        return $this->hasMany('App\WorkoutMovement');
+        return $this->hasMany('App\Models\WorkoutMovement');
     }
 
     public function progressions()
     {
-        return $this->belongsToMany('App\Movement', 'movements_progressions', 'advancement_id', 'progression_id');
+        return $this->belongsToMany('App\Models\Movement', 'movements_progressions', 'advancement_id', 'progression_id');
     }
 
     public function advancements()
     {
-        return $this->belongsToMany('App\Movement', 'movements_progressions', 'progression_id', 'advancement_id');
+        return $this->belongsToMany('App\Models\Movement', 'movements_progressions', 'progression_id', 'advancement_id');
     }
 
     public function exercises()
     {
-        return $this->belongsToMany('App\Movement', 'movements_exercises', 'move_id', 'exercise_id');
+        return $this->belongsToMany('App\Models\Movement', 'movements_exercises', 'move_id', 'exercise_id');
     }
 
     public function moves()
     {
-        return $this->belongsToMany('App\Movement', 'movements_exercises', 'exercise_id', 'move_id');
+        return $this->belongsToMany('App\Models\Movement', 'movements_exercises', 'exercise_id', 'move_id');
     }
 
     public function equipment()
     {
-        return $this->belongsToMany('App\Equipment', 'movements_equipments', 'movement_id', 'equipment_id');
+        return $this->belongsToMany('App\Models\Equipment', 'movements_equipments', 'movement_id', 'equipment_id');
     }
 
     public function fields()
     {
-        return $this->belongsToMany('App\MovementField', 'movements_fields');
+        return $this->belongsToMany('App\Models\MovementField', 'movements_fields');
     }
 }

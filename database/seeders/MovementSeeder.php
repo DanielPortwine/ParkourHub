@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Movement;
-use App\MovementCategory;
-use App\MovementField;
-use App\MovementType;
+use App\Models\Movement;
+use App\Models\MovementCategory;
+use App\Models\MovementField;
+use App\Models\MovementType;
 use Illuminate\Database\Seeder;
 
 class MovementSeeder extends Seeder
