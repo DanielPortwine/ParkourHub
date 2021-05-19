@@ -14,25 +14,16 @@
         </div>
     @endif
     <div class="container p-0">
-        <div id="full-content-title">
-            <div class="content-wrapper">
-                @if(!empty($challenge->thumbnail))
-                    <img class="full-content-content" src="{{ $challenge->thumbnail }}" alt="Image of the {{ $challenge->name }} challenge.">
-                @endif
-            </div>
-        </div>
-        <div class="d-none" id="full-content-video">
-            <div class="content-wrapper">
-                @if(!empty($challenge->video))
-                    <video controls>
-                        <source src="{{ $challenge->video }}" type="video/{{ $challenge->video_type }}">
-                    </video>
-                @elseif(!empty($challenge->youtube))
-                    <div class="youtube" data-id="{{ $challenge->youtube }}" data-start="{{ $challenge->youtube_start }}">
-                        <span class="h-100 flex-center"><i class="fa fa-youtube-play text-shadow z-10"></i></span>
-                    </div>
-                @endif
-            </div>
+        <div class="content-wrapper">
+            @if(!empty($challenge->video))
+                <video controls>
+                    <source src="{{ $challenge->video }}" type="video/{{ $challenge->video_type }}">
+                </video>
+            @elseif(!empty($challenge->youtube))
+                <div class="youtube" data-id="{{ $challenge->youtube }}" data-start="{{ $challenge->youtube_start }}">
+                    <span class="h-100 flex-center"><i class="fa fa-youtube-play text-shadow z-10"></i></span>
+                </div>
+            @endif
         </div>
     </div>
     <div class="section grey-section">
@@ -59,7 +50,6 @@
                                 <a class="btn text-white" href="{{ route('challenge_report_discard', $challenge->id) }}" title="Discard Reports"><i class="fa fa-balance-scale"></i></a>
                             @endif
                         @endcan
-                        <a class="btn text-white" id="switch-title-button" title="Watch Video"><i class="fa fa-film"></i></a>
                         @if(!empty($challenge->spot))
                             <a class="btn text-white" href="{{ route('spots', ['spot' => $challenge->spot->id]) }}" title="Locate Spot"><i class="fa fa-map-marker"></i></a>
                         @endif

@@ -531,14 +531,6 @@ $(document).ready(function() {
         $descriptionMore.text(more ? 'Less' : 'More');
     });
 
-    // switch challenge image title and video
-    $('#switch-title-button').click(function() {
-        $('#full-content-title').toggleClass('d-none');
-        $('#full-content-video').toggleClass('d-none');
-        $(this).children('.fa').toggleClass('fa-film');
-        $(this).children('.fa').toggleClass('fa-eye-slash');
-    });
-
     // select a rating
     $('.rating-star.editable').click(function() {
         setRating(parseInt($(this).attr('id').split('-')[2]), 'star');
