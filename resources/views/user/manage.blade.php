@@ -142,7 +142,7 @@
                             <div class="form-group row mb-0">
                                 <div class="col-md-10 offset-md-2">
                                     <input type="submit" class="btn btn-green" value="Save" form="account-form">
-                                    <a class="btn btn-green" href="{{ route('user_reset_password') }}">New Password</a>
+                                    <a class="btn btn-green" href="{{ route('user_reset_password') }}">Reset Password</a>
                                 </div>
                             </div>
                         </div>
