@@ -160,6 +160,7 @@
                         @foreach($hits->chunk(2) as $chunk)
                             <div class="row">
                                 @foreach($chunk as $spot)
+                                    @php $spot = $spot->spot @endphp
                                     <div class="col-md-6 mb-4">
                                         @include('components.spot')
                                     </div>

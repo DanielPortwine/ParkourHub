@@ -99,12 +99,9 @@ class UserController extends Controller
         }
         if ($tab === 'hitlist') {
             $hits = $user->hits()
+                ->with('spot')
                 ->whereHas('spot')
                 ->orderByDesc('created_at')
-                ->pluck('spot_id')
-                ->toArray();
-            $hits = Spot::with(['hits', 'reviews', 'reports', 'user'])
-                ->whereIn('id', $hits)
                 ->paginate(10);
         }
         if ($tab === 'reviews') {
