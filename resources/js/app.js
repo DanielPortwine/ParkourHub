@@ -114,7 +114,7 @@ function searchHometown(hometown) {
                     $('#hometown-results-count').text(response.length < 10 ? response.length : '10+');
                 } else {
                     $('#hometown-results-count').html('No');
-                    $('hometown-results').html('');
+                    $('#hometown-results').html('');
                 }
             }
         })
@@ -495,6 +495,7 @@ $(document).ready(function() {
     // clear the user's hometown
     $('#remove-hometown-button').click(function() {
         $('#hometown').val('');
+        $('#hometown-results').html('');
     });
 
     // clear the user's profile image

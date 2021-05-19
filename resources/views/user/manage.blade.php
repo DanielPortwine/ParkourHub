@@ -123,7 +123,11 @@
                             <div class="form-group row d-none" id="hometown-results-container">
                                 <div class="col-md-8 offset-md-2">
                                     <span id="hometown-results-count"></span> results found.
-                                    <select class="form-control w-100" name="hometown" id="hometown-results" form="account-form"></select>
+                                    <select class="form-control w-100" name="hometown" id="hometown-results" form="account-form">
+                                        @if(!empty($user->hometown_name))
+                                            <option value="{{ $user->hometown_name }}|{{ $user->hometown_bounding }}" selected></option>
+                                        @endif
+                                    </select>
                                 </div>
                             </div>
                             <div class="form-group row">
