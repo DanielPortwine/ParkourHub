@@ -133,7 +133,7 @@
                                             </div>
                                         @else
                                             <div class="badge text-left btn-grey w-100 p-1 overflow-hidden">
-                                                <a class="text-white" href="{{ route('recorded_workout_view', $workout->pivot->recorded_workout_id) }}"><i class="fa fa-check"></i> {{ $workout->name }}</a>
+                                                <a class="text-white " href="{{ route('recorded_workout_view', $workout->pivot->recorded_workout_id) }}"><i class="fa fa-check"></i> <s>{{ $workout->name }}</s></a>
                                             </div>
                                         @endif
                                     @endforeach
