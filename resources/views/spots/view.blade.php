@@ -478,13 +478,11 @@
                         @if(!empty($request['comments']))
                             {{ $comments->links() }}
                         @endif
-                        @foreach($comments->chunk(2) as $chunk)
+                        @foreach($comments as $comment)
                             <div class="row">
-                                @foreach($chunk as $comment)
-                                    <div class="col-md-6 mb-4">
-                                        @include('components.comment')
-                                    </div>
-                                @endforeach
+                                <div class="col mb-4">
+                                    @include('components.comment')
+                                </div>
                             </div>
                         @endforeach
                         @if(!empty($request['comments']))
