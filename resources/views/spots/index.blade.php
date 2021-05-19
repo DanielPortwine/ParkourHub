@@ -31,20 +31,20 @@
                     </div>
                     <div class="card-body bg-grey text-white">
                         <div id="accordion">
-                            <div class="card border-0 d-none" id="map-search-results-addresses">
-                                <div class="card-header bg-green" id="heading-one" data-toggle="collapse" data-target="#collapse-one" aria-expanded="true" aria-controls="collapse-one">
-                                    <h5 class="mb-0 collapsed">Places (<span id="map-search-results-addresses-count"></span>)<span class="float-right"><i class="fa fa-angle-down"></i></span></h5>
-                                </div>
-                                <div id="collapse-one" class="collapse" aria-labelledby="heading-one" data-parent="#accordion">
-                                    <div class="card-body bg-grey text-white" id="address-results"></div>
-                                </div>
-                            </div>
                             <div class="card border-0 d-none" id="map-search-results-spots">
                                 <div class="card-header bg-green" id="heading-two" data-toggle="collapse" data-target="#collapse-two" aria-expanded="false" aria-controls="collapse-two">
                                     <h5 class="mb-0 collapsed">Spots (<span id="map-search-results-spots-count"></span>)<span class="float-right"><i class="fa fa-angle-down"></i></span></h5>
                                 </div>
                                 <div id="collapse-two" class="collapse" aria-labelledby="heading-two" data-parent="#accordion">
                                     <div class="card-body bg-grey text-white" id="spot-results"></div>
+                                </div>
+                            </div>
+                            <div class="card border-0 d-none" id="map-search-results-addresses">
+                                <div class="card-header bg-green" id="heading-one" data-toggle="collapse" data-target="#collapse-one" aria-expanded="true" aria-controls="collapse-one">
+                                    <h5 class="mb-0 collapsed">Places (<span id="map-search-results-addresses-count"></span>)<span class="float-right"><i class="fa fa-angle-down"></i></span></h5>
+                                </div>
+                                <div id="collapse-one" class="collapse" aria-labelledby="heading-one" data-parent="#accordion">
+                                    <div class="card-body bg-grey text-white" id="address-results"></div>
                                 </div>
                             </div>
                         </div>
