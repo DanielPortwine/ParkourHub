@@ -31,11 +31,11 @@ class WorkoutController extends Controller
 
         $workouts = Workout::withCount('movements')
             ->with(['movements', 'bookmarks', 'user'])
-            ->search($request['search'] ?? '')
             ->dateBetween([
                 'from' => $request['date_from'] ?? null,
                 'to' => $request['date_to'] ?? null
             ])
+            ->search($request['search'] ?? '')
             ->orderBy($sort[0], $sort[1])
             ->paginate(20);
 

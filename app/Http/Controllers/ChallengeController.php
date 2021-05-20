@@ -36,7 +36,6 @@ class ChallengeController extends Controller
 
         $challenges = Challenge::withCount('entries')
             ->with(['entries', 'reports', 'user', 'spot'])
-            ->search($request['search'] ?? '')
             ->whereHas('spot')
             ->entered(!empty($request['entered']) ? true : false)
             ->difficulty($request['difficulty'] ?? null)
@@ -45,6 +44,7 @@ class ChallengeController extends Controller
                 'to' => $request['date_to'] ?? null
             ])
             ->following(!empty($request['following']) ? true : false)
+            ->search($request['search'] ?? '')
             ->orderBy($sort[0], $sort[1])
             ->paginate(20);
 

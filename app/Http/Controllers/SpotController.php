@@ -44,7 +44,6 @@ class SpotController extends Controller
 
         $spots = Spot::withCount('views')
             ->with(['reviews', 'reports', 'hits', 'user'])
-            ->search($request['search'] ?? '')
             ->hitlist(!empty($request['on_hitlist']) ? true : false)
             ->ticked(!empty($request['ticked_hitlist']) ? true : false)
             ->rating($request['rating'] ?? null)
@@ -54,6 +53,7 @@ class SpotController extends Controller
             ])
             ->following(!empty($request['following']) ? true : false)
             ->movement($request['movement'])
+            ->search($request['search'] ?? null)
             ->orderBy($sort[0], $sort[1])
             ->paginate(20);
 

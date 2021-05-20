@@ -30,11 +30,11 @@ class EquipmentController extends Controller
 
         $equipment = Equipment::withCount(['movements'])
             ->with(['movements', 'reports', 'user'])
-            ->search($request['search'] ?? '')
             ->dateBetween([
                 'from' => $request['date_from'] ?? null,
                 'to' => $request['date_to'] ?? null
             ])
+            ->search($request['search'] ?? '')
             ->orderBy($sort[0], $sort[1])
             ->paginate(20);
 
