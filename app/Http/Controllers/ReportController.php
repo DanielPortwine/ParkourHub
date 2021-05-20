@@ -43,7 +43,8 @@ class ReportController extends Controller
                     ])
                     ->following(!empty($request['following']) ? true : false)
                     ->orderBy($sort[0], $sort[1])
-                    ->paginate(20);
+                    ->paginate(20)
+                    ->appends(request()->query());
                 break;
             case 'entry':
                 $content = ChallengeEntry::withCount('reports')
@@ -54,7 +55,8 @@ class ReportController extends Controller
                         'to' => $request['date_to'] ?? null
                     ])
                     ->orderBy($sort[0], $sort[1])
-                    ->paginate(20);
+                    ->paginate(20)
+                    ->appends(request()->query());
                 break;
             case 'review':
                 $content = Review::withCount('reports')
@@ -65,7 +67,8 @@ class ReportController extends Controller
                         'to' => $request['date_to'] ?? null
                     ])
                     ->orderBy($sort[0], $sort[1])
-                    ->paginate(20);
+                    ->paginate(20)
+                    ->appends(request()->query());
                 break;
             case 'spot_comment':
                 $content = SpotComment::withCount('reports')
@@ -75,7 +78,8 @@ class ReportController extends Controller
                         'to' => $request['date_to'] ?? null
                     ])
                     ->orderBy($sort[0], $sort[1])
-                    ->paginate(20);
+                    ->paginate(20)
+                    ->appends(request()->query());
                 break;
             case 'spot':
             default:
@@ -91,7 +95,8 @@ class ReportController extends Controller
                     ])
                     ->following(!empty($request['following']) ? true : false)
                     ->orderBy($sort[0], $sort[1])
-                    ->paginate(20);
+                    ->paginate(20)
+                    ->appends(request()->query());
                 break;
         }
 

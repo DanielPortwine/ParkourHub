@@ -55,7 +55,8 @@ class SpotController extends Controller
             ->movement($request['movement'])
             ->search($request['search'] ?? null)
             ->orderBy($sort[0], $sort[1])
-            ->paginate(20);
+            ->paginate(20)
+            ->appends(request()->query());
 
         return view('content_listings', [
             'title' => 'Spots',

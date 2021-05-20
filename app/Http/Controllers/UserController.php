@@ -46,7 +46,8 @@ class UserController extends Controller
         $users = User::whereNotNull('email_verified_at')
             ->search($request['search'] ?? '')
             ->orderBy($sort[0], $sort[1])
-            ->paginate(20);
+            ->paginate(20)
+            ->appends(request()->query());
 
         return view('content_listings', [
             'title' => 'Users',
@@ -349,7 +350,8 @@ class UserController extends Controller
                 'to' => $request['date_to'] ?? null
             ])
             ->orderBy($sort[0], $sort[1])
-            ->paginate(20);
+            ->paginate(20)
+            ->appends(request()->query());
 
         return view('content_listings', [
             'title' => 'Your Spots',
@@ -380,7 +382,8 @@ class UserController extends Controller
                 'to' => $request['date_to'] ?? null
             ])
             ->orderBy($sort[0], $sort[1])
-            ->paginate(20);
+            ->paginate(20)
+            ->appends(request()->query());
 
         return view('content_listings', [
             'title' => 'Your Hitlist',
@@ -410,7 +413,8 @@ class UserController extends Controller
                 'to' => $request['date_to'] ?? null
             ])
             ->orderBy($sort[0], $sort[1])
-            ->paginate(20);
+            ->paginate(20)
+            ->appends(request()->query());
 
         return view('content_listings', [
             'title' => 'Your Reviews',
@@ -439,7 +443,8 @@ class UserController extends Controller
                 'to' => $request['date_to'] ?? null
             ])
             ->orderBy($sort[0], $sort[1])
-            ->paginate(20);
+            ->paginate(20)
+            ->appends(request()->query());
 
         return view('content_listings', [
             'title' => 'Your Comments',
@@ -472,7 +477,8 @@ class UserController extends Controller
                 'to' => $request['date_to'] ?? null
             ])
             ->orderBy($sort[0], $sort[1])
-            ->paginate(20);
+            ->paginate(20)
+            ->appends(request()->query());
 
         return view('content_listings', [
             'title' => 'Your Challenges',
@@ -500,7 +506,8 @@ class UserController extends Controller
                 'to' => $request['date_to'] ?? null
             ])
             ->orderBy($sort[0], $sort[1])
-            ->paginate(20);
+            ->paginate(20)
+            ->appends(request()->query());
 
         return view('content_listings', [
             'title' => 'Your Challenge Entries',
@@ -532,7 +539,8 @@ class UserController extends Controller
             ->exercise($request['exercise'] ?? null)
             ->equipment($request['equipment'] ?? null)
             ->orderBy($sort[0], $sort[1])
-            ->paginate(20);
+            ->paginate(20)
+            ->appends(request()->query());
 
         return view('content_listings', [
             'title' => 'Your Movements',
@@ -560,7 +568,8 @@ class UserController extends Controller
                 'to' => $request['date_to'] ?? null
             ])
             ->orderBy($sort[0], $sort[1])
-            ->paginate(20);
+            ->paginate(20)
+            ->appends(request()->query());
 
         return view('content_listings', [
             'title' => 'Your Equipment',
@@ -768,7 +777,8 @@ class UserController extends Controller
 
         $users = User::whereIn('id', $followers)
             ->orderBy($sort[0], $sort[1])
-            ->paginate(20);
+            ->paginate(20)
+            ->appends(request()->query());
 
         return view('content_listings', [
             'title' => 'Followers',
@@ -792,7 +802,8 @@ class UserController extends Controller
 
         $users = User::whereIn('id', $followings)
             ->orderBy($sort[0], $sort[1])
-            ->paginate(20);
+            ->paginate(20)
+            ->appends(request()->query());
 
         return view('content_listings', [
             'title' => 'Following',
@@ -828,7 +839,8 @@ class UserController extends Controller
 
         $users = User::whereIn('id', $requests)
             ->orderBy($sort[0], $sort[1])
-            ->paginate(20);
+            ->paginate(20)
+            ->appends(request()->query());
 
         return view('content_listings', [
             'title' => 'Follow Requests',

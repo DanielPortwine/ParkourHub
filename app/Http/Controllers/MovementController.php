@@ -45,7 +45,8 @@ class MovementController extends Controller
             ->equipment($request['equipment'] ?? null)
             ->search($request['search'] ?? '')
             ->orderBy($sort[0], $sort[1])
-            ->paginate(20);
+            ->paginate(20)
+            ->appends(request()->query());
 
         $movementCategories = MovementCategory::get();
         $equipments = Equipment::get();

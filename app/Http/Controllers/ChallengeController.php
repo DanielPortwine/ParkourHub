@@ -46,7 +46,8 @@ class ChallengeController extends Controller
             ->following(!empty($request['following']) ? true : false)
             ->search($request['search'] ?? '')
             ->orderBy($sort[0], $sort[1])
-            ->paginate(20);
+            ->paginate(20)
+            ->appends(request()->query());
 
         return view('content_listings', [
             'title' => 'Challenges',

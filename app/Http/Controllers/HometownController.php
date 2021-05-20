@@ -41,7 +41,8 @@ class HometownController extends Controller
                 'to' => $request['date_to'] ?? null
             ])
             ->orderBy($sort[0], $sort[1])
-            ->paginate(20);
+            ->paginate(20)
+            ->appends(request()->query());
 
         return view('content_listings', [
             'title' => 'Spots In ' . $name,
@@ -83,7 +84,8 @@ class HometownController extends Controller
             ])
             ->orderBy($sort[0], $sort[1])
             ->orderBy('created_at', 'DESC')
-            ->paginate(20);
+            ->paginate(20)
+            ->appends(request()->query());
 
         return view('content_listings', [
             'title' => 'Challenges In ' . $name,
