@@ -225,6 +225,22 @@ function loadSpotMap() {
         ),
         urlParams = new URLSearchParams(window.location.search),
         vectorSource = new VectorSource(),
+        spotMarkerLayer = new VectorLayer({
+            name: 'SpotMarkersLayer',
+            source: vectorSource,
+            style: new Style({
+                image: new CircleStyle({
+                    radius: 7,
+                    fill: new Fill({
+                        color: 'black'
+                    }),
+                    stroke: new Stroke({
+                        color: 'white',
+                        width: 2
+                    })
+                })
+            })
+        }),
         startingCoords = [-175394.8171068958, 7317942.661464895],
         startingZoom = 10,
         hometownLayer;
@@ -233,6 +249,17 @@ function loadSpotMap() {
         searchAddress(urlParams.get('search'));
         searchSpot(urlParams.get('search'));
     }
+
+    $.ajax({
+        url: '/user/fetch_hometown_bounding',
+        type: 'GET',
+        success: function (response) {
+            if (response != false) {
+                setBoundingBox(response, map, true);
+                hometownLayer = map.getLayers().pop();
+            }
+        }
+    });
 
     var startAtHometown = false;
     if (urlParams.has('latLon')) {
@@ -253,21 +280,7 @@ function loadSpotMap() {
             new TileLayer({
                 source: new OSM(),
             }),
-            new VectorLayer({
-                source: vectorSource,
-                style: new Style({
-                    image: new CircleStyle({
-                        radius: 7,
-                        fill: new Fill({
-                            color: 'black'
-                        }),
-                        stroke: new Stroke({
-                            color: 'white',
-                            width: 2
-                        })
-                    })
-                })
-            })
+            spotMarkerLayer
         ],
         overlays: [createSpotOverlay, viewSpotOverlay, loginRegisterOverlay],
         target: 'map',
@@ -281,20 +294,6 @@ function loadSpotMap() {
     if (urlParams.has('bounding')) {
         var boundingBoxLatLon = urlParams.get('bounding').split(',');
         setBoundingBox(boundingBoxLatLon, map);
-    }
-
-    // set the map bounding box to the user's hometown
-    if (startAtHometown) {
-        $.ajax({
-            url: '/user/fetch_hometown_bounding',
-            type: 'GET',
-            success: function (response) {
-                if (response != false) {
-                    setBoundingBox(response, map, true);
-                    hometownLayer = map.getLayers().pop();
-                }
-            }
-        });
     }
 
     // display the spot markers on the map
@@ -328,10 +327,15 @@ function loadSpotMap() {
     });
     // show the create or view popup when the user clicks on the map
     map.on('click', function(e) {
-        var feature = map.forEachFeatureAtPixel(e.pixel, function(feature) {
+        let feature = map.forEachFeatureAtPixel(e.pixel, function(feature) {
             return feature;
+        }, {
+            layerFilter: function(layer) {
+                return layer.get('name') === 'SpotMarkersLayer';
+            },
         });
-        if (feature) {
+
+        if (feature && feature.get('id')) {
             // the user clicked on a spot marker so show that spot
             showSpot(feature, viewSpotPopup, viewSpotOverlay, urlParams);
         } else {
@@ -371,6 +375,17 @@ function loadSpotMap() {
         $(this).closest('.popup').fadeOut('fast');
         if ($(this).closest('.popup').attr('id') == 'view-spot-popup') {
             window.history.pushState('obj', '', window.location.protocol + "//" + window.location.host + window.location.pathname);
+        }
+    });
+
+    // toggle the hometown boundary layer
+    $('#toggle-hometown-button').click(function() {
+        if ($(this).hasClass('hidden')) {
+            map.addLayer(hometownLayer);
+            $(this).removeClass('hidden');
+        } else {
+            map.getLayers().pop();
+            $(this).addClass('hidden');
         }
     });
 
@@ -598,17 +613,6 @@ $(document).ready(function() {
                 $button.addClass('d-none');
             }
         })
-    });
-
-    // toggle the hometown boundary layer
-    $('#toggle-hometown-button').click(function() {
-        if ($(this).hasClass('hidden')) {
-            map.addLayer(hometownLayer);
-            $(this).removeClass('hidden');
-        } else {
-            map.getLayers().pop();
-            $(this).addClass('hidden');
-        }
     });
 
     // show the show all button if there is more than 1 line of movements
