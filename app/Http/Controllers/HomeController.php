@@ -43,18 +43,12 @@ class HomeController extends Controller
             ->orderByDesc('created_at')
             ->limit(5)
             ->get();
-        $hits = Hit::with(['spot', 'user'])
-                ->where('user_id', Auth::id())
-                ->whereHas('spot')
-                ->whereNull('completed_at')
-                ->inRandomOrder()
-                ->limit(4)
-                ->pluck('spot_id')
-                ->toArray();
-        $hitlist = Spot::withCount('views')
-            ->with(['reviews', 'reports', 'hits', 'user'])
-            ->whereIn('id', $hits)
-            ->limit(4)
+        $hitlist = Hit::with('spot')
+            ->whereHas('spot')
+            ->where('user_id', Auth::id())
+            ->whereNull('completed_at')
+            ->inRandomOrder()
+            ->limit(5)
             ->get();
         $hometownBoundaries = explode(',', Auth::user()->hometown_bounding);
         $hometownName = explode(',', Auth::user()->hometown_name)[0];

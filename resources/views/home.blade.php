@@ -11,16 +11,13 @@
                 <h1 class="text-center subtitle sedgwick">Latest Spots From People You Follow</h1>
             </div>
         </div>
-        @foreach($followedSpots->chunk(4) as $chunk)
-            <div class="row">
-                @foreach($chunk as $spot)
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        @include('components.spot')
-                    </div>
-                @endforeach
-            </div>
-            @break
-        @endforeach
+        <div class="row">
+            @foreach($followedSpots->chunk(4)->first() as $spot)
+                <div class="col-xl-3 col-md-6 mb-4">
+                    @include('components.spot')
+                </div>
+            @endforeach
+        </div>
         <div class="row pb-4">
             <div class="col text-center">
                 @if(count($followedSpots) > 4)
@@ -37,16 +34,13 @@
                 <h1 class="text-center sedgwick">Latest Challenges From People You Follow</h1>
             </div>
         </div>
-        @foreach($followedChallenges->chunk(4) as $chunk)
-            <div class="row">
-                @foreach($chunk as $challenge)
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        @include('components.challenge')
-                    </div>
-                @endforeach
-            </div>
-            @break
-        @endforeach
+        <div class="row">
+            @foreach($followedChallenges->chunk(4)->first() as $challenge)
+                <div class="col-xl-3 col-md-6 mb-4">
+                    @include('components.challenge')
+                </div>
+            @endforeach
+        </div>
         <div class="row pb-4">
             <div class="col text-center">
                 @if(count($followedChallenges) > 4)
@@ -64,16 +58,13 @@
                 <h1 class="text-center sedgwick">Latest Spots From {{ $hometownName }}</h1>
             </div>
         </div>
-        @foreach($hometownSpots->chunk(4) as $chunk)
-            <div class="row">
-                @foreach($chunk as $spot)
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        @include('components.spot')
-                    </div>
-                @endforeach
-            </div>
-            @break
-        @endforeach
+        <div class="row">
+            @foreach($hometownSpots->chunk(4)->first() as $spot)
+                <div class="col-xl-3 col-md-6 mb-4">
+                    @include('components.spot')
+                </div>
+            @endforeach
+        </div>
         <div class="row pb-4">
             <div class="col text-center">
                 @if(count($hometownSpots) > 4)
@@ -90,16 +81,13 @@
                 <h1 class="text-center subtitle sedgwick">Latest Challenges From {{ $hometownName }}</h1>
             </div>
         </div>
-        @foreach($hometownChallenges->chunk(4) as $chunk)
-            <div class="row">
-                @foreach($chunk as $challenge)
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        @include('components.challenge')
-                    </div>
-                @endforeach
-            </div>
-            @break
-        @endforeach
+        <div class="row">
+            @foreach($hometownChallenges->chunk(4)->first() as $challenge)
+                <div class="col-xl-3 col-md-6 mb-4">
+                    @include('components.challenge')
+                </div>
+            @endforeach
+        </div>
         <div class="row pb-4">
             <div class="col text-center">
                 @if(count($hometownChallenges) > 4)
@@ -117,15 +105,14 @@
                 <h1 class="text-center subtitle sedgwick">From your Hitlist</h1>
             </div>
         </div>
-        @foreach($hitlist->chunk(4) as $chunk)
-            <div class="row">
-                @foreach($chunk as $spot)
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        @include('components.spot')
-                    </div>
-                @endforeach
-            </div>
-        @endforeach
+        <div class="row">
+            @foreach($hitlist->chunk(4)->first() as $spot)
+                @php $spot = $spot->spot @endphp
+                <div class="col-xl-3 col-md-6 mb-4">
+                    @include('components.spot')
+                </div>
+            @endforeach
+        </div>
         <div class="row pb-4">
             <div class="col text-center">
                 @if(count($hitlist) > 4)
