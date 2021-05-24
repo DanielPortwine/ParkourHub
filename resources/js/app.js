@@ -413,17 +413,22 @@ function loadSpotMap() {
 function setRating(rating, shape) {
     var $rating = $('#rating-' + shape + '-' + rating),
         selected = 'fa-' + shape,
-        unselected = 'fa-' + shape + '-o';
+        unselected = 'fa-' + shape + '-o',
+        isHighest = $rating.hasClass(selected) && $('#rating-' + shape + '-' + (rating < 5 ? (rating + 1) : rating)).hasClass(unselected);
+    // if the selected shape is the highest previously selected, unselect it, otherwise select it
+    if (isHighest) {
+        $rating.addClass(unselected).removeClass(selected);
+    } else {
+        $rating.addClass(selected).removeClass(unselected);
+    }
+    // set the hidden input to 0 to clear the rating filter by deselecting the lowest shape
+    if (rating === 1 && isHighest) {
+        rating = 0;
+    }
     if (shape === 'star') {
         $('#rating').val(rating);
     } else if (shape === 'circle') {
         $('#difficulty').val(rating);
-    }
-    // if the selected shape is the highest previously selected, unselect it, otherwise select it
-    if ($rating.hasClass(selected) && $('#rating-' + shape + '-' + (rating < 5 ? (rating + 1) : rating)).hasClass(unselected)) {
-        $rating.addClass(unselected).removeClass(selected);
-    } else {
-        $rating.addClass(selected).removeClass(unselected);
     }
     // update the rest of the shapes
     for (var value = 1; value <= 5; value++) {
