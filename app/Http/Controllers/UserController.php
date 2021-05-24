@@ -44,7 +44,7 @@ class UserController extends Controller
         }
 
         $users = User::whereNotNull('email_verified_at')
-            ->search($request['search'] ?? '')
+            ->search($request['search'] ?? false)
             ->orderBy($sort[0], $sort[1])
             ->paginate(20)
             ->appends(request()->query());

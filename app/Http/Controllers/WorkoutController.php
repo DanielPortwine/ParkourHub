@@ -35,7 +35,7 @@ class WorkoutController extends Controller
                 'from' => $request['date_from'] ?? null,
                 'to' => $request['date_to'] ?? null
             ])
-            ->search($request['search'] ?? '')
+            ->search($request['search'] ?? false)
             ->orderBy($sort[0], $sort[1])
             ->paginate(20)
             ->appends(request()->query());

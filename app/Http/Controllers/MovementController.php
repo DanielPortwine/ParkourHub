@@ -35,15 +35,15 @@ class MovementController extends Controller
 
         $movements = Movement::withCount(['spots', 'moves'])
             ->with(['spots', 'moves', 'reports', 'user'])
+            ->type($request['type'] ?? null)
             ->dateBetween([
                 'from' => $request['date_from'] ?? null,
                 'to' => $request['date_to'] ?? null
             ])
-            ->type($request['type'] ?? null)
             ->category($request['category'] ?? null)
             ->exercise($request['exercise'] ?? null)
             ->equipment($request['equipment'] ?? null)
-            ->search($request['search'] ?? '')
+            ->search($request['search'] ?? false)
             ->orderBy($sort[0], $sort[1])
             ->paginate(20)
             ->appends(request()->query());

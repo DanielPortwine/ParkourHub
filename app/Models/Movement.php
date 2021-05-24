@@ -54,8 +54,10 @@ class Movement extends Model
     public function scopeType($query, $type = null)
     {
         if (!empty($type)) {
-            $query->where('type_id', $type);
+            $query->where('type_id', (int)$type);
         }
+
+        return $query;
     }
 
     public function scopeCategory($query, $category = null)
@@ -63,6 +65,8 @@ class Movement extends Model
         if (!empty($category)) {
             $query->where('category_id', $category);
         }
+
+        return $query;
     }
 
     public function scopeExercise($query, $exercise = null)
@@ -72,6 +76,8 @@ class Movement extends Model
                 $q->where('exercise_id', $exercise);
             });
         }
+
+        return $query;
     }
 
     public function scopeEquipment($query, $equipment = null)
@@ -81,6 +87,8 @@ class Movement extends Model
                 $q->where('equipment_id', $equipment);
             });
         }
+
+        return $query;
     }
 
     public function category()

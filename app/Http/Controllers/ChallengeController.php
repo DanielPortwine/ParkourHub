@@ -44,7 +44,7 @@ class ChallengeController extends Controller
                 'to' => $request['date_to'] ?? null
             ])
             ->following(!empty($request['following']) ? true : false)
-            ->search($request['search'] ?? '')
+            ->search($request['search'] ?? false)
             ->orderBy($sort[0], $sort[1])
             ->paginate(20)
             ->appends(request()->query());

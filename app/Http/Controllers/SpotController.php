@@ -53,7 +53,7 @@ class SpotController extends Controller
             ])
             ->following(!empty($request['following']) ? true : false)
             ->movement($request['movement'])
-            ->search($request['search'] ?? null)
+            ->search($request['search'] ?? false)
             ->orderBy($sort[0], $sort[1])
             ->paginate(20)
             ->appends(request()->query());
@@ -324,7 +324,7 @@ class SpotController extends Controller
     public function search(SearchMap $request)
     {
         $spots = Spot::with(['user'])
-            ->search($request['search'] ?? null)
+            ->search($request['search'] ?? false)
             ->limit(20)
             ->get();
 
