@@ -100,6 +100,7 @@ class SpotController extends Controller
             return view('components.spot', [
                 'spot' => $spot,
                 'lazyload' => false,
+                'map' => true,
             ])->render();
         } else {
             $reviews = null;

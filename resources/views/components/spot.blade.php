@@ -42,7 +42,9 @@ $hit = $spot->hits->where('user_id', Auth()->id() ?: null)->first()
                     <a class="btn text-white add-to-hitlist-button @if(!empty($hit))d-none @endif" id="hitlist-spot-{{ $spot->id }}-tick" title="Add To Hitlist"><i class="fa fa-crosshairs"></i></a>
                     <a class="btn text-white remove-from-hitlist-button @if(empty($hit))d-none @endif" id="hitlist-spot-{{ $spot->id }}-remove" title="Remove From Hitlist"><i class="fa fa-times"></i></a>
                 @endauth
-                <a class="btn text-white" href="{{ route('spots', ['spot' => $spot->id]) }}" title="Locate"><i class="fa fa-map-marker"></i></a>
+                @if(empty($map) || !$map)
+                    <a class="btn text-white" href="{{ route('spots', ['spot' => $spot->id]) }}" title="Locate"><i class="fa fa-map-marker"></i></a>
+                @endif
             </div>
         </div>
         <div class="row">
