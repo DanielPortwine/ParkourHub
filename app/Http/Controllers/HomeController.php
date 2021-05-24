@@ -30,7 +30,8 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $followedUsers = Follower::where('follower_id', Auth::id())->pluck('user_id')->toArray();
+        $user = User::where('id', Auth::id())->with(['following', 'hits'])->first();
+        $followedUsers = $user->following()->pluck('user_id')->toArray();
         $followedSpots = Spot::withCount('views')
             ->with(['reviews', 'reports', 'hits', 'user'])
             ->whereIn('user_id', $followedUsers)
@@ -43,9 +44,9 @@ class HomeController extends Controller
             ->orderByDesc('created_at')
             ->limit(5)
             ->get();
-        $hitlist = Hit::with('spot')
+        $hitlist = $user->hits()
+            ->with('spot')
             ->whereHas('spot')
-            ->where('user_id', Auth::id())
             ->whereNull('completed_at')
             ->inRandomOrder()
             ->limit(5)
@@ -74,7 +75,6 @@ class HomeController extends Controller
         ];*/
         $hometownChallenges = Challenge::withCount('entries')
             ->with(['entries', 'reports', 'user'])
-            ->where('user_id', Auth::id())
             ->whereHas('spot', function ($q) use ($hometownBoundaries) {
                 $q->whereBetween('latitude', [$hometownBoundaries[0], $hometownBoundaries[1]])
                     ->whereBetween('longitude', [$hometownBoundaries[2], $hometownBoundaries[3]]);
