@@ -71,8 +71,8 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function isPremium()
     {
-        $isPremium = Cache::remember('premium_' . Auth::id(), 10, function() {
-            return Auth::user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium') || Auth::user()->hasPermissionTo('access premium');
+        $isPremium = Cache::remember('premium_' . $this->id, 10, function() {
+            return Auth::user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium') || $this->hasPermissionTo('access premium');
         });
 
         return $isPremium;

@@ -297,6 +297,16 @@ class WorkoutController extends Controller
             }
         }
 
+        // notify followers that user updated a workout
+        if ($workout->visibility !== 'private') {
+            $followers = Auth::user()->followers()->get();
+            foreach ($followers as $follower) {
+                if (in_array(setting('notifications_workout_updated', 'on-site', $follower->id), ['on-site', 'email', 'email-site']) && $follower->isPremium()) {
+                    $follower->notify(new WorkoutUpdated($workout));
+                }
+            }
+        }
+
         return back()->with([
             'status' => 'Successfully updated workout',
             'redirect' => $request['redirect'],
