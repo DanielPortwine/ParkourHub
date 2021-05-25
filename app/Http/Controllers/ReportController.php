@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Challenge;
 use App\Models\ChallengeEntry;
+use App\Models\Equipment;
+use App\Models\Movement;
+use App\Models\MovementCategory;
 use App\Models\Report;
 use App\Models\Review;
 use App\Models\Spot;
@@ -70,8 +73,33 @@ class ReportController extends Controller
                     ->paginate(20)
                     ->appends(request()->query());
                 break;
-            case 'spot_comment':
+            case 'comment':
                 $content = SpotComment::withCount('reports')
+                    ->whereHas('reports')
+                    ->dateBetween([
+                        'from' => $request['date_from'] ?? null,
+                        'to' => $request['date_to'] ?? null
+                    ])
+                    ->orderBy($sort[0], $sort[1])
+                    ->paginate(20)
+                    ->appends(request()->query());
+                break;
+            case 'movement':
+                $content = Movement::withCount('reports')
+                    ->whereHas('reports')
+                    ->dateBetween([
+                        'from' => $request['date_from'] ?? null,
+                        'to' => $request['date_to'] ?? null
+                    ])
+                    ->orderBy($sort[0], $sort[1])
+                    ->paginate(20)
+                    ->appends(request()->query());
+
+                $movementCategories = MovementCategory::get();
+                $equipments = Equipment::get();
+                break;
+            case 'equipment':
+                $content = Equipment::withCount('reports')
                     ->whereHas('reports')
                     ->dateBetween([
                         'from' => $request['date_from'] ?? null,
@@ -104,6 +132,8 @@ class ReportController extends Controller
             'title' => 'Reported ' . ucfirst(str_replace('_', ' ', $type)) . 's',
             'content' => $content,
             'component' => $type,
+            'movementCategories' => $movementCategories ?? null,
+            'equipments' => $equipments ?? null,
         ]);
     }
 }

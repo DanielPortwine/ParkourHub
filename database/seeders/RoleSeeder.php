@@ -20,9 +20,11 @@ class RoleSeeder extends Seeder
 
         $deleteContent = Permission::create(['name' => 'delete content']);
         $accessPremium = Permission::create(['name' => 'access premium']);
+        $manageReports = Permission::create(['name' => 'manage reports']);
 
         $admin->givePermissionTo($deleteContent);
         $admin->givePermissionTo($accessPremium);
+        $admin->givePermissionTo($manageReports);
         $tester->givePermissionTo($accessPremium);
     }
 }

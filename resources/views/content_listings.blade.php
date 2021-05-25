@@ -71,6 +71,58 @@
             </div>
         </nav>
     @endif
+    @if(Route::currentRouteName() === 'report_listing')
+        <nav class="navbar navbar-expand-md navbar-dark text-white bg-grey shadow-sm">
+            <div class="container">
+                <ul class="navbar-nav flex-row justify-content-around w-100">
+                    <li class="nav-item px-2">
+                        <a class="nav-link @if($component === 'spot')active @endif" href="{{ route('report_listing', 'spot') }}">
+                            <i class="fa fa-map-marker nav-icon"></i>
+                            <span class="d-none d-lg-inline">Spots</span>
+                        </a>
+                    </li>
+                    <li class="nav-item px-2">
+                        <a class="nav-link @if($component === 'review')active @endif" href="{{ route('report_listing', 'review') }}">
+                            <i class="fa fa-star nav-icon"></i>
+                            <span class="d-none d-lg-inline">Reviews</span>
+                        </a>
+                    </li>
+                    <li class="nav-item px-2">
+                        <a class="nav-link @if($component === 'comment')active @endif" href="{{ route('report_listing', 'comment') }}">
+                            <i class="fa fa-comment nav-icon"></i>
+                            <span class="d-none d-lg-inline">Comments</span>
+                        </a>
+                    </li>
+                    <li class="nav-item px-2">
+                        <a class="nav-link @if($component === 'challenge')active @endif" href="{{ route('report_listing', 'challenge') }}">
+                            <i class="fa fa-bullseye nav-icon"></i>
+                            <span class="d-none d-lg-inline">Challenges</span>
+                        </a>
+                    </li>
+                    <li class="nav-item px-2">
+                        <a class="nav-link @if($component === 'entry')active @endif" href="{{ route('report_listing', 'entry') }}">
+                            <i class="fa fa-trophy nav-icon"></i>
+                            <span class="d-none d-lg-inline">Entries</span>
+                        </a>
+                    </li>
+                    @premium
+                        <li class="nav-item px-2">
+                            <a class="nav-link @if($component === 'movement')active @endif" href="{{ route('report_listing', 'movement') }}">
+                                <i class="fa fa-child nav-icon"></i>
+                                <span class="d-none d-lg-inline">Movements</span>
+                            </a>
+                        </li>
+                        <li class="nav-item px-2">
+                            <a class="nav-link @if($component === 'equipment')active @endif" href="{{ route('report_listing', 'equipment') }}">
+                                <i class="fa fa-dumbbell nav-icon"></i>
+                                <span class="d-none d-lg-inline">Equipment</span>
+                            </a>
+                        </li>
+                    @endpremium
+                </ul>
+            </div>
+        </nav>
+    @endif
     <div class="container-fluid pt-4 position-relative">
         <div class="row">
             <div class="col">

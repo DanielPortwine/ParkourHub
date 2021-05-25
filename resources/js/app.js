@@ -501,7 +501,18 @@ $(document).ready(function() {
         e.stopPropagation();
     });
 
-    // have a dropdown for workour content in the user nav dropdown
+    // have a dropdown for admin content in the user nav dropdown
+    $('#admin-nav-item').on('click', function(e) {
+        let $adminNavItems = $('#admin-nav-items');
+        if ($adminNavItems.css('display') == 'none') {
+            $adminNavItems.slideDown('fast');
+        } else {
+            $adminNavItems.slideUp('fast');
+        }
+        e.stopPropagation();
+    });
+
+    // have a dropdown for workout content in the user nav dropdown
     $('#workouts-nav-item').on('click', function(e) {
         var $workoutsNavItems = $('#workouts-nav-items');
         if ($workoutsNavItems.css('display') == 'none') {
