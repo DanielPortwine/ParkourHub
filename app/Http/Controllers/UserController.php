@@ -166,6 +166,7 @@ class UserController extends Controller
         if ($tab === 'following') {
             $following = $user->following()
                 ->with('followers')
+                ->where('accepted', true)
                 ->orderByDesc('created_at')
                 ->paginate(10);
         }
