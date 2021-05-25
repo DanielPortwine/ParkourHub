@@ -382,9 +382,9 @@ class MovementController extends Controller
 
     public function remove(Request $request, $id)
     {
-        $movement = Movement::onlyTrashed()->where('id', $id)->first();
+        $movement = Movement::withTrashed()->where('id', $id)->first();
 
-        if ($movement->user_id !== Auth::id()) {
+        if (!($movement->user_id === Auth::id() && !empty($movement->deleted_at)) || !Auth::user()->hasPermissionTo('remove content')) {
             return back();
         }
 

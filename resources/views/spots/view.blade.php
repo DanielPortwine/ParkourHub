@@ -43,22 +43,27 @@
                 <div class="col-auto vertical-center">
                     <div>
                         @if($spot->deleted_at === null)
+                            @if($spot->user_id === Auth()->id())
+                                <a class="btn text-white" href="{{ route('spot_delete', $spot->id) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
+                            @endif
                             @auth
                                 <a class="btn text-white" href="{{ route('spot_report', $spot->id) }}" title="Report"><i class="fa fa-flag"></i></a>
                             @endauth
-                            @can('delete content')
-                                <a class="btn text-white" href="{{ route('spot_delete', $spot->id) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
-                                @if(count($spot->reports) > 0)
+                            @if(count($spot->reports) > 0)
+                                @can('manage reports')
                                     <a class="btn text-white" href="{{ route('spot_report_discard', $spot->id) }}" title="Discard Reports"><i class="fa fa-balance-scale"></i></a>
-                                @endif
-                            @endcan
+                                @endcan
+                                @can('remove content')
+                                    <a class="btn text-white" href="{{ route('spot_remove', $spot->id) }}" title="Remove Content"><i class="fa fa-trash"></i></a>
+                                @endcan
+                            @endif
                             @auth
                                 <a class="btn text-white tick-off-hitlist-button @if(!(!empty($hit) && $hit->completed_at == null))d-none @endif" id="hitlist-spot-{{ $spot->id }}-add" title="Tick Off Hitlist"><i class="fa fa-check"></i></a>
                                 <a class="btn text-white add-to-hitlist-button @if(!empty($hit))d-none @endif" id="hitlist-spot-{{ $spot->id }}-tick" title="Add To Hitlist"><i class="fa fa-crosshairs"></i></a>
                                 <a class="btn text-white remove-from-hitlist-button @if(empty($hit))d-none @endif" id="hitlist-spot-{{ $spot->id }}-remove" title="Remove From Hitlist"><i class="fa fa-times"></i></a>
                             @endauth
                             <a class="btn text-white" href="{{ route('spots', ['spot' => $spot->id]) }}" title="Locate"><i class="fa fa-map-marker"></i></a>
-                        @else
+                        @elseif($spot->user_id === Auth()->id())
                             <a class="btn text-white" href="{{ route('spot_recover', $spot->id) }}" title="Recover"><i class="fa fa-history"></i></a>
                             <a class="btn text-white" href="{{ route('spot_remove', $spot->id) }}" title="Remove Forever"><i class="fa fa-trash"></i></a>
                         @endif

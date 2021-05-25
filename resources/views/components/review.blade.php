@@ -46,14 +46,17 @@
             <div class="col-auto d-flex d-lg-none">
                 @if($review->user_id === Auth()->id())
                     <a class="btn text-white" href="{{ route('review_edit', $review->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
+                    <a class="btn text-white" href="{{ route('review_delete', $review->id) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
                 @endif
                 <a class="btn text-white" href="{{ route('review_report', $review->id) }}" title="Report"><i class="fa fa-flag"></i></a>
-                @can('delete content')
-                    <a class="btn text-white" href="{{ route('review_delete', $review->id) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
-                    @if(count($review->reports) > 0)
+                @if(count($review->reports) > 0 && Route::currentRouteName() === 'report_listing')
+                    @can('manage reports')
                         <a class="btn text-white" href="{{ route('review_report_discard', $review->id) }}" title="Discard Reports"><i class="fa fa-balance-scale"></i></a>
-                    @endif
-                @endcan
+                    @endcan
+                    @can('remove content')
+                        <a class="btn text-white" href="{{ route('review_remove', $review->id) }}" title="Remove Content"><i class="fa fa-trash"></i></a>
+                    @endcan
+                @endif
             </div>
         </div>
     </div>
@@ -72,14 +75,17 @@
             <div class="col-auto d-none d-lg-flex">
                 @if($review->user_id === Auth()->id())
                     <a class="btn text-white" href="{{ route('review_edit', $review->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
+                    <a class="btn text-white" href="{{ route('review_delete', $review->id) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
                 @endif
                 <a class="btn text-white" href="{{ route('review_report', $review->id) }}" title="Report"><i class="fa fa-flag"></i></a>
-                @can('delete content')
-                    <a class="btn text-white" href="{{ route('review_delete', $review->id) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
-                    @if(count($review->reports) > 0)
+                @if(count($review->reports) > 0 && Route::currentRouteName() === 'report_listing')
+                    @can('manage reports')
                         <a class="btn text-white" href="{{ route('review_report_discard', $review->id) }}" title="Discard Reports"><i class="fa fa-balance-scale"></i></a>
-                    @endif
-                @endcan
+                    @endcan
+                    @can('remove content')
+                        <a class="btn text-white" href="{{ route('review_remove', $review->id) }}" title="Remove Content"><i class="fa fa-trash"></i></a>
+                    @endcan
+                @endif
             </div>
         </div>
         @if(isset($user))

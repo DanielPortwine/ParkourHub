@@ -38,6 +38,7 @@
                     @if($workout->deleted_at === null)
                         @if ($workout->user->id === Auth()->id())
                             <a class="btn text-white" href="{{ route('workout_edit', $workout->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
+                            <a class="btn text-white" href="{{ route('workout_delete', $workout->id) }}" title="Delete"><i class="fa fa-trash"></i></a>
                         @endif
                         <a class="btn text-white" href="{{ route('recorded_workout_create', $workout->id) }}" title="Record"><i class="fa fa-calendar-plus-o"></i></a>
                         @if($workout->bookmarks->contains(Auth()->id()))
@@ -45,7 +46,7 @@
                         @else
                             <a class="btn text-white" href="{{ route('workout_bookmark', $workout->id) }}" title="Bookmark"><i class="fa fa-bookmark-o"></i></a>
                         @endif
-                    @else
+                    @elseif($workout->user_id === Auth()->id())
                         <a class="btn text-white" href="{{ route('workout_recover', $workout->id) }}" title="Recover"><i class="fa fa-history"></i></a>
                         <a class="btn text-white" href="{{ route('workout_remove', $workout->id) }}" title="Remove Forever"><i class="fa fa-trash"></i></a>
                     @endif

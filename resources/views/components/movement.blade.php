@@ -37,14 +37,17 @@
                             <button type="submit" class="btn text-white" title="Unlink"><i class="fa fa-unlink"></i></button>
                         </form>
                     @endif
+                    <a class="btn text-white" href="{{ route('movement_delete', $movement->id) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
                 @endif
                 <a class="btn text-white" href="{{ route('movement_report', $movement->id) }}" title="Report"><i class="fa fa-flag"></i></a>
-                @can('delete content')
-                    <a class="btn text-white" href="{{ route('movement_delete', $movement->id) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
-                    @if(count($movement->reports) > 0)
+                @if(count($movement->reports) > 0 && Route::currentRouteName() === 'report_listing')
+                    @can('manage reports')
                         <a class="btn text-white" href="{{ route('movement_report_discard', $movement->id) }}" title="Discard Reports"><i class="fa fa-balance-scale"></i></a>
-                    @endif
-                @endcan
+                    @endcan
+                    @can('remove content')
+                        <a class="btn text-white" href="{{ route('movement_remove', $movement->id) }}" title="Remove Content"><i class="fa fa-trash"></i></a>
+                    @endcan
+                @endif
                 @if(!$movement->official)
                     <a class="btn text-white" href="{{ route('movement_officialise', $movement->id) }}" title="Officialise"><i class="fa fa-gavel"></i></a>
                 @else

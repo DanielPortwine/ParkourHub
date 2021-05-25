@@ -39,21 +39,26 @@
                         @endfor
                     </div>
                 </div>
-                <div class="col-auto verical-center">
+                <div class="col-auto vertical-center">
                     @if($challenge->deleted_at === null)
+                        @if($challenge->user_id === Auth()->id())
+                            <a class="btn text-white" href="{{ route('challenge_delete', $challenge->id) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
+                        @endif
                         @auth
                             <a class="btn text-white" href="{{ route('challenge_report', $challenge->id) }}" title="Report"><i class="fa fa-flag"></i></a>
                         @endauth
-                        @can('delete content')
-                            <a class="btn text-white" href="{{ route('challenge_delete', $challenge->id) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
-                            @if(count($challenge->reports) > 0)
+                        @if(count($challenge->reports) > 0)
+                            @can('manage reports')
                                 <a class="btn text-white" href="{{ route('challenge_report_discard', $challenge->id) }}" title="Discard Reports"><i class="fa fa-balance-scale"></i></a>
-                            @endif
-                        @endcan
+                            @endcan
+                            @can('remove content')
+                                <a class="btn text-white" href="{{ route('challenge_remove', $challenge->id) }}" title="Remove Content"><i class="fa fa-trash"></i></a>
+                            @endcan
+                        @endif
                         @if(!empty($challenge->spot))
                             <a class="btn text-white" href="{{ route('spots', ['spot' => $challenge->spot->id]) }}" title="Locate Spot"><i class="fa fa-map-marker"></i></a>
                         @endif
-                    @else
+                    @elseif($challenge->user_id === Auth()->id())
                         <a class="btn text-white" href="{{ route('challenge_recover', $challenge->id) }}" title="Recover"><i class="fa fa-history"></i></a>
                         <a class="btn text-white" href="{{ route('challenge_remove', $challenge->id) }}" title="Remove Forever"><i class="fa fa-trash"></i></a>
                     @endif

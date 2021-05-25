@@ -27,16 +27,19 @@ $hit = $spot->hits->where('user_id', Auth()->id() ?: null)->first()
             <div class="col-lg-auto vertical-center pl-0">
                 @if($spot->user_id === Auth()->id())
                     <a class="btn text-white" href="{{ route('spot_edit', $spot->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
+                    <a class="btn text-white" href="{{ route('spot_delete', $spot->id) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
                 @endif
                 @auth
                     <a class="btn text-white" href="{{ route('spot_report', $spot->id) }}" title="Report"><i class="fa fa-flag"></i></a>
                 @endauth
-                @can('delete content')
-                    <a class="btn text-white" href="{{ route('spot_delete', $spot->id) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
-                    @if(count($spot->reports) > 0)
+                @if(count($spot->reports) > 0 && Route::currentRouteName() === 'report_listing')
+                    @can('manage reports')
                         <a class="btn text-white" href="{{ route('spot_report_discard', $spot->id) }}" title="Discard Reports"><i class="fa fa-balance-scale"></i></a>
-                    @endif
-                @endcan
+                    @endcan
+                    @can('remove content')
+                        <a class="btn text-white" href="{{ route('spot_remove', $spot->id) }}" title="Remove Content"><i class="fa fa-trash"></i></a>
+                    @endcan
+                @endif
                 @auth
                     <a class="btn text-white tick-off-hitlist-button @if(!(!empty($hit) && $hit->completed_at == null))d-none @endif" id="hitlist-spot-{{ $spot->id }}-add" title="Tick Off Hitlist"><i class="fa fa-check"></i></a>
                     <a class="btn text-white add-to-hitlist-button @if(!empty($hit))d-none @endif" id="hitlist-spot-{{ $spot->id }}-tick" title="Add To Hitlist"><i class="fa fa-crosshairs"></i></a>

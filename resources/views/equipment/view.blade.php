@@ -31,16 +31,19 @@
                         @if($equipment->deleted_at === null)
                             @if ($equipment->user->id === Auth()->id())
                                 <a class="btn text-white" href="{{ route('equipment_edit', $equipment->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
+                                <a class="btn text-white" href="{{ route('equipment_delete', $equipment->id) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
                             @endif
                             <a class="btn text-white" href="{{ route('equipment_report', $equipment->id) }}" title="Report"><i class="fa fa-flag"></i></a>
-                            @can('delete content')
-                                <a class="btn text-white" href="{{ route('equipment_delete', $equipment->id) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
-                                @if(count($equipment->reports) > 0)
+                            @if(count($equipment->reports) > 0)
+                                @can('manage reports')
                                     <a class="btn text-white" href="{{ route('equipment_report_discard', $equipment->id) }}" title="Discard Reports"><i class="fa fa-balance-scale"></i></a>
-                                @endif
-                            @endcan
+                                @endcan
+                                @can('remove content')
+                                    <a class="btn text-white" href="{{ route('equipment_remove', $equipment->id) }}" title="Remove Content"><i class="fa fa-trash"></i></a>
+                                @endcan
+                            @endif
                             <a class="btn text-white" href="{{ route('movement_listing', ['equipment' => $equipment->id]) }}" title="View Exercises With Equipment"><i class="fa fa-child"></i></a>
-                        @else
+                        @elseif($equipment->user_id === Auth()->id())
                             <a class="btn text-white" href="{{ route('equipment_recover', $equipment->id) }}" title="Recover"><i class="fa fa-history"></i></a>
                             <a class="btn text-white" href="{{ route('equipment_remove', $equipment->id) }}" title="Remove Forever"><i class="fa fa-trash"></i></a>
                         @endif
