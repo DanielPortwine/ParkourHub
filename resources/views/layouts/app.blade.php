@@ -41,7 +41,7 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav site-search">
-                        <form class="mt-2 mt-md-0 mr-md-2 w-100 @if(!empty($_GET['search']))d-none @endif d-md-block" id="site-search-form" action="{{ strpos(Route::currentRouteName(), '_listing') > 0 ? route(Route::currentRouteName()) : route('spot_listing') }}" method="GET">
+                        <form class="mt-2 mt-md-0 mr-md-2 w-100 @if(!empty($_GET['search']))d-none @endif d-md-block" id="site-search-form" action="{{ strpos(Route::currentRouteName(), '_listing') > 0 && Route::currentRouteName() !== 'report_listing' ? route(Route::currentRouteName()) : route('spot_listing') }}" method="GET">
                             <div class="input-group w-100">
                                 <input type="text" class="form-control @error('search') is-invalid @enderror" name="search" placeholder="Search" aria-label="from" aria-describedby="from" value="{{ $_GET['search'] ?? '' }}">
                                 <div class="input-group-append">
