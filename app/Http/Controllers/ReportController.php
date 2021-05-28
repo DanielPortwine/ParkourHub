@@ -11,6 +11,7 @@ use App\Models\Report;
 use App\Models\Review;
 use App\Models\Spot;
 use App\Models\SpotComment;
+use App\Models\Workout;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -100,6 +101,17 @@ class ReportController extends Controller
                 break;
             case 'equipment':
                 $content = Equipment::withCount('reports')
+                    ->whereHas('reports')
+                    ->dateBetween([
+                        'from' => $request['date_from'] ?? null,
+                        'to' => $request['date_to'] ?? null
+                    ])
+                    ->orderBy($sort[0], $sort[1])
+                    ->paginate(20)
+                    ->appends(request()->query());
+                break;
+            case 'workout':
+                $content = Workout::withCount('reports')
                     ->whereHas('reports')
                     ->dateBetween([
                         'from' => $request['date_from'] ?? null,

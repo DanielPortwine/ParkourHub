@@ -118,6 +118,12 @@
                                 <span class="d-none d-lg-inline">Equipment</span>
                             </a>
                         </li>
+                        <li class="nav-item px-2">
+                            <a class="nav-link @if($component === 'workout')active @endif" href="{{ route('report_listing', 'workout') }}">
+                                <i class="fa fa-running nav-icon"></i>
+                                <span class="d-none d-lg-inline">Workouts</span>
+                            </a>
+                        </li>
                     @endpremium
                 </ul>
             </div>

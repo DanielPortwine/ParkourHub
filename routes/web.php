@@ -183,6 +183,8 @@ Route::prefix('workouts')->middleware(['verified', 'isPremium'])->group(function
     Route::get('/unbookmark/{id}', 'WorkoutController@unbookmark')->name('workout_unbookmark');
     Route::get('/getMovementFields', 'WorkoutController@getMovementFields')->name('movement_fields_search');
     Route::get('/deleteMovement/{id}', 'WorkoutController@deleteMovement')->name('workout_movement_delete');
+    Route::get('/report/{workout}', 'WorkoutController@report')->name('workout_report');
+    Route::get('/discard_reports/{workout}', 'WorkoutController@discardReports')->name('workout_report_discard');
     Route::prefix('recorded')->group(function() {
         Route::get('/', 'RecordedWorkoutController@index')->name('recorded_workout_listing');
         Route::get('/view/{id}', 'RecordedWorkoutController@view')->name('recorded_workout_view');

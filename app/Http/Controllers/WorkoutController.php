@@ -30,7 +30,7 @@ class WorkoutController extends Controller
         }
 
         $workouts = Workout::withCount('movements')
-            ->with(['movements', 'bookmarks', 'user'])
+            ->with(['movements', 'bookmarks', 'user', 'reports'])
             ->dateBetween([
                 'from' => $request['date_from'] ?? null,
                 'to' => $request['date_to'] ?? null
@@ -61,7 +61,7 @@ class WorkoutController extends Controller
 
         $userID = Auth::id();
         $workouts = Workout::withCount('movements')
-            ->with(['movements', 'bookmarks', 'user'])
+            ->with(['movements', 'bookmarks', 'user', 'reports'])
             ->where('user_id', $userID)
             ->dateBetween([
                 'from' => $request['date_from'] ?? null,
@@ -99,6 +99,7 @@ class WorkoutController extends Controller
                     'movements',
                     'bookmarks',
                     'spots',
+                    'reports',
                 ])
                 ->where('id', $id)
                 ->first();
@@ -352,6 +353,20 @@ class WorkoutController extends Controller
         $workout->forceDelete();
 
         return back()->with('status', 'Successfully removed workout forever.');
+    }
+
+    public function report(Workout $workout)
+    {
+        $workout->report();
+
+        return back()->with('status', 'Successfully reported workout');
+    }
+
+    public function discardReports(Workout $workout)
+    {
+        $workout->discardReports();
+
+        return back()->with('status', 'Successfully discarded reports against this content');
     }
 
     public function bookmarks(Request $request)

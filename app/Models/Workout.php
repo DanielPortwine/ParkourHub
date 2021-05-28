@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Scopes\VisibilityScope;
+use App\Traits\Reportable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -11,6 +12,7 @@ use Nicolaslopezj\Searchable\SearchableTrait;
 class Workout extends Model
 {
     use SoftDeletes,
+        Reportable,
         SearchableTrait,
         HasFactory;
 

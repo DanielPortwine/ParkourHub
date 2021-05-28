@@ -9,6 +9,17 @@
                     @if ($workout->user_id === Auth()->id())
                         <a class="btn text-white" href="{{ route('workout_edit', $workout->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
                     @endif
+                    @auth
+                        <a class="btn text-white" href="{{ route('workout_report', $workout->id) }}" title="Report"><i class="fa fa-flag"></i></a>
+                    @endauth
+                    @if(count($workout->reports) > 0 && Route::currentRouteName() === 'report_listing')
+                        @can('manage reports')
+                            <a class="btn text-white" href="{{ route('workout_report_discard', $workout->id) }}" title="Discard Reports"><i class="fa fa-balance-scale"></i></a>
+                        @endcan
+                        @can('remove content')
+                            <a class="btn text-white" href="{{ route('workout_remove', $workout->id) }}" title="Remove Content"><i class="fa fa-trash"></i></a>
+                        @endcan
+                    @endif
                     @if($workout->bookmarks->contains(Auth()->id()))
                         <a class="btn text-white" href="{{ route('workout_unbookmark', $workout->id) }}" title="Remove Bookmark"><i class="fa fa-bookmark"></i></a>
                     @else
