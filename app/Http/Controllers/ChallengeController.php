@@ -309,9 +309,11 @@ class ChallengeController extends Controller
 
     public function deleteEntry(ChallengeEntry $challengeEntry)
     {
-        $challengeEntry->delete();
+        if ($challengeEntry->user_id === Auth::id()) {
+            $challengeEntry->delete();
+        }
 
-        return redirect()->route('challenge_listing')->with('status', 'Successfully deleted entry');
+        return back()->with('status', 'Successfully deleted challenge entry');
     }
 
     public function recoverEntry(Request $request, $id)
