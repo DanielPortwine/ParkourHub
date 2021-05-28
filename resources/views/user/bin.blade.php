@@ -48,6 +48,12 @@
                 </li>
                 @premium
                     <li class="nav-item px-2">
+                        <a class="nav-link @if($tab === 'workouts')active @endif" href="{{ route('user_bin', ['tab' => 'workouts']) }}">
+                            <i class="fa fa-running nav-icon"></i>
+                            <span class="d-none d-lg-inline">Workouts</span>
+                        </a>
+                    </li>
+                    <li class="nav-item px-2">
                         <a class="nav-link @if($tab === 'movements')active @endif" href="{{ route('user_bin', ['tab' => 'movements']) }}">
                             <i class="fa fa-child nav-icon"></i>
                             <span class="d-none d-lg-inline">Movements</span>
@@ -57,12 +63,6 @@
                         <a class="nav-link @if($tab === 'equipment')active @endif" href="{{ route('user_bin', ['tab' => 'equipment']) }}">
                             <i class="fa fa-dumbbell nav-icon"></i>
                             <span class="d-none d-lg-inline">Equipment</span>
-                        </a>
-                    </li>
-                    <li class="nav-item px-2">
-                        <a class="nav-link @if($tab === 'workouts')active @endif" href="{{ route('user_bin', ['tab' => 'workouts']) }}">
-                            <i class="fa fa-running nav-icon"></i>
-                            <span class="d-none d-lg-inline">Workouts</span>
                         </a>
                     </li>
                 @endpremium

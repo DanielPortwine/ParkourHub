@@ -41,6 +41,12 @@
                     </li>
                     @premium
                         <li class="nav-item px-2">
+                            <a class="nav-link @if(Route::currentRouteName() === 'workout_listing')active @endif" href="{{ route('workout_listing', ['search' => $_GET['search'] ?? '']) }}">
+                                <i class="fa fa-running nav-icon"></i>
+                                <span class="d-none d-lg-inline">Workouts</span>
+                            </a>
+                        </li>
+                        <li class="nav-item px-2">
                             <a class="nav-link @if(Route::currentRouteName() === 'movement_listing')active @endif" href="{{ route('movement_listing', ['search' => $_GET['search'] ?? '']) }}">
                                 <i class="fa fa-child nav-icon"></i>
                                 <span class="d-none d-lg-inline">Movements</span>
@@ -50,12 +56,6 @@
                             <a class="nav-link @if(Route::currentRouteName() === 'equipment_listing')active @endif" href="{{ route('equipment_listing', ['search' => $_GET['search'] ?? '']) }}">
                                 <i class="fa fa-dumbbell nav-icon"></i>
                                 <span class="d-none d-lg-inline">Equipment</span>
-                            </a>
-                        </li>
-                        <li class="nav-item px-2">
-                            <a class="nav-link @if(Route::currentRouteName() === 'workout_listing')active @endif" href="{{ route('workout_listing', ['search' => $_GET['search'] ?? '']) }}">
-                                <i class="fa fa-running nav-icon"></i>
-                                <span class="d-none d-lg-inline">Workouts</span>
                             </a>
                         </li>
                     @endpremium
@@ -107,6 +107,12 @@
                     </li>
                     @premium
                         <li class="nav-item px-2">
+                            <a class="nav-link @if($component === 'workout')active @endif" href="{{ route('report_listing', 'workout') }}">
+                                <i class="fa fa-running nav-icon"></i>
+                                <span class="d-none d-lg-inline">Workouts</span>
+                            </a>
+                        </li>
+                        <li class="nav-item px-2">
                             <a class="nav-link @if($component === 'movement')active @endif" href="{{ route('report_listing', 'movement') }}">
                                 <i class="fa fa-child nav-icon"></i>
                                 <span class="d-none d-lg-inline">Movements</span>
@@ -116,12 +122,6 @@
                             <a class="nav-link @if($component === 'equipment')active @endif" href="{{ route('report_listing', 'equipment') }}">
                                 <i class="fa fa-dumbbell nav-icon"></i>
                                 <span class="d-none d-lg-inline">Equipment</span>
-                            </a>
-                        </li>
-                        <li class="nav-item px-2">
-                            <a class="nav-link @if($component === 'workout')active @endif" href="{{ route('report_listing', 'workout') }}">
-                                <i class="fa fa-running nav-icon"></i>
-                                <span class="d-none d-lg-inline">Workouts</span>
                             </a>
                         </li>
                     @endpremium
