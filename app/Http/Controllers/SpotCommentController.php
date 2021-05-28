@@ -112,7 +112,7 @@ class SpotCommentController extends Controller
     {
         $comment = SpotComment::onlyTrashed()->where('id', $id)->first();
 
-        if ($comment->user_id !== Auth::id()) {
+        if (empty($comment) || $comment->user_id !== Auth::id()) {
             return back();
         }
 
@@ -123,9 +123,9 @@ class SpotCommentController extends Controller
 
     public function remove(Request $request, $id)
     {
-        $comment = SpotComment::onlyTrashed()->where('id', $id)->first();
+        $comment = SpotComment::withTrashed()->where('id', $id)->first();
 
-        if ($comment->user_id !== Auth::id()) {
+        if ($comment->user_id !== Auth::id() && !Auth::user()->hasPermissionTo('remove content')) {
             return back();
         }
 

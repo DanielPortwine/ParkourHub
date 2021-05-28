@@ -333,7 +333,7 @@ class WorkoutController extends Controller
     {
         $workout = Workout::onlyTrashed()->where('id', $id)->first();
 
-        if ($workout->user_id !== Auth::id()) {
+        if (empty($workout) ||  $workout->user_id !== Auth::id()) {
             return back();
         }
 
@@ -344,9 +344,9 @@ class WorkoutController extends Controller
 
     public function remove(Request $request, $id)
     {
-        $workout = Workout::onlyTrashed()->where('id', $id)->first();
+        $workout = Workout::withTrashed()->where('id', $id)->first();
 
-        if ($workout->user_id !== Auth::id()) {
+        if ($workout->user_id !== Auth::id() && !Auth::user()->hasPermissionTo('remove content')) {
             return back();
         }
 

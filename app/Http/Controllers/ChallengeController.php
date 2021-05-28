@@ -198,7 +198,7 @@ class ChallengeController extends Controller
     {
         $challenge = Challenge::onlyTrashed()->where('id', $id)->first();
 
-        if ($challenge->user_id !== Auth::id()) {
+        if (empty($challenge) || $challenge->user_id !== Auth::id()) {
             return back();
         }
 
@@ -209,9 +209,9 @@ class ChallengeController extends Controller
 
     public function remove(Request $request, $id)
     {
-        $challenge = Challenge::onlyTrashed()->where('id', $id)->first();
+        $challenge = Challenge::withTrashed()->where('id', $id)->first();
 
-        if ($challenge->user_id !== Auth::id()) {
+        if ($challenge->user_id !== Auth::id() && !Auth::user()->hasPermissionTo('remove content')) {
             return back();
         }
 
@@ -318,7 +318,7 @@ class ChallengeController extends Controller
     {
         $entry = ChallengeEntry::onlyTrashed()->where('id', $id)->first();
 
-        if ($entry->user_id !== Auth::id()) {
+        if (empty($entry) || $entry->user_id !== Auth::id()) {
             return back();
         }
 
@@ -329,9 +329,9 @@ class ChallengeController extends Controller
 
     public function removeEntry(Request $request, $id)
     {
-        $entry = ChallengeEntry::onlyTrashed()->where('id', $id)->first();
+        $entry = ChallengeEntry::withTrashed()->where('id', $id)->first();
 
-        if ($entry->user_id !== Auth::id()) {
+        if ($entry->user_id !== Auth::id() && !Auth::user()->hasPermissionTo('remove content')) {
             return back();
         }
 

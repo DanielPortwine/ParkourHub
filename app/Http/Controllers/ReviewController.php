@@ -90,7 +90,7 @@ class ReviewController extends Controller
     {
         $review = Review::onlyTrashed()->where('id', $id)->first();
 
-        if ($review->user_id !== Auth::id()) {
+        if (empty($review) || $review->user_id !== Auth::id()) {
             return back();
         }
 
@@ -101,9 +101,9 @@ class ReviewController extends Controller
 
     public function remove($id)
     {
-        $review = Review::onlyTrashed()->where('id', $id)->first();
+        $review = Review::withTrashed()->where('id', $id)->first();
 
-        if ($review->user_id !== Auth::id()) {
+        if ($review->user_id !== Auth::id() && !Auth::user()->hasPermissionTo('remove content')) {
             return back();
         }
 

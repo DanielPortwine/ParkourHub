@@ -296,7 +296,7 @@ class SpotController extends Controller
     {
         $spot = Spot::onlyTrashed()->where('id', $id)->first();
 
-        if ($spot->user_id !== Auth::id()) {
+        if (empty($spot) || $spot->user_id !== Auth::id()) {
             return back();
         }
 
@@ -307,9 +307,9 @@ class SpotController extends Controller
 
     public function remove(Request $request, $id)
     {
-        $spot = Spot::onlyTrashed()->where('id', $id)->first();
+        $spot = Spot::withTrashed()->where('id', $id)->first();
 
-        if ($spot->user_id !== Auth::id()) {
+        if ($spot->user_id !== Auth::id() && !Auth::user()->hasPermissionTo('remove content')) {
             return back();
         }
 

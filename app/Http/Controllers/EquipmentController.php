@@ -157,7 +157,7 @@ class EquipmentController extends Controller
     {
         $equipment = Equipment::onlyTrashed()->where('id', $id)->first();
 
-        if ($equipment->user_id !== Auth::id()) {
+        if (empty($equipment) || $equipment->user_id !== Auth::id()) {
             return back();
         }
 
@@ -168,9 +168,9 @@ class EquipmentController extends Controller
 
     public function remove(Request $request, $id)
     {
-        $equipment = Equipment::onlyTrashed()->where('id', $id)->first();
+        $equipment = Equipment::withTrashed()->where('id', $id)->first();
 
-        if ($equipment->user_id !== Auth::id()) {
+        if ($equipment->user_id !== Auth::id() && !Auth::user()->hasPermissionTo('remove content')) {
             return back();
         }
 

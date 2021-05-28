@@ -371,7 +371,7 @@ class MovementController extends Controller
     {
         $movement = Movement::onlyTrashed()->where('id', $id)->first();
 
-        if ($movement->user_id !== Auth::id()) {
+        if (empty($movement) || $movement->user_id !== Auth::id()) {
             return back();
         }
 
@@ -384,7 +384,7 @@ class MovementController extends Controller
     {
         $movement = Movement::withTrashed()->where('id', $id)->first();
 
-        if (!($movement->user_id === Auth::id() && !empty($movement->deleted_at)) || !Auth::user()->hasPermissionTo('remove content')) {
+        if ($movement->user_id !== Auth::id() && !Auth::user()->hasPermissionTo('remove content')) {
             return back();
         }
 
