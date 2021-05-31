@@ -44,10 +44,14 @@
                     @if($entry->challenge->user_id === Auth()->id())
                         @if(!empty($entry->challenge) && !$entry->challenge->won)
                             <a class="btn text-white" href="{{ route('challenge_win', $entry->id) }}" title="Select Winner"><i class="fa fa-trophy"></i></a>
-                            <a class="btn text-white" href="{{ route('entry_delete', $entry->id) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
                         @endif
                     @endif
-                    <a class="btn text-white" href="{{ route('entry_report', $entry->id) }}" title="Report"><i class="fa fa-flag"></i></a>
+                    @if($entry->user_id === Auth()->id())
+                        <a class="btn text-white" href="{{ route('entry_delete', $entry->id) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
+                    @endif
+                    @auth
+                        <a class="btn text-white" href="{{ route('entry_report', $entry->id) }}" title="Report"><i class="fa fa-flag"></i></a>
+                    @endauth
                     @if(count($entry->reports) > 0 && Route::currentRouteName() === 'report_listing')
                         @can('manage reports')
                             <a class="btn text-white" href="{{ route('entry_report_discard', $entry->id) }}" title="Discard Reports"><i class="fa fa-balance-scale"></i></a>
