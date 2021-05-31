@@ -134,9 +134,9 @@
                                 @if ($entered)
                                     <p class="mb-0">You have already entered this challenge.</p>
                                 @else
-                                    <form method="POST" action="{{ route('challenge_enter', $challenge->id) }}" enctype="multipart/form-data">
+                                    <form method="POST" action="{{ route('entry_create') }}" enctype="multipart/form-data">
                                         @csrf
-
+                                        <input type="hidden" name="challenge" value="{{ $challenge->id }}">
                                         @premium
                                             <div class="form-group row">
                                                 <label class="col-md-2 col-form-label text-md-right">Youtube or Video</label>

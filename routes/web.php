@@ -119,15 +119,17 @@ Route::prefix('challenges')->middleware('verified')->group(function() {
     Route::get('/delete/{id}', 'ChallengeController@delete')->name('challenge_delete');
     Route::get('/recover/{id}', 'ChallengeController@recover')->name('challenge_recover');
     Route::get('/remove/{id}', 'ChallengeController@remove')->name('challenge_remove');
-    Route::post('/enter/{id}', 'ChallengeController@enter')->name('challenge_enter');
-    Route::get('/win/{id}', 'ChallengeController@win')->name('challenge_win');
     Route::get('/report/{challenge}', 'ChallengeController@report')->name('challenge_report');
     Route::get('/discard_reports/{challenge}', 'ChallengeController@discardReports')->name('challenge_report_discard');
-    Route::get('/entries/report/{challengeEntry}', 'ChallengeController@reportEntry')->name('entry_report');
-    Route::get('/entries/discard_reports/{challengeEntry}', 'ChallengeController@discardEntryReports')->name('entry_report_discard');
-    Route::get('/entries/delete/{challengeEntry}', 'ChallengeController@deleteEntry')->name('entry_delete');
-    Route::get('/entries/recover/{id}', 'ChallengeController@recoverEntry')->name('entry_recover');
-    Route::get('/entries/remove/{id}', 'ChallengeController@removeEntry')->name('entry_remove');
+    Route::prefix('entries')->group(function() {
+        Route::post('/create', 'ChallengeEntryController@create')->name('entry_create');
+        Route::get('/win/{id}', 'ChallengeEntryController@win')->name('entry_win');
+        Route::get('/report/{challengeEntry}', 'ChallengeEntryController@report')->name('entry_report');
+        Route::get('/discard_reports/{challengeEntry}', 'ChallengeEntryController@discardReports')->name('entry_report_discard');
+        Route::get('/delete/{challengeEntry}', 'ChallengeEntryController@delete')->name('entry_delete');
+        Route::get('/recover/{id}', 'ChallengeEntryController@recover')->name('entry_recover');
+        Route::get('/remove/{id}', 'ChallengeEntryController@remove')->name('entry_remove');
+    });
 });
 
 Route::prefix('movements')->middleware(['verified', 'isPremium'])->group(function() {

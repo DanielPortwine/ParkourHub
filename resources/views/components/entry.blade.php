@@ -43,7 +43,7 @@
                 <div>
                     @if($entry->challenge->user_id === Auth()->id())
                         @if(!empty($entry->challenge) && !$entry->challenge->won)
-                            <a class="btn text-white" href="{{ route('challenge_win', $entry->id) }}" title="Select Winner"><i class="fa fa-trophy"></i></a>
+                            <a class="btn text-white" href="{{ route('entry_win', $entry->id) }}" title="Select Winner"><i class="fa fa-trophy"></i></a>
                         @endif
                     @endif
                     @if($entry->user_id === Auth()->id())
