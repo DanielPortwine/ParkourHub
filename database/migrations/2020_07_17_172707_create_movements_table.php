@@ -20,7 +20,7 @@ class CreateMovementsTable extends Migration
             $table->unsignedBigInteger('creator_id')->nullable();
             $table->unsignedBigInteger('type_id');
             $table->string('name');
-            $table->string('description')->nullable();
+            $table->text('description')->nullable();
             $table->enum('visibility', ['private', 'follower', 'public'])->default('private');
             $table->string('youtube')->nullable();
             $table->integer('youtube_start')->nullable();
