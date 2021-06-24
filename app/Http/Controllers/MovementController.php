@@ -186,9 +186,12 @@ class MovementController extends Controller
                 });
                 break;
             case 'exercises':
-                $linkableMovements = Movement::where('id', '!=', $id)
+                $linkableMovements = Movement::with(['type'])
+                    ->where('id', '!=', $id)
                     ->whereNotIn('id', $movement->exercises()->pluck('movements.id')->toArray())
-                    ->where('type_id', 2)
+                    ->whereHas('type', function($q) {
+                        return $q->where('name', 'Exercise');
+                    })
                     ->orderBy('category_id')
                     ->get();
                 $movementCategories = Cache::remember('movement_categories_' . $movement->type_id, 86400, function() use($movement) {
@@ -199,9 +202,12 @@ class MovementController extends Controller
                 });
                 break;
             case 'moves':
-                $linkableMovements = Movement::where('id', '!=', $id)
+                $linkableMovements = Movement::with(['type'])
+                    ->where('id', '!=', $id)
                     ->whereNotIn('id', $movement->moves()->pluck('movements.id')->toArray())
-                    ->where('type_id', 1)
+                    ->whereHas('type', function($q) {
+                        return $q->where('name', 'Move');
+                    })
                     ->orderBy('category_id')
                     ->get();
                 $movementCategories = Cache::remember('movement_categories_' . $movement->type_id, 86400, function() use($movement) {

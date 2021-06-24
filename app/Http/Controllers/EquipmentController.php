@@ -66,11 +66,18 @@ class EquipmentController extends Controller
             $movements = $equipment->movements()->limit(4)->get();
         }
 
-        $linkableMovements = Movement::whereNotIn('id', $equipment->movements()->pluck('movements.id')->toArray())
-                ->where('type_id', 2)
-                ->orderBy('category_id')
-                ->get();
-        $movementCategories = MovementCategory::where('type_id', 2)->get();
+        $linkableMovements = Movement::with(['type'])
+            ->whereNotIn('id', $equipment->movements()->pluck('movements.id')->toArray())
+            ->whereHas('type', function($q) {
+                return $q->where('name', 'Exercise');
+            })
+            ->orderBy('category_id')
+            ->get();
+        $movementCategories = MovementCategory::with(['type'])
+            ->whereHas('type', function ($q) {
+                return $q->where('name', 'Exercise');
+            })
+            ->get();
 
         return view('equipment.view', [
             'equipment' => $equipment,

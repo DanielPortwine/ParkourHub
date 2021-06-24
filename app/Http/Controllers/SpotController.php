@@ -176,11 +176,18 @@ class SpotController extends Controller
                 $hit = $spot->hits()->where('user_id', Auth::id())->first();
             }
 
-            $linkableMovements = Movement::where('type_id', 1)
+            $linkableMovements = Movement::with(['type'])
+                ->whereHas('type', function($q) {
+                    return $q->where('name', 'Move');
+                })
                 ->whereNotIn('id', $spot->movements()->pluck('movements.id')->toArray())
                 ->get();
             $movementCategories = Cache::remember('movement_categories_1', 86400, function() {
-                return MovementCategory::where('type_id', 1)->get();
+                return MovementCategory::with(['type'])
+                    ->whereHas('type', function ($q) {
+                        return $q->where('name', 'Move');
+                    })
+                    ->get();
             });
             $movementFields = Cache::remember('movement_fields', 86400, function() {
                 return MovementField::get();
