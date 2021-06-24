@@ -3,7 +3,11 @@
 namespace Tests\Feature;
 
 use App\Models\Equipment;
+use App\Models\Movement;
+use App\Models\MovementCategory;
+use App\Models\MovementType;
 use App\Models\User;
+use Database\Seeders\MovementTypeSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Permission;
 use Tests\TestCase;
@@ -32,7 +36,7 @@ class EquipmentControllerTest extends TestCase
     }
 
     /** @test */
-    public function listing_non_premium_user_redirects_to_login()
+    public function listing_non_premium_user_redirects_to_premium()
     {
         $user = User::factory()->create();
         $response = $this->actingAs($user)->get('/equipment');
@@ -248,6 +252,201 @@ class EquipmentControllerTest extends TestCase
                 $this->assertCount(2, $viewEquipment);
                 $this->assertSame($oldestEquipment->id, $viewEquipment->first()->id);
                 $this->assertSame($oldestEquipment->name, $viewEquipment->first()->name);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function view_non_logged_in_user_redirects_to_login()
+    {
+        $equipment = Equipment::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'public']);
+        $response = $this->get('/equipment/view/' . $equipment->id);
+
+        $response->assertRedirect('/email/verify');
+    }
+
+    /** @test */
+    public function view_non_premium_user_redirects_to_premium()
+    {
+        $user = User::factory()->create();
+        $equipment = Equipment::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'public']);
+        $response = $this->actingAs($user)->get('/equipment/view/' . $equipment->id);
+
+        $response->assertRedirect('/premium');
+    }
+
+    /** @test */
+    public function view_premium_user_can_view_public_equipment_of_different_user()
+    {
+        $user = User::factory()->create();
+        $equipment = Equipment::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+        $response = $this->actingAs($this->premiumUser)->get('/equipment/view/' . $equipment->id);
+
+        $response->assertOk()
+            ->assertViewIs('equipment.view')
+            ->assertViewHas('equipment', function ($viewEquipment) use ($equipment) {
+                $this->assertSame($equipment->id, $viewEquipment->id);
+                $this->assertSame($equipment->name, $viewEquipment->name);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function view_premium_user_can_view_follower_equipment_of_user_they_follow()
+    {
+        $user = User::factory()->create();
+        $user->followers()->attach($this->premiumUser->id, ['accepted' => true]);
+        $equipment = Equipment::factory()->create(['user_id' => $user->id, 'visibility' => 'follower']);
+        $response = $this->actingAs($this->premiumUser)->get('/equipment/view/' . $equipment->id);
+
+        $response->assertOk()
+            ->assertViewIs('equipment.view')
+            ->assertViewHas('equipment', function ($viewEquipment) use ($equipment) {
+                $this->assertSame($equipment->id, $viewEquipment->id);
+                $this->assertSame($equipment->name, $viewEquipment->name);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function view_premium_user_can_not_view_follower_equipment_of_user_they_do_not_follow()
+    {
+        $user = User::factory()->create();
+        $equipment = Equipment::factory()->create(['user_id' => $user->id, 'visibility' => 'follower']);
+        $response = $this->actingAs($this->premiumUser)->get('/equipment/view/' . $equipment->id);
+
+        $response->assertViewIs('errors.404');
+    }
+
+    /** @test */
+    public function view_premium_user_can_view_their_own_private_equipment()
+    {
+        $equipment = Equipment::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'private']);
+        $response = $this->actingAs($this->premiumUser)->get('/equipment/view/' . $equipment->id);
+
+        $response->assertOk()
+            ->assertViewIs('equipment.view')
+            ->assertViewHas('equipment', function ($viewEquipment) use ($equipment) {
+                $this->assertSame($equipment->id, $viewEquipment->id);
+                $this->assertSame($equipment->name, $viewEquipment->name);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function view_premium_user_can_not_view_private_equipment_of_different_user()
+    {
+        $user = User::factory()->create();
+        $equipment = Equipment::factory()->create(['user_id' => $user->id, 'visibility' => 'private']);
+        $response = $this->actingAs($this->premiumUser)->get('/equipment/view/' . $equipment->id);
+
+        $response->assertViewIs('errors.404');
+    }
+
+    /** @test */
+    public function view_premium_user_can_not_view_deleted_public_equipment_of_different_user()
+    {
+        $user = User::factory()->create();
+        $equipment = Equipment::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+        $equipment->delete();
+        $response = $this->actingAs($this->premiumUser)->get('/equipment/view/' . $equipment->id);
+
+        $response->assertViewIs('errors.404');
+    }
+
+    /** @test */
+    public function view_premium_user_can_view_their_own_deleted_equipment()
+    {
+        $equipment = Equipment::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'public']);
+        $equipment->delete();
+        $response = $this->actingAs($this->premiumUser)->get('/equipment/view/' . $equipment->id);
+
+        $response->assertOk()
+            ->assertViewIs('equipment.view')
+            ->assertViewHas('equipment', function ($viewEquipment) use ($equipment) {
+                $this->assertSame($equipment->id, $viewEquipment->id);
+                $this->assertSame($equipment->name, $viewEquipment->name);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function view_premium_user_can_not_view_non_existent_equipment()
+    {
+        $response = $this->actingAs($this->premiumUser)->get('/equipment/view/999');
+
+        $response->assertViewIs('errors.404');
+    }
+
+    /** @test */
+    public function view_premium_user_can_view_only_four_movements()
+    {
+        $this->seed(MovementTypeSeeder::class);
+        $exerciseTypeID = MovementType::where('name', 'Exercise')->first()->id;
+        $movementCategory = MovementCategory::factory()->create(['type_id' => $exerciseTypeID]);
+        $movements = Movement::factory()->times(5)->create(['type_id' => $exerciseTypeID, 'category_id' => $movementCategory->id]);
+        $equipment = Equipment::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'public']);
+        $equipment->movements()->attach($movements, ['user_id' => $this->premiumUser->id]);
+        $response = $this->actingAs($this->premiumUser)->get('/equipment/view/' . $equipment->id);
+
+        $response->assertOk()
+            ->assertViewIs('equipment.view')
+            ->assertViewHas('movements', function ($viewMovements) {
+                $this->assertCount(4, $viewMovements);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function view_premium_user_can_view_paginated_movements()
+    {
+        $this->seed(MovementTypeSeeder::class);
+        $exerciseTypeID = MovementType::where('name', 'Exercise')->first()->id;
+        $movementCategory = MovementCategory::factory()->create(['type_id' => $exerciseTypeID]);
+        $movements = Movement::factory()->times(25)->create(['type_id' => $exerciseTypeID, 'category_id' => $movementCategory->id]);
+        $equipment = Equipment::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'public']);
+        $equipment->movements()->attach($movements, ['user_id' => $this->premiumUser->id]);
+        $response = $this->actingAs($this->premiumUser)->get('/equipment/view/' . $equipment->id . '?movements=2');
+
+        $response->assertOk()
+            ->assertViewIs('equipment.view')
+            ->assertViewHas('movements', function ($viewMovements) {
+                $this->assertCount(5, $viewMovements);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function view_premium_user_can_view_linkable_movements()
+    {
+        $this->seed(MovementTypeSeeder::class);
+        $exerciseTypeID = MovementType::where('name', 'Exercise')->first()->id;
+        $movementCategory = MovementCategory::factory()->create(['type_id' => $exerciseTypeID]);
+        $movements = Movement::factory()->times(5)->create(['type_id' => $exerciseTypeID, 'category_id' => $movementCategory->id]);
+        $equipment = Equipment::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'public']);
+        $response = $this->actingAs($this->premiumUser)->get('/equipment/view/' . $equipment->id);
+
+        $response->assertOk()
+            ->assertViewIs('equipment.view')
+            ->assertViewHas('linkableMovements', function ($viewLinkableMovements) {
+                $this->assertCount(5, $viewLinkableMovements);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function view_premium_user_can_view_movement_categories()
+    {
+        $this->seed(MovementTypeSeeder::class);
+        $exerciseTypeID = MovementType::where('name', 'Exercise')->first()->id;
+        $movementCategories = MovementCategory::factory()->times(5)->create(['type_id' => $exerciseTypeID]);
+        $equipment = Equipment::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'public']);
+        $response = $this->actingAs($this->premiumUser)->get('/equipment/view/' . $equipment->id);
+
+        $response->assertOk()
+            ->assertViewIs('equipment.view')
+            ->assertViewHas('movementCategories', function ($viewMovementCategories) {
+                $this->assertCount(5, $viewMovementCategories);
                 return true;
             });
     }
