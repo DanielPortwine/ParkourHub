@@ -450,4 +450,30 @@ class EquipmentControllerTest extends TestCase
                 return true;
             });
     }
+
+    /** @test */
+    public function create_non_logged_in_user_redirects_to_login()
+    {
+        $response = $this->get(route('equipment_create'));
+
+        $response->assertRedirect('/email/verify');
+    }
+
+    /** @test */
+    public function create_non_premium_user_redirects_to_premium()
+    {
+        $user = User::factory()->create();
+        $response = $this->actingAs($user)->get(route('equipment_create'));
+
+        $response->assertRedirect('/premium');
+    }
+
+    /** @test */
+    public function create_premium_user_can_view_page()
+    {
+        $response = $this->actingAs($this->premiumUser)->get(route('equipment_create'));
+
+        $response->assertOk()
+            ->assertViewIs('equipment.create');
+    }
 }
