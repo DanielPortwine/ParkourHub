@@ -476,4 +476,109 @@ class EquipmentControllerTest extends TestCase
         $response->assertOk()
             ->assertViewIs('equipment.create');
     }
+
+    /** @test */
+    public function store_non_logged_in_user_redirects_to_login()
+    {
+        $response = $this->post(route('equipment_store'), [
+            'name' => 'Test Equipment',
+            'description' => 'This is test equipment',
+            'visibility' => 'public',
+        ]);
+
+        $response->assertRedirect('/email/verify');
+    }
+
+    /** @test */
+    public function store_non_premium_user_redirects_to_premium()
+    {
+        $user = User::factory()->create();
+        $response = $this->actingAs($user)->post(route('equipment_store'), [
+            'name' => 'Test Equipment',
+            'description' => 'This is test equipment',
+            'visibility' => 'public',
+        ]);
+
+        $response->assertRedirect(route('premium'));
+    }
+
+    /** @test */
+    public function store_premium_user_can_store_valid_equipment_and_redirects_to_view()
+    {
+        $this->seed(MovementTypeSeeder::class);
+        $movementCategories = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create();
+        $response = $this->actingAs($this->premiumUser)->post(route('equipment_store'), [
+            'name' => 'Test Equipment',
+            'description' => 'This is test equipment',
+            'visibility' => 'public',
+            'movement' => $movement->id,
+        ]);
+
+        $this->assertDatabaseCount('equipment', 1)
+            ->assertDatabaseHas('equipment', [
+                'name' => 'Test Equipment',
+                'description' => 'This is test equipment',
+                'visibility' => 'public',
+            ])
+            ->assertDatabaseCount('movements_equipments', 1);
+
+        $equipment = Equipment::first();
+        $response->assertRedirect(route('equipment_view', $equipment->id));
+    }
+
+    /** @test */
+    public function store_premium_user_can_not_store_invalid_equipment()
+    {
+        $response = $this->actingAs($this->premiumUser)->post(route('equipment_store'), [
+            'name' => 'Test Equipment',
+            'description' => 'This is test equipment',
+            'visibility' => 'public',
+            'movement' => 5,
+        ]);
+
+        $response->assertSessionHasErrors();
+    }
+
+    /** @test */
+    public function edit_non_logged_in_user_redirects_to_login()
+    {
+        $response = $this->get(route('equipment_edit', 1));
+
+        $response->assertRedirect('/email/verify');
+    }
+
+    /** @test */
+    public function edit_non_premium_user_redirects_to_premium()
+    {
+        $user = User::factory()->create();
+        $response = $this->actingAs($user)->get(route('equipment_edit', 1));
+
+        $response->assertRedirect('/premium');
+    }
+
+    /** @test */
+    public function edit_random_premium_user_redirects_to_view()
+    {
+        $user = User::factory()->create();
+        $equipment = Equipment::factory()->create(['user_id' => $user->id]);
+        $response = $this->actingAs($this->premiumUser)->get(route('equipment_edit', $equipment->id));
+
+        $response->assertRedirect(route('equipment_view', $equipment->id));
+    }
+
+    /** @test */
+    public function edit_owner_premium_user_can_edit_equipment()
+    {
+        $equipment = Equipment::factory()->create();
+        $response = $this->actingAs($this->premiumUser)->get(route('equipment_edit', $equipment->id));
+
+        $response->assertOk()
+            ->assertViewIs('equipment.edit')
+            ->assertViewHas('equipment', function($pageEquipment) use ($equipment) {
+                $this->assertSame($equipment->name, $pageEquipment->name);
+                $this->assertSame($equipment->desription, $pageEquipment->desription);
+                return true;
+            });
+    }
 }

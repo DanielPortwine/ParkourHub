@@ -30,7 +30,7 @@ class CreateEquipment extends FormRequest
             'movement' => 'exists:App\Models\Movement,id',
             'name' => 'required|string|max:25',
             'description' => 'required|string|max:255',
-            'image' => 'required|mimes:jpg,jpeg,png|max:5000',
+            'image' => 'mimes:jpg,jpeg,png|max:5000',
             'visibility' => ['required', new Visibility],
         ];
     }
