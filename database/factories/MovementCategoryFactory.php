@@ -16,7 +16,7 @@ class MovementCategoryFactory extends Factory
             'type_id' => MovementType::inRandomOrder()->first()->id,
             'name' => $this->faker->word,
             'colour' => $this->faker->randomElement(['green', 'pink', 'blue', 'orange', 'yellow', 'cyan']),
-            'description' => $this->faker->paragraph,
+            'description' => $this->faker->sentence,
         ];
     }
 }

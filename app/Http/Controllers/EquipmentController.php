@@ -115,7 +115,7 @@ class EquipmentController extends Controller
     public function edit($id)
     {
         $equipment = Equipment::where('id', $id)->first();
-        if ($equipment->user_id != Auth::id()) {
+        if ($equipment->user_id !== Auth::id()) {
             return redirect()->route('equipment_view', $id);
         }
 
@@ -129,8 +129,8 @@ class EquipmentController extends Controller
         }
 
         $equipment = Equipment::where('id', $id)->first();
-        if ($equipment->user_id != Auth::id()) {
-            return redirect()->route('movement_view', $id);
+        if ($equipment->user_id !== Auth::id()) {
+            return redirect()->route('equipment_view', $id);
         }
         $equipment->name = $request['name'];
         $equipment->description = $request['description'];

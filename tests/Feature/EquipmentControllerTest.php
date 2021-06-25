@@ -9,6 +9,7 @@ use App\Models\MovementType;
 use App\Models\User;
 use Database\Seeders\MovementTypeSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use proj4php\projCode\Equi;
 use Spatie\Permission\Models\Permission;
 use Tests\TestCase;
 
@@ -561,7 +562,7 @@ class EquipmentControllerTest extends TestCase
     public function edit_random_premium_user_redirects_to_view()
     {
         $user = User::factory()->create();
-        $equipment = Equipment::factory()->create(['user_id' => $user->id]);
+        $equipment = Equipment::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
         $response = $this->actingAs($this->premiumUser)->get(route('equipment_edit', $equipment->id));
 
         $response->assertRedirect(route('equipment_view', $equipment->id));
@@ -580,5 +581,78 @@ class EquipmentControllerTest extends TestCase
                 $this->assertSame($equipment->desription, $pageEquipment->desription);
                 return true;
             });
+    }
+
+    /** @test */
+    public function update_non_logged_in_user_redirects_to_login()
+    {
+        $response = $this->post(route('equipment_update', 1), [
+            'name' => 'Test Equipment',
+        ]);
+
+        $response->assertRedirect('/email/verify');
+    }
+
+    /** @test */
+    public function update_non_premium_user_redirects_to_premium()
+    {
+        $user = User::factory()->create();
+        $response = $this->actingAs($user)->post(route('equipment_update', 1), [
+            'name' => 'Test Equipment',
+        ]);
+
+        $response->assertRedirect('/premium');
+    }
+
+    /** @test */
+    public function update_random_premium_user_redirects_to_view()
+    {
+        $user = User::factory()->create();
+        $equipment = Equipment::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+        $response = $this->actingAs($this->premiumUser)->post(route('equipment_update', $equipment->id), [
+            'name' => 'Test Equipment',
+            'description' => 'New description of equipment',
+            'visibility' => 'follower',
+        ]);
+
+        $response->assertRedirect(route('equipment_view', $equipment->id));
+    }
+
+    /** @test */
+    public function update_owner_premium_user_can_update_equipment_with_valid_data()
+    {
+        $equipment = Equipment::factory()->create(['name' => 'Test Equipment']);
+        $response = $this->actingAs($this->premiumUser)->post(route('equipment_update', $equipment->id), [
+            'name' => 'Updated Equipment',
+            'description' => 'New description of equipment',
+            'visibility' => 'follower',
+        ]);
+
+        $this->assertDatabaseCount('equipment', 1)
+            ->assertDatabaseHas('equipment', [
+                'name' => 'Updated Equipment',
+            ])
+            ->assertDatabaseMissing('equipment', [
+                'name' => 'Test Equipment',
+            ]);
+    }
+
+    /** @test */
+    public function update_owner_premium_user_can_not_update_equipment_with_invalid_data()
+    {
+        $equipment = Equipment::factory()->create(['name' => 'Test Equipment']);
+        $response = $this->actingAs($this->premiumUser)->post(route('equipment_update', $equipment->id), [
+            'name' => 'Updated Equipment Longer Than Twenty Five Characters',
+            'description' => 'New description of equipment',
+            'visibility' => 'follower',
+        ]);
+
+        $this->assertDatabaseCount('equipment', 1)
+            ->assertDatabaseHas('equipment', [
+                'name' => 'Test Equipment',
+            ])
+            ->assertDatabaseMissing('equipment', [
+                'name' => 'Updated Equipment Longer Than Twenty Five Characters',
+            ]);
     }
 }
