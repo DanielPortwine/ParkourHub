@@ -151,6 +151,8 @@ class EquipmentController extends Controller
         $equipment = Equipment::where('id', $id)->first();
         if ($equipment->user_id === Auth::id()) {
             $equipment->delete();
+        } else {
+            return redirect()->route('equipment_view', $equipment->id);
         }
 
         if (!empty($redirect)) {

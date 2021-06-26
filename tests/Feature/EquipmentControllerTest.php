@@ -655,4 +655,62 @@ class EquipmentControllerTest extends TestCase
                 'name' => 'Updated Equipment Longer Than Twenty Five Characters',
             ]);
     }
+
+    /** @test */
+    public function delete_non_logged_in_user_redirects_to_login()
+    {
+        $response = $this->get(route('equipment_delete', 1));
+
+        $response->assertRedirect('/email/verify');
+    }
+
+    /** @test */
+    public function delete_non_premium_user_redirects_to_premium()
+    {
+        $user = User::factory()->create();
+        $response = $this->actingAs($user)->get(route('equipment_delete', 1));
+
+        $response->assertRedirect('/premium');
+    }
+
+    /** @test */
+    public function delete_random_premium_user_redirects_to_view()
+    {
+        $user = User::factory()->create();
+        $equipment = Equipment::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('equipment_delete', $equipment->id));
+
+        $response->assertRedirect(route('equipment_view', $equipment->id));
+    }
+
+    /** @test */
+    public function delete_owner_premium_user_can_delete_equipment()
+    {
+        $equipment = Equipment::factory()->create();
+
+        $response = $this->actingAs($this->premiumUser)->get(route('equipment_delete', $equipment->id));
+
+        $this->assertDatabaseCount('equipment', 1)
+            ->assertSoftDeleted($equipment);
+    }
+
+    /** @test */
+    public function delete_owner_premium_user_can_delete_equipment_and_redirect()
+    {
+        $equipment = Equipment::factory()->create();
+
+        $response = $this->actingAs($this->premiumUser)->post(route('equipment_update', $equipment->id), [
+            'name' => $equipment->name,
+            'description' => $equipment->description,
+            'visibility' => $equipment->visibility,
+            'delete' => true,
+            'redirect' => route('equipment_view', $equipment->id),
+        ]);
+
+        $this->assertDatabaseCount('equipment', 1)
+            ->assertSoftDeleted($equipment);
+
+        $response->assertRedirect(route('equipment_view', $equipment->id));
+    }
 }
