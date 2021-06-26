@@ -713,4 +713,49 @@ class EquipmentControllerTest extends TestCase
 
         $response->assertRedirect(route('equipment_view', $equipment->id));
     }
+
+    /** @test */
+    public function recover_non_logged_in_user_redirects_to_login()
+    {
+        $response = $this->get(route('equipment_recover', 1));
+
+        $response->assertRedirect('/email/verify');
+    }
+
+    /** @test */
+    public function recover_non_premium_user_redirects_to_premium()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->get(route('equipment_recover', 1));
+
+        $response->assertRedirect('/premium');
+    }
+
+    /** @test */
+    public function recover_random_premium_user_can_not_recover_equipment()
+    {
+        $user = User::factory()->create();
+        $equipment = Equipment::factory()->create(['user_id' => $user->id, 'visibility' => 'public', 'deleted_at' => now()]);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('equipment_recover', $equipment->id));
+
+        $this->assertDatabaseCount('equipment', 1)
+            ->assertSoftDeleted($equipment);
+    }
+
+    /** @test */
+    public function recover_owner_premium_user_can_recover_equipment()
+    {
+        $equipment = Equipment::factory()->create(['deleted_at' => now()]);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('equipment_recover', $equipment->id));
+
+        $this->assertDatabaseCount('equipment', 1)
+            ->assertDatabaseHas('equipment', [
+                'name' => $equipment->name,
+                'description' => $equipment->description,
+                'deleted_at' => null,
+            ]);
+    }
 }
