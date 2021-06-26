@@ -758,4 +758,67 @@ class EquipmentControllerTest extends TestCase
                 'deleted_at' => null,
             ]);
     }
+
+    /** @test */
+    public function remove_non_logged_in_user_redirects_to_login()
+    {
+        $response = $this->get(route('equipment_remove', 1));
+
+        $response->assertRedirect('/email/verify');
+    }
+
+    /** @test */
+    public function remove_non_premium_user_redirects_to_premium()
+    {
+        $user = User::factory()->create();
+        $response = $this->actingAs($user)->get(route('equipment_remove', 1));
+
+        $response->assertRedirect('/premium');
+    }
+
+    /** @test */
+    public function remove_random_premium_user_can_not_remove_equipment()
+    {
+        $user = User::factory()->create();
+        $equipment = Equipment::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('equipment_remove', $equipment->id));
+
+        $this->assertDatabaseCount('equipment', 1)
+            ->assertDatabaseHas('equipment', [
+                'name' => $equipment->name,
+                'description' => $equipment->description,
+            ]);
+    }
+
+    /** @test */
+    public function remove_owner_premium_user_can_remove_equipment()
+    {
+        $equipment = Equipment::factory()->create(['user_id' => $this->premiumUser->id]);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('equipment_remove', $equipment->id));
+
+        $this->assertDatabaseCount('equipment', 0)
+            ->assertDatabaseMissing('equipment', [
+                'name' => $equipment->name,
+                'description' => $equipment->description,
+            ]);
+    }
+
+    /** @test */
+    public function remove_premium_user_with_remove_content_permission_can_remove_private_equipment()
+    {
+        $removeContent = Permission::create(['name' => 'remove content']);
+        $user = User::factory()->create();
+        $this->premiumUser->givePermissionTo($removeContent);
+        $equipment = Equipment::factory()->create(['user_id' => $user->id, 'visibility' => 'private']);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('equipment_remove', $equipment->id));
+
+        $this->assertDatabaseCount('equipment', 0)
+            ->assertDatabaseMissing('equipment', [
+                'name' => $equipment->name,
+                'description' => $equipment->description,
+            ]);
+    }
 }

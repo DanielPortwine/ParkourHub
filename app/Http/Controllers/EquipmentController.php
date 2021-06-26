@@ -10,6 +10,7 @@ use App\Models\Movement;
 use App\Models\MovementCategory;
 use App\Models\MovementField;
 use App\Models\Report;
+use App\Scopes\VisibilityScope;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -177,9 +178,9 @@ class EquipmentController extends Controller
 
     public function remove(Request $request, $id)
     {
-        $equipment = Equipment::withTrashed()->where('id', $id)->first();
+        $equipment = Equipment::withTrashed()->withoutGlobalScope(VisibilityScope::class)->where('id', $id)->first();
 
-        if ($equipment->user_id !== Auth::id() && !Auth::user()->hasPermissionTo('remove content')) {
+        if (empty($equipment) || ($equipment->user_id !== Auth::id() && !Auth::user()->hasPermissionTo('remove content'))) {
             return back();
         }
 
