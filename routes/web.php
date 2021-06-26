@@ -166,7 +166,7 @@ Route::prefix('equipment')->middleware(['verified', 'isPremium'])->group(functio
     Route::get('/recover/{id}', 'EquipmentController@recover')->name('equipment_recover');
     Route::get('/remove/{id}', 'EquipmentController@remove')->name('equipment_remove');
     Route::get('/report/{equipment}', 'EquipmentController@report')->name('equipment_report');
-    Route::get('/discard_reports/{equipment}', 'EquipmentController@discardReports')->name('equipment_report_discard');
+    Route::get('/discard_reports/{id}', 'EquipmentController@discardReports')->name('equipment_report_discard');
 });
 
 Route::prefix('workouts')->middleware(['verified', 'isPremium'])->group(function() {

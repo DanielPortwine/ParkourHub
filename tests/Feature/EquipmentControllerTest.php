@@ -9,6 +9,7 @@ use App\Models\MovementType;
 use App\Models\User;
 use Database\Seeders\MovementTypeSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use proj4php\projCode\Equi;
 use Spatie\Permission\Models\Permission;
 use Tests\TestCase;
@@ -865,6 +866,62 @@ class EquipmentControllerTest extends TestCase
         $equipment = Equipment::factory()->create(['user_id' => $user->id, 'visibility' => 'private']);
 
         $response = $this->actingAs($this->premiumUser)->get(route('equipment_report', $equipment->id));
+
+        $this->assertDatabaseCount('reports', 0)
+            ->assertDatabaseMissing('reports', [
+                'reportable_id' => $equipment->id,
+                'reportable_type' => Equipment::class,
+                'user_id' => $this->premiumUser->id,
+            ]);
+    }
+
+    /** @test */
+    public function discard_reports_non_logged_in_user_redirects_to_login()
+    {
+        $equipment = Equipment::factory()->create(['visibility' => 'public']);
+        $response = $this->get(route('equipment_report_discard', $equipment->id));
+
+        $response->assertRedirect('/email/verify');
+    }
+
+    /** @test */
+    public function discard_reports_non_premium_user_redirects_to_premium()
+    {
+        $equipment = Equipment::factory()->create(['visibility' => 'public']);
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->get(route('equipment_report_discard', $equipment->id));
+
+        $response->assertRedirect('/premium');
+    }
+
+    /** @test */
+    public function discard_reports_random_premium_user_can_not_discard_equipment_reports()
+    {
+        $user = User::factory()->create();
+        $equipment = Equipment::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+        DB::insert('INSERT INTO reports (reportable_id, reportable_type, user_id) VALUES (?, ?, ?)', [$equipment->id, Equipment::class, $this->premiumUser->id]);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('equipment_report_discard', $equipment->id));
+
+        $this->assertDatabaseCount('reports', 1)
+            ->assertDatabaseHas('reports', [
+                'reportable_id' => $equipment->id,
+                'reportable_type' => Equipment::class,
+                'user_id' => $this->premiumUser->id,
+            ]);
+    }
+
+    /** @test */
+    public function discard_reports_premium_user_with_manage_reports_permission_can_discard_private_equipment_reports()
+    {
+        $user = User::factory()->create();
+        $equipment = Equipment::factory()->create(['user_id' => $user->id, 'visibility' => 'private']);
+        DB::insert('INSERT INTO reports (reportable_id, reportable_type, user_id) VALUES (?, ?, ?)', [$equipment->id, Equipment::class, $this->premiumUser->id]);
+        $manageReports = Permission::create(['name' => 'manage reports']);
+        $this->premiumUser->givePermissionTo($manageReports);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('equipment_report_discard', $equipment->id));
 
         $this->assertDatabaseCount('reports', 0)
             ->assertDatabaseMissing('reports', [

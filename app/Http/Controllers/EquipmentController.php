@@ -200,8 +200,14 @@ class EquipmentController extends Controller
         return back()->with('status', 'Successfully reported equipment');
     }
 
-    public function discardReports(Equipment $equipment)
+    public function discardReports($id)
     {
+        if (!Auth::user()->hasPermissionTo('manage reports')) {
+            return back();
+        }
+
+        $equipment = Equipment::withoutGlobalScope(VisibilityScope::class)->where('id', $id)->first();
+
         $equipment->discardReports();
 
         return back()->with('status', 'Successfully discarded reports against this content');
