@@ -821,4 +821,56 @@ class EquipmentControllerTest extends TestCase
                 'description' => $equipment->description,
             ]);
     }
+
+    /** @test */
+    public function report_non_logged_in_user_redirects_to_login()
+    {
+        $equipment = Equipment::factory()->create(['visibility' => 'public']);
+        $response = $this->get(route('equipment_report', $equipment->id));
+
+        $response->assertRedirect('/email/verify');
+    }
+
+    /** @test */
+    public function report_non_premium_user_redirects_to_premium()
+    {
+        $equipment = Equipment::factory()->create(['visibility' => 'public']);
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->get(route('equipment_report', $equipment->id));
+
+        $response->assertRedirect('/premium');
+    }
+
+    /** @test */
+    public function report_premium_user_can_report_visible_equipment()
+    {
+        $user = User::factory()->create();
+        $equipment = Equipment::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('equipment_report', $equipment->id));
+
+        $this->assertDatabaseCount('reports', 1)
+            ->assertDatabaseHas('reports', [
+                'reportable_id' => $equipment->id,
+                'reportable_type' => Equipment::class,
+                'user_id' => $this->premiumUser->id,
+            ]);
+    }
+
+    /** @test */
+    public function report_premium_user_can_not_report_invisible_equipment()
+    {
+        $user = User::factory()->create();
+        $equipment = Equipment::factory()->create(['user_id' => $user->id, 'visibility' => 'private']);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('equipment_report', $equipment->id));
+
+        $this->assertDatabaseCount('reports', 0)
+            ->assertDatabaseMissing('reports', [
+                'reportable_id' => $equipment->id,
+                'reportable_type' => Equipment::class,
+                'user_id' => $this->premiumUser->id,
+            ]);
+    }
 }
