@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\Challenge;
 use App\Models\Spot;
 use App\Models\User;
+use App\Scopes\VisibilityScope;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ChallengeFactory extends Factory
@@ -14,7 +15,7 @@ class ChallengeFactory extends Factory
     public function definition()
     {
         return [
-            'spot_id' => Spot::inRandomOrder()->first()->id,
+            'spot_id' => Spot::withoutGlobalScope(VisibilityScope::class)->inRandomOrder()->first()->id,
             'user_id' => User::inRandomOrder()->first()->id,
             'name' => $this->faker->word,
             'description' => $this->faker->realText(255),
