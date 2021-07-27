@@ -82,7 +82,7 @@ class ChallengeController extends Controller
             ->first();
 
         if (empty($challenge) || ($challenge->deleted_at !== null && Auth::id() !== $challenge->user_id)) {
-            return view('errors.404');
+            abort(404);
         }
 
         $entries = $challenge->entries()->with(['challenge', 'reports', 'user'])->orderByDesc('created_at')->paginate(10, ['*'], 'entries');
