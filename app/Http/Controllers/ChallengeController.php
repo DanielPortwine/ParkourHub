@@ -104,7 +104,7 @@ class ChallengeController extends Controller
         ]);
     }
 
-    public function create(CreateChallenge $request)
+    public function store(CreateChallenge $request)
     {
         $challenge = new Challenge;
         $challenge->spot_id = $request['spot'];

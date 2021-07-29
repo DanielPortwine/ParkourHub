@@ -15,7 +15,8 @@ RUN apt-get update; apt-get install -y \
         libzip-dev \
         jpegoptim \
         optipng \
-        pngquant
+        pngquant \
+        libpng-dev
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
@@ -27,6 +28,7 @@ RUN docker-php-ext-install pdo_mysql
 RUN docker-php-ext-install xml
 RUN docker-php-ext-install zip
 RUN docker-php-ext-install bcmath
+RUN docker-php-ext-install gd
 RUN echo "max_file_uploads=5" >> /usr/local/etc/php/conf.d/docker-php-ext-max_file_uploads.ini
 RUN echo "post_max_size=100M" >> /usr/local/etc/php/conf.d/docker-php-ext-post_max_size.ini
 RUN echo "upload_max_filesize=100M" >> /usr/local/etc/php/conf.d/docker-php-ext-upload_max_filesize.ini

@@ -31,12 +31,12 @@ class CreateChallenge extends FormRequest
             $content = [
                 'youtube' => ['required_without:video', 'nullable', 'active_url', new YoutubeLink],
                 'video' => 'required_without:youtube|mimes:mp4,mov,mpg,mpeg|max:500000',
-                'thumbnail' => 'mimes:jpg,jpeg,png|max:5000',
+                'thumbnail' => 'required|mimes:jpg,jpeg,png|max:5000',
             ];
         } else {
             $content = [
                 'youtube' => ['required', 'active_url', new YoutubeLink],
-                'thumbnail' => 'mimes:jpg,jpeg,png|max:500',
+                'thumbnail' => 'required|mimes:jpg,jpeg,png|max:500',
             ];
         }
 

@@ -113,7 +113,7 @@ Route::prefix('/spot_comments')->middleware('verified')->group(function() {
 Route::prefix('challenges')->middleware('verified')->group(function() {
     Route::get('/', 'ChallengeController@listing')->withoutMiddleware('verified')->name('challenge_listing');
     Route::get('/challenge/{id}', 'ChallengeController@view')->withoutMiddleware('verified')->name('challenge_view');
-    Route::post('/create', 'ChallengeController@create')->middleware('optimizeImages')->name('challenge_create');
+    Route::post('/create', 'ChallengeController@store')->middleware('optimizeImages')->name('challenge_store');
     Route::get('/edit/{id}', 'ChallengeController@edit')->name('challenge_edit');
     Route::post('/edit/{id}', 'ChallengeController@update')->middleware('optimizeImages')->name('challenge_update');
     Route::get('/delete/{id}', 'ChallengeController@delete')->name('challenge_delete');
