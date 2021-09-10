@@ -1056,9 +1056,7 @@ class ChallengeControllerTest extends TestCase
     /** @test */
     public function report_non_logged_in_user_redirects_to_login()
     {
-        $spot = Spot::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'public']);
-        $challenge = Challenge::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'public']);
-        $response = $this->get(route('challenge_report', $challenge->id));
+        $response = $this->get(route('challenge_report', 1));
 
         $response->assertRedirect('/email/verify');
     }
@@ -1089,20 +1087,13 @@ class ChallengeControllerTest extends TestCase
 
         $response = $this->actingAs($this->premiumUser)->get(route('challenge_report', $challenge->id));
 
-        $this->assertDatabaseCount('reports', 0)
-            ->assertDatabaseMissing('reports', [
-                'reportable_id' => $challenge->id,
-                'reportable_type' => Challenge::class,
-                'user_id' => $this->premiumUser->id,
-            ]);
+        $this->assertDatabaseCount('reports', 0);
     }
 
     /** @test */
     public function discard_reports_non_logged_in_user_redirects_to_login()
     {
-        $spot = Spot::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'public']);
-        $challenge = Challenge::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'public']);
-        $response = $this->get(route('challenge_report_discard', $challenge->id));
+        $response = $this->get(route('challenge_report_discard', 1));
 
         $response->assertRedirect('/email/verify');
     }
@@ -1154,12 +1145,7 @@ class ChallengeControllerTest extends TestCase
 
         $response = $this->actingAs($user)->get(route('challenge_report_discard', $challenge->id));
 
-        $this->assertDatabaseCount('reports', 0)
-            ->assertDatabaseMissing('reports', [
-                'reportable_id' => $challenge->id,
-                'reportable_type' => Challenge::class,
-                'user_id' => $this->premiumUser->id,
-            ]);
+        $this->assertDatabaseCount('reports', 0);
     }
 
 }

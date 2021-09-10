@@ -36,6 +36,8 @@ class EnterChallenge extends FormRequest
             ];
         }
 
+        $rules['challenge'] = 'required|integer|exists:App\Models\Challenge,id';
+
         return $rules;
     }
 

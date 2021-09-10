@@ -119,16 +119,16 @@ Route::prefix('challenges')->middleware('verified')->group(function() {
     Route::get('/delete/{id}', 'ChallengeController@delete')->name('challenge_delete');
     Route::get('/recover/{id}', 'ChallengeController@recover')->name('challenge_recover');
     Route::get('/remove/{id}', 'ChallengeController@remove')->name('challenge_remove');
-    Route::get('/report/{challenge}', 'ChallengeController@report')->name('challenge_report');
+    Route::get('/report/{id}', 'ChallengeController@report')->name('challenge_report');
     Route::get('/discard_reports/{id}', 'ChallengeController@discardReports')->name('challenge_report_discard');
     Route::prefix('entries')->group(function() {
-        Route::post('/create', 'ChallengeEntryController@create')->name('entry_create');
+        Route::post('/create', 'ChallengeEntryController@store')->name('entry_store');
         Route::get('/win/{id}', 'ChallengeEntryController@win')->name('entry_win');
-        Route::get('/report/{challengeEntry}', 'ChallengeEntryController@report')->name('entry_report');
-        Route::get('/discard_reports/{challengeEntry}', 'ChallengeEntryController@discardReports')->name('entry_report_discard');
-        Route::get('/delete/{challengeEntry}', 'ChallengeEntryController@delete')->name('entry_delete');
+        Route::get('/delete/{id}', 'ChallengeEntryController@delete')->name('entry_delete');
         Route::get('/recover/{id}', 'ChallengeEntryController@recover')->name('entry_recover');
         Route::get('/remove/{id}', 'ChallengeEntryController@remove')->name('entry_remove');
+        Route::get('/report/{id}', 'ChallengeEntryController@report')->name('entry_report');
+        Route::get('/discard_reports/{id}', 'ChallengeEntryController@discardReports')->name('entry_report_discard');
     });
 });
 

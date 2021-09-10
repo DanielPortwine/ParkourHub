@@ -236,8 +236,9 @@ class ChallengeController extends Controller
         return back()->with('status', 'Successfully removed challenge forever.');
     }
 
-    public function report(Challenge $challenge)
+    public function report($id)
     {
+        $challenge = Challenge::where('id', $id)->first();
         $challenge->report();
 
         return back()->with('status', 'Successfully reported challenge');
@@ -249,7 +250,7 @@ class ChallengeController extends Controller
             return back();
         }
 
-        $challenge = Challenge::withTrashed()->withoutGlobalScope(VisibilityScope::class)->first();
+        $challenge = Challenge::withTrashed()->withoutGlobalScope(VisibilityScope::class)->where('id', $id)->first();
         $challenge->discardReports();
 
         return back()->with('status', 'Successfully discarded reports against this content');

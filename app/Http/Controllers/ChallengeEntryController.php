@@ -8,6 +8,7 @@ use App\Models\ChallengeEntry;
 use App\Models\User;
 use App\Notifications\ChallengeEntered;
 use App\Notifications\ChallengeWon;
+use App\Scopes\VisibilityScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,7 +16,7 @@ use Illuminate\Support\Facades\Storage;
 
 class ChallengeEntryController extends Controller
 {
-    public function create(EnterChallenge $request)
+    public function store(EnterChallenge $request)
     {
         if (empty(ChallengeEntry::where('challenge_id', $request['challenge'])->where('user_id', Auth::id())->first())) {
             $entry = new ChallengeEntry;
@@ -47,7 +48,11 @@ class ChallengeEntryController extends Controller
     public function win($id)
     {
         $entry = ChallengeEntry::where('id', $id)->first();
-        if (empty($entry->winner)) {
+        if ($entry->challenge->user_id !== Auth::id()) {
+            return back();
+        }
+
+        if (!$entry->challenge->won) {
             $entry->winner = true;
             $entry->save();
 
@@ -67,24 +72,14 @@ class ChallengeEntryController extends Controller
         return redirect()->back()->with('status', 'This challenge has already been won');
     }
 
-    public function report(ChallengeEntry $challengeEntry)
+    public function delete($id)
     {
-        $challengeEntry->report();
+        $challengeEntry = ChallengeEntry::where('id', $id)->first();
 
-        return back()->with('status', 'Successfully reported challenge entry');
-    }
-
-    public function discardReports(ChallengeEntry $challengeEntry)
-    {
-        $challengeEntry->discardReports();
-
-        return back()->with('status', 'Successfully discarded reports against this content');
-    }
-
-    public function delete(ChallengeEntry $challengeEntry)
-    {
         if ($challengeEntry->user_id === Auth::id()) {
             $challengeEntry->delete();
+        } else {
+            return redirect()->route('challenge_view', $challengeEntry->challenge->id);
         }
 
         return back()->with('status', 'Successfully deleted challenge entry');
@@ -118,5 +113,29 @@ class ChallengeEntryController extends Controller
         $entry->forceDelete();
 
         return back()->with('status', 'Successfully removed entry forever.');
+    }
+
+    public function report($id)
+    {
+        $challengeEntry = ChallengeEntry::where('id', $id)->first();
+        if (empty($challengeEntry->challenge)) {
+            return back();
+        }
+
+        $challengeEntry->report();
+
+        return back()->with('status', 'Successfully reported challenge entry');
+    }
+
+    public function discardReports($id)
+    {
+        if (!Auth::user()->hasPermissionTo('manage reports')) {
+            return back();
+        }
+
+        $challengeEntry = ChallengeEntry::withTrashed()->withoutGlobalScope(VisibilityScope::class)->where('id', $id)->first();
+        $challengeEntry->discardReports();
+
+        return back()->with('status', 'Successfully discarded reports against this content');
     }
 }
