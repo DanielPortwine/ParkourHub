@@ -579,7 +579,7 @@ class EquipmentControllerTest extends TestCase
             ->assertViewIs('equipment.edit')
             ->assertViewHas('equipment', function($pageEquipment) use ($equipment) {
                 $this->assertSame($equipment->name, $pageEquipment->name);
-                $this->assertSame($equipment->desription, $pageEquipment->desription);
+                $this->assertSame($equipment->description, $pageEquipment->description);
                 return true;
             });
     }

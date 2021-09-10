@@ -14,6 +14,7 @@ use App\Notifications\ChallengeEntered;
 use App\Notifications\ChallengeWon;
 use App\Notifications\SpotChallenged;
 use App\Models\User;
+use App\Scopes\VisibilityScope;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -145,6 +146,9 @@ class ChallengeController extends Controller
     public function edit($id)
     {
         $challenge = Challenge::where('id', $id)->first();
+        if ($challenge->user_id !== Auth::id()) {
+            return redirect()->route('challenge_view', $id);
+        }
 
         return view('challenges.edit', ['challenge' => $challenge]);
     }
@@ -155,7 +159,10 @@ class ChallengeController extends Controller
             return $this->delete($id, $request['redirect']);
         }
 
-        $challenge = Challenge::where('id', $id)->first();
+        $challenge = Challenge::withoutGlobalScope(VisibilityScope::class)->where('id', $id)->first();
+        if ($challenge->user_id !== Auth::id()) {
+            return redirect()->route('challenge_view', $id);
+        }
         $challenge->name = $request['name'];
         $challenge->description = $request['description'];
         $challenge->difficulty = empty($request['difficulty']) ? '3' : $request['difficulty'];
@@ -185,6 +192,8 @@ class ChallengeController extends Controller
         $challenge = Challenge::where('id', $id)->first();
         if ($challenge->user_id === Auth::id()) {
             $challenge->delete();
+        } else {
+            return redirect()->route('challenge_view', $challenge->id);
         }
 
         if (!empty($redirect)) {
@@ -209,7 +218,7 @@ class ChallengeController extends Controller
 
     public function remove(Request $request, $id)
     {
-        $challenge = Challenge::withTrashed()->where('id', $id)->first();
+        $challenge = Challenge::withTrashed()->withoutGlobalScope(VisibilityScope::class)->where('id', $id)->first();
 
         if ($challenge->user_id !== Auth::id() && !Auth::user()->hasPermissionTo('remove content')) {
             return back();
@@ -227,58 +236,6 @@ class ChallengeController extends Controller
         return back()->with('status', 'Successfully removed challenge forever.');
     }
 
-    public function enter(EnterChallenge $request, $id)
-    {
-        if (empty(ChallengeEntry::where('challenge_id', $id)->where('user_id', Auth::id())->first())) {
-            $entry = new ChallengeEntry;
-            $entry->challenge_id = $id;
-            $entry->user_id = Auth::id();
-            if (!empty($request['youtube'])) {
-                $youtube = explode('t=', str_replace(['https://youtu.be/', 'https://www.youtube.com/watch?v=', '&', '?'], '', $request['youtube']));
-                $entry->youtube = $youtube[0];
-                $entry->youtube_start = $youtube[1] ?? null;
-            } else if (!empty($request['video'])) {
-                $video = $request->file('video');
-                $entry->video = Storage::url($video->store('videos/challenge_entries', 'public'));
-                $entry->video_type = $video->extension();
-            }
-            $entry->save();
-
-            // notify the challenge creator that someone enters a challenge
-            $creator = User::where('id', $entry->challenge->user_id)->first();
-            if ($creator->id != Auth::id() && in_array(setting('notifications_entry', 'on-site', $creator->id), ['on-site', 'email', 'email-site'])) {
-                $creator->notify(new ChallengeEntered($entry));
-            }
-
-            return redirect()->back()->with('status', 'Successfully entered challenge ' . $entry->challenge->name);
-        }
-
-        return redirect()->back()->with('status', 'You have already entered this challenge');
-    }
-
-    public function win($id)
-    {
-        $entry = ChallengeEntry::where('id', $id)->first();
-        if (empty($entry->winner)) {
-            $entry->winner = true;
-            $entry->save();
-
-            // notify the challenge winner that they won
-            $winner = User::where('id', $entry->user_id)->first();
-            if ($winner->id != Auth::id() && in_array(setting('notifications_challenge_won', 'on-site', $winner->id), ['on-site', 'email', 'email-site'])) {
-                $winner->notify(new ChallengeWon($entry));
-            }
-
-            $challenge = Challenge::where('id', $entry->challenge_id)->first();
-            $challenge->won = true;
-            $challenge->save();
-
-            return back()->with('status', 'Successfully appointed the winner of this challenge');
-        }
-
-        return redirect()->back()->with('status', 'This challenge has already been won');
-    }
-
     public function report(Challenge $challenge)
     {
         $challenge->report();
@@ -286,63 +243,15 @@ class ChallengeController extends Controller
         return back()->with('status', 'Successfully reported challenge');
     }
 
-    public function discardReports(Challenge $challenge)
+    public function discardReports($id)
     {
+        if (!Auth::user()->hasPermissionTo('manage reports')) {
+            return back();
+        }
+
+        $challenge = Challenge::withTrashed()->withoutGlobalScope(VisibilityScope::class)->first();
         $challenge->discardReports();
 
         return back()->with('status', 'Successfully discarded reports against this content');
-    }
-
-    public function reportEntry(ChallengeEntry $challengeEntry)
-    {
-        $challengeEntry->report();
-
-        return back()->with('status', 'Successfully reported challenge entry');
-    }
-
-    public function discardEntryReports(ChallengeEntry $challengeEntry)
-    {
-        $challengeEntry->discardReports();
-
-        return back()->with('status', 'Successfully discarded reports against this content');
-    }
-
-    public function deleteEntry(ChallengeEntry $challengeEntry)
-    {
-        if ($challengeEntry->user_id === Auth::id()) {
-            $challengeEntry->delete();
-        }
-
-        return back()->with('status', 'Successfully deleted challenge entry');
-    }
-
-    public function recoverEntry(Request $request, $id)
-    {
-        $entry = ChallengeEntry::onlyTrashed()->where('id', $id)->first();
-
-        if (empty($entry) || $entry->user_id !== Auth::id()) {
-            return back();
-        }
-
-        $entry->restore();
-
-        return back()->with('status', 'Successfully recovered entry.');
-    }
-
-    public function removeEntry(Request $request, $id)
-    {
-        $entry = ChallengeEntry::withTrashed()->where('id', $id)->first();
-
-        if ($entry->user_id !== Auth::id() && !Auth::user()->hasPermissionTo('remove content')) {
-            return back();
-        }
-
-        if (!empty($entry->video)) {
-            Storage::disk('public')->delete(str_replace('storage/', '', $entry->video));
-        }
-
-        $entry->forceDelete();
-
-        return back()->with('status', 'Successfully removed entry forever.');
     }
 }

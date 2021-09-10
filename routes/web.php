@@ -120,7 +120,7 @@ Route::prefix('challenges')->middleware('verified')->group(function() {
     Route::get('/recover/{id}', 'ChallengeController@recover')->name('challenge_recover');
     Route::get('/remove/{id}', 'ChallengeController@remove')->name('challenge_remove');
     Route::get('/report/{challenge}', 'ChallengeController@report')->name('challenge_report');
-    Route::get('/discard_reports/{challenge}', 'ChallengeController@discardReports')->name('challenge_report_discard');
+    Route::get('/discard_reports/{id}', 'ChallengeController@discardReports')->name('challenge_report_discard');
     Route::prefix('entries')->group(function() {
         Route::post('/create', 'ChallengeEntryController@create')->name('entry_create');
         Route::get('/win/{id}', 'ChallengeEntryController@win')->name('entry_win');
