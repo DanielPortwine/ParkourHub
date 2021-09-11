@@ -12,7 +12,7 @@
             </div>
         </div>
         <div class="row">
-            @foreach($followedSpots->chunk(4)->first() as $spot)
+            @foreach($followedSpots->slice(4)->all() as $spot)
                 <div class="col-xl-3 col-md-6 mb-4">
                     @include('components.spot')
                 </div>
@@ -35,7 +35,7 @@
             </div>
         </div>
         <div class="row">
-            @foreach($followedChallenges->chunk(4)->first() as $challenge)
+            @foreach($followedChallenges->slice(4)->all() as $challenge)
                 <div class="col-xl-3 col-md-6 mb-4">
                     @include('components.challenge')
                 </div>
@@ -59,7 +59,7 @@
             </div>
         </div>
         <div class="row">
-            @foreach($hometownSpots->chunk(4)->first() as $spot)
+            @foreach($hometownSpots->slice(4)->all() as $spot)
                 <div class="col-xl-3 col-md-6 mb-4">
                     @include('components.spot')
                 </div>
@@ -82,7 +82,7 @@
             </div>
         </div>
         <div class="row">
-            @foreach($hometownChallenges->chunk(4)->first() as $challenge)
+            @foreach($hometownChallenges->slice(4)->all() as $challenge)
                 <div class="col-xl-3 col-md-6 mb-4">
                     @include('components.challenge')
                 </div>
@@ -106,7 +106,7 @@
             </div>
         </div>
         <div class="row">
-            @foreach($hitlist->chunk(4)->first() as $spot)
+            @foreach($hitlist->slice(4)->all() as $spot)
                 @php $spot = $spot->spot @endphp
                 <div class="col-xl-3 col-md-6 mb-4">
                     @include('components.spot')

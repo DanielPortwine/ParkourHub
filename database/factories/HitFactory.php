@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\Hit;
 use App\Models\Spot;
 use App\Models\User;
+use App\Scopes\VisibilityScope;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class HitFactory extends Factory
@@ -15,7 +16,7 @@ class HitFactory extends Factory
     {
         return [
             'user_id' => User::inRandomOrder()->first()->id,
-            'spot_id' => Spot::inRandomOrder()->first()->id,
+            'spot_id' => Spot::withoutGlobalScope(VisibilityScope::class)->inRandomOrder()->first()->id,
         ];
     }
 }
