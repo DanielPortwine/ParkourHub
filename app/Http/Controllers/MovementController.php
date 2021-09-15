@@ -41,7 +41,6 @@ class MovementController extends Controller
                 'to' => $request['date_to'] ?? null
             ])
             ->category($request['category'] ?? null)
-            ->exercise($request['exercise'] ?? null)
             ->equipment($request['equipment'] ?? null)
             ->search($request['search'] ?? false)
             ->orderBy($sort[0], $sort[1])
