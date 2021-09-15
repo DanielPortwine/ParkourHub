@@ -335,4 +335,136 @@ class MovementControllerTest extends TestCase
                 return true;
             });
     }
+
+    /** @test */
+    public function view_non_logged_in_user_redirects_to_login()
+    {
+        $response = $this->get(route('movement_view', 1));
+
+        $response->assertRedirect('/email/verify');
+    }
+
+    /** @test */
+    public function view_non_premium_user_redirects_to_premium()
+    {
+        $user = User::factory()->create();
+        $response = $this->actingAs($user)->get('/equipment/view/' . 1);
+
+        $response->assertRedirect('/premium');
+    }
+
+    /** @test */
+    public function view_premium_user_can_view_public_movement_of_different_user()
+    {
+        $user = User::factory()->create();
+        $type = MovementType::factory()->create();
+        $category = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+        $response = $this->actingAs($this->premiumUser)->get(route('movement_view', $movement->id));
+
+        $response->assertOk()
+            ->assertViewIs('movements.view')
+            ->assertViewHas('originalMovement', function ($viewMovement) use ($movement) {
+                $this->assertSame($movement->id, $viewMovement->id);
+                $this->assertSame($movement->name, $viewMovement->name);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function view_premium_user_can_view_follower_movement_of_user_they_follow()
+    {
+        $user = User::factory()->create();
+        $user->followers()->attach($this->premiumUser->id, ['accepted' => true]);
+        $type = MovementType::factory()->create();
+        $category = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create(['user_id' => $user->id, 'visibility' => 'follower']);
+        $response = $this->actingAs($this->premiumUser)->get(route('movement_view', $movement->id));
+
+        $response->assertOk()
+            ->assertViewIs('movements.view')
+            ->assertViewHas('originalMovement', function ($viewMovement) use ($movement) {
+                $this->assertSame($movement->id, $viewMovement->id);
+                $this->assertSame($movement->name, $viewMovement->name);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function view_premium_user_can_not_view_follower_movement_of_user_they_do_not_follow()
+    {
+        $user = User::factory()->create();
+        $type = MovementType::factory()->create();
+        $category = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create(['user_id' => $user->id, 'visibility' => 'follower']);
+        $response = $this->actingAs($this->premiumUser)->get(route('movement_view', $movement->id));
+
+        $response->assertNotFound();
+    }
+
+    /** @test */
+    public function view_premium_user_can_view_their_own_private_movement()
+    {
+        $type = MovementType::factory()->create();
+        $category = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'private']);
+        $response = $this->actingAs($this->premiumUser)->get(route('movement_view', $movement->id));
+
+        $response->assertOk()
+            ->assertViewIs('movements.view')
+            ->assertViewHas('originalMovement', function ($viewMovement) use ($movement) {
+                $this->assertSame($movement->id, $viewMovement->id);
+                $this->assertSame($movement->name, $viewMovement->name);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function view_premium_user_can_not_view_private_movement_of_different_user()
+    {
+        $user = User::factory()->create();
+        $type = MovementType::factory()->create();
+        $category = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create(['user_id' => $user->id, 'visibility' => 'private']);
+        $response = $this->actingAs($this->premiumUser)->get(route('movement_view', $movement->id));
+
+        $response->assertNotFound();
+    }
+
+    /** @test */
+    public function view_premium_user_can_view_their_own_deleted_movement()
+    {
+        $type = MovementType::factory()->create();
+        $category = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'private', 'deleted_at' => now()]);
+        $response = $this->actingAs($this->premiumUser)->get(route('movement_view', $movement->id));
+
+        $response->assertOk()
+            ->assertViewIs('movements.view')
+            ->assertViewHas('originalMovement', function ($viewMovement) use ($movement) {
+                $this->assertSame($movement->id, $viewMovement->id);
+                $this->assertSame($movement->name, $viewMovement->name);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function view_premium_user_can_not_view_deleted_public_movement_of_different_user()
+    {
+        $user = User::factory()->create();
+        $type = MovementType::factory()->create();
+        $category = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create(['user_id' => $user->id, 'visibility' => 'public', 'deleted_at' => now()]);
+        $response = $this->actingAs($this->premiumUser)->get(route('movement_view', $movement->id));
+
+        $response->assertNotFound();
+    }
+
+    /** @test */
+    public function view_premium_user_can_not_view_non_existent_movement()
+    {
+        $response = $this->actingAs($this->premiumUser)->get(route('movement_view', 1));
+
+        $response->assertNotFound();
+    }
 }

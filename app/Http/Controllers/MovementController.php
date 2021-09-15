@@ -78,7 +78,7 @@ class MovementController extends Controller
             ->first();
 
         if (empty($movement) || ($movement->deleted_at !== null && Auth::id() !== $movement->user_id)) {
-            return view('errors.404');
+            abort(404);
         }
 
         $spots = null;
