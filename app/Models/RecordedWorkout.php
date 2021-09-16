@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class RecordedWorkout extends Model
 {
+    use HasFactory;
+
     public function scopeDateBetween($query, $dates = [])
     {
         if (!empty($dates['from']) && !empty($dates['to'])) {

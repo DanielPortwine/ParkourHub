@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class WorkoutMovementField extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'movement_field_id',
         'workout_movement_id',
