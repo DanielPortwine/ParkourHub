@@ -31,6 +31,7 @@ class CreateMovement extends FormRequest
             'spot' => 'integer|exists:App\Models\Spot,id',
             'progression' => 'integer|exists:App\Models\Movement,id',
             'advancement' => 'integer|exists:App\Models\Movement,id',
+            'exercise' => 'integer|exists:App\Models\Movement,id',
             'move' => 'integer|exists:App\Models\Movement,id',
             'category' => 'required|integer',
             'name' => 'required|string|max:25',
