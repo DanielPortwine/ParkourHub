@@ -1214,4 +1214,55 @@ class MovementControllerTest extends TestCase
         $this->assertDatabaseCount('movements', 0)
             ->assertDatabaseCount('movements_fields', 0);
     }
+
+    /** @test */
+    public function edit_non_logged_in_user_redirects_to_login()
+    {
+        $response = $this->get(route('movement_edit', 1));
+
+        $response->assertRedirect('/email/verify');
+    }
+
+    /** @test */
+    public function edit_non_premium_user_redirects_to_premium()
+    {
+        $user = User::factory()->create();
+        $response = $this->actingAs($user)->get(route('movement_edit', 1));
+
+        $response->assertRedirect('/premium');
+    }
+
+    /** @test */
+    public function edit_random_premium_user_redirects_to_view()
+    {
+        $user = User::factory()->create();
+        $type = MovementType::factory()->create(['name' => 'Move']);
+        $category = MovementCategory::factory()->create(['type_id' => $type->id]);
+        $movement = Movement::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+        $response = $this->actingAs($this->premiumUser)->get(route('movement_edit', $movement->id));
+
+        $response->assertRedirect(route('movement_view', $movement->id));
+    }
+
+    /** @test */
+    public function edit_owner_premium_user_can_edit_equipment()
+    {
+        $type = MovementType::factory()->create(['name' => 'Move']);
+        $category = MovementCategory::factory()->create(['type_id' => $type->id]);
+        $movement = Movement::factory()->create();
+        $movementField = MovementField::factory()->create();
+        $response = $this->actingAs($this->premiumUser)->get(route('movement_edit', $movement->id));
+
+        $response->assertOk()
+            ->assertViewIs('movements.edit')
+            ->assertViewHas('movement', function($pageMovement) use ($movement) {
+                $this->assertSame($movement->name, $pageMovement->name);
+                $this->assertSame($movement->description, $pageMovement->description);
+                return true;
+            })
+            ->assertViewHas('movementFields', function ($pageMovementFields) use ($movementField) {
+                $this->assertSame($movementField->name, $pageMovementFields->first()->name);
+                return true;
+            });
+    }
 }
