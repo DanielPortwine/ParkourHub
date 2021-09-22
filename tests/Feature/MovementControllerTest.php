@@ -1441,4 +1441,53 @@ class MovementControllerTest extends TestCase
 
         $response->assertRedirect(route('movement_view', $movement->id));
     }
+
+    /** @test */
+    public function recover_non_logged_in_user_redirects_to_login()
+    {
+        $response = $this->get(route('movement_recover', 1));
+
+        $response->assertRedirect('/email/verify');
+    }
+
+    /** @test */
+    public function recover_non_premium_user_redirects_to_premium()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->get(route('movement_recover', 1));
+
+        $response->assertRedirect('/premium');
+    }
+
+    /** @test */
+    public function recover_random_premium_user_can_not_recover_movement()
+    {
+        $user = User::factory()->create();
+        $type = MovementType::factory()->create(['name' => 'Move']);
+        $category = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create(['user_id' => $user->id, 'deleted_at' => now()]);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('movement_recover', $movement->id));
+
+        $this->assertDatabaseCount('movements', 1)
+            ->assertSoftDeleted($movement);
+    }
+
+    /** @test */
+    public function recover_owner_premium_user_can_recover_equipment()
+    {
+        $type = MovementType::factory()->create(['name' => 'Move']);
+        $category = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create(['deleted_at' => now()]);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('movement_recover', $movement->id));
+
+        $this->assertDatabaseCount('movements', 1)
+            ->assertDatabaseHas('movements', [
+                'name' => $movement->name,
+                'description' => $movement->description,
+                'deleted_at' => null,
+            ]);
+    }
 }
