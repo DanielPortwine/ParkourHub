@@ -45,6 +45,7 @@ class MovementControllerTest extends TestCase
     public function listing_non_premium_user_redirects_to_premium()
     {
         $user = User::factory()->create();
+
         $response = $this->actingAs($user)->get(route('movement_listing'));
 
         $response->assertRedirect('/premium');
@@ -57,6 +58,7 @@ class MovementControllerTest extends TestCase
         $type = MovementType::factory()->create();
         $category = MovementCategory::factory()->create();
         $movement = Movement::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+
         $response = $this->actingAs($this->premiumUser)->get(route('movement_listing'));
 
         $response->assertOk()
@@ -77,6 +79,7 @@ class MovementControllerTest extends TestCase
         $type = MovementType::factory()->create();
         $category = MovementCategory::factory()->create();
         $movement = Movement::factory()->create(['user_id' => $user->id, 'visibility' => 'follower']);
+
         $response = $this->actingAs($this->premiumUser)->get(route('movement_listing'));
 
         $response->assertOk()
@@ -96,6 +99,7 @@ class MovementControllerTest extends TestCase
         $type = MovementType::factory()->create();
         $category = MovementCategory::factory()->create();
         $movement = Movement::factory()->create(['user_id' => $user->id, 'visibility' => 'follower']);
+
         $response = $this->actingAs($this->premiumUser)->get(route('movement_listing'));
 
         $response->assertOk()
@@ -112,6 +116,7 @@ class MovementControllerTest extends TestCase
         $type = MovementType::factory()->create();
         $category = MovementCategory::factory()->create();
         $movement = Movement::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'private']);
+
         $response = $this->actingAs($this->premiumUser)->get(route('movement_listing'));
 
         $response->assertOk()
@@ -131,6 +136,7 @@ class MovementControllerTest extends TestCase
         $type = MovementType::factory()->create();
         $category = MovementCategory::factory()->create();
         $movement = Movement::factory()->create(['user_id' => $user->id, 'visibility' => 'private']);
+
         $response = $this->actingAs($this->premiumUser)->get(route('movement_listing'));
 
         $response->assertOk()
@@ -148,6 +154,7 @@ class MovementControllerTest extends TestCase
         $type = MovementType::factory()->create();
         $category = MovementCategory::factory()->create();
         $movement = Movement::factory()->create(['user_id' => $user->id, 'visibility' => 'public', 'deleted_at' => now()]);
+
         $response = $this->actingAs($this->premiumUser)->get(route('movement_listing'));
 
         $response->assertOk()
@@ -164,6 +171,7 @@ class MovementControllerTest extends TestCase
         $type = MovementType::factory()->create();
         $category = MovementCategory::factory()->create();
         $movement = Movement::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'public', 'deleted_at' => now()]);
+
         $response = $this->actingAs($this->premiumUser)->get(route('movement_listing'));
 
         $response->assertOk()
@@ -183,6 +191,7 @@ class MovementControllerTest extends TestCase
         $category1 = MovementCategory::factory()->create(['type_id' => $type1->id]);
         $movement = Movement::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'public', 'category_id' => $category->id, 'type_id' => $type->id]);
         $movement1 = Movement::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'public', 'category_id' => $category1->id, 'type_id' => $type1->id]);
+
         $response = $this->actingAs($this->premiumUser)->get(route('movement_listing', ['type' => $type->id]));
 
         $response->assertOk()
@@ -201,6 +210,7 @@ class MovementControllerTest extends TestCase
         $type = MovementType::factory()->create();
         $category = MovementCategory::factory()->create();
         $movement = Movement::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'public', 'created_at' => '2021-06-01 21:30:00']);
+
         $response = $this->actingAs($this->premiumUser)->get(route('movement_listing', ['date_from' => '2021-05-31', 'date_to' => '2021-06-02']));
 
         $response->assertOk()
@@ -219,6 +229,7 @@ class MovementControllerTest extends TestCase
         $type = MovementType::factory()->create();
         $category = MovementCategory::factory()->create();
         $movement = Movement::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'public', 'created_at' => '2021-06-01 21:30:00']);
+
         $response = $this->actingAs($this->premiumUser)->get(route('movement_listing', ['date_from' => '2021-05-01', 'date_to' => '2021-05-03']));
 
         $response->assertOk()
@@ -237,6 +248,7 @@ class MovementControllerTest extends TestCase
         $category1 = MovementCategory::factory()->create();
         $movement = Movement::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'public', 'category_id' => $category->id]);
         $movement1 = Movement::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'public', 'category_id' => $category1->id]);
+
         $response = $this->actingAs($this->premiumUser)->get(route('movement_listing', ['category' => $category->id]));
 
         $response->assertOk()
@@ -258,6 +270,7 @@ class MovementControllerTest extends TestCase
         $movement = Movement::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'public']);
         $movement1 = Movement::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'public']);
         $movement->equipment()->attach($equipment->id, ['user_id' => $this->premiumUser->id]);
+
         $response = $this->actingAs($this->premiumUser)->get(route('movement_listing', ['equipment' => $equipment->id]));
 
         $response->assertOk()
@@ -276,6 +289,7 @@ class MovementControllerTest extends TestCase
         $type = MovementType::factory()->create();
         $category = MovementCategory::factory()->create();
         $movement = Movement::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'public', 'name' => 'speaker']);
+
         $response = $this->actingAs($this->premiumUser)->get(route('movement_listing', ['search' => 'speaker']));
 
         $response->assertOk()
@@ -294,6 +308,7 @@ class MovementControllerTest extends TestCase
         $type = MovementType::factory()->create();
         $category = MovementCategory::factory()->create();
         $movement = Movement::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'public', 'name' => 'speaker']);
+
         $response = $this->actingAs($this->premiumUser)->get(route('movement_listing', ['search' => 'whiteboard']));
 
         $response->assertOk()
@@ -311,6 +326,7 @@ class MovementControllerTest extends TestCase
         $category = MovementCategory::factory()->create();
         $latestMovement = Movement::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'public', 'created_at' => '2021-05-31 19:30:00']);
         $oldestMovement = Movement::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'public', 'created_at' => '2021-04-30 19:30:00']);
+
         $response = $this->actingAs($this->premiumUser)->get(route('movement_listing'));
 
         $response->assertOk()
@@ -330,6 +346,7 @@ class MovementControllerTest extends TestCase
         $category = MovementCategory::factory()->create();
         $latestMovement = Movement::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'public', 'created_at' => '2021-05-31 19:30:00']);
         $oldestMovement = Movement::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'public', 'created_at' => '2021-04-30 19:30:00']);
+
         $response = $this->actingAs($this->premiumUser)->get(route('movement_listing', ['sort' => 'date_asc']));
 
         $response->assertOk()
@@ -354,6 +371,7 @@ class MovementControllerTest extends TestCase
     public function view_non_premium_user_redirects_to_premium()
     {
         $user = User::factory()->create();
+
         $response = $this->actingAs($user)->get('/equipment/view/' . 1);
 
         $response->assertRedirect('/premium');
@@ -366,6 +384,7 @@ class MovementControllerTest extends TestCase
         $type = MovementType::factory()->create();
         $category = MovementCategory::factory()->create();
         $movement = Movement::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+
         $response = $this->actingAs($this->premiumUser)->get(route('movement_view', $movement->id));
 
         $response->assertOk()
@@ -385,6 +404,7 @@ class MovementControllerTest extends TestCase
         $type = MovementType::factory()->create();
         $category = MovementCategory::factory()->create();
         $movement = Movement::factory()->create(['user_id' => $user->id, 'visibility' => 'follower']);
+
         $response = $this->actingAs($this->premiumUser)->get(route('movement_view', $movement->id));
 
         $response->assertOk()
@@ -403,6 +423,7 @@ class MovementControllerTest extends TestCase
         $type = MovementType::factory()->create();
         $category = MovementCategory::factory()->create();
         $movement = Movement::factory()->create(['user_id' => $user->id, 'visibility' => 'follower']);
+
         $response = $this->actingAs($this->premiumUser)->get(route('movement_view', $movement->id));
 
         $response->assertNotFound();
@@ -414,6 +435,7 @@ class MovementControllerTest extends TestCase
         $type = MovementType::factory()->create();
         $category = MovementCategory::factory()->create();
         $movement = Movement::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'private']);
+
         $response = $this->actingAs($this->premiumUser)->get(route('movement_view', $movement->id));
 
         $response->assertOk()
@@ -432,6 +454,7 @@ class MovementControllerTest extends TestCase
         $type = MovementType::factory()->create();
         $category = MovementCategory::factory()->create();
         $movement = Movement::factory()->create(['user_id' => $user->id, 'visibility' => 'private']);
+
         $response = $this->actingAs($this->premiumUser)->get(route('movement_view', $movement->id));
 
         $response->assertNotFound();
@@ -443,6 +466,7 @@ class MovementControllerTest extends TestCase
         $type = MovementType::factory()->create();
         $category = MovementCategory::factory()->create();
         $movement = Movement::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'private', 'deleted_at' => now()]);
+
         $response = $this->actingAs($this->premiumUser)->get(route('movement_view', $movement->id));
 
         $response->assertOk()
@@ -461,6 +485,7 @@ class MovementControllerTest extends TestCase
         $type = MovementType::factory()->create();
         $category = MovementCategory::factory()->create();
         $movement = Movement::factory()->create(['user_id' => $user->id, 'visibility' => 'public', 'deleted_at' => now()]);
+
         $response = $this->actingAs($this->premiumUser)->get(route('movement_view', $movement->id));
 
         $response->assertNotFound();
@@ -484,6 +509,7 @@ class MovementControllerTest extends TestCase
         foreach ($spots as $spot) {
             $movement->spots()->attach([$spot->id => ['user_id' => $this->premiumUser->id]]);
         }
+
         $response = $this->actingAs($this->premiumUser)->get(route('movement_view', [$movement->id, 'tab' => 'spots']));
 
         $response->assertOk()
@@ -504,6 +530,7 @@ class MovementControllerTest extends TestCase
         foreach ($spots as $spot) {
             $movement->spots()->attach([$spot->id => ['user_id' => $this->premiumUser->id]]);
         }
+
         $response = $this->actingAs($this->premiumUser)->get(route('movement_view', [$movement->id, 'tab' => 'spots', 'spots' => 2]));
 
         $response->assertOk()
@@ -524,6 +551,7 @@ class MovementControllerTest extends TestCase
         foreach ($equipments as $equipment) {
             $movement->equipment()->attach([$equipment->id => ['user_id' => $this->premiumUser->id]]);
         }
+
         $response = $this->actingAs($this->premiumUser)->get(route('movement_view', [$movement->id, 'tab' => 'equipment']));
 
         $response->assertOk()
@@ -544,6 +572,7 @@ class MovementControllerTest extends TestCase
         foreach ($equipments as $equipment) {
             $movement->equipment()->attach([$equipment->id => ['user_id' => $this->premiumUser->id]]);
         }
+
         $response = $this->actingAs($this->premiumUser)->get(route('movement_view', [$movement->id, 'tab' => 'equipment', 'equipment' => 2]));
 
         $response->assertOk()
@@ -564,6 +593,7 @@ class MovementControllerTest extends TestCase
         foreach ($progressions as $progression) {
             $movement->progressions()->attach([$progression->id => ['user_id' => $this->premiumUser->id]]);
         }
+
         $response = $this->actingAs($this->premiumUser)->get(route('movement_view', [$movement->id, 'tab' => 'progressions']));
 
         $response->assertOk()
@@ -584,6 +614,7 @@ class MovementControllerTest extends TestCase
         foreach ($progressions as $progression) {
             $movement->progressions()->attach([$progression->id => ['user_id' => $this->premiumUser->id]]);
         }
+
         $response = $this->actingAs($this->premiumUser)->get(route('movement_view', [$movement->id, 'tab' => 'progressions', 'progressions' => 2]));
 
         $response->assertOk()
@@ -604,6 +635,7 @@ class MovementControllerTest extends TestCase
         foreach ($advancements as $advancement) {
             $movement->advancements()->attach([$advancement->id => ['user_id' => $this->premiumUser->id]]);
         }
+
         $response = $this->actingAs($this->premiumUser)->get(route('movement_view', [$movement->id, 'tab' => 'advancements']));
 
         $response->assertOk()
@@ -624,6 +656,7 @@ class MovementControllerTest extends TestCase
         foreach ($advancements as $advancement) {
             $movement->advancements()->attach([$advancement->id => ['user_id' => $this->premiumUser->id]]);
         }
+
         $response = $this->actingAs($this->premiumUser)->get(route('movement_view', [$movement->id, 'tab' => 'advancements', 'advancements' => 2]));
 
         $response->assertOk()
@@ -646,6 +679,7 @@ class MovementControllerTest extends TestCase
         foreach ($exercises as $exercise) {
             $movement->exercises()->attach([$exercise->id => ['user_id' => $this->premiumUser->id]]);
         }
+
         $response = $this->actingAs($this->premiumUser)->get(route('movement_view', [$movement->id, 'tab' => 'exercises']));
 
         $response->assertOk()
@@ -668,6 +702,7 @@ class MovementControllerTest extends TestCase
         foreach ($exercises as $exercise) {
             $movement->exercises()->attach([$exercise->id => ['user_id' => $this->premiumUser->id]]);
         }
+
         $response = $this->actingAs($this->premiumUser)->get(route('movement_view', [$movement->id, 'tab' => 'exercises', 'exercises' => 2]));
 
         $response->assertOk()
@@ -690,6 +725,7 @@ class MovementControllerTest extends TestCase
         foreach ($moves as $move) {
             $movement->moves()->attach([$move->id => ['user_id' => $this->premiumUser->id]]);
         }
+
         $response = $this->actingAs($this->premiumUser)->get(route('movement_view', [$movement->id, 'tab' => 'moves']));
 
         $response->assertOk()
@@ -712,6 +748,7 @@ class MovementControllerTest extends TestCase
         foreach ($moves as $move) {
             $movement->moves()->attach([$move->id => ['user_id' => $this->premiumUser->id]]);
         }
+
         $response = $this->actingAs($this->premiumUser)->get(route('movement_view', [$movement->id, 'tab' => 'moves', 'moves' => 2]));
 
         $response->assertOk()
@@ -736,6 +773,7 @@ class MovementControllerTest extends TestCase
                 WorkoutMovementField::factory()->create(['movement_field_id' => $field->id, 'workout_movement_id' => $workoutMovement->id]);
             }
         }
+
         $response = $this->actingAs($this->premiumUser)->get(route('movement_view', [$movement->id, 'tab' => 'history']));
 
         $response->assertOk()
@@ -760,6 +798,7 @@ class MovementControllerTest extends TestCase
                 WorkoutMovementField::factory()->create(['movement_field_id' => $field->id, 'workout_movement_id' => $workoutMovement->id]);
             }
         }
+
         $response = $this->actingAs($this->premiumUser)->get(route('movement_view', [$movement->id, 'tab' => 'history', 'history' => 2]));
 
         $response->assertOk()
@@ -777,6 +816,7 @@ class MovementControllerTest extends TestCase
         $category = MovementCategory::factory()->create();
         $movement = Movement::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'public']);
         $equipments = Equipment::factory()->times(5)->create();
+
         $response = $this->actingAs($this->premiumUser)->get(route('movement_view', [$movement->id, 'tab' => 'equipment']));
 
         $response->assertOk()
@@ -795,6 +835,7 @@ class MovementControllerTest extends TestCase
         $movementField = MovementField::factory()->create();
         $movement = Movement::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'public']);
         $progressions = Movement::factory()->times(5)->create();
+
         $response = $this->actingAs($this->premiumUser)->get(route('movement_view', [$movement->id, 'tab' => 'progressions']));
 
         $response->assertOk()
@@ -821,6 +862,7 @@ class MovementControllerTest extends TestCase
         $movementField = MovementField::factory()->create();
         $movement = Movement::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'public']);
         $advancements = Movement::factory()->times(5)->create();
+
         $response = $this->actingAs($this->premiumUser)->get(route('movement_view', [$movement->id, 'tab' => 'advancements']));
 
         $response->assertOk()
@@ -849,6 +891,7 @@ class MovementControllerTest extends TestCase
         $movementField = MovementField::factory()->create();
         $movement = Movement::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'public', 'type_id' => $type->id, 'category_id' => $category->id]);
         $exercises = Movement::factory()->times(5)->create(['type_id' => $type1->id, 'category_id' => $category1->id]);
+
         $response = $this->actingAs($this->premiumUser)->get(route('movement_view', [$movement->id, 'tab' => 'exercises']));
 
         $response->assertOk()
@@ -877,6 +920,7 @@ class MovementControllerTest extends TestCase
         $movementField = MovementField::factory()->create();
         $movement = Movement::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'public', 'type_id' => $type->id, 'category_id' => $category->id]);
         $moves = Movement::factory()->times(5)->create(['type_id' => $type1->id, 'category_id' => $category1->id]);
+
         $response = $this->actingAs($this->premiumUser)->get(route('movement_view', [$movement->id, 'tab' => 'moves']));
 
         $response->assertOk()
@@ -907,6 +951,7 @@ class MovementControllerTest extends TestCase
     public function create_non_premium_user_redirects_to_premium()
     {
         $user = User::factory()->create();
+
         $response = $this->actingAs($user)->get(route('movement_create'));
 
         $response->assertRedirect('/premium');
@@ -940,6 +985,7 @@ class MovementControllerTest extends TestCase
     public function store_non_premium_user_redirects_to_premium()
     {
         $user = User::factory()->create();
+
         $response = $this->actingAs($user)->post(route('movement_store'), [
             'category' => 1,
             'type' => 1,
@@ -958,6 +1004,7 @@ class MovementControllerTest extends TestCase
         $type = MovementType::factory()->create(['name' => 'Move']);
         $category = MovementCategory::factory()->create(['type_id' => $type->id]);
         $movementField = MovementField::factory()->create();
+
         $response = $this->actingAs($this->premiumUser)->post(route('movement_store', [
             'category' => $category->id,
             'type' => $type->id,
@@ -993,6 +1040,7 @@ class MovementControllerTest extends TestCase
         $category = MovementCategory::factory()->create(['type_id' => $type->id]);
         $movementField = MovementField::factory()->create();
         $spot = Spot::factory()->create();
+
         $response = $this->actingAs($this->premiumUser)->post(route('movement_store', [
             'category' => $category->id,
             'type' => $type->id,
@@ -1034,6 +1082,7 @@ class MovementControllerTest extends TestCase
         $category = MovementCategory::factory()->create(['type_id' => $type->id]);
         $movementField = MovementField::factory()->create();
         $advancement = Movement::factory()->create(['type_id' => $type->id, 'category_id' => $category->id]);
+
         $response = $this->actingAs($this->premiumUser)->post(route('movement_store', [
             'category' => $category->id,
             'type' => $type->id,
@@ -1075,6 +1124,7 @@ class MovementControllerTest extends TestCase
         $category = MovementCategory::factory()->create(['type_id' => $type->id]);
         $movementField = MovementField::factory()->create();
         $progression = Movement::factory()->create(['type_id' => $type->id, 'category_id' => $category->id]);
+
         $response = $this->actingAs($this->premiumUser)->post(route('movement_store', [
             'category' => $category->id,
             'type' => $type->id,
@@ -1117,6 +1167,7 @@ class MovementControllerTest extends TestCase
         $category1 = MovementCategory::factory()->create(['type_id' => $type1->id]);
         $movementField = MovementField::factory()->create();
         $move = Movement::factory()->create(['type_id' => $type1->id, 'category_id' => $category1->id]);
+
         $response = $this->actingAs($this->premiumUser)->post(route('movement_store', [
             'category' => $category->id,
             'type' => $type->id,
@@ -1160,6 +1211,7 @@ class MovementControllerTest extends TestCase
         $category1 = MovementCategory::factory()->create(['type_id' => $type1->id]);
         $movementField = MovementField::factory()->create();
         $exercise = Movement::factory()->create(['type_id' => $type1->id, 'category_id' => $category1->id]);
+
         $response = $this->actingAs($this->premiumUser)->post(route('movement_store', [
             'category' => $category->id,
             'type' => $type->id,
@@ -1199,6 +1251,7 @@ class MovementControllerTest extends TestCase
     {
         $type = MovementType::factory()->create(['name' => 'Move']);
         $movementField = MovementField::factory()->create();
+
         $response = $this->actingAs($this->premiumUser)->post(route('movement_store', [
             // category missing to invalidate request
             'type' => $type->id,
@@ -1227,6 +1280,7 @@ class MovementControllerTest extends TestCase
     public function edit_non_premium_user_redirects_to_premium()
     {
         $user = User::factory()->create();
+
         $response = $this->actingAs($user)->get(route('movement_edit', 1));
 
         $response->assertRedirect('/premium');
@@ -1239,6 +1293,7 @@ class MovementControllerTest extends TestCase
         $type = MovementType::factory()->create(['name' => 'Move']);
         $category = MovementCategory::factory()->create(['type_id' => $type->id]);
         $movement = Movement::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+
         $response = $this->actingAs($this->premiumUser)->get(route('movement_edit', $movement->id));
 
         $response->assertRedirect(route('movement_view', $movement->id));
@@ -1251,6 +1306,7 @@ class MovementControllerTest extends TestCase
         $category = MovementCategory::factory()->create(['type_id' => $type->id]);
         $movement = Movement::factory()->create();
         $movementField = MovementField::factory()->create();
+
         $response = $this->actingAs($this->premiumUser)->get(route('movement_edit', $movement->id));
 
         $response->assertOk()
@@ -1286,6 +1342,7 @@ class MovementControllerTest extends TestCase
     public function update_non_premium_user_redirects_to_premium()
     {
         $user = User::factory()->create();
+
         $response = $this->actingAs($user)->post(route('equipment_update', 1), [
             'category' => 1,
             'type' => 1,
@@ -1307,6 +1364,7 @@ class MovementControllerTest extends TestCase
         $category = MovementCategory::factory()->create(['type_id' => $type->id]);
         $movementField = MovementField::factory()->create();
         $movement = Movement::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+
         $response = $this->actingAs($this->premiumUser)->post(route('movement_update', $movement->id), [
             'category' => $category->id,
             'type' => $type->id,
@@ -1329,6 +1387,7 @@ class MovementControllerTest extends TestCase
         $movementField1 = MovementField::factory()->create();
         $movement = Movement::factory()->create(['name' => 'Test Movement']);
         $movement->fields()->attach($movementField->id);
+
         $response = $this->actingAs($this->premiumUser)->post(route('movement_update', $movement->id), [
             'name' => 'Updated Movement',
             'description' => 'This is an updated movement',
@@ -1358,6 +1417,7 @@ class MovementControllerTest extends TestCase
         $category = MovementCategory::factory()->create(['type_id' => $type->id]);
         $movement = Movement::factory()->create(['name' => 'Test Movement']);
         $movementField = MovementField::factory()->create();
+
         $response = $this->actingAs($this->premiumUser)->post(route('movement_update', $movement->id), [
             // name missing to invalidate request
             'description' => 'This is an updated movement',
@@ -1389,6 +1449,7 @@ class MovementControllerTest extends TestCase
     public function delete_non_premium_user_redirects_to_premium()
     {
         $user = User::factory()->create();
+
         $response = $this->actingAs($user)->get(route('movement_delete', 1));
 
         $response->assertRedirect('/premium');
@@ -1401,6 +1462,7 @@ class MovementControllerTest extends TestCase
         $type = MovementType::factory()->create(['name' => 'Move']);
         $category = MovementCategory::factory()->create();
         $movement = Movement::factory()->create(['user_id' => $user->id]);
+
         $response = $this->actingAs($this->premiumUser)->get(route('movement_delete', $movement->id));
 
         $response->assertRedirect(route('movement_view', $movement->id));
@@ -1426,6 +1488,7 @@ class MovementControllerTest extends TestCase
         $category = MovementCategory::factory()->create();
         $movement = Movement::factory()->create();
         $movementField = MovementField::factory()->create();
+
         $response = $this->actingAs($this->premiumUser)->post(route('movement_update', $movement->id), [
             'name' => 'Updated Movement',
             'description' => 'This is an updated movement',
@@ -1489,5 +1552,67 @@ class MovementControllerTest extends TestCase
                 'description' => $movement->description,
                 'deleted_at' => null,
             ]);
+    }
+
+    /** @test */
+    public function remove_non_logged_in_user_redirects_to_login()
+    {
+        $response = $this->get(route('movement_remove', 1));
+
+        $response->assertRedirect('/email/verify');
+    }
+
+    /** @test */
+    public function remove_non_premium_user_redirects_to_premium()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->get(route('movement_remove', 1));
+
+        $response->assertRedirect('/premium');
+    }
+
+    /** @test */
+    public function remove_random_premium_user_can_not_remove_movement()
+    {
+        $user = User::factory()->create();
+        $type = MovementType::factory()->create(['name' => 'Move']);
+        $category = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create(['user_id' => $user->id]);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('movement_remove', $movement->id));
+
+        $this->assertDatabaseCount('movements', 1)
+            ->assertDatabaseHas('movements', [
+                'name' => $movement->name,
+                'description' => $movement->description,
+            ]);
+    }
+
+    /** @test */
+    public function remove_owner_premium_user_can_remove_movement()
+    {
+        $type = MovementType::factory()->create(['name' => 'Move']);
+        $category = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create();
+
+        $response = $this->actingAs($this->premiumUser)->get(route('movement_remove', $movement->id));
+
+        $this->assertDatabaseCount('movements', 0);
+    }
+
+    /** @test */
+    public function remove_premium_user_with_remove_content_permission_can_remove_private_movement()
+    {
+        $removeContent = Permission::create(['name' => 'remove content']);
+        $user = User::factory()->create();
+        $this->premiumUser->givePermissionTo($removeContent);
+        $type = MovementType::factory()->create(['name' => 'Move']);
+        $category = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create(['user_id' => $user->id, 'visibility' => 'private']);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('movement_remove', $movement->id));
+
+        $this->assertDatabaseCount('movements', 0);
     }
 }

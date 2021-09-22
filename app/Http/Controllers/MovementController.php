@@ -382,9 +382,9 @@ class MovementController extends Controller
 
     public function remove(Request $request, $id)
     {
-        $movement = Movement::withTrashed()->where('id', $id)->first();
+        $movement = Movement::withTrashed()->withoutGlobalScope(VisibilityScope::class)->where('id', $id)->first();
 
-        if ($movement->user_id !== Auth::id() && !Auth::user()->hasPermissionTo('remove content')) {
+        if (empty($movement) || ($movement->user_id !== Auth::id() && !Auth::user()->hasPermissionTo('remove content'))) {
             return back();
         }
 
