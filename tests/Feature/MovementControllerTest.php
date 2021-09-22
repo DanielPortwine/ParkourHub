@@ -2241,4 +2241,112 @@ class MovementControllerTest extends TestCase
 
         $this->assertDatabaseCount('movements_equipments', 0);
     }
+
+    /** @test */
+    public function officialise_non_logged_in_user_redirects_to_login()
+    {
+        $response = $this->get(route('movement_officialise', 1));
+
+        $response->assertRedirect('/email/verify');
+    }
+
+    /** @test */
+    public function officialise_non_premium_user_redirects_to_premium()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->get(route('movement_officialise', 1));
+
+        $response->assertRedirect('/premium');
+    }
+
+    /** @test */
+    public function officialise_premium_user_can_not_officialise_movement()
+    {
+        $type = MovementType::factory()->create(['name' => 'Move']);
+        $category = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create(['user_id' => $this->premiumUser->id, 'official' => false]);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('movement_officialise', $movement->id));
+
+        $this->assertDatabaseCount('movements', 1)
+            ->assertDatabaseHas('movements', [
+                'name' => $movement->name,
+                'official' => false,
+            ]);
+    }
+
+    /** @test */
+    public function officialise_premium_user_with_officialise_permission_can_officialise_movement()
+    {
+        $user = User::factory()->create();
+        $type = MovementType::factory()->create(['name' => 'Move']);
+        $category = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create(['user_id' => $user->id, 'visibility' => 'public', 'official' => false]);
+        $officialise = Permission::create(['name' => 'officialise']);
+        $this->premiumUser->givePermissionTo($officialise);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('movement_officialise', $movement->id));
+
+        $this->assertDatabaseCount('movements', 1)
+            ->assertDatabaseHas('movements', [
+                'name' => $movement->name,
+                'official' => true,
+                'user_id' => $this->premiumUser->id,
+            ]);
+    }
+
+    /** @test */
+    public function unofficialise_non_logged_in_user_redirects_to_login()
+    {
+        $response = $this->get(route('movement_unofficialise', 1));
+
+        $response->assertRedirect('/email/verify');
+    }
+
+    /** @test */
+    public function unofficialise_non_premium_user_redirects_to_premium()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->get(route('movement_unofficialise', 1));
+
+        $response->assertRedirect('/premium');
+    }
+
+    /** @test */
+    public function unofficialise_premium_user_can_not_unofficialise_movement()
+    {
+        $type = MovementType::factory()->create(['name' => 'Move']);
+        $category = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create(['user_id' => $this->premiumUser->id, 'official' => true]);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('movement_unofficialise', $movement->id));
+
+        $this->assertDatabaseCount('movements', 1)
+            ->assertDatabaseHas('movements', [
+                'name' => $movement->name,
+                'official' => true,
+            ]);
+    }
+
+    /** @test */
+    public function unofficialise_premium_user_with_officialise_permission_can_unofficialise_movement()
+    {
+        $user = User::factory()->create();
+        $type = MovementType::factory()->create(['name' => 'Move']);
+        $category = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create(['user_id' => $user->id, 'visibility' => 'public', 'official' => true]);
+        $officialise = Permission::create(['name' => 'officialise']);
+        $this->premiumUser->givePermissionTo($officialise);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('movement_unofficialise', $movement->id));
+
+        $this->assertDatabaseCount('movements', 1)
+            ->assertDatabaseHas('movements', [
+                'name' => $movement->name,
+                'official' => false,
+                'user_id' => $movement->creator_id,
+            ]);
+    }
 }

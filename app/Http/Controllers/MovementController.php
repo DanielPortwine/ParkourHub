@@ -509,12 +509,12 @@ class MovementController extends Controller
 
     public function officialise($id)
     {
-        if (Auth::id() !== 1) {
+        if (!Auth::user()->hasPermissionTo('officialise')) {
             return back();
         }
 
         $movement = Movement::where('id', $id)->first();
-        $movement->user_id = 1;
+        $movement->user_id = Auth::id();
         $movement->official = true;
         $movement->save();
 
@@ -523,7 +523,7 @@ class MovementController extends Controller
 
     public function unofficialise($id)
     {
-        if (Auth::id() !== 1) {
+        if (!Auth::user()->hasPermissionTo('officialise')) {
             return back();
         }
 
