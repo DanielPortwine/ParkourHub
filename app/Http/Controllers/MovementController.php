@@ -436,7 +436,11 @@ class MovementController extends Controller
     public function unlinkProgression(LinkMovements $request)
     {
         $movement = Movement::with(['advancements'])->where('id', $request['progression'])->first();
-        if (empty($movement->advancements()->where('advancement_id', $request['advancement'])->first())) {
+        $advancement = $movement->advancements()->withPivot('user_id')->wherePivot('advancement_id', $request['advancement'])->first();
+        if ($movement->user_id !== Auth::id() && $advancement->pivot->user_id !== Auth::id() && $advancement->user_id !== Auth::id()) {
+            return back();
+        }
+        if (empty($advancement)) {
             return back()->with('status', 'These movements aren\'t linked');
         }
         $movement->advancements()->detach($request['advancement']);

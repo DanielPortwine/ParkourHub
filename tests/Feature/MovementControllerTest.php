@@ -1718,4 +1718,172 @@ class MovementControllerTest extends TestCase
 
         $this->assertDatabaseCount('reports', 0);
     }
+
+    /** @test */
+    public function link_progression_non_logged_in_user_redirects_to_login()
+    {
+        $response = $this->post(route('movements_link'));
+
+        $response->assertRedirect('/email/verify');
+    }
+
+    /** @test */
+    public function link_progression_non_premium_user_redirects_to_premium()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->post(route('movements_link'));
+
+        $response->assertRedirect('/premium');
+    }
+
+    /** @test */
+    public function link_progression_premium_user_can_not_link_movement_to_itself()
+    {
+        $type = MovementType::factory()->create(['name' => 'Move']);
+        $category = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create();
+
+        $response = $this->actingAs($this->premiumUser)->post(route('movements_link'), [
+            'progression' => $movement->id,
+            'advancement' => $movement->id,
+        ]);
+
+        $this->assertDatabaseCount('movements_progressions', 0);
+    }
+
+    /** @test */
+    public function link_progression_premium_user_can_not_link_movements_already_linked()
+    {
+        $type = MovementType::factory()->create(['name' => 'Move']);
+        $category = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create();
+        $movement1 = Movement::factory()->create();
+        $movement->advancements()->attach($movement1->id, ['user_id' => $this->premiumUser->id]);
+
+        $response = $this->actingAs($this->premiumUser)->post(route('movements_link'), [
+            'progression' => $movement->id,
+            'advancement' => $movement1->id,
+        ]);
+
+        $this->assertDatabaseCount('movements_progressions', 1)
+            ->assertDatabaseHas('movements_progressions', [
+                'progression_id' => $movement->id,
+                'advancement_id' => $movement1->id,
+            ]);
+    }
+
+    /** @test */
+    public function link_progression_premium_user_can_link_movements()
+    {
+        $type = MovementType::factory()->create(['name' => 'Move']);
+        $category = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create();
+        $movement1 = Movement::factory()->create();
+
+        $response = $this->actingAs($this->premiumUser)->post(route('movements_link'), [
+            'progression' => $movement->id,
+            'advancement' => $movement1->id,
+        ]);
+
+        $this->assertDatabaseCount('movements_progressions', 1)
+            ->assertDatabaseHas('movements_progressions', [
+                'progression_id' => $movement->id,
+                'advancement_id' => $movement1->id,
+            ]);
+    }
+
+    /** @test */
+    public function unlink_progression_non_logged_in_user_redirects_to_login()
+    {
+        $response = $this->post(route('movements_unlink'));
+
+        $response->assertRedirect('/email/verify');
+    }
+
+    /** @test */
+    public function unlink_progression_non_premium_user_redirects_to_premium()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->post(route('movements_unlink'));
+
+        $response->assertRedirect('/premium');
+    }
+
+    /** @test */
+    public function unlink_progression_random_premium_user_can_not_unlink_movements()
+    {
+        $user = User::factory()->create();
+        $type = MovementType::factory()->create(['name' => 'Move']);
+        $category = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create(['user_id' => $user->id]);
+        $movement1 = Movement::factory()->create(['user_id' => $user->id]);
+        $movement->advancements()->attach($movement1->id, ['user_id' => $user->id]);
+
+        $response = $this->actingAs($this->premiumUser)->post(route('movements_unlink'), [
+            'progression' => $movement->id,
+            'advancement' => $movement1->id,
+        ]);
+
+        $this->assertDatabaseCount('movements_progressions', 1)
+            ->assertDatabaseHas('movements_progressions', [
+                'progression_id' => $movement->id,
+                'advancement_id' => $movement1->id,
+            ]);
+    }
+
+    /** @test */
+    public function unlink_progression_link_owner_premium_user_can_unlink_movements()
+    {
+        $user = User::factory()->create();
+        $type = MovementType::factory()->create(['name' => 'Move']);
+        $category = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+        $movement1 = Movement::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+        $movement->advancements()->attach($movement1->id, ['user_id' => $this->premiumUser->id]);
+
+        $response = $this->actingAs($this->premiumUser)->post(route('movements_unlink'), [
+            'progression' => $movement->id,
+            'advancement' => $movement1->id,
+        ]);
+
+        $this->assertDatabaseCount('movements_progressions', 0);
+    }
+
+    /** @test */
+    public function unlink_progression_progression_owner_premium_user_can_unlink_movements()
+    {
+        $user = User::factory()->create();
+        $type = MovementType::factory()->create(['name' => 'Move']);
+        $category = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'public']);
+        $movement1 = Movement::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+        $movement->advancements()->attach($movement1->id, ['user_id' => $user->id]);
+
+        $response = $this->actingAs($this->premiumUser)->post(route('movements_unlink'), [
+            'progression' => $movement->id,
+            'advancement' => $movement1->id,
+        ]);
+
+        $this->assertDatabaseCount('movements_progressions', 0);
+    }
+
+    /** @test */
+    public function unlink_progression_advancement_owner_premium_user_can_unlink_movements()
+    {
+        $user = User::factory()->create();
+        $type = MovementType::factory()->create(['name' => 'Move']);
+        $category = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+        $movement1 = Movement::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'public']);
+        $movement->advancements()->attach($movement1->id, ['user_id' => $user->id]);
+
+        $response = $this->actingAs($this->premiumUser)->post(route('movements_unlink'), [
+            'progression' => $movement->id,
+            'advancement' => $movement1->id,
+        ]);
+
+        $this->assertDatabaseCount('movements_progressions', 0);
+    }
 }
