@@ -455,7 +455,7 @@ class MovementController extends Controller
         }
         $move = Movement::with(['exercises', 'moves'])->where('id', $request['move'])->first();
         $exercise = Movement::where('id', $request['exercise'])->first();
-        if (empty($move) || empty($exercise) || $move->type->name === 'Exercise' || $exercise->type->name === 'Move' || ($move->user_id !== Auth::id() && $move->exercises()->withPivot('user_id')->wherePivot('exercise_id', $request['exercise'])->first()->pivot->user_id !== Auth::id() && $exercise->user_id !== Auth::id())) {
+        if (empty($move) || empty($exercise) || $move->type->name === 'Exercise' || $exercise->type->name === 'Move') {
             return back();
         }
         if (!empty($move->exercises()->where('exercise_id', $request['exercise'])->first())) {
@@ -469,8 +469,12 @@ class MovementController extends Controller
     public function unlinkExercise(LinkExercise $request)
     {
         $move = Movement::with(['exercises'])->where('id', $request['move'])->first();
+        $exercise = Movement::where('id', $request['exercise'])->first();
         if (empty($move->exercises()->where('exercise_id', $request['exercise'])->first())) {
             return back()->with('status', 'These movements aren\'t linked');
+        }
+        if ($move->user_id !== Auth::id() && $move->exercises()->withPivot('user_id')->wherePivot('exercise_id', $request['exercise'])->first()->pivot->user_id !== Auth::id() && $exercise->user_id !== Auth::id()) {
+            return back();
         }
         $move->exercises()->detach($request['exercise']);
 
@@ -491,8 +495,12 @@ class MovementController extends Controller
     public function unlinkEquipment(LinkEquipment $request)
     {
         $movement = Movement::with(['equipment'])->where('id', $request['movement'])->first();
+        $equipment = Equipment::where('id', $request['equipment'])->first();
         if (empty($movement->equipment()->where('equipment_id', $request['equipment'])->first())) {
             return back()->with('status', 'This movement and equipment aren\'t linked');
+        }
+        if ($movement->user_id !== Auth::id() && $movement->equipment()->withPivot('user_id')->wherePivot('equipment_id', $request['equipment'])->first()->pivot->user_id !== Auth::id() && $equipment->user_id !== Auth::id()) {
+            return back();
         }
         $movement->equipment()->detach($request['equipment']);
 
