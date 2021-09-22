@@ -406,8 +406,14 @@ class MovementController extends Controller
         return back()->with('status', 'Successfully reported movement');
     }
 
-    public function discardReports(Movement $movement)
+    public function discardReports($id)
     {
+        $movement = Movement::withoutGlobalScope(VisibilityScope::class)->where('id', $id)->first();
+
+        if (empty($movement) || !Auth::user()->hasPermissionTo('manage reports')) {
+            return back();
+        }
+
         $movement->discardReports();
 
         return back()->with('status', 'Successfully discarded reports against this content');

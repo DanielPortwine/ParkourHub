@@ -15,6 +15,7 @@ use App\Models\WorkoutMovement;
 use App\Models\WorkoutMovementField;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 use Tests\TestCase;
 
@@ -1661,6 +1662,59 @@ class MovementControllerTest extends TestCase
         $movement = Movement::factory()->create(['user_id' => $user->id, 'visibility' => 'private']);
 
         $response = $this->actingAs($this->premiumUser)->get(route('movement_report', $movement->id));
+
+        $this->assertDatabaseCount('reports', 0);
+    }
+
+    /** @test */
+    public function discard_reports_non_logged_in_user_redirects_to_login()
+    {
+        $response = $this->get(route('movement_report_discard', 1));
+
+        $response->assertRedirect('/email/verify');
+    }
+
+    /** @test */
+    public function discard_reports_non_premium_user_redirects_to_premium()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->get(route('movement_report_discard', 1));
+
+        $response->assertRedirect('/premium');
+    }
+
+    /** @test */
+    public function discard_reports_random_premium_user_can_not_discard_movement_reports()
+    {
+        $user = User::factory()->create();
+        $type = MovementType::factory()->create(['name' => 'Move']);
+        $category = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+        DB::insert('INSERT INTO reports (reportable_id, reportable_type, user_id) VALUES (?, ?, ?)', [$movement->id, Movement::class, $this->premiumUser->id]);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('movement_report_discard', $movement->id));
+
+        $this->assertDatabaseCount('reports', 1)
+            ->assertDatabaseHas('reports', [
+                'reportable_id' => $movement->id,
+                'reportable_type' => Movement::class,
+                'user_id' => $this->premiumUser->id,
+            ]);
+    }
+
+    /** @test */
+    public function discard_reports_premium_user_with_manage_reports_permission_can_discard_private_movement_reports()
+    {
+        $user = User::factory()->create();
+        $type = MovementType::factory()->create(['name' => 'Move']);
+        $category = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create(['user_id' => $user->id, 'visibility' => 'private']);
+        DB::insert('INSERT INTO reports (reportable_id, reportable_type, user_id) VALUES (?, ?, ?)', [$movement->id, Movement::class, $this->premiumUser->id]);
+        $manageReports = Permission::create(['name' => 'manage reports']);
+        $this->premiumUser->givePermissionTo($manageReports);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('movement_report_discard', $movement->id));
 
         $this->assertDatabaseCount('reports', 0);
     }

@@ -142,7 +142,7 @@ Route::prefix('movements')->middleware(['verified', 'isPremium'])->group(functio
     Route::get('/recover/{id}', 'MovementController@recover')->name('movement_recover');
     Route::get('/remove/{id}', 'MovementController@remove')->name('movement_remove');
     Route::get('/report/{id}', 'MovementController@report')->name('movement_report');
-    Route::get('/discard_reports/{movement}', 'MovementController@discardReports')->name('movement_report_discard');
+    Route::get('/discard_reports/{id}', 'MovementController@discardReports')->name('movement_report_discard');
     Route::post('/link_progression', 'MovementController@linkProgression')->name('movements_link');
     Route::post('/unlink_progression', 'MovementController@unlinkProgression')->name('movements_unlink');
     Route::post('/link_exercise', 'MovementController@linkExercise')->name('movement_exercise_link');
