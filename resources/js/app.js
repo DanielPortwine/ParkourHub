@@ -133,7 +133,8 @@ function mapSearch(urlParams, search = null) {
     }
     var latLon = search.split(',');
     if (latLon.length == 2 && (-85 <= latLon[0] && latLon[0] <= 85) && (-180 <= latLon[1] && latLon[1] <= 180)) {
-        window.location = '/spots?latLon=' + latLon;
+        window.location = '/spots/map?latLon=' + latLon;
+        return;
     }
     if (urlParams.has('search')) {
         urlParams.set('search', search);
