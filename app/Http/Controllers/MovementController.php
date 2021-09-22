@@ -397,8 +397,10 @@ class MovementController extends Controller
         return back()->with('status', 'Successfully removed movement forever.');
     }
 
-    public function report(Movement $movement)
+    public function report($id)
     {
+        $movement = Movement::where('id', $id)->first();
+
         $movement->report();
 
         return back()->with('status', 'Successfully reported movement');
