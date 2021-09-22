@@ -15,6 +15,7 @@ use App\Models\MovementField;
 use App\Models\MovementType;
 use App\Models\Report;
 use App\Models\Spot;
+use App\Scopes\VisibilityScope;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -352,9 +353,11 @@ class MovementController extends Controller
 
     public function delete($id, $redirect = null)
     {
-        $movement = Movement::where('id', $id)->first();
+        $movement = Movement::withoutGlobalScope(VisibilityScope::class)->where('id', $id)->first();
         if ($movement->user_id === Auth::id()) {
             $movement->delete();
+        } else {
+            return redirect()->route('movement_view', $movement->id);
         }
 
         if (!empty($redirect)) {

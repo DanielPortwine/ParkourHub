@@ -1195,185 +1195,67 @@ class MovementControllerTest extends TestCase
     }
 
     /** @test */
-    public function store_premium_user_can_not_store_invalid_movement()
+    public function delete_non_logged_in_user_redirects_to_login()
     {
-        $type = MovementType::factory()->create(['name' => 'Move']);
-        $movementField = MovementField::factory()->create();
-        $response = $this->actingAs($this->premiumUser)->post(route('movement_store', [
-            // category missing to invalidate request
-            'type' => $type->id,
-            'name' => 'Test Movement',
-            'description' => 'This is a test movement',
-            'visibility' => 'public',
-            'youtube' => 'https://youtu.be/Mg7WANy8QE4',
-            'fields' => [$movementField->id],
-        ]));
-
-        $response->assertSessionHasErrors();
-
-        $this->assertDatabaseCount('movements', 0)
-            ->assertDatabaseCount('movements_fields', 0);
-    }
-
-    /** @test */
-    public function edit_non_logged_in_user_redirects_to_login()
-    {
-        $response = $this->get(route('movement_edit', 1));
+        $response = $this->get(route('movement_delete', 1));
 
         $response->assertRedirect('/email/verify');
     }
 
     /** @test */
-    public function edit_non_premium_user_redirects_to_premium()
+    public function delete_non_premium_user_redirects_to_premium()
     {
         $user = User::factory()->create();
-        $response = $this->actingAs($user)->get(route('movement_edit', 1));
+        $response = $this->actingAs($user)->get(route('movement_delete', 1));
 
         $response->assertRedirect('/premium');
     }
 
     /** @test */
-    public function edit_random_premium_user_redirects_to_view()
+    public function delete_random_premium_user_redirects_to_view()
     {
         $user = User::factory()->create();
         $type = MovementType::factory()->create(['name' => 'Move']);
-        $category = MovementCategory::factory()->create(['type_id' => $type->id]);
-        $movement = Movement::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
-        $response = $this->actingAs($this->premiumUser)->get(route('movement_edit', $movement->id));
+        $category = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create(['user_id' => $user->id]);
+        $response = $this->actingAs($this->premiumUser)->get(route('movement_delete', $movement->id));
 
         $response->assertRedirect(route('movement_view', $movement->id));
     }
 
     /** @test */
-    public function edit_owner_premium_user_can_edit_equipment()
+    public function delete_owner_premium_user_can_delete_movement()
     {
         $type = MovementType::factory()->create(['name' => 'Move']);
-        $category = MovementCategory::factory()->create(['type_id' => $type->id]);
+        $category = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create();
+
+        $response = $this->actingAs($this->premiumUser)->get(route('movement_delete', $movement->id));
+
+        $this->assertDatabaseCount('movements', 1)
+            ->assertSoftDeleted($movement);
+    }
+
+    /** @test */
+    public function delete_owner_premium_user_can_delete_equipment_through_update()
+    {
+        $type = MovementType::factory()->create(['name' => 'Move']);
+        $category = MovementCategory::factory()->create();
         $movement = Movement::factory()->create();
         $movementField = MovementField::factory()->create();
-        $response = $this->actingAs($this->premiumUser)->get(route('movement_edit', $movement->id));
-
-        $response->assertOk()
-            ->assertViewIs('movements.edit')
-            ->assertViewHas('movement', function($pageMovement) use ($movement) {
-                $this->assertSame($movement->name, $pageMovement->name);
-                $this->assertSame($movement->description, $pageMovement->description);
-                return true;
-            })
-            ->assertViewHas('movementFields', function ($pageMovementFields) use ($movementField) {
-                $this->assertSame($movementField->name, $pageMovementFields->first()->name);
-                return true;
-            });
-    }
-
-    /** @test */
-    public function update_non_logged_in_user_redirects_to_login()
-    {
-        $response = $this->post(route('movement_update', 1), [
-            'category' => 1,
-            'type' => 1,
-            'name' => 'Test Movement',
-            'description' => 'This is a test movement',
-            'visibility' => 'public',
-            'youtube' => 'https://youtu.be/Mg7WANy8QE4',
-            'fields' => [1],
-        ]);
-
-        $response->assertRedirect('/email/verify');
-    }
-
-    /** @test */
-    public function update_non_premium_user_redirects_to_premium()
-    {
-        $user = User::factory()->create();
-        $response = $this->actingAs($user)->post(route('equipment_update', 1), [
-            'category' => 1,
-            'type' => 1,
-            'name' => 'Test Movement',
-            'description' => 'This is a test movement',
-            'visibility' => 'public',
-            'youtube' => 'https://youtu.be/Mg7WANy8QE4',
-            'fields' => [1],
-        ]);
-
-        $response->assertRedirect('/premium');
-    }
-
-    /** @test */
-    public function update_random_premium_user_redirects_to_view()
-    {
-        $user = User::factory()->create();
-        $type = MovementType::factory()->create(['name' => 'Move']);
-        $category = MovementCategory::factory()->create(['type_id' => $type->id]);
-        $movementField = MovementField::factory()->create();
-        $movement = Movement::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
-        $response = $this->actingAs($this->premiumUser)->post(route('movement_update', $movement->id), [
-            'category' => $category->id,
-            'type' => $type->id,
-            'name' => 'Test Movement',
-            'description' => 'This is a test movement',
-            'visibility' => 'public',
-            'youtube' => 'https://youtu.be/Mg7WANy8QE4',
-            'fields' => [$movementField->id],
-        ]);
-
-        $response->assertRedirect(route('movement_view', $movement->id));
-    }
-
-    /** @test */
-    public function update_owner_premium_user_can_update_movement_with_valid_data()
-    {
-        $type = MovementType::factory()->create(['name' => 'Move']);
-        $category = MovementCategory::factory()->create(['type_id' => $type->id]);
-        $movementField = MovementField::factory()->create();
-        $movementField1 = MovementField::factory()->create();
-        $movement = Movement::factory()->create(['name' => 'Test Movement']);
-        $movement->fields()->attach($movementField->id);
         $response = $this->actingAs($this->premiumUser)->post(route('movement_update', $movement->id), [
             'name' => 'Updated Movement',
             'description' => 'This is an updated movement',
             'visibility' => 'public',
             'youtube' => 'https://youtu.be/Mg7WANy8QE4',
-            'fields' => [$movementField1->id],
-        ]);
-
-        $this->assertDatabaseCount('movements', 1)
-            ->assertDatabaseHas('movements', [
-                'name' => 'Updated Movement',
-            ])
-            ->assertDatabaseMissing('movements', [
-                'name' => 'Test Movement',
-            ])
-            ->assertDatabaseCount('movements_fields', 1)
-            ->assertDatabaseHas('movements_fields', [
-                'movement_id' => $movement->id,
-                'movement_field_id' => $movementField1->id,
-            ]);
-    }
-
-    /** @test */
-    public function update_owner_premium_user_can_not_update_movement_with_invalid_data()
-    {
-        $type = MovementType::factory()->create(['name' => 'Move']);
-        $category = MovementCategory::factory()->create(['type_id' => $type->id]);
-        $movement = Movement::factory()->create(['name' => 'Test Movement']);
-        $movementField = MovementField::factory()->create();
-        $response = $this->actingAs($this->premiumUser)->post(route('movement_update', $movement->id), [
-            // name missing to invalidate request
-            'description' => 'This is an updated movement',
-            'visibility' => 'public',
-            'youtube' => 'https://youtu.be/Mg7WANy8QE4',
             'fields' => [$movementField->id],
+            'delete' => true,
+            'redirect' => route('movement_view', $movement->id),
         ]);
-//
-        $response->assertSessionHasErrors();
 
         $this->assertDatabaseCount('movements', 1)
-            ->assertDatabaseHas('movements', [
-                'name' => 'Test Movement',
-            ])
-            ->assertDatabaseMissing('movements', [
-                'name' => 'Updated Movement',
-            ]);
+            ->assertSoftDeleted($movement);
+
+        $response->assertRedirect(route('movement_view', $movement->id));
     }
 }
