@@ -1886,4 +1886,206 @@ class MovementControllerTest extends TestCase
 
         $this->assertDatabaseCount('movements_progressions', 0);
     }
+
+    /** @test */
+    public function link_exercise_non_logged_in_user_redirects_to_login()
+    {
+        $response = $this->post(route('movement_exercise_link'));
+
+        $response->assertRedirect('/email/verify');
+    }
+
+    /** @test */
+    public function link_exercise_non_premium_user_redirects_to_premium()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->post(route('movement_exercise_link'));
+
+        $response->assertRedirect('/premium');
+    }
+
+    /** @test */
+    public function link_exercise_premium_user_can_not_link_exercise_to_itself()
+    {
+        $type = MovementType::factory()->create(['name' => 'Move']);
+        $category = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create();
+
+        $response = $this->actingAs($this->premiumUser)->post(route('movement_exercise_link'), [
+            'move' => $movement->id,
+            'exercise' => $movement->id,
+        ]);
+
+        $this->assertDatabaseCount('movements_exercises', 0);
+    }
+
+    /** @test */
+    public function link_exercise_premium_user_can_not_link_exercises_already_linked()
+    {
+        $type = MovementType::factory()->create(['name' => 'Move']);
+        $category = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create();
+        $movement1 = Movement::factory()->create();
+        $movement->exercises()->attach($movement1->id, ['user_id' => $this->premiumUser->id]);
+
+        $response = $this->actingAs($this->premiumUser)->post(route('movement_exercise_link'), [
+            'move' => $movement->id,
+            'exercise' => $movement1->id,
+        ]);
+
+        $this->assertDatabaseCount('movements_exercises', 1)
+            ->assertDatabaseHas('movements_exercises', [
+                'move_id' => $movement->id,
+                'exercise_id' => $movement1->id,
+            ]);
+    }
+
+    /** @test */
+    public function link_exercise_premium_user_can_not_link_exercise_to_exercise()
+    {
+        $type = MovementType::factory()->create(['name' => 'Exercise']);
+        $category = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create();
+        $movement1 = Movement::factory()->create();
+
+        $response = $this->actingAs($this->premiumUser)->post(route('movement_exercise_link'), [
+            'move' => $movement->id,
+            'exercise' => $movement1->id,
+        ]);
+
+        $this->assertDatabaseCount('movements_exercises', 0);
+    }
+
+    /** @test */
+    public function link_exercise_premium_user_can_not_link_move_to_move()
+    {
+        $type = MovementType::factory()->create(['name' => 'Move']);
+        $category = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create();
+        $movement1 = Movement::factory()->create();
+
+        $response = $this->actingAs($this->premiumUser)->post(route('movement_exercise_link'), [
+            'move' => $movement->id,
+            'exercise' => $movement1->id,
+        ]);
+
+        $this->assertDatabaseCount('movements_exercises', 0);
+    }
+
+    /** @test */
+    public function link_exercise_premium_user_can_link_exercise_to_move()
+    {
+        $type = MovementType::factory()->create(['name' => 'Move']);
+        $type1 = MovementType::factory()->create(['name' => 'Exercise']);
+        $category = MovementCategory::factory()->create(['type_id' => $type->id]);
+        $category1 = MovementCategory::factory()->create(['type_id' => $type1->id]);
+        $move = Movement::factory()->create(['type_id' => $type->id, 'category_id' => $category->id, 'visibility' => 'public']);
+        $exercise = Movement::factory()->create(['type_id' => $type1->id, 'category_id' => $category1->id, 'visibility' => 'public']);
+
+        $response = $this->actingAs($this->premiumUser)->post(route('movement_exercise_link'), [
+            'move' => $move->id,
+            'exercise' => $exercise->id,
+        ]);
+
+        $this->assertDatabaseCount('movements_exercises', 1)
+            ->assertDatabaseHas('movements_exercises', [
+                'move_id' => $move->id,
+                'exercise_id' => $exercise->id,
+            ]);
+    }
+
+    /** @test */
+    public function unlink_exercise_non_logged_in_user_redirects_to_login()
+    {
+        $response = $this->post(route('movement_exercise_unlink'));
+
+        $response->assertRedirect('/email/verify');
+    }
+
+    /** @test */
+    public function unlink_exercise_non_premium_user_redirects_to_premium()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->post(route('movement_exercise_unlink'));
+
+        $response->assertRedirect('/premium');
+    }
+
+    /** @test */
+    public function unlink_exercise_random_premium_user_can_not_unlink_exercises()
+    {
+        $user = User::factory()->create();
+        $type = MovementType::factory()->create(['name' => 'Move']);
+        $category = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create(['user_id' => $user->id]);
+        $movement1 = Movement::factory()->create(['user_id' => $user->id]);
+        $movement->exercises()->attach($movement1->id, ['user_id' => $user->id]);
+
+        $response = $this->actingAs($this->premiumUser)->post(route('movement_exercise_unlink'), [
+            'move' => $movement->id,
+            'exercise' => $movement1->id,
+        ]);
+
+        $this->assertDatabaseCount('movements_exercises', 1)
+            ->assertDatabaseHas('movements_exercises', [
+                'move_id' => $movement->id,
+                'exercise_id' => $movement1->id,
+            ]);
+    }
+
+    /** @test */
+    public function unlink_exercise_link_owner_premium_user_can_unlink_exercises()
+    {
+        $user = User::factory()->create();
+        $type = MovementType::factory()->create(['name' => 'Move']);
+        $category = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+        $movement1 = Movement::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+        $movement->exercises()->attach($movement1->id, ['user_id' => $this->premiumUser->id]);
+
+        $response = $this->actingAs($this->premiumUser)->post(route('movement_exercise_unlink'), [
+            'move' => $movement->id,
+            'exercise' => $movement1->id,
+        ]);
+
+        $this->assertDatabaseCount('movements_exercises', 0);
+    }
+
+    /** @test */
+    public function unlink_exercise_move_owner_premium_user_can_unlink_exercises()
+    {
+        $user = User::factory()->create();
+        $type = MovementType::factory()->create(['name' => 'Move']);
+        $category = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'public']);
+        $movement1 = Movement::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+        $movement->exercises()->attach($movement1->id, ['user_id' => $user->id]);
+
+        $response = $this->actingAs($this->premiumUser)->post(route('movement_exercise_unlink'), [
+            'move' => $movement->id,
+            'exercise' => $movement1->id,
+        ]);
+
+        $this->assertDatabaseCount('movements_exercises', 0);
+    }
+
+    /** @test */
+    public function unlink_exercise_exercise_owner_premium_user_can_unlink_exercises()
+    {
+        $user = User::factory()->create();
+        $type = MovementType::factory()->create(['name' => 'Move']);
+        $category = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+        $movement1 = Movement::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'public']);
+        $movement->exercises()->attach($movement1->id, ['user_id' => $user->id]);
+
+        $response = $this->actingAs($this->premiumUser)->post(route('movement_exercise_unlink'), [
+            'move' => $movement->id,
+            'exercise' => $movement1->id,
+        ]);
+
+        $this->assertDatabaseCount('movements_exercises', 0);
+    }
 }

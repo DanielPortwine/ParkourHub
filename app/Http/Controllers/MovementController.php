@@ -454,7 +454,11 @@ class MovementController extends Controller
             return back()->with('status', 'You can\'t link a movement with itself');
         }
         $move = Movement::with(['exercises', 'moves'])->where('id', $request['move'])->first();
-        if (!empty($move->exercises()->where('exercise_id', $request['exercise'])->first()) || !empty($move->moves()->where('move_id', $request['move'])->first())) {
+        $exercise = Movement::where('id', $request['exercise'])->first();
+        if (empty($move) || empty($exercise) || $move->type->name === 'Exercise' || $exercise->type->name === 'Move' || ($move->user_id !== Auth::id() && $move->exercises()->withPivot('user_id')->wherePivot('exercise_id', $request['exercise'])->first()->pivot->user_id !== Auth::id() && $exercise->user_id !== Auth::id())) {
+            return back();
+        }
+        if (!empty($move->exercises()->where('exercise_id', $request['exercise'])->first())) {
             return back()->with('status', 'Movements already linked');
         }
         $move->exercises()->attach($request['exercise'], ['user_id' => Auth::id()]);
