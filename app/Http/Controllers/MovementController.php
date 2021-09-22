@@ -535,7 +535,7 @@ class MovementController extends Controller
         return back()->with('status', 'Successfully unofficialised movement');
     }
 
-    public function setMovementBaseline(Request $request)
+    /*public function setMovementBaseline(Request $request)
     {
         $baselineFields = Auth::user()->baselineMovementFields()->withPivot('movement_id')->where('movement_id', $request['movement'])->get();
 
@@ -552,5 +552,5 @@ class MovementController extends Controller
         }
 
         return back()->with('status', 'Successfully set your baseline for this movement');
-    }
+    }*/
 }
