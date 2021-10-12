@@ -34,6 +34,10 @@ class AppServiceProvider extends ServiceProvider
             return Auth::check() && Auth::user()->isPremium();
         });
 
+        if ($stripeApiBase = env('STRIPE_API_BASE')) {
+            \Stripe\Stripe::$apiBase = $stripeApiBase;
+        }
+
         Paginator::useBootstrap();
     }
 }
