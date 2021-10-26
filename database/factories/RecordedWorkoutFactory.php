@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\RecordedWorkout;
 use App\Models\User;
 use App\Models\Workout;
+use App\Scopes\VisibilityScope;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class RecordedWorkoutFactory extends Factory
@@ -15,7 +16,7 @@ class RecordedWorkoutFactory extends Factory
     {
         return [
             'user_id' => User::inRandomOrder()->first()->id,
-            'workout_id' => Workout::inRandomOrder()->first()->id,
+            'workout_id' => Workout::withoutGlobalScope(VisibilityScope::class)->inRandomOrder()->first()->id,
         ];
     }
 }

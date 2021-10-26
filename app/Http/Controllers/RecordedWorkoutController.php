@@ -55,7 +55,12 @@ class RecordedWorkoutController extends Controller
             'workout.movements.fields.field',
         ])
             ->where('id', $id)
+            ->where('user_id', Auth::id())
             ->first();
+
+        if (empty($recordedWorkout)) {
+            abort(404);
+        }
 
         return view('workouts.recorded.view', [
             'recordedWorkout' => $recordedWorkout,
@@ -130,7 +135,12 @@ class RecordedWorkoutController extends Controller
                 'movements.fields',
             ])
             ->where('id', $id)
+            ->where('user_id', Auth::id())
             ->first();
+
+        if(empty($recordedWorkout)) {
+            return redirect()->route('recorded_workout_view', $id);
+        }
 
         return view('workouts.recorded.edit', [
             'recordedWorkout' => $recordedWorkout,
@@ -143,7 +153,11 @@ class RecordedWorkoutController extends Controller
             return $this->delete($id, $request['redirect']);
         }
 
-        $recordedWorkout = RecordedWorkout::where('id', $id)->first();
+        $recordedWorkout = RecordedWorkout::where('id', $id)->where('user_id', Auth::id())->first();
+
+        if(empty($recordedWorkout)) {
+            return redirect()->route('recorded_workout_view', $id);
+        }
 
         $fields = WorkoutMovementField::whereIn('id', array_keys($request['fields']))
             ->whereHas('workoutMovement', function($q) use($recordedWorkout) {
@@ -164,7 +178,11 @@ class RecordedWorkoutController extends Controller
 
     public function delete($id, $redirect = null)
     {
-        $recordedWorkout = RecordedWorkout::where('id', $id)->first();
+        $recordedWorkout = RecordedWorkout::where('id', $id)->where('user_id', Auth::id())->first();
+
+        if (empty($recordedWorkout)) {
+            return redirect()->route('recorded_workout_view', $id);
+        }
 
         if ($recordedWorkout->user_id === Auth::id()) {
             $recordedWorkout->delete();
