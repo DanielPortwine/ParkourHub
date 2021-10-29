@@ -20,7 +20,12 @@ class Spot extends Model
     protected $fillable = [
         'name',
         'description',
+        'rating',
         'visibility',
+        'coordinates',
+        'latitude',
+        'longitude',
+        'image',
     ];
 
     protected $searchable = [

@@ -10,7 +10,9 @@ class Hit extends Model
     use HasFactory;
 
     protected $fillable = [
-        'completed',
+        'user_id',
+        'spot_id',
+        'completed_at',
     ];
 
     public function scopeTicked($query, $ticked = false)

@@ -12,6 +12,7 @@ use App\Models\Review;
 use App\Models\Spot;
 use App\Models\SpotComment;
 use App\Models\Workout;
+use App\Scopes\VisibilityScope;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,9 +20,10 @@ class ReportController extends Controller
 {
     public function index(Request $request, $type = 'spot')
     {
-        if (Auth::id() !== 1) {
-            return back();
+        if (!Auth::user()->hasPermissionTo('manage reports')) {
+            abort(404);
         }
+
         $sort = ['created_at', 'desc'];
         if (!empty($request['sort'])) {
             $fieldMapping = [
@@ -34,9 +36,12 @@ class ReportController extends Controller
             $sortParams = explode('_', $request['sort']);
             $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
         }
+
         switch ($type) {
             case 'challenge':
-                $content = Challenge::withCount('reports')
+                $content = Challenge::withoutGlobalScope(VisibilityScope::class)
+                    ->withTrashed()
+                    ->withCount('reports')
                     ->withCount('entries')
                     ->whereHas('reports')
                     ->entered(!empty($request['entered']) ? true : false)
@@ -51,7 +56,8 @@ class ReportController extends Controller
                     ->appends(request()->query());
                 break;
             case 'entry':
-                $content = ChallengeEntry::withCount('reports')
+                $content = ChallengeEntry::withTrashed()
+                    ->withCount('reports')
                     ->whereHas('reports')
                     ->winner(!empty($request['winner']) ? true : false)
                     ->dateBetween([
@@ -123,7 +129,9 @@ class ReportController extends Controller
                 break;
             case 'spot':
             default:
-                $content = Spot::withCount('reports')
+                $content = Spot::withoutGlobalScope(VisibilityScope::class)
+                    ->withTrashed()
+                    ->withCount('reports')
                     ->withCount('views')
                     ->whereHas('reports')
                     ->hitlist(!empty($request['on_hitlist']) ? true : false)

@@ -209,7 +209,6 @@ Route::prefix('hometown')->middleware('verified')->group(function() {
 
 Route::prefix('admin')->middleware('verified')->group(function() {
     Route::get('/reports/{type?}', 'ReportController@index')->name('report_listing');
-    Route::get('/reports/discard/{id}/{type}', 'ReportController@discard')->name('report_discard');
 });
 
 Route::prefix('ajax')->group(function() {
