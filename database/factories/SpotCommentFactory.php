@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\Spot;
 use App\Models\SpotComment;
 use App\Models\User;
+use App\Scopes\VisibilityScope;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class SpotCommentFactory extends Factory
@@ -20,7 +21,7 @@ class SpotCommentFactory extends Factory
         ];
         $commentType = $commentTypes[$this->faker->randomKey($commentTypes)];
         return [
-            'spot_id' => Spot::inRandomOrder()->first()->id,
+            'spot_id' => Spot::withoutGlobalScope(VisibilityScope::class)->inRandomOrder()->first()->id,
             'user_id' => User::inRandomOrder()->first()->id,
             'comment' => in_array($commentType, ['comment', 'imageComment']) ? $this->faker->realText(255) : null,
             'visibility' => $this->faker->randomElement(['private', 'follower', 'public']),

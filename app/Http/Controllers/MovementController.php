@@ -36,7 +36,7 @@ class MovementController extends Controller
 
         $movements = Movement::withCount(['spots', 'moves'])
             ->with(['spots', 'moves', 'reports', 'user'])
-            ->type($request['type'] ?? null)
+            ->type($request['movementType'] ?? null)
             ->dateBetween([
                 'from' => $request['date_from'] ?? null,
                 'to' => $request['date_to'] ?? null

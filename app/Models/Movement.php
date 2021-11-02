@@ -54,7 +54,7 @@ class Movement extends Model
     public function scopeType($query, $type = null)
     {
         if (!empty($type)) {
-            $query->where('type_id', (int)$type);
+            $query->where('type_id', $type);
         }
 
         return $query;

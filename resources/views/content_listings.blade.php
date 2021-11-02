@@ -246,10 +246,10 @@
                                 @elseif($component === 'movement')
                                     <div class="col-auto pb-3">
                                         <label><strong>Type</strong></label>
-                                        <select class="select2-5-results" name="type">
+                                        <select class="select2-5-results" name="movementType">
                                             <option></option>
-                                            <option value="1" @if(($_GET['type'] ?? '') == 1)selected @endif>Move</option>
-                                            <option value="2" @if(($_GET['type'] ?? '') == 2)selected @endif>Exercise</option>
+                                            <option value="1" @if(($_GET['movementType'] ?? '') == 1)selected @endif>Move</option>
+                                            <option value="2" @if(($_GET['movementType'] ?? '') == 2)selected @endif>Exercise</option>
                                         </select>
                                     </div>
                                     <div class="col-auto pb-3">
@@ -277,7 +277,7 @@
                                         <select name="sort" class="select2-no-search">
                                             <option value="date_desc" @if(($_GET['sort'] ?? '') === 'date_desc')selected @endif>Newest</option>
                                             <option value="date_asc" @if(($_GET['sort'] ?? '') === 'date_asc')selected @endif>Oldest</option>
-                                            @if($component === 'spot')
+                                            @if($component === 'spot' || $component === 'review')
                                                 <option value="rating_desc" @if(($_GET['sort'] ?? '') === 'rating_desc')selected @endif>Highest Rated</option>
                                                 <option value="rating_asc" @if(($_GET['sort'] ?? '') === 'rating_asc')selected @endif>Lowest Rated</option>
                                                 <option value="views_desc" @if(($_GET['sort'] ?? '') === 'views_desc')selected @endif>Most Viewed</option>

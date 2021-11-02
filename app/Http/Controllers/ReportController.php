@@ -69,7 +69,9 @@ class ReportController extends Controller
                     ->appends(request()->query());
                 break;
             case 'review':
-                $content = Review::withCount('reports')
+                $content = Review::withoutGlobalScope(VisibilityScope::class)
+                    ->withTrashed()
+                    ->withCount('reports')
                     ->whereHas('reports')
                     ->rating($request['rating'] ?? null)
                     ->dateBetween([
@@ -81,7 +83,9 @@ class ReportController extends Controller
                     ->appends(request()->query());
                 break;
             case 'comment':
-                $content = SpotComment::withCount('reports')
+                $content = SpotComment::withoutGlobalScope(VisibilityScope::class)
+                    ->withTrashed()
+                    ->withCount('reports')
                     ->whereHas('reports')
                     ->dateBetween([
                         'from' => $request['date_from'] ?? null,
@@ -92,12 +96,17 @@ class ReportController extends Controller
                     ->appends(request()->query());
                 break;
             case 'movement':
-                $content = Movement::withCount('reports')
+                $content = Movement::withoutGlobalScope(VisibilityScope::class)
+                    ->withTrashed()
+                    ->withCount('reports')
                     ->whereHas('reports')
                     ->dateBetween([
                         'from' => $request['date_from'] ?? null,
                         'to' => $request['date_to'] ?? null
                     ])
+                    ->type($request['movementType'] ?? null)
+                    ->category($request['category'] ?? null)
+                    ->equipment($request['equipment'] ?? null)
                     ->orderBy($sort[0], $sort[1])
                     ->paginate(20)
                     ->appends(request()->query());
@@ -106,7 +115,9 @@ class ReportController extends Controller
                 $equipments = Equipment::get();
                 break;
             case 'equipment':
-                $content = Equipment::withCount('reports')
+                $content = Equipment::withoutGlobalScope(VisibilityScope::class)
+                    ->withTrashed()
+                    ->withCount('reports')
                     ->whereHas('reports')
                     ->dateBetween([
                         'from' => $request['date_from'] ?? null,
@@ -117,7 +128,9 @@ class ReportController extends Controller
                     ->appends(request()->query());
                 break;
             case 'workout':
-                $content = Workout::withCount('reports')
+                $content = Workout::withoutGlobalScope(VisibilityScope::class)
+                    ->withTrashed()
+                    ->withCount('reports')
                     ->whereHas('reports')
                     ->dateBetween([
                         'from' => $request['date_from'] ?? null,
