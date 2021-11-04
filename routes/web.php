@@ -88,14 +88,14 @@ Route::prefix('spots')->middleware('verified')->group(function() {
 });
 
 Route::prefix('/reviews')->middleware('verified')->group(function() {
-    Route::post('/create', 'ReviewController@create')->name('review_create');
+    Route::post('/create', 'ReviewController@store')->name('review_store');
     Route::get('/edit/{id}', 'ReviewController@edit')->name('review_edit');
     Route::post('/edit/{id}', 'ReviewController@update')->name('review_update');
     Route::get('/delete/{id}', 'ReviewController@delete')->name('review_delete');
     Route::get('/recover/{id}', 'ReviewController@recover')->name('review_recover');
     Route::get('/remove/{id}', 'ReviewController@remove')->name('review_remove');
     Route::get('/report/{review}', 'ReviewController@report')->name('review_report');
-    Route::get('/discard_reports/{review}', 'ReviewController@discardReports')->name('review_report_discard');
+    Route::get('/discard_reports/{any_review}', 'ReviewController@discardReports')->name('review_report_discard');
 });
 
 Route::prefix('/spot_comments')->middleware('verified')->group(function() {

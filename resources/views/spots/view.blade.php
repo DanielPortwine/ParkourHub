@@ -312,7 +312,7 @@
                                             </div>
                                         </div>
                                         <div class="card-body bg-grey text-white">
-                                            <form method="POST" action="{{ route('review_create') }}" enctype="multipart/form-data">
+                                            <form method="POST" action="{{ route('review_store') }}" enctype="multipart/form-data">
                                                 @csrf
                                                 <input type="hidden" name="spot" value="{{ $spot->id }}">
                                                 <input type="hidden" id="rating" name="rating" value="{{ old('rating') ?: 0 }}">

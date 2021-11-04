@@ -30,9 +30,11 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
-
         parent::boot();
+
+        Route::bind('any_review', function($id) {
+            return \App\Models\Review::withoutGlobalScopes()->withTrashed()->findOrFail($id);
+        });
     }
 
     /**

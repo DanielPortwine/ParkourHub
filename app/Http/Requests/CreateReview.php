@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\Visibility;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateReview extends FormRequest
@@ -28,6 +29,7 @@ class CreateReview extends FormRequest
             'rating' => 'required|integer|between:0,5',
             'title' => 'nullable|required_with:review|string|max:25',
             'review' => 'nullable|string|max:255',
+            'visibility' => ['required', new Visibility],
         ];
     }
 }
