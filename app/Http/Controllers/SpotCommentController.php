@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateSpotComment;
 use App\Http\Requests\UpdateSpotComment;
+use App\Models\Spot;
 use App\Notifications\SpotCommented;
 use App\Models\Report;
 use App\Models\SpotComment;
+use App\Scopes\VisibilityScope;
 use App\SpotCommentLike;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -15,7 +17,7 @@ use Illuminate\Support\Facades\Storage;
 
 class SpotCommentController extends Controller
 {
-    public function create(CreateSpotComment $request)
+    public function store(CreateSpotComment $request)
     {
         $comment = new SpotComment;
         $comment->spot_id = $request['spot'];
@@ -49,7 +51,10 @@ class SpotCommentController extends Controller
 
     public function edit($id)
     {
-        $comment = SpotComment::where('id', $id)->first();
+        $comment = SpotComment::withoutGlobalScope(VisibilityScope::class)->where('id', $id)->first();
+        if ($comment->user_id !== Auth::id()) {
+            return redirect()->route('spot_view', $comment->spot()->withoutGlobalScope(VisibilityScope::class)->first()->id);
+        }
 
         return view('spots.comments.edit', ['comment' => $comment]);
     }
@@ -60,7 +65,11 @@ class SpotCommentController extends Controller
             return $this->delete($id, $request['redirect']);
         }
 
-        $comment = SpotComment::where('id', $id)->first();
+        $comment = SpotComment::withoutGlobalScope(VisibilityScope::class)->where('id', $id)->first();
+        if ($comment->user_id !== Auth::id()) {
+            return redirect()->route('spot_view', $comment->spot()->withoutGlobalScope(VisibilityScope::class)->first()->id);
+        }
+
         $comment->comment = $request['comment'];
         $comment->visibility = $request['visibility'] ?: 'private';
         if (!empty($request['youtube'])){
@@ -96,9 +105,12 @@ class SpotCommentController extends Controller
 
     public function delete($id, $redirect = null)
     {
-        $comment = SpotComment::where('id', $id)->first();
+        $comment = SpotComment::withoutGlobalScope(VisibilityScope::class)->where('id', $id)->first();
         if ($comment->user_id === Auth::id()) {
             $comment->delete();
+        } else {
+            $spot = Spot::withoutGlobalScope(VisibilityScope::class)->where('id', $comment->spot_id)->first();
+            return redirect()->route('spot_view', $spot->id);
         }
 
         if (!empty($redirect)) {
@@ -123,7 +135,7 @@ class SpotCommentController extends Controller
 
     public function remove(Request $request, $id)
     {
-        $comment = SpotComment::withTrashed()->where('id', $id)->first();
+        $comment = SpotComment::withoutGlobalScope(VisibilityScope::class)->withTrashed()->where('id', $id)->first();
 
         if ($comment->user_id !== Auth::id() && !Auth::user()->hasPermissionTo('remove content')) {
             return back();
@@ -141,8 +153,10 @@ class SpotCommentController extends Controller
         return back()->with('status', 'Successfully removed comment forever.');
     }
 
-    public function report(SpotComment $spotComment)
+    public function report($id)
     {
+        $spotComment = SpotComment::where('id', $id)->first();
+
         $spotComment->report();
 
         return back()->with('status', 'Successfully reported spot comment');
@@ -150,6 +164,10 @@ class SpotCommentController extends Controller
 
     public function discardReports(SpotComment $spotComment)
     {
+        if (!Auth::user()->hasPermissionTo('manage reports') || $spotComment->user_id === Auth::id()) {
+            return back();
+        }
+
         $spotComment->discardReports();
 
         return back()->with('status', 'Successfully discarded reports against this content');

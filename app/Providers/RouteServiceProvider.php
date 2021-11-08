@@ -35,6 +35,10 @@ class RouteServiceProvider extends ServiceProvider
         Route::bind('any_review', function($id) {
             return \App\Models\Review::withoutGlobalScopes()->withTrashed()->findOrFail($id);
         });
+
+        Route::bind('any_spotComment', function($id) {
+            return \App\Models\SpotComment::withoutGlobalScopes()->withTrashed()->findOrFail($id);
+        });
     }
 
     /**

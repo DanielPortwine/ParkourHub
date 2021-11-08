@@ -124,8 +124,10 @@ class ReviewController extends Controller
         return back()->with('status', 'Successfully removed review forever.');
     }
 
-    public function report(Review $review)
+    public function report($id)
     {
+        $review = Review::where('id', $id)->first();
+
         $review->report();
 
         return back()->with('status', 'Successfully reported review');

@@ -94,19 +94,19 @@ Route::prefix('/reviews')->middleware('verified')->group(function() {
     Route::get('/delete/{id}', 'ReviewController@delete')->name('review_delete');
     Route::get('/recover/{id}', 'ReviewController@recover')->name('review_recover');
     Route::get('/remove/{id}', 'ReviewController@remove')->name('review_remove');
-    Route::get('/report/{review}', 'ReviewController@report')->name('review_report');
+    Route::get('/report/{id}', 'ReviewController@report')->name('review_report');
     Route::get('/discard_reports/{any_review}', 'ReviewController@discardReports')->name('review_report_discard');
 });
 
 Route::prefix('/spot_comments')->middleware('verified')->group(function() {
-    Route::post('/create', 'SpotCommentController@create')->middleware('optimizeImages')->name('spot_comment_create');
+    Route::post('/create', 'SpotCommentController@store')->middleware('optimizeImages')->name('spot_comment_store');
     Route::get('/edit/{id}', 'SpotCommentController@edit')->name('spot_comment_edit');
     Route::post('/edit/{id}', 'SpotCommentController@update')->middleware('optimizeImages')->name('spot_comment_update');
     Route::get('/delete/{id}', 'SpotCommentController@delete')->name('spot_comment_delete');
     Route::get('/recover/{id}', 'SpotCommentController@recover')->name('spot_comment_recover');
     Route::get('/remove/{id}', 'SpotCommentController@remove')->name('spot_comment_remove');
-    Route::get('/report/{spotComment}', 'SpotCommentController@report')->name('spot_comment_report');
-    Route::get('/discard_reports/{spotComment}', 'SpotCommentController@discardReports')->name('spot_comment_report_discard');
+    Route::get('/report/{id}', 'SpotCommentController@report')->name('spot_comment_report');
+    Route::get('/discard_reports/{any_spotComment}', 'SpotCommentController@discardReports')->name('spot_comment_report_discard');
 });
 
 Route::prefix('challenges')->middleware('verified')->group(function() {
