@@ -93,7 +93,7 @@ class SpotController extends Controller
             ->first();
 
         if (empty($spot) || ($spot->deleted_at !== null && Auth::id() !== $spot->user_id)) {
-            return view('errors.404');
+            abort(404);
         }
 
         if ($request->ajax()){
@@ -102,118 +102,118 @@ class SpotController extends Controller
                 'lazyload' => false,
                 'map' => true,
             ])->render();
-        } else {
-            $reviews = null;
-            $comments = null;
-            $challenges = null;
-            $workouts = null;
-            if (!empty($request['reviews']) && ($tab == null || $tab === 'reviews')) {
-                $reviews = $spot->reviews()
-                    ->with(['reports', 'user'])
-                    ->whereNotNull('title')
-                    ->orderByDesc('created_at')
-                    ->paginate(20, ['*'], 'reviews');
-                $spotReviewsWithTextCount = $spot->reviews()->withText()->count();
-            } else if ($tab == null || $tab === 'reviews') {
-                $reviews = $spot->reviews()
-                    ->with(['reports', 'user'])
-                    ->whereNotNull('title')
-                    ->orderByDesc('created_at')
-                    ->limit(4)
-                    ->get();
-                $spotReviewsWithTextCount = $spot->reviews()->withText()->count();
-            }
-            if (!empty($request['comments']) && $tab === 'comments') {
-                $comments = $spot->comments()
-                    ->with(['reports', 'user'])
-                    ->orderByDesc('created_at')
-                    ->paginate(20, ['*'], 'comments');
-            } else if ($tab === 'comments') {
-                $comments = $spot->comments()
-                    ->with(['reports', 'user'])
-                    ->orderByDesc('created_at')
-                    ->limit(4)
-                    ->get();
-            }
-            if (!empty($request['challenges']) && $tab === 'challenges') {
-                $challenges = $spot->challenges()
-                    ->withCount('entries')
-                    ->with(['entries', 'reports', 'user'])
-                    ->orderByDesc('created_at')
-                    ->paginate(20, ['*'], 'challenges');
-            } else if ($tab === 'challenges') {
-                $challenges = $spot->challenges()
-                    ->withCount('entries')
-                    ->with(['entries', 'reports', 'user'])
-                    ->orderByDesc('created_at')
-                    ->limit(4)
-                    ->get();
-            }
-            if (!empty($request['workouts']) && $tab === 'workouts') {
-                $workouts = $spot->workouts()
-                    ->withCount('movements')
-                    ->with(['movements', 'bookmarks', 'user'])
-                    ->orderByDesc('created_at')
-                    ->paginate(20, ['*'], 'workouts');
-            } else if ($tab === 'workouts') {
-                $workouts = $spot->workouts()
-                    ->withCount('movements')
-                    ->with(['movements', 'bookmarks', 'user'])
-                    ->orderByDesc('created_at')
-                    ->limit(4)
-                    ->get();
-            }
-            $usersViewed = SpotView::where('spot_id', $id)->pluck('user_id')->toArray();
-            if (Auth::check() && !in_array(Auth::id(), $usersViewed) && Auth::id() !== $spot->user_id) {
-                $view = new SpotView;
-                $view->spot_id = $id;
-                $view->user_id = Auth::id();
-                $view->save();
-            }
+        }
+        $reviews = null;
+        $comments = null;
+        $challenges = null;
+        $workouts = null;
+        if (!empty($request['reviews']) && ($tab == null || $tab === 'reviews')) {
+            $reviews = $spot->reviews()
+                ->with(['reports', 'user'])
+                ->whereNotNull('title')
+                ->orderByDesc('created_at')
+                ->paginate(20, ['*'], 'reviews');
+            $spotReviewsWithTextCount = $spot->reviews()->withText()->count();
+        } else if ($tab == null || $tab === 'reviews') {
+            $reviews = $spot->reviews()
+                ->with(['reports', 'user'])
+                ->whereNotNull('title')
+                ->orderByDesc('created_at')
+                ->limit(4)
+                ->get();
+            $spotReviewsWithTextCount = $spot->reviews()->withText()->count();
+        }
+        if (!empty($request['comments']) && $tab === 'comments') {
+            $comments = $spot->comments()
+                ->with(['reports', 'user'])
+                ->orderByDesc('created_at')
+                ->paginate(20, ['*'], 'comments');
+        } else if ($tab === 'comments') {
+            $comments = $spot->comments()
+                ->with(['reports', 'user'])
+                ->orderByDesc('created_at')
+                ->limit(4)
+                ->get();
+        }
+        if (!empty($request['challenges']) && $tab === 'challenges') {
+            $challenges = $spot->challenges()
+                ->withCount('entries')
+                ->with(['entries', 'reports', 'user'])
+                ->orderByDesc('created_at')
+                ->paginate(20, ['*'], 'challenges');
+        } else if ($tab === 'challenges') {
+            $challenges = $spot->challenges()
+                ->withCount('entries')
+                ->with(['entries', 'reports', 'user'])
+                ->orderByDesc('created_at')
+                ->limit(4)
+                ->get();
+        }
+        if (!empty($request['workouts']) && $tab === 'workouts') {
+            $workouts = $spot->workouts()
+                ->withCount('movements')
+                ->with(['movements', 'bookmarks', 'user'])
+                ->orderByDesc('created_at')
+                ->paginate(20, ['*'], 'workouts');
+        } else if ($tab === 'workouts') {
+            $workouts = $spot->workouts()
+                ->withCount('movements')
+                ->with(['movements', 'bookmarks', 'user'])
+                ->orderByDesc('created_at')
+                ->limit(4)
+                ->get();
+        }
+        $usersViewed = SpotView::where('spot_id', $id)->pluck('user_id')->toArray();
+        if (Auth::check() && !in_array(Auth::id(), $usersViewed) && Auth::id() !== $spot->user_id) {
+            $view = new SpotView;
+            $view->spot_id = $id;
+            $view->user_id = Auth::id();
+            $view->save();
+        }
 
-            $hit = null;
-            if (Auth::check()) {
-                $hit = $spot->hits()->where('user_id', Auth::id())->first();
-            }
+        $hit = null;
+        if (Auth::check()) {
+            $hit = $spot->hits()->where('user_id', Auth::id())->first();
+        }
 
-            $linkableMovements = Movement::with(['type'])
-                ->whereHas('type', function($q) {
+        $linkableMovements = Movement::with(['type'])
+            ->whereHas('type', function($q) {
+                return $q->where('name', 'Move');
+            })
+            ->whereNotIn('id', $spot->movements()->pluck('movements.id')->toArray())
+            ->get();
+        $movementCategories = Cache::remember('movement_categories_1', 86400, function() {
+            return MovementCategory::with(['type'])
+                ->whereHas('type', function ($q) {
                     return $q->where('name', 'Move');
                 })
-                ->whereNotIn('id', $spot->movements()->pluck('movements.id')->toArray())
                 ->get();
-            $movementCategories = Cache::remember('movement_categories_1', 86400, function() {
-                return MovementCategory::with(['type'])
-                    ->whereHas('type', function ($q) {
-                        return $q->where('name', 'Move');
-                    })
-                    ->get();
-            });
-            $movementFields = Cache::remember('movement_fields', 86400, function() {
-                return MovementField::get();
-            });
-            $linkableWorkouts = null;
-            if ($tab === 'workouts') {
-                $linkableWorkouts = Workout::get();
-            }
-
-            return view('spots.view', [
-                'spot' => $spot,
-                'request' => $request,
-                'reviews' => $reviews,
-                'comments' => $comments,
-                'challenges' => $challenges,
-                'workouts' => $workouts,
-                'tab' => $tab,
-                'movements' => $spot->movements,
-                'hit' => $hit,
-                'linkableMovements' => $linkableMovements,
-                'movementCategories' => $movementCategories,
-                'movementFields' => $movementFields,
-                'linkableWorkouts' => $linkableWorkouts,
-                'spotReviewsWithTextCount' => $spotReviewsWithTextCount ?? 0,
-            ]);
+        });
+        $movementFields = Cache::remember('movement_fields', 86400, function() {
+            return MovementField::get();
+        });
+        $linkableWorkouts = null;
+        if ($tab === 'workouts') {
+            $linkableWorkouts = Workout::whereNotIn('id', $spot->workouts()->pluck('workouts.id')->toArray())
+                ->get();
         }
+
+        return view('spots.view', [
+            'spot' => $spot,
+            'request' => $request,
+            'reviews' => $reviews,
+            'comments' => $comments,
+            'challenges' => $challenges,
+            'workouts' => $workouts,
+            'tab' => $tab,
+            'movements' => $spot->movements,
+            'hit' => $hit,
+            'linkableMovements' => $linkableMovements,
+            'movementCategories' => $movementCategories,
+            'movementFields' => $movementFields,
+            'linkableWorkouts' => $linkableWorkouts,
+            'spotReviewsWithTextCount' => $spotReviewsWithTextCount ?? 0,
+        ]);
     }
 
     public function fetch()
