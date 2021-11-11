@@ -70,7 +70,7 @@ Route::prefix('spots')->middleware('verified')->group(function() {
     Route::get('/map', 'SpotController@index')->withoutMiddleware('verified')->name('spots');
     Route::get('/fetch', 'SpotController@fetch')->withoutMiddleware('verified')->name('spot_fetch');
     Route::get('/spot/{id}/{tab?}', 'SpotController@view')->withoutMiddleware('verified')->name('spot_view');
-    Route::post('/create', 'SpotController@create')->middleware('optimizeImages')->name('spot_create');
+    Route::post('/create', 'SpotController@store')->middleware('optimizeImages')->name('spot_store');
     Route::get('/edit/{id}', 'SpotController@edit')->name('spot_edit');
     Route::post('/edit/{id}', 'SpotController@update')->middleware('optimizeImages')->name('spot_update');
     Route::get('/delete/{id}', 'SpotController@delete')->name('spot_delete');
@@ -80,8 +80,8 @@ Route::prefix('spots')->middleware('verified')->group(function() {
     Route::get('/add_to_hitlist/{id}', 'SpotController@addToHitlist')->name('add_to_hitlist');
     Route::get('/remove_from_hitlist/{id}', 'SpotController@removeFromHitlist')->name('remove_from_hitlist');
     Route::get('/tick_off_hitlist/{id}', 'SpotController@tickOffHitlist')->name('tick_off_hitlist');
-    Route::get('/report/{spot}', 'SpotController@report')->name('spot_report');
-    Route::get('/discard_reports/{spot}', 'SpotController@discardReports')->name('spot_report_discard');
+    Route::get('/report/{id}', 'SpotController@report')->name('spot_report');
+    Route::get('/discard_reports/{any_spot}', 'SpotController@discardReports')->name('spot_report_discard');
     Route::post('/add_movement/{spot}', 'SpotController@addMovement')->name('spot_add_movement');
     Route::get('/remove_movement/{spotID}/{movement}', 'SpotController@removeMovement')->name('spot_remove_movement');
     Route::post('/link_workout', 'SpotController@linkWorkout')->name('spot_workout_link');

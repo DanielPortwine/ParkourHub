@@ -223,7 +223,7 @@ class SpotController extends Controller
         return $spots;
     }
 
-    public function create(CreateSpot $request)
+    public function store(CreateSpot $request)
     {
         $spot = new Spot;
         $spot->user_id = Auth::id();
@@ -290,6 +290,8 @@ class SpotController extends Controller
         $spot = Spot::where('id', $id)->first();
         if ($spot->user_id === Auth::id()) {
             $spot->delete();
+        } else {
+            return redirect()->route('spot_view', $spot->id);
         }
 
         if (!empty($redirect)) {
@@ -314,7 +316,7 @@ class SpotController extends Controller
 
     public function remove(Request $request, $id)
     {
-        $spot = Spot::withTrashed()->where('id', $id)->first();
+        $spot = Spot::withTrashed()->withoutGlobalScope(VisibilityScope::class)->where('id', $id)->first();
 
         if ($spot->user_id !== Auth::id() && !Auth::user()->hasPermissionTo('remove content')) {
             return back();
@@ -378,8 +380,10 @@ class SpotController extends Controller
         return false;
     }
 
-    public function report(Spot $spot)
+    public function report($id)
     {
+        $spot = Spot::where('id', $id)->first();
+
         $spot->report();
 
         return back()->with('status', 'Successfully reported spot');
@@ -387,6 +391,10 @@ class SpotController extends Controller
 
     public function discardReports(Spot $spot)
     {
+        if (!Auth::user()->hasPermissionTo('manage reports') || $spot->user_id === Auth::id()) {
+            return back();
+        }
+
         $spot->discardReports();
 
         return back()->with('status', 'Successfully discarded reports against this content');
@@ -394,6 +402,10 @@ class SpotController extends Controller
 
     public function addMovement(AddMovement $request, $id)
     {
+        if (!Auth::user()->isPremium()) {
+            return back();
+        }
+
         $spot = Spot::with(['movements'])->where('id', $id)->first();
         if (empty($spot->movements()->where('movements.id', $request['movement'])->first())) {
             $spot->movements()->attach($request['movement'], ['user_id' => Auth::id()]);
@@ -404,6 +416,10 @@ class SpotController extends Controller
 
     public function removeMovement($spotID, $movement)
     {
+        if (!Auth::user()->isPremium() || Auth::user() !== $movement->spots()->where('id', $spotID)->first()->pivot->user_id) {
+            return back();
+        }
+
         $spot = Spot::with(['movements'])->where('id', $spotID)->first();
         if (!empty($spot->movements()->where('movements.id', $movement)->first())) {
             $spot->movements()->detach([$movement, $spotID]);
@@ -414,8 +430,14 @@ class SpotController extends Controller
 
     public function linkWorkout(Request $request)
     {
+        if (!Auth::user()->isPremium()) {
+            return back();
+        }
+
         $spot = Spot::with(['workouts'])->where('id', $request['spot'])->first();
-        $spot->workouts()->attach($request['workout']);
+        if (empty($spot->workouts()->where('workouts.id', $request['workout'])->first())) {
+            $spot->workouts()->attach($request['workout']);
+        }
 
         return back()->with('status', 'Successfully linked workout with spot');
     }
