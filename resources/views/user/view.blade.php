@@ -54,12 +54,12 @@
                             @php
                                 $followSetting = setting('privacy_follow', 'nobody', Auth()->id());
                                 $followRequests = Auth()->user()->followers()->where('accepted', false)->pluck('follower_id')->toArray();
-                                $followers = Auth()->user()->followers()->where('accepted', true)->pluck('follower_id')->toArray();
+                                $userFollowers = Auth()->user()->followers()->where('accepted', true)->pluck('follower_id')->toArray();
                             @endphp
                             @if(in_array($user->id, $followRequests))
                                 <a class="accept-follower-button btn text-white" href="{{ route('user_accept_follower', $user->id) }}" title="Accept Follower"><i class="fa fa-check"></i></a>
                                 <a class="reject-follower-button btn text-white" href="{{ route('user_reject_follower', $user->id) }}" title="Reject Follower"><i class="fa fa-times"></i></a>
-                            @elseif(in_array($user->id, $followers))
+                            @elseif(in_array($user->id, $userFollowers))
                                 <a class="btn text-white" href="{{ route('user_remove_follower', $user->id) }}" title="Remove Follower"><i class="fa fa-ban"></i></a>
                             @endif
                             @php

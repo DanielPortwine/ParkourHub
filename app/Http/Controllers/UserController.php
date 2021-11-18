@@ -34,18 +34,12 @@ class UserController extends Controller
 
     public function listing(Request $request)
     {
-        $sort = ['created_at', 'desc'];
-        if (!empty($request['sort'])) {
-            $fieldMapping = [
-                'date' => 'created_at',
-            ];
-            $sortParams = explode('_', $request['sort']);
-            $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
+        if (empty($request['search'])) {
+            abort(404);
         }
 
         $users = User::whereNotNull('email_verified_at')
             ->search($request['search'] ?? false)
-            ->orderBy($sort[0], $sort[1])
             ->paginate(20)
             ->appends(request()->query());
 
@@ -56,7 +50,7 @@ class UserController extends Controller
         ]);
     }
 
-    public function view(Request $request, $id, $tab = null)
+    public function view(Request $request, $id, $tab = 'spots')
     {
         // if coming from a notification, set the notification as read
         if (!empty($request['notification'])) {
@@ -70,40 +64,46 @@ class UserController extends Controller
             return redirect()->route('user_view', $id);
         }
 
-        $user = User::with([
-            'spots',
-            'reports',
-            'hits',
-            'reviews',
-            'spotComments',
-            'challenges',
-            'challengeEntries',
-            'workouts',
-            'movements',
-            'equipment',
-            'followers',
-            'following',
-        ])
+        switch ($tab) {
+            case 'hitlist':
+                $spotWith = 'hits';
+                break;
+            case 'comments':
+                $spotWith = 'spotComments';
+                break;
+            case 'entries':
+                $spotWith = 'challengeEntries';
+                break;
+            case 'follow_requests':
+                $spotWith = 'followers';
+                break;
+            default:
+                $spotWith = $tab;
+                break;
+        }
+
+        $user = User::with($spotWith)
             ->where('id', $id)
+            ->whereNotNull('email_verified_at')
             ->first();
 
-        if (empty($user) || ($user->deleted_at !== null && Auth::id() !== $user->id)) {
-            return view('errors.404');
+        if (empty($user)) {
+            abort(404);
         }
 
         $spots = $hits = $reviews = $comments = $challenges = $entries = $workouts = $movements = $equipments = $followers = $following = $followRequests = null;
-        if ($tab == null || $tab === 'spots') {
+        if ($tab === 'spots') {
             $spots = $user->spots()
                 ->with(['hits', 'reviews', 'reports', 'user'])
                 ->orderByDesc('rating')
-                ->paginate(10);
+                ->paginate(20);
         }
         if ($tab === 'hitlist') {
             $hits = $user->hits()
                 ->with('spot')
                 ->whereHas('spot')
                 ->orderByDesc('created_at')
-                ->paginate(10);
+                ->paginate(20);
         }
         if ($tab === 'reviews') {
             $reviews = $user->reviews()
@@ -111,7 +111,7 @@ class UserController extends Controller
                 ->whereHas('spot')
                 ->whereNotNull('title')
                 ->orderByDesc('created_at')
-                ->paginate(20);
+                ->paginate(40);
             $userReviewsWithTextCount = $user->reviews()->withText()->count();
         }
         if ($tab === 'comments') {
@@ -119,7 +119,7 @@ class UserController extends Controller
             $comments = $user->spotComments()
                 ->with(['reports', 'user'])
                 ->orderByDesc('created_at')
-                ->paginate(10);
+                ->paginate(20);
         }
         if ($tab === 'challenges') {
             $challenges = $user->challenges()
@@ -127,55 +127,83 @@ class UserController extends Controller
                 ->with(['entries', 'reports', 'spot', 'user'])
                 ->whereHas('spot')
                 ->orderByDesc('created_at')
-                ->paginate(10);
+                ->paginate(20);
         }
         if ($tab === 'entries') {
             $entries = $user->challengeEntries()
                 ->with(['challenge', 'reports', 'user'])
                 ->whereHas('challenge')
                 ->orderByDesc('created_at')
-                ->paginate(10);
+                ->paginate(20);
         }
         if ($tab === 'workouts') {
             $workouts = $user->workouts()
                 ->with(['movements', 'user', 'spots'])
                 ->withCount('movements')
                 ->orderByDesc('created_at')
-                ->paginate(10);
+                ->paginate(20);
         }
         if ($tab === 'movements') {
             $movements = $user->movements()
                 ->with(['reports', 'moves', 'user', 'spots'])
                 ->orderByDesc('created_at')
-                ->paginate(10);
+                ->paginate(20);
         }
         if ($tab === 'equipment') {
             $equipments = $user->equipment()
                 ->withCount(['movements'])
                 ->with(['movements', 'reports', 'user'])
                 ->orderByDesc('created_at')
-                ->paginate(10);
+                ->paginate(20);
         }
         if ($tab === 'followers') {
+            if (
+                !(
+                    setting('privacy_follow_lists', null, $user->id) === 'anybody' || (
+                        setting('privacy_follow_lists', null, $user->id) === 'follower' &&
+                        !empty($user->followers->firstWhere('id', Auth()->id()))
+                    )
+                ) &&
+                $user->id !== Auth()->id()
+            ) {
+                abort(404);
+            }
+
             $followers = $user->followers()
                 ->with('followers')
                 ->where('accepted', true)
                 ->orderByDesc('created_at')
-                ->paginate(10);
+                ->paginate(40);
         }
         if ($tab === 'following') {
+            if (
+                !(
+                    setting('privacy_follow_lists', null, $user->id) === 'anybody' || (
+                        setting('privacy_follow_lists', null, $user->id) === 'follower' &&
+                        !empty($user->followers->firstWhere('id', Auth()->id()))
+                    )
+                ) &&
+                $user->id !== Auth()->id()
+            ) {
+                abort(404);
+            }
+
             $following = $user->following()
                 ->with('followers')
                 ->where('accepted', true)
                 ->orderByDesc('created_at')
-                ->paginate(10);
+                ->paginate(40);
         }
         if ($tab === 'follow_requests') {
+            if ($user->id !== Auth()->id()) {
+                abort(404);
+            }
+
             $followRequests = $user->followers()
                 ->with('followers')
                 ->where('accepted', false)
                 ->orderByDesc('created_at')
-                ->paginate(10);
+                ->paginate(40);
         }
 
         $showHometown = !empty($user->hometown_name) && (
@@ -327,40 +355,6 @@ class UserController extends Controller
         return redirect()->route('welcome');
     }
 
-    public function spots(Request $request)
-    {
-        $sort = ['created_at', 'desc'];
-        if (!empty($request['sort'])) {
-            $fieldMapping = [
-                'date' => 'created_at',
-                'rating' => 'rating',
-                'views' => 'views_count',
-            ];
-            $sortParams = explode('_', $request['sort']);
-            $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
-        }
-
-        $userID = Auth::id();
-        $spots = Spot::withCount('views')
-            ->where('user_id', $userID)
-            ->hitlist(!empty($request['on_hitlist']) ? true : false)
-            ->ticked(!empty($request['ticked_hitlist']) ? true : false)
-            ->rating($request['rating'] ?? null)
-            ->dateBetween([
-                'from' => $request['date_from'] ?? null,
-                'to' => $request['date_to'] ?? null
-            ])
-            ->orderBy($sort[0], $sort[1])
-            ->paginate(20)
-            ->appends(request()->query());
-
-        return view('content_listings', [
-            'title' => 'Your Spots',
-            'content' => $spots,
-            'component' => 'spot',
-        ]);
-    }
-
     public function hitlist(Request $request)
     {
         $sort = ['created_at', 'desc'];
@@ -391,192 +385,6 @@ class UserController extends Controller
             'content' => $spots,
             'component' => 'spot',
             'hitlist' => true,
-        ]);
-    }
-
-    public function reviews(Request $request)
-    {
-        $sort = ['created_at', 'desc'];
-        if (!empty($request['sort'])) {
-            $fieldMapping = [
-                'date' => 'created_at',
-                'rating' => 'rating',
-            ];
-            $sortParams = explode('_', $request['sort']);
-            $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
-        }
-
-        $userID = Auth::id();
-        $reviews = Review::where('user_id', $userID)
-            ->rating($request['rating'] ?? null)
-            ->dateBetween([
-                'from' => $request['date_from'] ?? null,
-                'to' => $request['date_to'] ?? null
-            ])
-            ->orderBy($sort[0], $sort[1])
-            ->paginate(20)
-            ->appends(request()->query());
-
-        return view('content_listings', [
-            'title' => 'Your Reviews',
-            'content' => $reviews,
-            'component' => 'review',
-            'options' => ['user' => true],
-        ]);
-    }
-
-    public function comments(Request $request)
-    {
-        $sort = ['created_at', 'desc'];
-        if (!empty($request['sort'])) {
-            $fieldMapping = [
-                'date' => 'created_at',
-                'rating' => 'rating',
-            ];
-            $sortParams = explode('_', $request['sort']);
-            $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
-        }
-
-        $userID = Auth::id();
-        $comments = SpotComment::where('user_id', $userID)
-            ->dateBetween([
-                'from' => $request['date_from'] ?? null,
-                'to' => $request['date_to'] ?? null
-            ])
-            ->orderBy($sort[0], $sort[1])
-            ->paginate(20)
-            ->appends(request()->query());
-
-        return view('content_listings', [
-            'title' => 'Your Comments',
-            'content' => $comments,
-            'component' => 'comment',
-            'options' => ['user' => true],
-        ]);
-    }
-
-    public function challenges(Request $request)
-    {
-        $sort = ['created_at', 'desc'];
-        if (!empty($request['sort'])) {
-            $fieldMapping = [
-                'date' => 'created_at',
-                'difficulty' => 'difficulty',
-                'entries' => 'entries_count',
-            ];
-            $sortParams = explode('_', $request['sort']);
-            $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
-        }
-
-        $userID = Auth::id();
-        $challenges = Challenge::withCount('entries')
-            ->where('user_id', $userID)
-            ->entered(!empty($request['entered']) ? true : false)
-            ->difficulty($request['difficulty'] ?? null)
-            ->dateBetween([
-                'from' => $request['date_from'] ?? null,
-                'to' => $request['date_to'] ?? null
-            ])
-            ->orderBy($sort[0], $sort[1])
-            ->paginate(20)
-            ->appends(request()->query());
-
-        return view('content_listings', [
-            'title' => 'Your Challenges',
-            'content' => $challenges,
-            'component' => 'challenge',
-        ]);
-    }
-
-    public function entries(Request $request)
-    {
-        $sort = ['created_at', 'desc'];
-        if (!empty($request['sort'])) {
-            $fieldMapping = [
-                'date' => 'created_at',
-            ];
-            $sortParams = explode('_', $request['sort']);
-            $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
-        }
-
-        $userID = Auth::id();
-        $entries = ChallengeEntry::where('user_id', $userID)
-            ->winner(!empty($request['winner']) ? true : false)
-            ->dateBetween([
-                'from' => $request['date_from'] ?? null,
-                'to' => $request['date_to'] ?? null
-            ])
-            ->orderBy($sort[0], $sort[1])
-            ->paginate(20)
-            ->appends(request()->query());
-
-        return view('content_listings', [
-            'title' => 'Your Challenge Entries',
-            'content' => $entries,
-            'component' => 'entry',
-        ]);
-    }
-
-    public function movements(Request $request)
-    {
-        $sort = ['created_at', 'desc'];
-        if (!empty($request['sort'])) {
-            $fieldMapping = [
-                'date' => 'created_at',
-            ];
-            $sortParams = explode('_', $request['sort']);
-            $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
-        }
-
-        $userID = Auth::id();
-        $movements = Movement::withCount('spots')
-            ->where('user_id', $userID)
-            ->dateBetween([
-                'from' => $request['date_from'] ?? null,
-                'to' => $request['date_to'] ?? null
-            ])
-            ->type($request['type'] ?? null)
-            ->category($request['category'] ?? null)
-            ->exercise($request['exercise'] ?? null)
-            ->equipment($request['equipment'] ?? null)
-            ->orderBy($sort[0], $sort[1])
-            ->paginate(20)
-            ->appends(request()->query());
-
-        return view('content_listings', [
-            'title' => 'Your Movements',
-            'content' => $movements,
-            'component' => 'movement',
-            'options' => ['user' => true],
-        ]);
-    }
-
-    public function equipment(Request $request)
-    {
-        $sort = ['created_at', 'desc'];
-        if (!empty($request['sort'])) {
-            $fieldMapping = [
-                'date' => 'created_at',
-            ];
-            $sortParams = explode('_', $request['sort']);
-            $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
-        }
-
-        $userID = Auth::id();
-        $equipments = Equipment::where('user_id', $userID)
-            ->dateBetween([
-                'from' => $request['date_from'] ?? null,
-                'to' => $request['date_to'] ?? null
-            ])
-            ->orderBy($sort[0], $sort[1])
-            ->paginate(20)
-            ->appends(request()->query());
-
-        return view('content_listings', [
-            'title' => 'Your Equipment',
-            'content' => $equipments,
-            'component' => 'equipment',
-            'options' => ['user' => true],
         ]);
     }
 

@@ -35,15 +35,7 @@ Route::prefix('user')->middleware('verified')->group(function() {
     Route::get('/reset_password', 'UserController@resetPassword')->withoutMiddleware('verified')->middleware('auth')->name('user_reset_password');
     Route::get('/obfuscate/{field}', 'UserController@obfuscate')->withoutMiddleware('verified')->middleware('auth')->name('obfuscate');
     Route::get('/delete', 'UserController@delete')->withoutMiddleware('verified')->middleware('auth')->name('user_delete');
-    Route::get('/spots', 'UserController@spots')->name('user_spots');
     Route::get('/hitlist', 'UserController@hitlist')->name('user_hitlist');
-    Route::get('/hitlist/completed', 'UserController@hitlistCompleted')->name('user_hitlist_completed');
-    Route::get('/reviews', 'UserController@reviews')->name('user_reviews');
-    Route::get('/comments', 'UserController@comments')->name('user_comments');
-    Route::get('/challenges', 'UserController@challenges')->name('user_challenges');
-    Route::get('/entries', 'UserController@entries')->name('user_entries');
-    Route::get('/movements', 'UserController@movements')->middleware('isPremium')->name('user_movements');
-    Route::get('/equipment', 'UserController@equipment')->middleware('isPremium')->name('user_equipment');
     Route::get('/bin/{tab?}', 'UserController@bin')->name('user_bin');
     Route::get('/fetch_hometown_bounding', 'UserController@fetchHometownBounding');
     Route::get('/follow/{id}', 'UserController@follow')->name('user_follow');

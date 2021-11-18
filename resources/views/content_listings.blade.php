@@ -135,26 +135,26 @@
                 <h1 class="sedgwick text-center pb-3">{{ $title }}</h1>
             </div>
         </div>
-        <div class="row mb-3">
-            <div class="col">
-                <div class="card">
-                    <div class="card-header bg-green sedgwick @if(empty($_GET) || (count($_GET) === 1 && isset($_GET['search'])))card-hidden-body @endif">
-                        <div class="row">
-                            <div class="col">
-                                Filters
-                            </div>
-                            <div class="col-auto">
-                                <i class="fa fa-caret-down"></i>
+        @if($component !== 'user')
+            <div class="row mb-3">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-header bg-green sedgwick @if(empty($_GET) || (count($_GET) === 1 && isset($_GET['search'])))card-hidden-body @endif">
+                            <div class="row">
+                                <div class="col">
+                                    Filters
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fa fa-caret-down"></i>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="card-body bg-grey text-white">
-                        <form method="GET">
-                            @if(!empty($_GET['search']))
-                                <input type="hidden" name="search" value="{{ $_GET['search'] }}">
-                            @endif
-                            <div class="row">
-                                @if($component !== 'user')
+                        <div class="card-body bg-grey text-white">
+                            <form method="GET">
+                                @if(!empty($_GET['search']))
+                                    <input type="hidden" name="search" value="{{ $_GET['search'] }}">
+                                @endif
+                                <div class="row">
                                     <div class="col-auto pb-3">
                                         <label><strong>Created Between: </strong></label>
                                         <div>
@@ -162,147 +162,147 @@
                                             <input type="date" name="date_to" value="{{ $_GET['date_to'] ?? '' }}">
                                         </div>
                                     </div>
-                                @endif
-                                @if(($component === 'spot' || $component === 'challenge') && Auth::check())
-                                    <div class="col-auto pb-3">
-                                        <label><strong>Following</strong></label>
-                                        <div class="form-check text-center">
-                                            <input class="form-check-input" type="checkbox" name="following" id="following" {{ !empty($_GET['following']) ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="following"></label>
+                                    @if(($component === 'spot' || $component === 'challenge') && Auth::check())
+                                        <div class="col-auto pb-3">
+                                            <label><strong>Following</strong></label>
+                                            <div class="form-check text-center">
+                                                <input class="form-check-input" type="checkbox" name="following" id="following" {{ !empty($_GET['following']) ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="following"></label>
+                                            </div>
                                         </div>
-                                    </div>
-                                @endif
-                                @if($component === 'spot')
-                                    <div class="col-auto pb-3">
-                                        <label><strong>Rating</strong></label>
-                                        <input type="hidden" id="rating" name="rating" value="{{ $_GET['rating'] ?? '0' }}">
-                                        <div>
-                                            <i class="rating-star editable fa fa-star-o" id="rating-star-1"></i>
-                                            <i class="rating-star editable fa fa-star-o" id="rating-star-2"></i>
-                                            <i class="rating-star editable fa fa-star-o" id="rating-star-3"></i>
-                                            <i class="rating-star editable fa fa-star-o" id="rating-star-4"></i>
-                                            <i class="rating-star editable fa fa-star-o" id="rating-star-5"></i>
+                                    @endif
+                                    @if($component === 'spot')
+                                        <div class="col-auto pb-3">
+                                            <label><strong>Rating</strong></label>
+                                            <input type="hidden" id="rating" name="rating" value="{{ $_GET['rating'] ?? '0' }}">
+                                            <div>
+                                                <i class="rating-star editable fa fa-star-o" id="rating-star-1"></i>
+                                                <i class="rating-star editable fa fa-star-o" id="rating-star-2"></i>
+                                                <i class="rating-star editable fa fa-star-o" id="rating-star-3"></i>
+                                                <i class="rating-star editable fa fa-star-o" id="rating-star-4"></i>
+                                                <i class="rating-star editable fa fa-star-o" id="rating-star-5"></i>
+                                            </div>
                                         </div>
-                                    </div>
-                                    @auth
-                                        @if(empty($hitlist))
+                                        @auth
+                                            @if(empty($hitlist))
+                                                <div class="col-auto pb-3">
+                                                    <label><strong>On Hitlist</strong></label>
+                                                    <div class="form-check text-center">
+                                                        <input class="form-check-input" type="checkbox" name="on_hitlist" id="on-hitlist" {{ !empty($_GET['on_hitlist']) ? 'checked' : '' }}>
+                                                        <label class="form-check-label" for="on-hitlist"></label>
+                                                    </div>
+                                                </div>
+                                            @endif
                                             <div class="col-auto pb-3">
-                                                <label><strong>On Hitlist</strong></label>
+                                                <label><strong>Ticked Off</strong></label>
                                                 <div class="form-check text-center">
-                                                    <input class="form-check-input" type="checkbox" name="on_hitlist" id="on-hitlist" {{ !empty($_GET['on_hitlist']) ? 'checked' : '' }}>
-                                                    <label class="form-check-label" for="on-hitlist"></label>
+                                                    <input class="form-check-input" type="checkbox" name="ticked_hitlist" id="ticked-hitlist" {{ !empty($_GET['ticked_hitlist']) ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="ticked-hitlist"></label>
                                                 </div>
                                             </div>
-                                        @endif
+                                        @endauth
+                                    @elseif($component === 'challenge')
+                                        @auth
+                                            <div class="col-auto pb-3">
+                                                <label><strong>Entered</strong></label>
+                                                <div class="form-check text-center">
+                                                    <input class="form-check-input" type="checkbox" name="entered" id="entered"  {{ !empty($_GET['entered']) ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="entered"></label>
+                                                </div>
+                                            </div>
+                                        @endauth
                                         <div class="col-auto pb-3">
-                                            <label><strong>Ticked Off</strong></label>
-                                            <div class="form-check text-center">
-                                                <input class="form-check-input" type="checkbox" name="ticked_hitlist" id="ticked-hitlist" {{ !empty($_GET['ticked_hitlist']) ? 'checked' : '' }}>
-                                                <label class="form-check-label" for="ticked-hitlist"></label>
+                                            <label><strong>Difficulty</strong></label>
+                                            <input type="hidden" id="difficulty" name="difficulty" value="{{ $_GET['difficulty'] ?? '0' }}">
+                                            <div>
+                                                <i class="rating-circle editable fa fa-circle-o" id="rating-circle-1"></i>
+                                                <i class="rating-circle editable fa fa-circle-o" id="rating-circle-2"></i>
+                                                <i class="rating-circle editable fa fa-circle-o" id="rating-circle-3"></i>
+                                                <i class="rating-circle editable fa fa-circle-o" id="rating-circle-4"></i>
+                                                <i class="rating-circle editable fa fa-circle-o" id="rating-circle-5"></i>
                                             </div>
                                         </div>
-                                    @endauth
-                                @elseif($component === 'challenge')
-                                    @auth
+                                    @elseif($component === 'entry' && Auth::check())
                                         <div class="col-auto pb-3">
-                                            <label><strong>Entered</strong></label>
+                                            <label><strong>Winner</strong></label>
                                             <div class="form-check text-center">
-                                                <input class="form-check-input" type="checkbox" name="entered" id="entered"  {{ !empty($_GET['entered']) ? 'checked' : '' }}>
-                                                <label class="form-check-label" for="entered"></label>
+                                                <input class="form-check-input" type="checkbox" name="winner" id="winner" {{ ($_GET['winner'] ?? '') === 'on' ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="winner"></label>
                                             </div>
                                         </div>
-                                    @endauth
+                                    @elseif($component === 'review')
+                                        <div class="col-auto pb-3">
+                                            <label><strong>Rating</strong></label>
+                                            <input type="hidden" id="rating" name="rating" value="{{ $_GET['rating'] ?? '0' }}">
+                                            <div>
+                                                <i class="rating-star editable fa fa-star-o" id="rating-star-1"></i>
+                                                <i class="rating-star editable fa fa-star-o" id="rating-star-2"></i>
+                                                <i class="rating-star editable fa fa-star-o" id="rating-star-3"></i>
+                                                <i class="rating-star editable fa fa-star-o" id="rating-star-4"></i>
+                                                <i class="rating-star editable fa fa-star-o" id="rating-star-5"></i>
+                                            </div>
+                                        </div>
+                                    @elseif($component === 'movement')
+                                        <div class="col-auto pb-3">
+                                            <label><strong>Type</strong></label>
+                                            <select class="select2-5-results" name="movementType">
+                                                <option></option>
+                                                <option value="1" @if(($_GET['movementType'] ?? '') == 1)selected @endif>Move</option>
+                                                <option value="2" @if(($_GET['movementType'] ?? '') == 2)selected @endif>Exercise</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-auto pb-3">
+                                            <label><strong>Category</strong></label>
+                                            <select class="select2-5-results" name="category">
+                                                <option></option>
+                                                @foreach($movementCategories as $category)
+                                                    <option value="{{ $category->id }}" @if(($_GET['category'] ?? '') == $category->id)selected @endif>{{ $category->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="col-auto pb-3">
+                                            <label><strong>Equipment</strong></label>
+                                            <select class="select2-5-results" name="equipment">
+                                                <option></option>
+                                                @foreach($equipments as $equipment)
+                                                    <option value="{{ $equipment->id }}" @if(($_GET['equipment'] ?? '') == $equipment->id)selected @endif>{{ $equipment->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    @endif
                                     <div class="col-auto pb-3">
-                                        <label><strong>Difficulty</strong></label>
-                                        <input type="hidden" id="difficulty" name="difficulty" value="{{ $_GET['difficulty'] ?? '0' }}">
+                                        <label><strong>Sort</strong></label>
                                         <div>
-                                            <i class="rating-circle editable fa fa-circle-o" id="rating-circle-1"></i>
-                                            <i class="rating-circle editable fa fa-circle-o" id="rating-circle-2"></i>
-                                            <i class="rating-circle editable fa fa-circle-o" id="rating-circle-3"></i>
-                                            <i class="rating-circle editable fa fa-circle-o" id="rating-circle-4"></i>
-                                            <i class="rating-circle editable fa fa-circle-o" id="rating-circle-5"></i>
+                                            <select name="sort" class="select2-no-search">
+                                                <option value="date_desc" @if(($_GET['sort'] ?? '') === 'date_desc')selected @endif>Newest</option>
+                                                <option value="date_asc" @if(($_GET['sort'] ?? '') === 'date_asc')selected @endif>Oldest</option>
+                                                @if($component === 'spot' || $component === 'review')
+                                                    <option value="rating_desc" @if(($_GET['sort'] ?? '') === 'rating_desc')selected @endif>Highest Rated</option>
+                                                    <option value="rating_asc" @if(($_GET['sort'] ?? '') === 'rating_asc')selected @endif>Lowest Rated</option>
+                                                    <option value="views_desc" @if(($_GET['sort'] ?? '') === 'views_desc')selected @endif>Most Viewed</option>
+                                                    <option value="views_asc" @if(($_GET['sort'] ?? '') === 'views_asc')selected @endif>Least Viewed</option>
+                                                @elseif($component === 'challenge')
+                                                    <option value="difficulty_desc" @if(($_GET['sort'] ?? '') === 'difficulty_desc')selected @endif>Most Difficult</option>
+                                                    <option value="difficulty_asc" @if(($_GET['sort'] ?? '') === 'difficulty_asc')selected @endif>Least Difficult</option>
+                                                    <option value="entries_desc" @if(($_GET['sort'] ?? '') === 'entries_desc')selected @endif>Most Entries</option>
+                                                    <option value="entries_asc" @if(($_GET['sort'] ?? '') === 'entries_asc')selected @endif>Least Entries</option>
+                                                @endif
+                                            </select>
                                         </div>
-                                    </div>
-                                @elseif($component === 'entry' && Auth::check())
-                                    <div class="col-auto pb-3">
-                                        <label><strong>Winner</strong></label>
-                                        <div class="form-check text-center">
-                                            <input class="form-check-input" type="checkbox" name="winner" id="winner" {{ ($_GET['winner'] ?? '') === 'on' ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="winner"></label>
-                                        </div>
-                                    </div>
-                                @elseif($component === 'review')
-                                    <div class="col-auto pb-3">
-                                        <label><strong>Rating</strong></label>
-                                        <input type="hidden" id="rating" name="rating" value="{{ $_GET['rating'] ?? '0' }}">
-                                        <div>
-                                            <i class="rating-star editable fa fa-star-o" id="rating-star-1"></i>
-                                            <i class="rating-star editable fa fa-star-o" id="rating-star-2"></i>
-                                            <i class="rating-star editable fa fa-star-o" id="rating-star-3"></i>
-                                            <i class="rating-star editable fa fa-star-o" id="rating-star-4"></i>
-                                            <i class="rating-star editable fa fa-star-o" id="rating-star-5"></i>
-                                        </div>
-                                    </div>
-                                @elseif($component === 'movement')
-                                    <div class="col-auto pb-3">
-                                        <label><strong>Type</strong></label>
-                                        <select class="select2-5-results" name="movementType">
-                                            <option></option>
-                                            <option value="1" @if(($_GET['movementType'] ?? '') == 1)selected @endif>Move</option>
-                                            <option value="2" @if(($_GET['movementType'] ?? '') == 2)selected @endif>Exercise</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-auto pb-3">
-                                        <label><strong>Category</strong></label>
-                                        <select class="select2-5-results" name="category">
-                                            <option></option>
-                                            @foreach($movementCategories as $category)
-                                                <option value="{{ $category->id }}" @if(($_GET['category'] ?? '') == $category->id)selected @endif>{{ $category->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="col-auto pb-3">
-                                        <label><strong>Equipment</strong></label>
-                                        <select class="select2-5-results" name="equipment">
-                                            <option></option>
-                                            @foreach($equipments as $equipment)
-                                                <option value="{{ $equipment->id }}" @if(($_GET['equipment'] ?? '') == $equipment->id)selected @endif>{{ $equipment->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                @endif
-                                <div class="col-auto pb-3">
-                                    <label><strong>Sort</strong></label>
-                                    <div>
-                                        <select name="sort" class="select2-no-search">
-                                            <option value="date_desc" @if(($_GET['sort'] ?? '') === 'date_desc')selected @endif>Newest</option>
-                                            <option value="date_asc" @if(($_GET['sort'] ?? '') === 'date_asc')selected @endif>Oldest</option>
-                                            @if($component === 'spot' || $component === 'review')
-                                                <option value="rating_desc" @if(($_GET['sort'] ?? '') === 'rating_desc')selected @endif>Highest Rated</option>
-                                                <option value="rating_asc" @if(($_GET['sort'] ?? '') === 'rating_asc')selected @endif>Lowest Rated</option>
-                                                <option value="views_desc" @if(($_GET['sort'] ?? '') === 'views_desc')selected @endif>Most Viewed</option>
-                                                <option value="views_asc" @if(($_GET['sort'] ?? '') === 'views_asc')selected @endif>Least Viewed</option>
-                                            @elseif($component === 'challenge')
-                                                <option value="difficulty_desc" @if(($_GET['sort'] ?? '') === 'difficulty_desc')selected @endif>Most Difficult</option>
-                                                <option value="difficulty_asc" @if(($_GET['sort'] ?? '') === 'difficulty_asc')selected @endif>Least Difficult</option>
-                                                <option value="entries_desc" @if(($_GET['sort'] ?? '') === 'entries_desc')selected @endif>Most Entries</option>
-                                                <option value="entries_asc" @if(($_GET['sort'] ?? '') === 'entries_asc')selected @endif>Least Entries</option>
-                                            @endif
-                                        </select>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <button class="btn btn-green" type="submit">Filter</button>
-                                    <a class="btn btn-link" href="?{{ !empty($_GET['search']) ? 'search=' . $_GET['search'] : '' }}">Clear</a>
+                                <div class="row">
+                                    <div class="col">
+                                        <button class="btn btn-green" type="submit">Filter</button>
+                                        <a class="btn btn-link" href="?{{ !empty($_GET['search']) ? 'search=' . $_GET['search'] : '' }}">Clear</a>
+                                    </div>
                                 </div>
-                            </div>
-                        </form>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        @endif
         {{ $content->links() }}
         @foreach($content->chunk(4) as $chunk)
             <div class="row">
