@@ -245,7 +245,7 @@ class UserController extends Controller
         $settings = setting()->all();
 
         return view('user.manage', [
-            'user' => Auth::user(),
+            'user' => $user,
             'subscribed' => $subscribed,
             'settings' => $settings,
         ]);

@@ -1517,4 +1517,34 @@ class UserControllerTest extends TestCase
 
         $response->assertNotFound();
     }
+
+    /** @test */
+    public function manage_non_logged_in_user_redirects_to_login()
+    {
+        $response = $this->get(route('user_manage'));
+
+        $response->assertRedirect('/login');
+    }
+
+    /** @test */
+    public function manage_user_can_view_their_manage_page()
+    {
+        $response = $this->actingAs($this->premiumUser)->get(route('user_manage'));
+
+        $response->assertOk()
+            ->assertViewIs('user.manage')
+            ->assertViewHas('user', function($viewUser) {
+                $this->assertSame($this->premiumUser->id, $viewUser->id);
+                $this->assertSame($this->premiumUser->name, $viewUser->name);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function update_non_logged_in_user_redirects_to_login()
+    {
+        $response = $this->post(route('user_update', 1), []);
+
+        $response->assertRedirect('/login');
+    }
 }
