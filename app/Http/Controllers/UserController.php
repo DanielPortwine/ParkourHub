@@ -260,14 +260,20 @@ class UserController extends Controller
             } else {
                 $user->name = $request['name'];
             }
+            if ($user->email !== $request['email'] && !empty($subscriber = Subscriber::where('email', $user->email)->first())) {
+                $subscriber->email = $request['email'];
+                $subscriber->save();
+            }
             $user->email = $request['email'];
             if (!empty($request->file('profile_image'))) {
+                Storage::disk('public')->delete(str_replace('/storage/', '', $user->profile_image));
                 $user->profile_image = Storage::url($request->file('profile_image')->store('images/users/profile', 'public'));
             } else if (empty($request['old_profile_image'])) {
                 Storage::disk('public')->delete(str_replace('/storage/', '', $user->profile_image));
                 $user->profile_image = null;
             }
             if (!empty($request->file('cover_image'))) {
+                Storage::disk('public')->delete(str_replace('/storage/', '', $user->cover_image));
                 $user->cover_image = Storage::url($request->file('cover_image')->store('images/users/cover', 'public'));
             } else if (empty($request['old_cover_image'])) {
                 Storage::disk('public')->delete(str_replace('/storage/', '', $user->cover_image));
