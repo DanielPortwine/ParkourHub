@@ -304,7 +304,7 @@ class UserController extends Controller
 
             UserSettingsLog::create([
                 'user_id' => Auth::id(),
-                'settings' => Auth::user()->settings,
+                'settings' => User::where('id', Auth::id())->first()->settings,
             ]);
         }
 
@@ -358,7 +358,7 @@ class UserController extends Controller
 
         $user->forceDelete();
 
-        return redirect()->route('welcome');
+        return redirect()->route('welcome')->with('status', 'Successfully deleted account and all related content');
     }
 
     public function hitlist(Request $request)
@@ -382,6 +382,7 @@ class UserController extends Controller
                 'from' => $request['date_from'] ?? null,
                 'to' => $request['date_to'] ?? null
             ])
+            ->following(!empty($request['following']) ? true : false)
             ->orderBy($sort[0], $sort[1])
             ->paginate(20)
             ->appends(request()->query());

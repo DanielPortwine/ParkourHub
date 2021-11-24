@@ -29,15 +29,19 @@ class UpdateUser extends FormRequest
     public function rules()
     {
         $imageMax = Auth::user()->isPremium() ? '5000' : '500';
+        $notificationSettings = implode(',', array_keys(config('settings.notifications')));
+        $privacySettings = implode(',', array_keys(config('settings.privacy')));
         return [
             'name' => ['sometimes', 'string', 'max:25', new NotAutoUsername],
-            'email' => ['required_with:account_form', 'string', 'email', 'max:255', new UniqueOrOldEmail],
+            'email' => ['required_with:account-form', 'string', 'email', 'max:255', new UniqueOrOldEmail],
             'old_profile_image' => 'nullable|string|max:255',
             'old_cover_image' => 'nullable|string|max:255',
             'profile_image' => 'nullable|mimes:jpg,jpeg,png|max:' . $imageMax,
             'cover_image' => 'nullable|mimes:jpg,jpeg,png|max:' . $imageMax,
             'hometown' => ['string', 'max:255', new Hometown],
             'subscribed' => new Checkbox,
+            'notifications' => 'required_with:notification-form|in:on-site,email,email-site,none|array:' . $notificationSettings,
+            'privacy' => 'required_with:privacy-form|in:nobody,request,follower,anybody,private,public|array:' . $privacySettings,
         ];
     }
 
