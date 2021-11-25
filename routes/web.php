@@ -158,7 +158,7 @@ Route::prefix('equipment')->middleware(['verified', 'isPremium'])->group(functio
 });
 
 Route::prefix('workouts')->middleware(['verified', 'isPremium'])->group(function() {
-    Route::get('/', 'WorkoutController@index')->name('workout_listing');
+    Route::get('/', 'WorkoutController@listing')->name('workout_listing');
     Route::get('/my_workouts', 'WorkoutController@myWorkouts')->name('workout_listing_user');
     Route::get('/view/{id}/{tab?}', 'WorkoutController@view')->name('workout_view');
     Route::get('/create', 'WorkoutController@create')->name('workout_create');

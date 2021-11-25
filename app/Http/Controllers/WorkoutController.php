@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Cache;
 
 class WorkoutController extends Controller
 {
-    public function index(Request $request)
+    public function listing(Request $request)
     {
         $sort = ['created_at', 'desc'];
         if (!empty($request['sort'])) {
@@ -79,7 +79,7 @@ class WorkoutController extends Controller
         ]);
     }
 
-    public function view(Request $request, $id, $tab = null)
+    public function view(Request $request, $id, $tab = 'movements')
     {
         // if coming from a notification, set the notification as read
         if (!empty($request['notification'])) {
@@ -105,11 +105,11 @@ class WorkoutController extends Controller
                 ->first();
 
         if (empty($workout) || ($workout->deleted_at !== null && Auth::id() !== $workout->user_id)) {
-            return view('errors.404');
+            abort(404);
         }
 
         $linkableSpots = null;
-        if ($tab === null || $tab === 'movements') {
+        if ($tab === 'movements') {
             $workoutMovements = $workout->movements()
                 ->with(['fields'])
                 ->whereHas('movement')
@@ -129,12 +129,14 @@ class WorkoutController extends Controller
             $linkableSpots = Spot::whereNotIn('id', $workout->spots()->pluck('spots.id')->toArray())->get();
         }
 
-        $displayMovement = $workout->movements()
+        $displayWorkoutMovement = $workout->movements()
             ->with(['movement'])
             ->whereHas('movement')
             ->inRandomOrder()
-            ->first()
-            ->movement;
+            ->first();
+        if (!empty($displayWorkoutMovement)) {
+            $displayMovement = $displayWorkoutMovement->movement;
+        }
 
         return view('workouts.view', [
             'workout' => $workout,
@@ -143,7 +145,7 @@ class WorkoutController extends Controller
             'spots' => $spots ?? null,
             'request' => $request,
             'tab' => $tab,
-            'displayMovement' => $displayMovement,
+            'displayMovement' => $displayMovement ?? null,
             'linkableSpots' => $linkableSpots,
         ]);
     }
