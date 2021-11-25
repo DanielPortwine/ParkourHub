@@ -2334,4 +2334,807 @@ class UserControllerTest extends TestCase
                 return true;
             });
     }
+
+    /** @test */
+    public function bin_non_logged_in_user_redirects_to_login()
+    {
+        $response = $this->get(route('user_bin'));
+
+        $response->assertRedirect('/email/verify');
+    }
+
+    /** @test */
+    public function bin_premium_user_can_view_their_own_deleted_spots()
+    {
+        $spot = Spot::factory()->create();
+        $spot->delete();
+
+        $response = $this->actingAs($this->premiumUser)->get(route('user_bin'));
+
+        $response->assertOk()
+            ->assertViewIs('user.bin')
+            ->assertViewHas('spots', function ($viewSpots) use ($spot) {
+                $this->assertCount(1, $viewSpots);
+                $this->assertSame($spot->id, $viewSpots->first()->id);
+                $this->assertSame($spot->name, $viewSpots->first()->name);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function bin_premium_user_can_not_view_their_own_non_deleted_spots()
+    {
+        $spot = Spot::factory()->create();
+
+        $response = $this->actingAs($this->premiumUser)->get(route('user_bin'));
+
+        $response->assertOk()
+            ->assertViewIs('user.bin')
+            ->assertViewHas('spots', function ($viewSpots) {
+                $this->assertCount(0, $viewSpots);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function bin_premium_user_can_not_view_deleted_spots_of_different_user()
+    {
+        $user = User::factory()->create();
+        $spot = Spot::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+        $spot->delete();
+
+        $response = $this->actingAs($this->premiumUser)->get(route('user_bin'));
+
+        $response->assertOk()
+            ->assertViewIs('user.bin')
+            ->assertViewHas('spots', function ($viewSpots) {
+                $this->assertCount(0, $viewSpots);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function bin_premium_user_views_most_recently_deleted_spots_first()
+    {
+        $oldestSpot = Spot::factory()->create(['deleted_at' => '2021-11-20 17:30:00']);
+        $newestSpot = Spot::factory()->create(['deleted_at' => '2021-11-25 17:30:00']);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('user_bin'));
+
+        $response->assertOk()
+            ->assertViewIs('user.bin')
+            ->assertViewHas('spots', function ($viewSpots) use ($newestSpot) {
+                $this->assertCount(2, $viewSpots);
+                $this->assertSame($newestSpot->id, $viewSpots->first()->id);
+                $this->assertSame($newestSpot->name, $viewSpots->first()->name);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function bin_premium_user_can_view_their_own_deleted_reviews()
+    {
+        $spot = Spot::factory()->create();
+        $review = Review::factory()->create();
+        $review->delete();
+
+        $response = $this->actingAs($this->premiumUser)->get(route('user_bin', 'reviews'));
+
+        $response->assertOk()
+            ->assertViewIs('user.bin')
+            ->assertViewHas('reviews', function ($viewReviews) use ($review) {
+                $this->assertCount(1, $viewReviews);
+                $this->assertSame($review->id, $viewReviews->first()->id);
+                $this->assertSame($review->title, $viewReviews->first()->title);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function bin_premium_user_can_not_view_their_own_non_deleted_reviews()
+    {
+        $spot = Spot::factory()->create();
+        $review = Review::factory()->create();
+
+        $response = $this->actingAs($this->premiumUser)->get(route('user_bin', 'reviews'));
+
+        $response->assertOk()
+            ->assertViewIs('user.bin')
+            ->assertViewHas('reviews', function ($viewReviews) {
+                $this->assertCount(0, $viewReviews);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function bin_premium_user_can_not_view_deleted_reviews_of_different_user()
+    {
+        $user = User::factory()->create();
+        $spot = Spot::factory()->create(['user_id' => $this->premiumUser->id]);
+        $review = Review::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('user_bin', 'reviews'));
+
+        $response->assertOk()
+            ->assertViewIs('user.bin')
+            ->assertViewHas('reviews', function ($viewReviews) {
+                $this->assertCount(0, $viewReviews);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function bin_premium_user_views_most_recently_deleted_reviews_first()
+    {
+        $spot = Spot::factory()->create();
+        $oldestReview = Review::factory()->create(['deleted_at' => '2021-11-20 17:30:00']);
+        $newestReview = Review::factory()->create(['deleted_at' => '2021-11-25 17:30:00']);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('user_bin', 'reviews'));
+
+        $response->assertOk()
+            ->assertViewIs('user.bin')
+            ->assertViewHas('reviews', function ($viewReviews) use ($newestReview) {
+                $this->assertCount(2, $viewReviews);
+                $this->assertSame($newestReview->id, $viewReviews->first()->id);
+                $this->assertSame($newestReview->name, $viewReviews->first()->name);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function bin_premium_user_can_view_their_own_deleted_comments()
+    {
+        $spot = Spot::factory()->create();
+        $comment = SpotComment::factory()->create();
+        $comment->delete();
+
+        $response = $this->actingAs($this->premiumUser)->get(route('user_bin', 'comments'));
+
+        $response->assertOk()
+            ->assertViewIs('user.bin')
+            ->assertViewHas('comments', function ($viewComments) use ($comment) {
+                $this->assertCount(1, $viewComments);
+                $this->assertSame($comment->id, $viewComments->first()->id);
+                $this->assertSame($comment->comment, $viewComments->first()->comment);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function bin_premium_user_can_not_view_their_own_non_deleted_comments()
+    {
+        $spot = Spot::factory()->create();
+        $comment = SpotComment::factory()->create();
+
+        $response = $this->actingAs($this->premiumUser)->get(route('user_bin', 'comments'));
+
+        $response->assertOk()
+            ->assertViewIs('user.bin')
+            ->assertViewHas('comments', function ($viewComments) {
+                $this->assertCount(0, $viewComments);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function bin_premium_user_can_not_view_deleted_comments_of_different_user()
+    {
+        $user = User::factory()->create();
+        $spot = Spot::factory()->create(['user_id' => $this->premiumUser->id]);
+        $comment = SpotComment::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+        $comment->delete();
+
+        $response = $this->actingAs($this->premiumUser)->get(route('user_bin', 'comments'));
+
+        $response->assertOk()
+            ->assertViewIs('user.bin')
+            ->assertViewHas('comments', function ($viewComments) {
+                $this->assertCount(0, $viewComments);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function bin_premium_user_views_most_recently_deleted_comments_first()
+    {
+        $spot = Spot::factory()->create();
+        $oldestComment = SpotComment::factory()->create(['deleted_at' => '2021-11-20 17:30:00']);
+        $newestComment = SpotComment::factory()->create(['deleted_at' => '2021-11-25 17:30:00']);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('user_bin', 'comments'));
+
+        $response->assertOk()
+            ->assertViewIs('user.bin')
+            ->assertViewHas('comments', function ($viewComments) use ($newestComment) {
+                $this->assertCount(2, $viewComments);
+                $this->assertSame($newestComment->id, $viewComments->first()->id);
+                $this->assertSame($newestComment->comment, $viewComments->first()->comment);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function bin_premium_user_can_view_their_own_deleted_challenges()
+    {
+        $spot = Spot::factory()->create();
+        $challenge = Challenge::factory()->create();
+        $challenge->delete();
+
+        $response = $this->actingAs($this->premiumUser)->get(route('user_bin', 'challenges'));
+
+        $response->assertOk()
+            ->assertViewIs('user.bin')
+            ->assertViewHas('challenges', function ($viewChallenges) use ($challenge) {
+                $this->assertCount(1, $viewChallenges);
+                $this->assertSame($challenge->id, $viewChallenges->first()->id);
+                $this->assertSame($challenge->name, $viewChallenges->first()->name);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function bin_premium_user_can_not_view_their_own_non_deleted_challenges()
+    {
+        $spot = Spot::factory()->create();
+        $challenge = Challenge::factory()->create();
+
+        $response = $this->actingAs($this->premiumUser)->get(route('user_bin', 'challenges'));
+
+        $response->assertOk()
+            ->assertViewIs('user.bin')
+            ->assertViewHas('challenges', function ($viewChallenges) {
+                $this->assertCount(0, $viewChallenges);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function bin_premium_user_can_not_view_deleted_challenges_of_different_user()
+    {
+        $user = User::factory()->create();
+        $spot = Spot::factory()->create(['user_id' => $this->premiumUser->id]);
+        $challenge = Challenge::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+        $challenge->delete();
+
+        $response = $this->actingAs($this->premiumUser)->get(route('user_bin', 'challenges'));
+
+        $response->assertOk()
+            ->assertViewIs('user.bin')
+            ->assertViewHas('challenges', function ($viewChallenges) {
+                $this->assertCount(0, $viewChallenges);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function bin_premium_user_views_most_recently_deleted_challenges_first()
+    {
+        $spot = Spot::factory()->create();
+        $oldestChallenge = Challenge::factory()->create(['deleted_at' => '2021-11-20 17:30:00']);
+        $newestChallenge = Challenge::factory()->create(['deleted_at' => '2021-11-25 17:30:00']);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('user_bin', 'challenges'));
+
+        $response->assertOk()
+            ->assertViewIs('user.bin')
+            ->assertViewHas('challenges', function ($viewChallenges) use ($newestChallenge) {
+                $this->assertCount(2, $viewChallenges);
+                $this->assertSame($newestChallenge->id, $viewChallenges->first()->id);
+                $this->assertSame($newestChallenge->name, $viewChallenges->first()->name);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function bin_premium_user_can_view_their_own_deleted_entries()
+    {
+        $spot = Spot::factory()->create();
+        $challenge = Challenge::factory()->create();
+        $entry = ChallengeEntry::factory()->create();
+        $entry->delete();
+
+        $response = $this->actingAs($this->premiumUser)->get(route('user_bin', 'entries'));
+
+        $response->assertOk()
+            ->assertViewIs('user.bin')
+            ->assertViewHas('entries', function ($viewEntries) use ($entry) {
+                $this->assertCount(1, $viewEntries);
+                $this->assertSame($entry->id, $viewEntries->first()->id);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function bin_premium_user_can_not_view_their_own_non_deleted_entries()
+    {
+        $spot = Spot::factory()->create();
+        $challenge = Challenge::factory()->create();
+        $entry = ChallengeEntry::factory()->create();
+
+        $response = $this->actingAs($this->premiumUser)->get(route('user_bin', 'entries'));
+
+        $response->assertOk()
+            ->assertViewIs('user.bin')
+            ->assertViewHas('entries', function ($viewEntries) {
+                $this->assertCount(0, $viewEntries);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function bin_premium_user_can_not_view_deleted_entries_of_different_user()
+    {
+        $user = User::factory()->create();
+        $spot = Spot::factory()->create(['user_id' => $this->premiumUser->id]);
+        $challenge = Challenge::factory()->create(['user_id' => $this->premiumUser->id]);
+        $entry = ChallengeEntry::factory()->create(['user_id' => $user->id]);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('user_bin', 'entries'));
+
+        $response->assertOk()
+            ->assertViewIs('user.bin')
+            ->assertViewHas('entries', function ($viewEntries) {
+                $this->assertCount(0, $viewEntries);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function bin_premium_user_views_most_recently_deleted_entries_first()
+    {
+        $spot = Spot::factory()->create();
+        $challenge = Challenge::factory()->create();
+        $oldestEntry = ChallengeEntry::factory()->create(['deleted_at' => '2021-11-20 17:30:00']);
+        $newestEntry = ChallengeEntry::factory()->create(['deleted_at' => '2021-11-25 17:30:00']);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('user_bin', 'entries'));
+
+        $response->assertOk()
+            ->assertViewIs('user.bin')
+            ->assertViewHas('entries', function ($viewEntries) use ($newestEntry) {
+                $this->assertCount(2, $viewEntries);
+                $this->assertSame($newestEntry->id, $viewEntries->first()->id);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function bin_premium_user_can_view_their_own_deleted_movements()
+    {
+        $movementType = MovementType::factory()->create();
+        $movementCategory = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create();
+        $movement->delete();
+
+        $response = $this->actingAs($this->premiumUser)->get(route('user_bin', 'movements'));
+
+        $response->assertOk()
+            ->assertViewIs('user.bin')
+            ->assertViewHas('movements', function ($viewMovements) use ($movement) {
+                $this->assertCount(1, $viewMovements);
+                $this->assertSame($movement->id, $viewMovements->first()->id);
+                $this->assertSame($movement->name, $viewMovements->first()->name);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function bin_premium_user_can_not_view_their_own_non_deleted_movements()
+    {
+        $movementType = MovementType::factory()->create();
+        $movementCategory = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create();
+
+        $response = $this->actingAs($this->premiumUser)->get(route('user_bin', 'movements'));
+
+        $response->assertOk()
+            ->assertViewIs('user.bin')
+            ->assertViewHas('movements', function ($viewMovements) {
+                $this->assertCount(0, $viewMovements);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function bin_premium_user_can_not_view_deleted_movements_of_different_user()
+    {
+        $user = User::factory()->create();
+        $movementType = MovementType::factory()->create();
+        $movementCategory = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+        $movement->delete();
+
+        $response = $this->actingAs($this->premiumUser)->get(route('user_bin', 'movements'));
+
+        $response->assertOk()
+            ->assertViewIs('user.bin')
+            ->assertViewHas('movements', function ($viewMovements) {
+                $this->assertCount(0, $viewMovements);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function bin_premium_user_views_most_recently_deleted_movements_first()
+    {
+        $movementType = MovementType::factory()->create();
+        $movementCategory = MovementCategory::factory()->create();
+        $oldestMovement = Movement::factory()->create(['deleted_at' => '2021-11-20 17:30:00']);
+        $newestMovement = Movement::factory()->create(['deleted_at' => '2021-11-25 17:30:00']);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('user_bin', 'movements'));
+
+        $response->assertOk()
+            ->assertViewIs('user.bin')
+            ->assertViewHas('movements', function ($viewMovements) use ($newestMovement) {
+                $this->assertCount(2, $viewMovements);
+                $this->assertSame($newestMovement->id, $viewMovements->first()->id);
+                $this->assertSame($newestMovement->name, $viewMovements->first()->name);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function bin_premium_user_can_view_their_own_deleted_equipment()
+    {
+        $equipment = Equipment::factory()->create();
+        $equipment->delete();
+
+        $response = $this->actingAs($this->premiumUser)->get(route('user_bin', 'equipment'));
+
+        $response->assertOk()
+            ->assertViewIs('user.bin')
+            ->assertViewHas('equipments', function ($viewEquipment) use ($equipment) {
+                $this->assertCount(1, $viewEquipment);
+                $this->assertSame($equipment->id, $viewEquipment->first()->id);
+                $this->assertSame($equipment->name, $viewEquipment->first()->name);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function bin_premium_user_can_not_view_their_own_non_deleted_equipment()
+    {
+        $equipment = Equipment::factory()->create();
+
+        $response = $this->actingAs($this->premiumUser)->get(route('user_bin', 'equipment'));
+
+        $response->assertOk()
+            ->assertViewIs('user.bin')
+            ->assertViewHas('equipments', function ($viewEquipment) {
+                $this->assertCount(0, $viewEquipment);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function bin_premium_user_can_not_view_deleted_equipment_of_different_user()
+    {
+        $user = User::factory()->create();
+        $equipment = Equipment::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('user_bin', 'equipment'));
+
+        $response->assertOk()
+            ->assertViewIs('user.bin')
+            ->assertViewHas('equipments', function ($viewEquipment) {
+                $this->assertCount(0, $viewEquipment);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function bin_premium_user_views_most_recently_deleted_equipment_first()
+    {
+        $oldestEquipment = Equipment::factory()->create(['deleted_at' => '2021-11-20 17:30:00']);
+        $newestEquipment = Equipment::factory()->create(['deleted_at' => '2021-11-25 17:30:00']);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('user_bin', 'equipment'));
+
+        $response->assertOk()
+            ->assertViewIs('user.bin')
+            ->assertViewHas('equipments', function ($viewEquipment) use ($newestEquipment) {
+                $this->assertCount(2, $viewEquipment);
+                $this->assertSame($newestEquipment->id, $viewEquipment->first()->id);
+                $this->assertSame($newestEquipment->name, $viewEquipment->first()->name);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function bin_premium_user_can_view_their_own_deleted_workouts()
+    {
+        $workout = Workout::factory()->create();
+        $workout->delete();
+
+        $response = $this->actingAs($this->premiumUser)->get(route('user_bin', 'workouts'));
+
+        $response->assertOk()
+            ->assertViewIs('user.bin')
+            ->assertViewHas('workouts', function ($viewWorkouts) use ($workout) {
+                $this->assertCount(1, $viewWorkouts);
+                $this->assertSame($workout->id, $viewWorkouts->first()->id);
+                $this->assertSame($workout->name, $viewWorkouts->first()->name);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function bin_premium_user_can_not_view_their_own_non_deleted_workouts()
+    {
+        $workout = Workout::factory()->create();
+
+        $response = $this->actingAs($this->premiumUser)->get(route('user_bin', 'workouts'));
+
+        $response->assertOk()
+            ->assertViewIs('user.bin')
+            ->assertViewHas('workouts', function ($viewWorkouts) {
+                $this->assertCount(0, $viewWorkouts);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function bin_premium_user_can_not_view_deleted_workouts_of_different_user()
+    {
+        $user = User::factory()->create();
+        $workout = Workout::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+        $workout->delete();
+
+        $response = $this->actingAs($this->premiumUser)->get(route('user_bin', 'workouts'));
+
+        $response->assertOk()
+            ->assertViewIs('user.bin')
+            ->assertViewHas('workouts', function ($viewWorkouts) {
+                $this->assertCount(0, $viewWorkouts);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function bin_premium_user_views_most_recently_deleted_workouts_first()
+    {
+        $oldestWorkout = Workout::factory()->create(['deleted_at' => '2021-11-20 17:30:00']);
+        $newestWorkout = Workout::factory()->create(['deleted_at' => '2021-11-25 17:30:00']);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('user_bin', 'workouts'));
+
+        $response->assertOk()
+            ->assertViewIs('user.bin')
+            ->assertViewHas('workouts', function ($viewWorkouts) use ($newestWorkout) {
+                $this->assertCount(2, $viewWorkouts);
+                $this->assertSame($newestWorkout->id, $viewWorkouts->first()->id);
+                $this->assertSame($newestWorkout->name, $viewWorkouts->first()->name);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function follow_non_logged_in_user_redirects_to_login()
+    {
+        $response = $this->get(route('user_follow', 1));
+
+        $response->assertRedirect('/email/verify');
+    }
+
+    /** @test */
+    public function follow_premium_user_can_follow_user_with_anybody_setting()
+    {
+        $user = User::factory()->create();
+        setting()->set('privacy_follow', 'anybody', $user->id);
+        setting()->save($user->id);
+        setting()->set('notifications_follower', 'on-site', $this->premiumUser->id);
+        setting()->save($this->premiumUser->id);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('user_follow', $user->id));
+
+        $this->assertDatabaseCount('user_followers', 1)
+            ->assertDatabaseHas('user_followers', [
+                'user_id' => $user->id,
+                'follower_id' => $this->premiumUser->id,
+                'accepted' => true,
+            ])
+            ->assertDatabaseCount('notifications', 1);
+    }
+
+    /** @test */
+    public function follow_premium_user_can_request_user_with_request_setting()
+    {
+        $user = User::factory()->create();
+        setting()->set('privacy_follow', 'request', $user->id);
+        setting()->save($user->id);
+        setting()->set('notifications_follower', 'on-site', $this->premiumUser->id);
+        setting()->save($this->premiumUser->id);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('user_follow', $user->id));
+
+        $this->assertDatabaseCount('user_followers', 1)
+            ->assertDatabaseHas('user_followers', [
+                'user_id' => $user->id,
+                'follower_id' => $this->premiumUser->id,
+                'accepted' => false,
+            ])
+            ->assertDatabaseCount('notifications', 1);
+    }
+
+    /** @test */
+    public function follow_premium_user_can_not_follow_user_with_nobody_setting()
+    {
+        $user = User::factory()->create();
+        setting()->set('privacy_follow', 'nobody', $user->id);
+        setting()->save($user->id);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('user_follow', $user->id));
+
+        $this->assertDatabaseCount('user_followers', 0);
+    }
+
+    /** @test */
+    public function follow_premium_user_can_not_follow_user_with_no_settings()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($this->premiumUser)->get(route('user_follow', $user->id));
+
+        $this->assertDatabaseCount('user_followers', 0);
+    }
+
+    /** @test */
+    public function follow_premium_user_can_only_follow_a_user_once()
+    {
+        $user = User::factory()->create();
+        setting()->set('privacy_follow', 'anybody', $user->id);
+        setting()->save($user->id);
+        $user->followers()->attach($this->premiumUser->id, ['accepted' => true]);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('user_follow', $user->id));
+
+        $this->assertDatabaseCount('user_followers', 1)
+            ->assertDatabaseHas('user_followers', [
+                'user_id' => $user->id,
+                'follower_id' => $this->premiumUser->id,
+                'accepted' => true,
+            ]);
+    }
+
+    /** @test */
+    public function follow_premium_user_can_not_follow_themself()
+    {
+        setting()->set('privacy_follow', 'anybody', $this->premiumUser->id);
+        setting()->save($this->premiumUser->id);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('user_follow', $this->premiumUser->id));
+
+        $this->assertDatabaseCount('user_followers', 0);
+    }
+
+    /** @test */
+    public function unfollow_non_logged_in_user_redirects_to_login()
+    {
+        $response = $this->get(route('user_unfollow', 1));
+
+        $response->assertRedirect('/email/verify');
+    }
+
+    /** @test */
+    public function unfollow_premium_user_can_unfollow_a_user()
+    {
+        $user = User::factory()->create();
+        $user->followers()->attach($this->premiumUser->id, ['accepted' => true]);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('user_unfollow', $user->id));
+
+        $this->assertDatabaseCount('user_followers', 0);
+    }
+
+    /** @test */
+    public function remove_follower_non_logged_in_user_redirects_to_login()
+    {
+        $response = $this->get(route('user_remove_follower', 1));
+
+        $response->assertRedirect('/email/verify');
+    }
+
+    /** @test */
+    public function remove_follower_premium_user_can_remove_a_follower()
+    {
+        $user = User::factory()->create();
+        $user->following()->attach($this->premiumUser->id, ['accepted' => true]);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('user_remove_follower', $user->id));
+
+        $this->assertDatabaseCount('user_followers', 0);
+    }
+
+    /** @test */
+    public function accept_follower_non_logged_in_user_redirects_to_login()
+    {
+        $response = $this->get(route('user_accept_follower', 1));
+
+        $response->assertRedirect('/email/verify');
+    }
+
+    /** @test */
+    public function accept_follower_premium_user_can_accept_a_follower()
+    {
+        $user = User::factory()->create();
+        $user->following()->attach($this->premiumUser->id);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('user_accept_follower', $user->id));
+
+        $this->assertDatabaseCount('user_followers', 1)
+            ->assertDatabaseHas('user_followers', [
+                'user_id' => $this->premiumUser->id,
+                'follower_id' => $user->id,
+                'accepted' => true,
+            ]);
+    }
+
+    /** @test */
+    public function accept_follower_premium_user_can_only_accept_a_follower_once()
+    {
+        $user = User::factory()->create();
+        $user->following()->attach($this->premiumUser->id, ['accepted' => true]);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('user_accept_follower', $user->id));
+
+        $this->assertDatabaseCount('user_followers', 1)
+            ->assertDatabaseHas('user_followers', [
+                'user_id' => $this->premiumUser->id,
+                'follower_id' => $user->id,
+                'accepted' => true,
+            ]);
+    }
+
+    /** @test */
+    public function accept_follower_premium_user_can_not_accept_a_follower_without_a_request()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($this->premiumUser)->get(route('user_accept_follower', $user->id));
+
+        $this->assertDatabaseCount('user_followers', 0);
+    }
+
+    /** @test */
+    public function reject_follower_non_logged_in_user_redirects_to_login()
+    {
+        $response = $this->get(route('user_reject_follower', 1));
+
+        $response->assertRedirect('/email/verify');
+    }
+
+    /** @test */
+    public function reject_follower_premium_user_can_reject_a_follower()
+    {
+        $user = User::factory()->create();
+        $user->following()->attach($this->premiumUser->id);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('user_reject_follower', $user->id));
+
+        $this->assertDatabaseCount('user_followers', 0);
+    }
+
+    /** @test */
+    public function reset_password_non_logged_in_user_redirects_to_login()
+    {
+        $response = $this->get(route('user_reset_password'));
+
+        $response->assertRedirect('/login');
+    }
+
+    /** @test */
+    public function reset_password_premium_user_can_view_reset_page()
+    {
+        $response = $this->actingAs($this->premiumUser)->get(route('user_reset_password'));
+
+        $response->assertOk()
+            ->assertViewIs('auth.passwords.reset')
+            ->assertViewHas('token')
+            ->assertViewHas('email', function ($viewEmail) {
+                $this->assertSame($this->premiumUser->email, $viewEmail);
+                return true;
+            });
+    }
 }

@@ -41,9 +41,6 @@ Route::prefix('user')->middleware('verified')->group(function() {
     Route::get('/follow/{id}', 'UserController@follow')->name('user_follow');
     Route::get('/unfollow/{id}', 'UserController@unfollow')->name('user_unfollow');
     Route::get('/remove_follower/{id}', 'UserController@removeFollower')->name('user_remove_follower');
-    Route::get('/followers', 'UserController@followers')->name('user_followers');
-    Route::get('/following', 'UserController@following')->name('user_following');
-    Route::get('/follow_requests', 'UserController@followRequests')->name('user_follow_requests');
     Route::get('/accept_follower/{id}', 'UserController@acceptFollower')->name('user_accept_follower');
     Route::get('/reject_follower/{id}', 'UserController@rejectFollower')->name('user_reject_follower');
 });

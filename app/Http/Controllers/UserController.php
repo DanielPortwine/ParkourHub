@@ -395,40 +395,12 @@ class UserController extends Controller
         ]);
     }
 
-    public function bin(Request $request, $tab = null)
+    public function bin(Request $request, $tab = 'spots')
     {
-        $id = Auth::id();
-        $user = User::with([
-            'spots' => function($q) {
-                $q->onlyTrashed();
-            },
-            'reviews' => function($q) {
-                $q->onlyTrashed();
-            },
-            'spotComments' => function($q) {
-                $q->onlyTrashed();
-            },
-            'challenges' => function($q) {
-                $q->onlyTrashed();
-            },
-            'challengeEntries' => function($q) {
-                $q->onlyTrashed();
-            },
-            'movements' => function($q) {
-                $q->onlyTrashed();
-            },
-            'equipment' => function($q) {
-                $q->onlyTrashed();
-            },
-            'workouts' => function($q) {
-                $q->onlyTrashed();
-            }
-        ])
-            ->where('id', $id)
-            ->first();
+        $user = User::where('id', Auth::id())->first();
 
         $spots = $reviews = $comments = $challenges = $entries = $movements = $equipment = $workouts = null;
-        if ($tab == null || $tab === 'spots') {
+        if ($tab === 'spots') {
             $spots = $user->spots()
                 ->onlyTrashed()
                 ->with(['hits', 'reviews', 'reports', 'user'])
@@ -520,8 +492,12 @@ class UserController extends Controller
         return count($bounding) === 4 ? $bounding : false;
     }
 
-    public function follow(Request $request, $id)
+    public function follow($id)
     {
+        if ((int)$id === Auth::id()) {
+            return back()->with('status', 'You can not follow yourself');
+        }
+
         if (!empty(Follower::where('user_id', $id)->where('follower_id', Auth::id())->first())) {
             return back()->with('status', 'You are already following this user or they haven\'t accepted your request yet');
         }
@@ -531,9 +507,10 @@ class UserController extends Controller
             return back()->with('status', 'This user is not accepting followers');
         }
 
-        $follower = new Follower;
-        $follower->user_id = $id;
-        $follower->follower_id = Auth::id();
+        $follower = new Follower([
+            'user_id' => $id,
+            'follower_id' => Auth::id(),
+        ]);
         if ($followSetting === 'anybody') {
             $follower->accepted = true;
         }
@@ -561,7 +538,7 @@ class UserController extends Controller
         return back()->with('status', $status);
     }
 
-    public function unfollow(Request $request, $id)
+    public function unfollow($id)
     {
         $follower = Follower::where('user_id', $id)->where('follower_id', Auth::id())->first();
         $follower->delete();
@@ -571,98 +548,12 @@ class UserController extends Controller
         return back()->with('status', 'Successfully unfollowed user');
     }
 
-    public function removeFollower(Request $request, $id) {
+    public function removeFollower($id)
+    {
         $follower = Follower::where('user_id', Auth::id())->where('follower_id', $id)->first();
         $follower->delete();
 
         return back()->with('status', 'Successfully removed follower');
-    }
-
-    public function followers(Request $request)
-    {
-        $sort = ['created_at', 'desc'];
-        if (!empty($request['sort'])) {
-            $fieldMapping = [
-                'date' => 'created_at',
-            ];
-            $sortParams = explode('_', $request['sort']);
-            $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
-        }
-
-        $followers = Follower::where('user_id', Auth::id())->where('accepted', true)->pluck('follower_id');
-
-        $users = User::whereIn('id', $followers)
-            ->orderBy($sort[0], $sort[1])
-            ->paginate(20)
-            ->appends(request()->query());
-
-        return view('content_listings', [
-            'title' => 'Followers',
-            'content' => $users,
-            'component' => 'user',
-        ]);
-    }
-
-    public function following(Request $request)
-    {
-        $sort = ['created_at', 'desc'];
-        if (!empty($request['sort'])) {
-            $fieldMapping = [
-                'date' => 'created_at',
-            ];
-            $sortParams = explode('_', $request['sort']);
-            $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
-        }
-
-        $followings = Follower::where('follower_id', Auth::id())->where('accepted', true)->pluck('user_id');
-
-        $users = User::whereIn('id', $followings)
-            ->orderBy($sort[0], $sort[1])
-            ->paginate(20)
-            ->appends(request()->query());
-
-        return view('content_listings', [
-            'title' => 'Following',
-            'content' => $users,
-            'component' => 'user',
-        ]);
-    }
-
-    public function followRequests(Request $request)
-    {
-        // if coming from a notification, set the notification as read
-        if (!empty($request['notification'])) {
-            foreach (Auth::user()->unreadNotifications as $notification) {
-                if ($notification->id === $request['notification']) {
-                    $notification->markAsRead();
-                    break;
-                }
-            }
-
-            return redirect()->route('user_follow_requests');
-        }
-
-        $sort = ['created_at', 'desc'];
-        if (!empty($request['sort'])) {
-            $fieldMapping = [
-                'date' => 'created_at',
-            ];
-            $sortParams = explode('_', $request['sort']);
-            $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
-        }
-
-        $requests = Follower::where('user_id', Auth::id())->where('accepted', false)->pluck('follower_id');
-
-        $users = User::whereIn('id', $requests)
-            ->orderBy($sort[0], $sort[1])
-            ->paginate(20)
-            ->appends(request()->query());
-
-        return view('content_listings', [
-            'title' => 'Follow Requests',
-            'content' => $users,
-            'component' => 'user',
-        ]);
     }
 
     public function acceptFollower($id)

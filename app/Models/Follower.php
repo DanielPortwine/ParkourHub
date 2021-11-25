@@ -11,6 +11,12 @@ class Follower extends Model
 
     protected $table = 'user_followers';
 
+    protected $fillable = [
+        'user_id',
+        'follower_id',
+        'accepted'
+    ];
+
     public function user()
     {
         return $this->belongsTo('App\Models\User');
