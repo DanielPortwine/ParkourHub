@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdateWorkout;
 use App\Models\Follower;
 use App\Http\Requests\CreateWorkout;
 use App\Models\Movement;
@@ -12,6 +13,7 @@ use App\Models\Spot;
 use App\Models\Workout;
 use App\Models\WorkoutMovement;
 use App\Models\WorkoutMovementField;
+use App\Scopes\VisibilityScope;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -202,9 +204,7 @@ class WorkoutController extends Controller
                 $movement->user_id = $userId;
                 $movement->movement_id = $movementRequest['movement'];
                 $movement->workout_id = $workout->id;
-                if (!empty($request['create-record'])) {
-                    $movement->recorded_workout_id = $recordedWorkout->id;
-                }
+                $movement->recorded_workout_id = $recordedWorkout->id;
                 $movement->save();
 
                 foreach ($movementRequest['fields'] as $id => $value) {
@@ -242,6 +242,10 @@ class WorkoutController extends Controller
             ->where('id', $id)
             ->first();
 
+        if ($workout->user_id !== Auth::id()) {
+            return redirect()->route('workout_view', $id);
+        }
+
         $movements = Movement::get();
 
         return view('workouts.edit', [
@@ -250,14 +254,17 @@ class WorkoutController extends Controller
         ]);
     }
 
-    public function update(CreateWorkout $request, $id)
+    public function update(UpdateWorkout $request, $id)
     {
         if (!empty($request['delete'])) {
             return $this->delete($id, $request['redirect']);
         }
 
         $userId = Auth::id();
-        $workout = Workout::where('id', $id)->first();
+        $workout = Workout::withoutGlobalScope(VisibilityScope::class)->where('id', $id)->first();
+        if ($workout->user_id != $userId) {
+            return redirect()->route('workout_view', $id);
+        }
         $workout->name = $request['name'];
         $workout->description = $request['description'] ?: null;
         $workout->visibility = $request['visibility'] ?: 'private';
@@ -291,10 +298,19 @@ class WorkoutController extends Controller
         }
 
         // notify bookmarkers that user updated a workout
-        if ($workout->public) {
-            $bookmarkers = $workout->bookmarks;
-            foreach ($bookmarkers as $bookmarker) {
-                if (in_array(setting('notifications_workout_updated', 'on-site', $bookmarker->id), ['on-site', 'email', 'email-site']) && $bookmarker->isPremium()) {
+        if ($workout->visibility !== 'private') {
+            foreach ($workout->bookmarks as $bookmarker) {
+                if (
+                    in_array(setting('notifications_workout_updated', 'on-site', $bookmarker->id), ['on-site', 'email', 'email-site']) &&
+                    $bookmarker->isPremium() &&
+                    (
+                        $workout->visibility === 'public' ||
+                        (
+                            $workout->visibility === 'follower' &&
+                            in_array($bookmarker->id, $workout->user->followers()->pluck('id')->toArray())
+                        )
+                    )
+                ) {
                     $bookmarker->notify(new WorkoutUpdated($workout));
                 }
             }
@@ -304,7 +320,11 @@ class WorkoutController extends Controller
         if ($workout->visibility !== 'private') {
             $followers = Auth::user()->followers()->get();
             foreach ($followers as $follower) {
-                if (in_array(setting('notifications_workout_updated', 'on-site', $follower->id), ['on-site', 'email', 'email-site']) && $follower->isPremium()) {
+                if (
+                    in_array(setting('notifications_workout_updated', 'on-site', $follower->id), ['on-site', 'email', 'email-site']) &&
+                    $follower->isPremium() &&
+                    !in_array($follower->id, $workout->bookmarks->pluck('user_id')->toArray())
+                ) {
                     $follower->notify(new WorkoutUpdated($workout));
                 }
             }

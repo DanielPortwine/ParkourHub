@@ -6,7 +6,7 @@ use App\Rules\Visibility;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class CreateWorkout extends FormRequest
+class UpdateWorkout extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -33,6 +33,8 @@ class CreateWorkout extends FormRequest
             'movements.*.movement' => 'integer|exists:App\Models\Movement,id',
             'movements.*.fields' => 'array',
             'visibility' => ['required', new Visibility],
+            'delete' => 'sometimes',
+            'redirect' => 'sometimes|url',
         ];
     }
 }

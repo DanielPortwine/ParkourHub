@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Movement;
 use App\Models\MovementCategory;
+use App\Models\MovementField;
 use App\Models\MovementType;
 use App\Models\RecordedWorkout;
 use App\Models\Spot;
@@ -44,6 +45,7 @@ class WorkoutControllerTest extends TestCase
     public function listing_non_premium_user_redirects_to_premium()
     {
         $user = User::factory()->create();
+
         $response = $this->actingAs($user)->get(route('workout_listing'));
 
         $response->assertRedirect('/premium');
@@ -281,6 +283,7 @@ class WorkoutControllerTest extends TestCase
     public function view_non_premium_user_redirects_to_premium()
     {
         $user = User::factory()->create();
+
         $response = $this->actingAs($user)->get(route('workout_view', 1));
 
         $response->assertRedirect('/premium');
@@ -486,5 +489,573 @@ class WorkoutControllerTest extends TestCase
                 $this->assertCount(0, $viewSpots);
                 return true;
             });
+    }
+
+    /** @test */
+    public function create_non_logged_in_user_redirects_to_login()
+    {
+        $response = $this->get(route('workout_create'));
+
+        $response->assertRedirect('/email/verify');
+    }
+
+    /** @test */
+    public function create_non_premium_user_redirects_to_premium()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->get(route('workout_create'));
+
+        $response->assertRedirect('/premium');
+    }
+
+    /** @test */
+    public function create_premium_user_can_view_create()
+    {
+        $movementType = MovementType::factory()->create();
+        $movementCategory = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create();
+
+        $response = $this->actingAs($this->premiumUser)->get(route('workout_create'));
+
+        $response->assertOk()
+            ->assertViewIs('workouts.create')
+            ->assertViewHas('movements', function ($viewMovements) use ($movement) {
+                $this->assertCount(1, $viewMovements);
+                $this->assertSame($movement->id, $viewMovements->first()->id);
+                $this->assertSame($movement->name, $viewMovements->first()->name);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function store_non_logged_in_user_redirects_to_login()
+    {
+        $response = $this->post(route('workout_store', []));
+
+        $response->assertRedirect('/email/verify');
+    }
+
+    /** @test */
+    public function store_non_premium_user_redirects_to_premium()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->post(route('workout_store', []));
+
+        $response->assertRedirect('/premium');
+    }
+
+    /** @test */
+    public function store_premium_user_can_store_workout_with_valid_data_and_notify_premium_followers()
+    {
+        $user = User::factory()->create();
+        $user->givePermissionTo($this->accessPremium);
+        $this->premiumUser->followers()->attach($user->id, ['accepted' => true]);
+        setting()->set('notifications_new_workout', 'on-site', $user->id);
+        setting()->save($user->id);
+        $movementType = MovementType::factory()->create();
+        $movementCategory = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create();
+        $field = MovementField::factory()->create();
+        $movement->fields()->attach($field->id);
+
+        $response = $this->actingAs($this->premiumUser)->post(route('workout_store'), [
+            'name' => 'Test Workout',
+            'description' => 'This is a test workout',
+            'movements' => [
+                [
+                    'movement' => $movement->id,
+                    'fields' => [
+                        $field->id => 3,
+                    ]
+                ]
+            ],
+            'visibility' => 'public',
+        ]);
+
+        $this->assertDatabaseCount('workouts', 1)
+            ->assertDatabaseHas('workouts', [
+                'name' => 'Test Workout',
+                'description' => 'This is a test workout',
+            ])
+            ->assertDatabaseCount('workout_movements', 1)
+            ->assertDatabaseHas('workout_movements', [
+                'movement_id' => $movement->id,
+            ])
+            ->assertDatabaseCount('workout_movement_fields', 1)
+            ->assertDatabaseHas('workout_movement_fields', [
+                'movement_field_id' => $movement->fields()->first()->id,
+                'value' => 3,
+            ])
+            ->assertDatabaseCount('notifications', 1);
+    }
+
+    /** @test */
+    public function store_premium_user_can_store_workout_with_valid_data_and_store_a_recorded_workout()
+    {
+        $movementType = MovementType::factory()->create();
+        $movementCategory = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create();
+        $field = MovementField::factory()->create();
+        $movement->fields()->attach($field->id);
+
+        $response = $this->actingAs($this->premiumUser)->post(route('workout_store'), [
+            'name' => 'Test Workout',
+            'description' => 'This is a test workout',
+            'movements' => [
+                [
+                    'movement' => $movement->id,
+                    'fields' => [
+                        $field->id => 3,
+                    ]
+                ]
+            ],
+            'visibility' => 'public',
+            'create-record' => true,
+        ]);
+
+        $this->assertDatabaseCount('workouts', 1)
+            ->assertDatabaseHas('workouts', [
+                'name' => 'Test Workout',
+                'description' => 'This is a test workout',
+            ])
+            ->assertDatabaseCount('workout_movements', 2)
+            ->assertDatabaseHas('workout_movements', [
+                'movement_id' => $movement->id,
+                'recorded_workout_id' => null,
+            ])
+            ->assertDatabaseHas('workout_movements', [
+                'movement_id' => $movement->id,
+                'recorded_workout_id' => $movement->workouts()->whereNotNull('recorded_workout_id')->first()->recorded_workout_id,
+            ])
+            ->assertDatabaseCount('workout_movement_fields', 2)
+            ->assertDatabaseHas('workout_movement_fields', [
+                'movement_field_id' => $movement->fields()->first()->id,
+                'workout_movement_id' => $movement->workouts()->whereNull('recorded_workout_id')->first()->id,
+                'value' => 3,
+            ])
+            ->assertDatabaseHas('workout_movement_fields', [
+                'movement_field_id' => $movement->fields()->first()->id,
+                'workout_movement_id' => $movement->workouts()->whereNotNull('recorded_workout_id')->first()->id,
+                'value' => 3,
+            ])
+            ->assertDatabaseCount('recorded_workouts', 1);
+    }
+
+    /** @test */
+    public function store_premium_user_can_not_store_workout_without_name()
+    {
+        $movementType = MovementType::factory()->create();
+        $movementCategory = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create();
+        $field = MovementField::factory()->create();
+        $movement->fields()->attach($field->id);
+
+        $response = $this->actingAs($this->premiumUser)->post(route('workout_store'), [
+            // name missing
+            'description' => 'This is a test workout',
+            'movements' => [
+                [
+                    'movement' => $movement->id,
+                    'fields' => [
+                        $field->id => 3,
+                    ]
+                ]
+            ],
+            'visibility' => 'public',
+        ]);
+
+        $response->assertSessionHasErrors();
+
+        $this->assertDatabaseCount('workouts', 0)
+            ->assertDatabaseCount('workout_movements', 0)
+            ->assertDatabaseCount('workout_movement_fields', 0);
+    }
+
+    /** @test */
+    public function store_premium_user_can_not_store_workout_with_long_name()
+    {
+        $movementType = MovementType::factory()->create();
+        $movementCategory = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create();
+        $field = MovementField::factory()->create();
+        $movement->fields()->attach($field->id);
+
+        $response = $this->actingAs($this->premiumUser)->post(route('workout_store'), [
+            'name' => 'This name is too long to be valid',
+            'description' => 'This is a test workout',
+            'movements' => [
+                [
+                    'movement' => $movement->id,
+                    'fields' => [
+                        $field->id => 3,
+                    ]
+                ]
+            ],
+            'visibility' => 'public',
+        ]);
+
+        $response->assertSessionHasErrors();
+
+        $this->assertDatabaseCount('workouts', 0)
+            ->assertDatabaseCount('workout_movements', 0)
+            ->assertDatabaseCount('workout_movement_fields', 0);
+    }
+
+    /** @test */
+    public function store_premium_user_can_not_store_workout_with_array_name()
+    {
+        $movementType = MovementType::factory()->create();
+        $movementCategory = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create();
+        $field = MovementField::factory()->create();
+        $movement->fields()->attach($field->id);
+
+        $response = $this->actingAs($this->premiumUser)->post(route('workout_store'), [
+            'name' => ['name' => 'Test Workout'],
+            'description' => 'This is a test workout',
+            'movements' => [
+                [
+                    'movement' => $movement->id,
+                    'fields' => [
+                        $field->id => 3,
+                    ]
+                ]
+            ],
+            'visibility' => 'public',
+        ]);
+
+        $response->assertSessionHasErrors();
+
+        $this->assertDatabaseCount('workouts', 0)
+            ->assertDatabaseCount('workout_movements', 0)
+            ->assertDatabaseCount('workout_movement_fields', 0);
+    }
+
+    /** @test */
+    public function store_premium_user_can_not_store_workout_without_movements()
+    {
+        $response = $this->actingAs($this->premiumUser)->post(route('workout_store'), [
+            'name' => ['name' => 'Test Workout'],
+            'description' => 'This is a test workout',
+            // movements missing
+            'visibility' => 'public',
+        ]);
+
+        $response->assertSessionHasErrors();
+
+        $this->assertDatabaseCount('workouts', 0)
+            ->assertDatabaseCount('workout_movements', 0)
+            ->assertDatabaseCount('workout_movement_fields', 0);
+    }
+
+    /** @test */
+    public function store_premium_user_can_not_store_workout_without_movements_in_movements()
+    {
+        $response = $this->actingAs($this->premiumUser)->post(route('workout_store'), [
+            'name' => ['name' => 'Test Workout'],
+            'description' => 'This is a test workout',
+            'movements' => [],
+            'visibility' => 'public',
+        ]);
+
+        $response->assertSessionHasErrors();
+
+        $this->assertDatabaseCount('workouts', 0)
+            ->assertDatabaseCount('workout_movements', 0)
+            ->assertDatabaseCount('workout_movement_fields', 0);
+    }
+
+    /** @test */
+    public function store_premium_user_can_not_store_workout_with_nonexistent_movement()
+    {
+        $movementType = MovementType::factory()->create();
+        $movementCategory = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create();
+        $field = MovementField::factory()->create();
+        $movement->fields()->attach($field->id);
+
+        $response = $this->actingAs($this->premiumUser)->post(route('workout_store'), [
+            'name' => ['name' => 'Test Workout'],
+            'description' => 'This is a test workout',
+            'movements' => [
+                [
+                    'movement' => 987,
+                    'fields' => [
+                        $field->id => 3,
+                    ]
+                ]
+            ],
+            'visibility' => 'public',
+        ]);
+
+        $response->assertSessionHasErrors();
+
+        $this->assertDatabaseCount('workouts', 0)
+            ->assertDatabaseCount('workout_movements', 0)
+            ->assertDatabaseCount('workout_movement_fields', 0);
+    }
+
+    /** @test */
+    public function store_premium_user_can_not_store_workout_without_movement_fields()
+    {
+        $movementType = MovementType::factory()->create();
+        $movementCategory = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create();
+        $field = MovementField::factory()->create();
+        $movement->fields()->attach($field->id);
+
+        $response = $this->actingAs($this->premiumUser)->post(route('workout_store'), [
+            'name' => ['name' => 'Test Workout'],
+            'description' => 'This is a test workout',
+            'movements' => [
+                [
+                    'movement' => $movement->id,
+                ]
+            ],
+            'visibility' => 'public',
+        ]);
+
+        $response->assertSessionHasErrors();
+
+        $this->assertDatabaseCount('workouts', 0)
+            ->assertDatabaseCount('workout_movements', 0)
+            ->assertDatabaseCount('workout_movement_fields', 0);
+    }
+
+    /** @test */
+    public function store_premium_user_can_not_store_workout_with_empty_movement_fields()
+    {
+        $movementType = MovementType::factory()->create();
+        $movementCategory = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create();
+        $field = MovementField::factory()->create();
+        $movement->fields()->attach($field->id);
+
+        $response = $this->actingAs($this->premiumUser)->post(route('workout_store'), [
+            'name' => ['name' => 'Test Workout'],
+            'description' => 'This is a test workout',
+            'movements' => [
+                [
+                    'movement' => $movement->id,
+                    'fields' => []
+                ]
+            ],
+            'visibility' => 'public',
+        ]);
+
+        $response->assertSessionHasErrors();
+
+        $this->assertDatabaseCount('workouts', 0)
+            ->assertDatabaseCount('workout_movements', 0)
+            ->assertDatabaseCount('workout_movement_fields', 0);
+    }
+
+    /** @test */
+    public function store_premium_user_can_not_store_workout_without_visibility()
+    {
+        $movementType = MovementType::factory()->create();
+        $movementCategory = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create();
+        $field = MovementField::factory()->create();
+        $movement->fields()->attach($field->id);
+
+        $response = $this->actingAs($this->premiumUser)->post(route('workout_store'), [
+            'name' => ['name' => 'Test Workout'],
+            'description' => 'This is a test workout',
+            'movements' => [
+                [
+                    'movement' => $movement->id,
+                    'fields' => []
+                ]
+            ],
+            // visibility missing
+        ]);
+
+        $response->assertSessionHasErrors();
+
+        $this->assertDatabaseCount('workouts', 0)
+            ->assertDatabaseCount('workout_movements', 0)
+            ->assertDatabaseCount('workout_movement_fields', 0);
+    }
+
+    /** @test */
+    public function store_premium_user_can_not_store_workout_with_invalid_visibility()
+    {
+        $movementType = MovementType::factory()->create();
+        $movementCategory = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create();
+        $field = MovementField::factory()->create();
+        $movement->fields()->attach($field->id);
+
+        $response = $this->actingAs($this->premiumUser)->post(route('workout_store'), [
+            'name' => ['name' => 'Test Workout'],
+            'description' => 'This is a test workout',
+            'movements' => [
+                [
+                    'movement' => $movement->id,
+                    'fields' => []
+                ]
+            ],
+            'visibility' => 'invalid',
+        ]);
+
+        $response->assertSessionHasErrors();
+
+        $this->assertDatabaseCount('workouts', 0)
+            ->assertDatabaseCount('workout_movements', 0)
+            ->assertDatabaseCount('workout_movement_fields', 0);
+    }
+
+    /** @test */
+    public function edit_non_logged_in_user_redirects_to_login()
+    {
+        $response = $this->get(route('workout_edit', 1));
+
+        $response->assertRedirect('/email/verify');
+    }
+
+    /** @test */
+    public function edit_non_premium_user_redirects_to_premium()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->get(route('workout_edit', 1));
+
+        $response->assertRedirect('/premium');
+    }
+
+    /** @test */
+    public function edit_random_premium_user_redirects_to_view()
+    {
+        $user = User::factory()->create();
+        $workout = Workout::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('workout_edit', $workout->id));
+
+        $response->assertRedirect(route('workout_view', $workout->id));
+    }
+
+    /** @test */
+    public function edit_owner_premium_user_can_edit_workout()
+    {
+        $workout = Workout::factory()->create();
+        $movementType = MovementType::factory()->create();
+        $movementCategory = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create();
+        $workoutMovement = WorkoutMovement::factory()->create(['recorded_workout_id' => null]);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('workout_edit', $workout->id));
+
+        $response->assertOk()
+            ->assertViewIs('workouts.edit')
+            ->assertViewHas('workout', function ($viewWorkout) use ($workout, $movement) {
+                $this->assertSame($workout->id, $viewWorkout->id);
+                $this->assertSame($workout->name, $viewWorkout->name);
+                $this->assertSame($workout->movements()->first()->id, $viewWorkout->movements()->first()->id);
+                return true;
+            })
+            ->assertViewHas('movements', function ($viewMovements) use ($movement) {
+                $this->assertCount(1, $viewMovements);
+                $this->assertSame($movement->id, $viewMovements->first()->id);
+                $this->assertSame($movement->name, $viewMovements->first()->name);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function update_non_logged_in_user_redirects_to_login()
+    {
+        $response = $this->post(route('workout_update', 1), []);
+
+        $response->assertRedirect('/email/verify');
+    }
+
+    /** @test */
+    public function update_non_premium_user_redirects_to_premium()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->post(route('workout_update', 1), []);
+
+        $response->assertRedirect('/premium');
+    }
+
+    /** @test */
+    public function update_random_premium_user_redirects_to_view()
+    {
+        $user = User::factory()->create();
+        $movementType = MovementType::factory()->create();
+        $movementCategory = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create(['visibility' => 'public']);
+        $workout = Workout::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+
+        $response = $this->actingAs($this->premiumUser)->post(route('workout_update', $workout->id), [
+            'name' => 'Updated Workout',
+            'description' => 'This is an updated workout',
+            'movements' => [
+                [
+                    'movement' => $movement->id,
+                    'fields' => [],
+                ]
+            ],
+            'visibility' => 'follower',
+        ]);
+
+        $response->assertRedirect(route('workout_view', $workout->id));
+    }
+
+    /** @test */
+    public function update_owner_premium_user_can_update_workout_with_valid_data_and_notify_premium_followers_and_bookmarkers() // failing on notifications!!
+    {
+        $follower = User::factory()->create();
+        $follower->givePermissionTo($this->accessPremium);
+        $this->premiumUser->followers()->attach($follower->id, ['accepted' => true]);
+        setting()->set('notifications_workout_updated', 'on-site', $follower->id);
+        setting()->save($follower->id);
+        $bookmarker = User::factory()->create();
+        $bookmarker->givePermissionTo($this->accessPremium);
+        $this->premiumUser->followers()->attach($bookmarker->id, ['accepted' => true]);
+        setting()->set('notifications_workout_updated', 'on-site', $bookmarker->id);
+        setting()->save($bookmarker->id);
+        $movementType = MovementType::factory()->create();
+        $movementCategory = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create();
+        $field = MovementField::factory()->create();
+        $movement->fields()->attach($field->id);
+        $workout = Workout::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'private']);
+        $workout->bookmarks()->attach($bookmarker->id);
+
+        $response = $this->actingAs($this->premiumUser)->post(route('workout_update', $workout->id), [
+            'name' => 'Updated Workout',
+            'description' => 'This is an updated workout',
+            'movements' => [
+                [
+                    'movement' => $movement->id,
+                    'fields' => [
+                        $field->id => 5,
+                    ]
+                ]
+            ],
+            'visibility' => 'follower',
+        ]);
+
+        $this->assertDatabaseCount('workouts', 1)
+            ->assertDatabaseHas('workouts', [
+                'name' => 'Updated Workout',
+                'description' => 'This is an updated workout',
+                'visibility' => 'follower',
+            ])
+            ->assertDatabaseCount('workout_movements', 1)
+            ->assertDatabaseHas('workout_movements', [
+                'movement_id' => $movement->id,
+            ])
+            ->assertDatabaseCount('workout_movement_fields', 1)
+            ->assertDatabaseHas('workout_movement_fields', [
+                'movement_field_id' => $movement->fields()->first()->id,
+                'value' => 5,
+            ])
+            ->assertDatabaseCount('notifications', 2);
     }
 }

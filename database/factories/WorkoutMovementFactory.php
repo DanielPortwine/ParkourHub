@@ -7,6 +7,7 @@ use App\Models\RecordedWorkout;
 use App\Models\User;
 use App\Models\Workout;
 use App\Models\WorkoutMovement;
+use App\Scopes\VisibilityScope;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class WorkoutMovementFactory extends Factory
@@ -17,9 +18,8 @@ class WorkoutMovementFactory extends Factory
     {
         return [
             'user_id' => User::inRandomOrder()->first()->id,
-            'movement_id' => Movement::inRandomOrder()->first()->id,
-            'workout_id' => Workout::inRandomOrder()->first()->id,
-            'recorded_workout_id' => RecordedWorkout::first()->id,
+            'movement_id' => Movement::withoutGlobalScope(VisibilityScope::class)->inRandomOrder()->first()->id,
+            'workout_id' => Workout::withoutGlobalScope(VisibilityScope::class)->inRandomOrder()->first()->id,
         ];
     }
 }
