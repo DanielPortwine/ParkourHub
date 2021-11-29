@@ -159,7 +159,6 @@ Route::prefix('equipment')->middleware(['verified', 'isPremium'])->group(functio
 
 Route::prefix('workouts')->middleware(['verified', 'isPremium'])->group(function() {
     Route::get('/', 'WorkoutController@listing')->name('workout_listing');
-    Route::get('/my_workouts', 'WorkoutController@myWorkouts')->name('workout_listing_user');
     Route::get('/view/{id}/{tab?}', 'WorkoutController@view')->name('workout_view');
     Route::get('/create', 'WorkoutController@create')->name('workout_create');
     Route::post('/create', 'WorkoutController@store')->name('workout_store');
@@ -168,13 +167,12 @@ Route::prefix('workouts')->middleware(['verified', 'isPremium'])->group(function
     Route::get('/delete/{id}', 'WorkoutController@delete')->name('workout_delete');
     Route::get('/recover/{id}', 'WorkoutController@recover')->name('workout_recover');
     Route::get('/remove/{id}', 'WorkoutController@remove')->name('workout_remove');
-    Route::get('/bookmarks', 'WorkoutController@bookmarks')->name('workout_bookmark_listing');
     Route::get('/bookmark/{id}', 'WorkoutController@bookmark')->name('workout_bookmark');
     Route::get('/unbookmark/{id}', 'WorkoutController@unbookmark')->name('workout_unbookmark');
     Route::get('/getMovementFields', 'WorkoutController@getMovementFields')->name('movement_fields_search');
-    Route::get('/deleteMovement/{id}', 'WorkoutController@deleteMovement')->name('workout_movement_delete');
-    Route::get('/report/{workout}', 'WorkoutController@report')->name('workout_report');
-    Route::get('/discard_reports/{workout}', 'WorkoutController@discardReports')->name('workout_report_discard');
+    Route::get('/delete_movement/{id}', 'WorkoutController@deleteMovement')->name('workout_movement_delete');
+    Route::get('/report/{id}', 'WorkoutController@report')->name('workout_report');
+    Route::get('/discard_reports/{any_workout}', 'WorkoutController@discardReports')->name('workout_report_discard');
     Route::prefix('recorded')->group(function() {
         Route::get('/', 'RecordedWorkoutController@index')->name('recorded_workout_listing');
         Route::get('/view/{id}', 'RecordedWorkoutController@view')->name('recorded_workout_view');

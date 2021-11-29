@@ -37,38 +37,9 @@ class WorkoutController extends Controller
                 'from' => $request['date_from'] ?? null,
                 'to' => $request['date_to'] ?? null
             ])
+            ->bookmarked($request['bookmarked'] ?? false)
+            ->personal($request['personal'] ?? false)
             ->search($request['search'] ?? false)
-            ->orderBy($sort[0], $sort[1])
-            ->paginate(20)
-            ->appends(request()->query());
-
-        return view('content_listings', [
-            'title' => 'Workouts',
-            'content' => $workouts,
-            'component' => 'workout',
-            'create' => true,
-        ]);
-    }
-
-    public function myWorkouts(Request $request)
-    {
-        $sort = ['created_at', 'desc'];
-        if (!empty($request['sort'])) {
-            $fieldMapping = [
-                'date' => 'created_at',
-            ];
-            $sortParams = explode('_', $request['sort']);
-            $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
-        }
-
-        $userID = Auth::id();
-        $workouts = Workout::withCount('movements')
-            ->with(['movements', 'bookmarks', 'user', 'reports'])
-            ->where('user_id', $userID)
-            ->dateBetween([
-                'from' => $request['date_from'] ?? null,
-                'to' => $request['date_to'] ?? null
-            ])
             ->orderBy($sort[0], $sort[1])
             ->paginate(20)
             ->appends(request()->query());
@@ -307,7 +278,7 @@ class WorkoutController extends Controller
                         $workout->visibility === 'public' ||
                         (
                             $workout->visibility === 'follower' &&
-                            in_array($bookmarker->id, $workout->user->followers()->pluck('id')->toArray())
+                            in_array($bookmarker->id, $workout->user->followers()->get()->pluck('id')->toArray())
                         )
                     )
                 ) {
@@ -323,7 +294,7 @@ class WorkoutController extends Controller
                 if (
                     in_array(setting('notifications_workout_updated', 'on-site', $follower->id), ['on-site', 'email', 'email-site']) &&
                     $follower->isPremium() &&
-                    !in_array($follower->id, $workout->bookmarks->pluck('user_id')->toArray())
+                    !in_array($follower->id, $workout->bookmarks->pluck('id')->toArray())
                 ) {
                     $follower->notify(new WorkoutUpdated($workout));
                 }
@@ -342,6 +313,8 @@ class WorkoutController extends Controller
 
         if ($workout->user_id === Auth::id()) {
             $workout->delete();
+        } else {
+            return redirect()->route('workout_view', $workout->id);
         }
 
         if (!empty($redirect)) {
@@ -377,8 +350,10 @@ class WorkoutController extends Controller
         return back()->with('status', 'Successfully removed workout forever.');
     }
 
-    public function report(Workout $workout)
+    public function report($id)
     {
+        $workout = Workout::where('id', $id)->first();
+
         $workout->report();
 
         return back()->with('status', 'Successfully reported workout');
@@ -386,44 +361,22 @@ class WorkoutController extends Controller
 
     public function discardReports(Workout $workout)
     {
+        if (!Auth::user()->hasPermissionTo('manage reports') || $workout->user_id === Auth::id()) {
+            return back();
+        }
+
         $workout->discardReports();
 
         return back()->with('status', 'Successfully discarded reports against this content');
     }
 
-    public function bookmarks(Request $request)
-    {
-        $sort = ['created_at', 'desc'];
-        if (!empty($request['sort'])) {
-            $fieldMapping = [
-                'date' => 'created_at',
-            ];
-            $sortParams = explode('_', $request['sort']);
-            $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
-        }
-
-        $workouts = Auth::user()
-            ->bookmarks()
-            ->withCount('movements')
-            ->with(['movements', 'bookmarks', 'user'])
-            ->dateBetween([
-                'from' => $request['date_from'] ?? null,
-                'to' => $request['date_to'] ?? null
-            ])
-            ->orderBy($sort[0], $sort[1])
-            ->paginate(20)
-            ->appends(request()->query());
-
-        return view('content_listings', [
-            'title' => 'Bookmarked Workouts',
-            'content' => $workouts,
-            'component' => 'workout',
-        ]);
-    }
-
     public function bookmark($id)
     {
         $workout = Workout::where('id', $id)->first();
+        if (!empty($workout->bookmarks()->where('user_id', Auth::id())->first())) {
+            return back();
+        }
+
         $workout->bookmarks()->attach(Auth::id());
 
         return back()->with('status', 'Successfully bookmarked workout');
@@ -432,6 +385,10 @@ class WorkoutController extends Controller
     public function unbookmark($id)
     {
         $workout = Workout::where('id', $id)->first();
+        if (empty($workout->bookmarks()->where('user_id', Auth::id())->first())) {
+            return back();
+        }
+
         $workout->bookmarks()->detach(Auth::id());
 
         return back()->with('status', 'Successfully removed bookmark');
@@ -466,10 +423,10 @@ class WorkoutController extends Controller
 
     public function deleteMovement($id)
     {
-        $movement = WorkoutMovement::where('id', $id)->first();
+        $workoutMovement = WorkoutMovement::where('id', $id)->first();
 
-        if ($movement->user_id === Auth::id()) {
-            $movement->delete();
+        if ($workoutMovement->user_id === Auth::id()) {
+            $workoutMovement->delete();
         }
 
         return back()->with('status', 'Successfully deleted workout movement');

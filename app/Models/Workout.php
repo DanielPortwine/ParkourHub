@@ -7,6 +7,7 @@ use App\Traits\Reportable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 use Nicolaslopezj\Searchable\SearchableTrait;
 
 class Workout extends Model
@@ -45,6 +46,22 @@ class Workout extends Model
         }
 
         return $query;
+    }
+
+    public function scopeBookmarked($query, $bookmarked = false)
+    {
+        if ($bookmarked) {
+            $query->whereHas('bookmarks', function($q) {
+                $q->where('user_id', Auth::id());
+            });
+        }
+    }
+
+    public function scopePersonal($query, $personal = false)
+    {
+        if ($personal) {
+            $query->where('user_id', Auth::id());
+        }
     }
 
     public function user()

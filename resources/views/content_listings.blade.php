@@ -139,7 +139,7 @@
             <div class="row mb-3">
                 <div class="col">
                     <div class="card">
-                        <div class="card-header bg-green sedgwick @if(empty($_GET) || (count($_GET) === 1 && isset($_GET['search'])))card-hidden-body @endif">
+                        <div class="card-header bg-green sedgwick @if(empty($_GET) || (count($_GET) === 1 && isset($_GET['search'])) || (count($_GET) === 1 && isset($_GET['personal'])))card-hidden-body @endif">
                             <div class="row">
                                 <div class="col">
                                     Filters
@@ -268,6 +268,14 @@
                                                     <option value="{{ $equipment->id }}" @if(($_GET['equipment'] ?? '') == $equipment->id)selected @endif>{{ $equipment->name }}</option>
                                                 @endforeach
                                             </select>
+                                        </div>
+                                    @elseif($component === 'workout')
+                                        <div class="col-auto pb-3">
+                                            <label><strong>Bookmarked</strong></label>
+                                            <div class="form-check text-center">
+                                                <input class="form-check-input" type="checkbox" name="bookmarked" id="bookmarked" {{ ($_GET['bookmarked'] ?? '') === 'on' ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="bookmarked"></label>
+                                            </div>
                                         </div>
                                     @endif
                                     <div class="col-auto pb-3">

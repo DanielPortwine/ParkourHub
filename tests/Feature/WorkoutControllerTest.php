@@ -11,16 +11,14 @@ use App\Models\Spot;
 use App\Models\User;
 use App\Models\Workout;
 use App\Models\WorkoutMovement;
-use App\Models\WorkoutMovementField;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 use Tests\TestCase;
 
 class WorkoutControllerTest extends TestCase
 {
-    use RefreshDatabase,
-        WithFaker;
+    use RefreshDatabase;
 
     protected $accessPremium;
     protected $premiumUser;
@@ -1007,7 +1005,7 @@ class WorkoutControllerTest extends TestCase
     }
 
     /** @test */
-    public function update_owner_premium_user_can_update_workout_with_valid_data_and_notify_premium_followers_and_bookmarkers() // failing on notifications!!
+    public function update_owner_premium_user_can_update_workout_with_valid_data_and_notify_premium_followers_and_bookmarkers_once()
     {
         $follower = User::factory()->create();
         $follower->givePermissionTo($this->accessPremium);
@@ -1057,5 +1055,679 @@ class WorkoutControllerTest extends TestCase
                 'value' => 5,
             ])
             ->assertDatabaseCount('notifications', 2);
+    }
+
+    /** @test */
+    public function update_owner_premium_user_can_not_update_workout_without_a_name()
+    {
+        $follower = User::factory()->create();
+        $follower->givePermissionTo($this->accessPremium);
+        $this->premiumUser->followers()->attach($follower->id, ['accepted' => true]);
+        setting()->set('notifications_workout_updated', 'on-site', $follower->id);
+        setting()->save($follower->id);
+        $movementType = MovementType::factory()->create();
+        $movementCategory = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create();
+        $field = MovementField::factory()->create();
+        $movement->fields()->attach($field->id);
+        $workout = Workout::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'private']);
+
+        $response = $this->actingAs($this->premiumUser)->post(route('workout_update', $workout->id), [
+            // name missing
+            'description' => 'This is an updated workout',
+            'movements' => [
+                [
+                    'movement' => $movement->id,
+                    'fields' => [
+                        $field->id => 5,
+                    ]
+                ]
+            ],
+            'visibility' => 'follower',
+        ]);
+
+        $this->assertDatabaseCount('workouts', 1)
+            ->assertDatabaseMissing('workouts', [
+                'name' => 'Updated Workout',
+                'description' => 'This is an updated workout',
+                'visibility' => 'private',
+            ])
+            ->assertDatabaseCount('workout_movements', 0)
+            ->assertDatabaseCount('workout_movement_fields', 0)
+            ->assertDatabaseCount('notifications', 0);
+    }
+
+    /** @test */
+    public function update_owner_premium_user_can_not_update_workout_with_a_long_name()
+    {
+        $movementType = MovementType::factory()->create();
+        $movementCategory = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create();
+        $field = MovementField::factory()->create();
+        $movement->fields()->attach($field->id);
+        $workout = Workout::factory()->create(['visibility' => 'private']);
+
+        $response = $this->actingAs($this->premiumUser)->post(route('workout_update', $workout->id), [
+            'name' => 'This Workout Name Is Far Too Long',
+            'description' => 'This is an updated workout',
+            'movements' => [
+                [
+                    'movement' => $movement->id,
+                    'fields' => [
+                        $field->id => 5,
+                    ]
+                ]
+            ],
+            'visibility' => 'follower',
+        ]);
+
+        $this->assertDatabaseCount('workouts', 1)
+            ->assertDatabaseMissing('workouts', [
+                'name' => 'Updated Workout',
+                'description' => 'This is an updated workout',
+                'visibility' => 'private',
+            ])
+            ->assertDatabaseCount('workout_movements', 0)
+            ->assertDatabaseCount('workout_movement_fields', 0)
+            ->assertDatabaseCount('notifications', 0);
+    }
+
+    /** @test */
+    public function update_owner_premium_user_can_not_update_workout_without_movements()
+    {
+        $workout = Workout::factory()->create(['visibility' => 'private']);
+
+        $response = $this->actingAs($this->premiumUser)->post(route('workout_update', $workout->id), [
+            'name' => 'Updated Workout',
+            'description' => 'This is an updated workout',
+            // missing movements
+            'visibility' => 'follower',
+        ]);
+
+        $this->assertDatabaseCount('workouts', 1)
+            ->assertDatabaseMissing('workouts', [
+                'name' => 'Updated Workout',
+                'description' => 'This is an updated workout',
+                'visibility' => 'private',
+            ])
+            ->assertDatabaseCount('workout_movements', 0)
+            ->assertDatabaseCount('workout_movement_fields', 0)
+            ->assertDatabaseCount('notifications', 0);
+    }
+
+    /** @test */
+    public function update_owner_premium_user_can_not_update_workout_without_movements_in_movements()
+    {
+        $movementType = MovementType::factory()->create();
+        $movementCategory = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create();
+        $field = MovementField::factory()->create();
+        $movement->fields()->attach($field->id);
+        $workout = Workout::factory()->create(['visibility' => 'private']);
+
+        $response = $this->actingAs($this->premiumUser)->post(route('workout_update', $workout->id), [
+            'name' => 'Updated Workout',
+            'description' => 'This is an updated workout',
+            'movements' => [],
+            'visibility' => 'follower',
+        ]);
+
+        $this->assertDatabaseCount('workouts', 1)
+            ->assertDatabaseMissing('workouts', [
+                'name' => 'Updated Workout',
+                'description' => 'This is an updated workout',
+                'visibility' => 'private',
+            ])
+            ->assertDatabaseCount('workout_movements', 0)
+            ->assertDatabaseCount('workout_movement_fields', 0)
+            ->assertDatabaseCount('notifications', 0);
+    }
+
+    /** @test */
+    public function update_owner_premium_user_can_not_update_workout_with_non_existent_movements()
+    {
+        $field = MovementField::factory()->create();
+        $workout = Workout::factory()->create(['visibility' => 'private']);
+
+        $response = $this->actingAs($this->premiumUser)->post(route('workout_update', $workout->id), [
+            'name' => 'Updated Workout',
+            'description' => 'This is an updated workout',
+            'movements' => [
+                [
+                    'movement' => 7584,
+                    'fields' => [
+                        $field->id => 5,
+                    ]
+                ]
+            ],
+            'visibility' => 'follower',
+        ]);
+
+        $this->assertDatabaseCount('workouts', 1)
+            ->assertDatabaseMissing('workouts', [
+                'name' => 'Updated Workout',
+                'description' => 'This is an updated workout',
+                'visibility' => 'private',
+            ])
+            ->assertDatabaseCount('workout_movements', 0)
+            ->assertDatabaseCount('workout_movement_fields', 0)
+            ->assertDatabaseCount('notifications', 0);
+    }
+
+    /** @test */
+    public function update_owner_premium_user_can_not_update_workout_without_movement_fields()
+    {
+        $movementType = MovementType::factory()->create();
+        $movementCategory = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create();
+        $field = MovementField::factory()->create();
+        $movement->fields()->attach($field->id);
+        $workout = Workout::factory()->create(['visibility' => 'private']);
+
+        $response = $this->actingAs($this->premiumUser)->post(route('workout_update', $workout->id), [
+            'name' => 'Updated Workout',
+            'description' => 'This is an updated workout',
+            'movements' => [
+                [
+                    'movement' => $movement->id,
+                    // missing fields
+                ]
+            ],
+            'visibility' => 'follower',
+        ]);
+
+        $this->assertDatabaseCount('workouts', 1)
+            ->assertDatabaseMissing('workouts', [
+                'name' => 'Updated Workout',
+                'description' => 'This is an updated workout',
+                'visibility' => 'private',
+            ])
+            ->assertDatabaseCount('workout_movements', 0)
+            ->assertDatabaseCount('workout_movement_fields', 0)
+            ->assertDatabaseCount('notifications', 0);
+    }
+
+    /** @test */
+    public function update_owner_premium_user_can_not_update_workout_without_visibility()
+    {
+        $movementType = MovementType::factory()->create();
+        $movementCategory = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create();
+        $field = MovementField::factory()->create();
+        $movement->fields()->attach($field->id);
+        $workout = Workout::factory()->create(['visibility' => 'private']);
+
+        $response = $this->actingAs($this->premiumUser)->post(route('workout_update', $workout->id), [
+            'name' => 'Updated Workout',
+            'description' => 'This is an updated workout',
+            'movements' => [
+                [
+                    'movement' => $movement->id,
+                    'fields' => [
+                        $field->id => 5,
+                    ]
+                ]
+            ],
+            // missing visibility
+        ]);
+
+        $this->assertDatabaseCount('workouts', 1)
+            ->assertDatabaseMissing('workouts', [
+                'name' => 'Updated Workout',
+                'description' => 'This is an updated workout',
+                'visibility' => 'private',
+            ])
+            ->assertDatabaseCount('workout_movements', 0)
+            ->assertDatabaseCount('workout_movement_fields', 0)
+            ->assertDatabaseCount('notifications', 0);
+    }
+
+    /** @test */
+    public function update_owner_premium_user_can_delete_workout_and_redirect()
+    {
+        $movementType = MovementType::factory()->create();
+        $movementCategory = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create();
+        $field = MovementField::factory()->create();
+        $movement->fields()->attach($field->id);
+        $workout = Workout::factory()->create(['visibility' => 'private']);
+
+        $response = $this->actingAs($this->premiumUser)->post(route('workout_update', $workout->id), [
+            'name' => $workout->name,
+            'description' => $workout->description,
+            'movements' => [
+                [
+                    'movement' => $movement->id,
+                    'fields' => [
+                        $field->id => 5,
+                    ]
+                ]
+            ],
+            'visibility' => 'follower',
+            'delete' => true,
+            'redirect' => route('workout_view', $workout->id),
+        ]);
+
+        $this->assertDatabaseCount('workouts', 1)
+            ->assertDatabaseMissing('workouts', [
+                'name' => 'Updated Workout',
+                'description' => 'This is an updated workout',
+                'visibility' => 'private',
+            ])
+            ->assertSoftDeleted($workout)
+            ->assertDatabaseCount('workout_movements', 0)
+            ->assertDatabaseCount('workout_movement_fields', 0)
+            ->assertDatabaseCount('notifications', 0);
+    }
+
+    /** @test */
+    public function delete_non_logged_in_user_redirects_to_login()
+    {
+        $response = $this->get(route('workout_delete', 1));
+
+        $response->assertRedirect('/email/verify');
+    }
+
+    /** @test */
+    public function delete_non_premium_user_redirects_to_premium()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->get(route('workout_delete', 1));
+
+        $response->assertRedirect('/premium');
+    }
+
+    /** @test */
+    public function delete_random_premium_user_redirects_to_view()
+    {
+        $user = User::factory()->create();
+        $workout = Workout::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('workout_delete', $workout->id));
+
+        $response->assertRedirect(route('workout_view', $workout->id));
+    }
+
+    /** @test */
+    public function delete_owner_premium_user_can_delete_workout()
+    {
+        $workout = Workout::factory()->create();
+
+        $response = $this->actingAs($this->premiumUser)->get(route('workout_delete', $workout->id));
+
+        $this->assertDatabaseCount('workouts', 1)
+            ->assertSoftDeleted($workout);
+    }
+
+    /** @test */
+    public function recover_non_logged_in_user_redirects_to_login()
+    {
+        $response = $this->get(route('workout_recover', 1));
+
+        $response->assertRedirect('/email/verify');
+    }
+
+    /** @test */
+    public function recover_non_premium_user_redirects_to_premium()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->get(route('workout_recover', 1));
+
+        $response->assertRedirect('/premium');
+    }
+
+    /** @test */
+    public function recover_random_premium_user_can_not_recover_workout()
+    {
+        $user = User::factory()->create();
+        $workout = Workout::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+        $workout->delete();
+
+        $response = $this->actingAs($this->premiumUser)->get(route('workout_recover', $workout->id));
+
+        $this->assertDatabaseCount('workouts', 1)
+            ->assertSoftDeleted($workout);
+    }
+
+    /** @test */
+    public function recover_owner_premium_user_can_recover_workout()
+    {
+        $workout = Workout::factory()->create();
+        $workout->delete();
+
+        $response = $this->actingAs($this->premiumUser)->get(route('workout_recover', $workout->id));
+
+        $this->assertDatabaseCount('workouts', 1)
+            ->assertDatabaseHas('workouts', [
+                'name' => $workout->name,
+                'deleted_at' => null,
+            ]);
+    }
+
+    /** @test */
+    public function remove_non_logged_in_user_redirects_to_login()
+    {
+        $response = $this->get(route('workout_remove', 1));
+
+        $response->assertRedirect('/email/verify');
+    }
+
+    /** @test */
+    public function remove_non_premium_user_redirects_to_premium()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->get(route('workout_remove', 1));
+
+        $response->assertRedirect('/premium');
+    }
+
+    /** @test */
+    public function remove_random_premium_user_can_not_remove_workout()
+    {
+        $user = User::factory()->create();
+        $workout = Workout::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('workout_remove', $workout->id));
+
+        $this->assertDatabaseCount('workouts', 1)
+            ->assertDatabaseHas('workouts', [
+                'name' => $workout->name,
+            ]);
+    }
+
+    /** @test */
+    public function remove_owner_premium_user_can_remove_workout()
+    {
+        $workout = Workout::factory()->create();
+
+        $response = $this->actingAs($this->premiumUser)->get(route('workout_remove', $workout->id));
+
+        $this->assertDatabaseCount('workouts', 0);
+    }
+
+    /** @test */
+    public function remove_random_premium_user_with_remove_content_permission_can_remove_workout()
+    {
+        $user = User::factory()->create();
+        $removeContent = Permission::create(['name' => 'remove content']);
+        $this->premiumUser->givePermissionTo($removeContent);
+        $workout = Workout::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('workout_remove', $workout->id));
+
+        $this->assertDatabaseCount('workouts', 0);
+    }
+
+    /** @test */
+    public function report_non_logged_in_user_redirects_to_login()
+    {
+        $response = $this->get(route('workout_report', 1));
+
+        $response->assertRedirect('/email/verify');
+    }
+
+    /** @test */
+    public function report_non_premium_user_redirects_to_premium()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->get(route('workout_report', 1));
+
+        $response->assertRedirect('/premium');
+    }
+
+    /** @test */
+    public function report_random_premium_user_can_report_visible_workout()
+    {
+        $user = User::factory()->create();
+        $workout = Workout::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('workout_report', $workout->id));
+
+        $this->assertDatabaseCount('reports', 1)
+            ->assertDatabaseHas('reports', [
+                'reportable_id' => $workout->id,
+                'reportable_type' => Workout::class,
+                'user_id' => $this->premiumUser->id,
+            ]);
+    }
+
+    /** @test */
+    public function report_random_premium_user_can_not_report_invisible_workout()
+    {
+        $user = User::factory()->create();
+        $workout = Workout::factory()->create(['user_id' => $user->id, 'visibility' => 'private']);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('workout_report', $workout->id));
+
+        $this->assertDatabaseCount('reports', 0);
+    }
+
+    /** @test */
+    public function discard_report_non_logged_in_user_redirects_to_login()
+    {
+        $workout = Workout::factory()->create();
+
+        $response = $this->get(route('workout_report_discard', $workout->id));
+
+        $response->assertRedirect('/email/verify');
+    }
+
+    /** @test */
+    public function discard_report_non_premium_user_redirects_to_premium()
+    {
+        $user = User::factory()->create();
+        $workout = Workout::factory()->create();
+
+        $response = $this->actingAs($user)->get(route('workout_report_discard', $workout->id));
+
+        $response->assertRedirect('/premium');
+    }
+
+    /** @test */
+    public function discard_reports_random_premium_user_can_not_discard_workout_reports()
+    {
+        $user = User::factory()->create();
+        $workout = Workout::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+        DB::insert('INSERT INTO reports (reportable_id, reportable_type, user_id) VALUES (?, ?, ?)', [$workout->id, Workout::class, $this->premiumUser->id]);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('workout_report_discard', $workout->id));
+
+        $this->assertDatabaseCount('reports', 1)
+            ->assertDatabaseHas('reports', [
+                'reportable_id' => $workout->id,
+                'reportable_type' => Workout::class,
+                'user_id' => $this->premiumUser->id,
+            ]);
+    }
+
+    /** @test */
+    public function discard_reports_owner_premium_user_can_not_discard_workout_reports()
+    {
+        $workout = Workout::factory()->create();
+        DB::insert('INSERT INTO reports (reportable_id, reportable_type, user_id) VALUES (?, ?, ?)', [$workout->id, Workout::class, $this->premiumUser->id]);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('workout_report_discard', $workout->id));
+
+        $this->assertDatabaseCount('reports', 1)
+            ->assertDatabaseHas('reports', [
+                'reportable_id' => $workout->id,
+                'reportable_type' => Workout::class,
+                'user_id' => $this->premiumUser->id,
+            ]);
+    }
+
+    /** @test */
+    public function discard_reports_random_premium_user_with_manage_reports_permission_can_discard_workout_reports()
+    {
+        $user = User::factory()->create();
+        $manageReports = Permission::create(['name' => 'manage reports']);
+        $this->premiumUser->givePermissionTo($manageReports);
+        $workout = Workout::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+        DB::insert('INSERT INTO reports (reportable_id, reportable_type, user_id) VALUES (?, ?, ?)', [$workout->id, Workout::class, $user->id]);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('workout_report_discard', $workout->id));
+
+        $this->assertDatabaseCount('reports', 0);
+    }
+
+    /** @test */
+    public function bookmark_non_logged_in_user_redirects_to_login()
+    {
+        $response = $this->get(route('workout_bookmark', 1));
+
+        $response->assertRedirect('/email/verify');
+    }
+
+    /** @test */
+    public function bookmark_non_premium_user_redirects_to_premium()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->get(route('workout_bookmark', 1));
+
+        $response->assertRedirect('/premium');
+    }
+
+    /** @test */
+    public function bookmark_random_premium_user_can_bookmark_visible_workout()
+    {
+        $user = User::factory()->create();
+        $workout = Workout::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('workout_bookmark', $workout->id));
+
+        $this->assertDatabaseCount('workout_bookmarks', 1)
+            ->assertDatabaseHas('workout_bookmarks', [
+                'user_id' => $this->premiumUser->id,
+                'workout_id' => $workout->id,
+            ]);
+    }
+
+    /** @test */
+    public function bookmark_random_premium_user_can_bookmark_visible_workout_once()
+    {
+        $user = User::factory()->create();
+        $workout = Workout::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+        $workout->bookmarks()->attach($this->premiumUser->id);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('workout_bookmark', $workout->id));
+
+        $this->assertDatabaseCount('workout_bookmarks', 1)
+            ->assertDatabaseHas('workout_bookmarks', [
+                'user_id' => $this->premiumUser->id,
+                'workout_id' => $workout->id,
+            ]);
+    }
+
+    /** @test */
+    public function bookmark_random_premium_user_can_not_bookmark_invisible_workout()
+    {
+        $user = User::factory()->create();
+        $workout = Workout::factory()->create(['user_id' => $user->id, 'visibility' => 'private']);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('workout_bookmark', $workout->id));
+
+        $this->assertDatabaseCount('workout_bookmarks', 0);
+    }
+
+    /** @test */
+    public function unbookmark_non_logged_in_user_redirects_to_login()
+    {
+        $response = $this->get(route('workout_unbookmark', 1));
+
+        $response->assertRedirect('/email/verify');
+    }
+
+    /** @test */
+    public function unbookmark_non_premium_user_redirects_to_premium()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->get(route('workout_unbookmark', 1));
+
+        $response->assertRedirect('/premium');
+    }
+
+    /** @test */
+    public function unbookmark_random_premium_user_can_unbookmark_visible_workout()
+    {
+        $user = User::factory()->create();
+        $workout = Workout::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+        $workout->bookmarks()->attach($this->premiumUser->id);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('workout_unbookmark', $workout->id));
+
+        $this->assertDatabaseCount('workout_bookmarks', 0);
+    }
+
+    /** @test */
+    public function unbookmark_random_premium_user_can_not_unbookmark_invisible_workout()
+    {
+        $user = User::factory()->create();
+        $workout = Workout::factory()->create(['user_id' => $user->id, 'visibility' => 'private']);
+        $workout->bookmarks()->attach($this->premiumUser->id);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('workout_unbookmark', $workout->id));
+
+        $this->assertDatabaseCount('workout_bookmarks', 1)
+            ->assertDatabaseHas('workout_bookmarks', [
+                'user_id' => $this->premiumUser->id,
+                'workout_id' => $workout->id,
+            ]);
+    }
+
+    /** @test */
+    public function delete_movement_non_logged_in_user_redirects_to_login()
+    {
+        $response = $this->get(route('workout_movement_delete', 1));
+
+        $response->assertRedirect('/email/verify');
+    }
+
+    /** @test */
+    public function delete_movement_non_premium_user_redirects_to_premium()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->get(route('workout_movement_delete', 1));
+
+        $response->assertRedirect('/premium');
+    }
+
+    /** @test */
+    public function delete_movement_random_premium_user_can_not_delete_workout_movement()
+    {
+        $user = User::factory()->create();
+        $movementType = MovementType::factory()->create();
+        $movementCategory = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create();
+        $workout = Workout::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+        $workoutMovement = WorkoutMovement::factory()->create(['user_id' => $user->id]);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('workout_movement_delete', $workout->movements()->first()->id));
+
+        $this->assertDatabaseCount('workout_movements', 1)
+            ->assertDatabaseHas('workout_movements', [
+                'workout_id' => $workout->id,
+                'movement_id' => $movement->id,
+            ]);
+    }
+
+    /** @test */
+    public function delete_movement_owner_premium_user_can_delete_workout_movement()
+    {
+        $movementType = MovementType::factory()->create();
+        $movementCategory = MovementCategory::factory()->create();
+        $movement = Movement::factory()->create();
+        $workout = Workout::factory()->create();
+        $workoutMovement = WorkoutMovement::factory()->create();
+
+        $response = $this->actingAs($this->premiumUser)->get(route('workout_movement_delete', $workout->movements()->first()->id));
+
+        $this->assertDatabaseCount('workout_movements', 0);
     }
 }

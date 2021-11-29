@@ -143,9 +143,9 @@
                                     @premium
                                         <a class="dropdown-item text-white dropdown-toggle" id="workouts-nav-item"><i class="fa fa-running nav-icon"></i>Training <span class="caret"></span></a>
                                         <div id="workouts-nav-items">
-                                            <a class="dropdown-item text-white" href="{{ route('workout_listing_user') }}"><i class="fa fa-running nav-icon nav-spacer"></i>Workouts</a>
+                                            <a class="dropdown-item text-white" href="{{ route('workout_listing', ['personal' => 'on']) }}"><i class="fa fa-running nav-icon nav-spacer"></i>Workouts</a>
                                             <a class="dropdown-item text-white" href="{{ route('workout_plan') }}"><i class="fa fa-calendar nav-icon nav-spacer"></i>Workout Plan</a>
-                                            <a class="dropdown-item text-white" href="{{ route('workout_bookmark_listing') }}"><i class="fa fa-bookmark nav-icon nav-spacer"></i>Bookmarked Workouts</a>
+                                            <a class="dropdown-item text-white" href="{{ route('workout_listing', ['bookmarked' => 'on']) }}"><i class="fa fa-bookmark nav-icon nav-spacer"></i>Bookmarked Workouts</a>
                                             <a class="dropdown-item text-white" href="{{ route('recorded_workout_listing') }}"><i class="fa fa-calendar-check-o nav-icon nav-spacer"></i>Recorded Workouts</a>
                                         </div>
                                     @endpremium
