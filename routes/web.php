@@ -184,7 +184,7 @@ Route::prefix('workouts')->middleware(['verified', 'isPremium'])->group(function
     });
     Route::prefix('plan')->group(function() {
         Route::get('/', 'WorkoutPlanController@index')->name('workout_plan');
-        Route::post('/', 'WorkoutPlanController@addWorkout')->name('add_workout_to_plan');
+        Route::post('/', 'WorkoutPlanController@addWorkout')->name('workout_plan_add_workout');
         Route::get('/remove_workout/{id}', 'WorkoutPlanController@removeWorkout')->name('workout_plan_remove_workout');
     });
 });
