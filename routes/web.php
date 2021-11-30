@@ -189,11 +189,6 @@ Route::prefix('workouts')->middleware(['verified', 'isPremium'])->group(function
     });
 });
 
-Route::prefix('hometown')->middleware('verified')->group(function() {
-    Route::get('/spots', 'HometownController@spots')->name('hometown_spots');
-    Route::get('/challenges', 'HometownController@challenges')->name('hometown_challenges');
-});
-
 Route::prefix('admin')->middleware('verified')->group(function() {
     Route::get('/reports/{type?}', 'ReportController@index')->name('report_listing');
 });

@@ -109,6 +109,15 @@ class Spot extends Model
         }
     }
 
+    public function scopeHometown($query, $hometown = false)
+    {
+        $boundaries = explode(',', Auth::user()->hometown_bounding);
+        if ($hometown && count($boundaries) === 4) {
+            $query->whereBetween('latitude', [$boundaries[0], $boundaries[1]])
+                ->whereBetween('longitude', [$boundaries[2], $boundaries[3]]);
+        }
+    }
+
     public function user()
     {
         return $this->belongsTo('App\Models\User');

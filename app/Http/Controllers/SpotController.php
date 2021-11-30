@@ -46,6 +46,7 @@ class SpotController extends Controller
             ->with(['reviews', 'reports', 'hits', 'user'])
             ->hitlist(!empty($request['on_hitlist']) ? true : false)
             ->ticked(!empty($request['ticked_hitlist']) ? true : false)
+            ->hometown(!empty($request['in_hometown']) ? true : false)
             ->rating($request['rating'] ?? null)
             ->dateBetween([
                 'from' => $request['date_from'] ?? null,

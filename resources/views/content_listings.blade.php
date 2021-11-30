@@ -200,6 +200,15 @@
                                                     <label class="form-check-label" for="ticked-hitlist"></label>
                                                 </div>
                                             </div>
+                                            @if(!empty(Auth()->user()->hometown_bounding))
+                                                <div class="col-auto pb-3">
+                                                    <label><strong>In Hometown</strong></label>
+                                                    <div class="form-check text-center">
+                                                        <input class="form-check-input" type="checkbox" name="in_hometown" id="in_hometown" {{ !empty($_GET['in_hometown']) ? 'checked' : '' }}>
+                                                        <label class="form-check-label" for="in_hometown"></label>
+                                                    </div>
+                                                </div>
+                                            @endif
                                         @endauth
                                     @elseif($component === 'challenge')
                                         @auth
@@ -210,6 +219,15 @@
                                                     <label class="form-check-label" for="entered"></label>
                                                 </div>
                                             </div>
+                                            @if(!empty(Auth()->user()->hometown_bounding))
+                                                <div class="col-auto pb-3">
+                                                    <label><strong>In Hometown</strong></label>
+                                                    <div class="form-check text-center">
+                                                        <input class="form-check-input" type="checkbox" name="in_hometown" id="in_hometown" {{ !empty($_GET['in_hometown']) ? 'checked' : '' }}>
+                                                        <label class="form-check-label" for="in_hometown"></label>
+                                                    </div>
+                                                </div>
+                                            @endif
                                         @endauth
                                         <div class="col-auto pb-3">
                                             <label><strong>Difficulty</strong></label>

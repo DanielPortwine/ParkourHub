@@ -152,8 +152,8 @@
                                     @if(!empty(Auth::user()->hometown_name))
                                         <a class="dropdown-item text-white dropdown-toggle" id="hometown-nav-item"><i class="fa fa-street-view nav-icon"></i>Hometown <span class="caret"></span></a>
                                         <div id="hometown-nav-items">
-                                            <a class="dropdown-item text-white" href="{{ route('hometown_spots') }}"><i class="fa fa-map-marker nav-icon nav-spacer"></i>Spots</a>
-                                            <a class="dropdown-item text-white" href="{{ route('hometown_challenges') }}"><i class="fa fa-bullseye nav-icon nav-spacer"></i>Challenges</a>
+                                            <a class="dropdown-item text-white" href="{{ route('spot_listing', ['in_hometown' => 'on']) }}"><i class="fa fa-map-marker nav-icon nav-spacer"></i>Spots</a>
+                                            <a class="dropdown-item text-white" href="{{ route('challenge_listing', ['in_hometown' => 'on']) }}"><i class="fa fa-bullseye nav-icon nav-spacer"></i>Challenges</a>
                                         </div>
                                     @endif
                                     @can('manage reports')

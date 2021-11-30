@@ -84,6 +84,17 @@ class Challenge extends Model
         return $query;
     }
 
+    public function scopeHometown($query, $hometown = false)
+    {
+        $boundaries = explode(',', Auth::user()->hometown_bounding);
+        if ($hometown && count($boundaries) === 4) {
+            $query->whereHas('spot', function ($q) use ($boundaries) {
+                return $q->whereBetween('latitude', [$boundaries[0], $boundaries[1]])
+                    ->whereBetween('longitude', [$boundaries[2], $boundaries[3]]);
+            });
+        }
+    }
+
     public function entries()
     {
         return $this->hasMany('App\Models\ChallengeEntry');

@@ -40,6 +40,7 @@ class ChallengeController extends Controller
             ->whereHas('spot')
             ->entered(!empty($request['entered']) ? true : false)
             ->difficulty($request['difficulty'] ?? null)
+            ->hometown(!empty($request['in_hometown']) ? true : false)
             ->dateBetween([
                 'from' => $request['date_from'] ?? null,
                 'to' => $request['date_to'] ?? null
