@@ -67,6 +67,7 @@ class ReportController extends Controller
                     ->orderBy($sort[0], $sort[1])
                     ->paginate(20)
                     ->appends(request()->query());
+                $title = 'Entries';
                 break;
             case 'review':
                 $content = Review::withoutGlobalScope(VisibilityScope::class)
@@ -162,7 +163,7 @@ class ReportController extends Controller
         }
 
         return view('content_listings', [
-            'title' => 'Reported ' . ucfirst(str_replace('_', ' ', $type)) . 's',
+            'title' => 'Reported ' . $title ?? ucfirst(str_replace('_', ' ', $type)) . 's',
             'content' => $content,
             'component' => $type,
             'movementCategories' => $movementCategories ?? null,
