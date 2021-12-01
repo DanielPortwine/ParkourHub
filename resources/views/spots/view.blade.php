@@ -62,6 +62,11 @@
                                 <a class="btn text-white add-to-hitlist-button @if(!empty($hit))d-none @endif" id="hitlist-spot-{{ $spot->id }}-tick" title="Add To Hitlist"><i class="fa fa-crosshairs"></i></a>
                                 <a class="btn text-white remove-from-hitlist-button @if(empty($hit))d-none @endif" id="hitlist-spot-{{ $spot->id }}-remove" title="Remove From Hitlist"><i class="fa fa-times"></i></a>
                             @endauth
+                            @if(!in_array(Auth()->id(), $localsIDs))
+                                <a class="btn text-white" href="{{ route('spot_become_local', $spot->id) }}" title="Become a Local"><i class="fa fa-house-user"></i></a>
+                            @else
+                                <a class="btn text-white" href="{{ route('spot_abandon_local', $spot->id) }}" title="Abandon Being a Local"><i class="fa fa-house-damage"></i></a>
+                            @endif
                             <a class="btn text-white" href="{{ route('spots', ['spot' => $spot->id]) }}" title="Locate"><i class="fa fa-map-marker"></i></a>
                         @elseif($spot->user_id === Auth()->id())
                             <a class="btn text-white" href="{{ route('spot_recover', $spot->id) }}" title="Recover"><i class="fa fa-history"></i></a>
@@ -287,6 +292,9 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link btn-link @if($tab === 'challenges')active @endif" href="{{ route('spot_view', ['id' => $spot->id, 'tab' => 'challenges']) }}">Challenges</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn-link @if($tab === 'locals')active @endif" href="{{ route('spot_view', ['id' => $spot->id, 'tab' => 'locals']) }}">Locals</a>
                         </li>
                         @premium
                             <li class="nav-item">
@@ -662,6 +670,27 @@
                                     <a class="btn btn-green w-75" href="{{ route('spot_view', $spot->id) }}">Less</a>
                                 @endif
                             </div>
+                        @endif
+                    </div>
+                @elseif($tab === 'locals')
+                    <div class="card-body bg-black">
+                        @if(!empty($request['locals']))
+                            {{ $locals->links() }}
+                        @endif
+                        @foreach($locals->chunk(2) as $chunk)
+                            <div class="row">
+                                @foreach($chunk as $user)
+                                    <div class="col-md-6 mb-4">
+                                        @include('components.user')
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endforeach
+                        @if(!empty($request['locals']))
+                            {{ $locals->links() }}
+                        @endif
+                        @if (count($spot->locals) === 0)
+                            <p class="mb-0">This spot has no locals yet.</p>
                         @endif
                     </div>
                 @elseif($tab === 'workouts')

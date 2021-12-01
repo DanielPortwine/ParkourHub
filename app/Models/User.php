@@ -89,6 +89,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany('App\Models\Hit');
     }
 
+    public function localSpots()
+    {
+        return $this->belongsToMany('App\Models\Spot', 'spots_locals');
+    }
+
     public function reviews()
     {
         return $this->hasMany('App\Models\Review');

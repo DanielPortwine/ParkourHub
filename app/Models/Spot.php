@@ -111,8 +111,7 @@ class Spot extends Model
 
     public function scopeHometown($query, $hometown = false)
     {
-        $boundaries = explode(',', Auth::user()->hometown_bounding);
-        if ($hometown && count($boundaries) === 4) {
+        if ($hometown && Auth::check() && count($boundaries = explode(',', Auth::user()->hometown_bounding)) === 4) {
             $query->whereBetween('latitude', [$boundaries[0], $boundaries[1]])
                 ->whereBetween('longitude', [$boundaries[2], $boundaries[3]]);
         }
@@ -126,6 +125,11 @@ class Spot extends Model
     public function hits()
     {
         return $this->hasMany('App\Models\Hit');
+    }
+
+    public function locals()
+    {
+        return $this->belongsToMany('App\Models\User', 'spots_locals');
     }
 
     public function reviews()

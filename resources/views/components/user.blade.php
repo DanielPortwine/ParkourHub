@@ -15,9 +15,9 @@
                         <a class="btn text-white" href="{{ route('user_manage') }}" title="Manage"><i class="fa fa-pencil"></i></a>
                     @else
                         @php
-                            $followSetting = setting('privacy_follow', 'nobody', Auth()->id());
-                            $followRequests = Auth()->user()->followers()->where('accepted', false)->pluck('follower_id')->toArray();
-                            $followers = Auth()->user()->followers()->where('accepted', true)->pluck('follower_id')->toArray();
+                            $followSetting = Auth()->check() ? setting('privacy_follow', 'nobody', Auth()->id()) : 'nobody';
+                            $followRequests = Auth()->check() ? Auth()->user()->followers()->where('accepted', false)->pluck('follower_id')->toArray() : [];
+                            $followers = Auth()->check() ? Auth()->user()->followers()->where('accepted', true)->pluck('follower_id')->toArray() : [];
                         @endphp
                         @if(in_array($user->id, $followRequests))
                             <a class="accept-follower-button btn text-white" href="{{ route('user_accept_follower', $user->id) }}" title="Accept Follower"><i class="fa fa-check"></i></a>

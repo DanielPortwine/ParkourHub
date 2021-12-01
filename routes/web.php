@@ -69,6 +69,8 @@ Route::prefix('spots')->middleware('verified')->group(function() {
     Route::get('/add_to_hitlist/{id}', 'SpotController@addToHitlist')->name('add_to_hitlist');
     Route::get('/remove_from_hitlist/{id}', 'SpotController@removeFromHitlist')->name('remove_from_hitlist');
     Route::get('/tick_off_hitlist/{id}', 'SpotController@tickOffHitlist')->name('tick_off_hitlist');
+    Route::get('/become_local/{id}', 'SpotController@becomeLocal')->name('spot_become_local');
+    Route::get('/abandon_local/{id}', 'SpotController@abandonLocal')->name('spot_abandon_local');
     Route::get('/report/{id}', 'SpotController@report')->name('spot_report');
     Route::get('/discard_reports/{any_spot}', 'SpotController@discardReports')->name('spot_report_discard');
     Route::post('/add_movement/{spot}', 'SpotController@addMovement')->name('spot_add_movement');

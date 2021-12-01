@@ -648,6 +648,28 @@ class SpotControllerTest extends TestCase
     }
 
     /** @test */
+    public function view_premium_user_can_view_spot_locals_ids()
+    {
+        $spot = Spot::factory()->create(['visibility' => 'public']);
+        $local = User::factory()->create();
+        $spot->locals()->attach($local->id);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('spot_view', $spot->id));
+
+        $response->assertOk()
+            ->assertViewIs('spots.view')
+            ->assertViewHas('spot', function ($viewSpot) use ($spot) {
+                $this->assertSame($spot->id, $viewSpot->id);
+                return true;
+            })
+            ->assertViewHas('localsIDs', function ($viewLocalsIDs) use ($local) {
+                $this->assertCount(1, $viewLocalsIDs);
+                $this->assertSame($local->id, $viewLocalsIDs[0]);
+                return true;
+            });
+    }
+
+    /** @test */
     public function view_non_logged_in_user_can_view_spot_unlinked_linkable_movements()
     {
         $spot = Spot::factory()->create(['visibility' => 'public']);
@@ -933,6 +955,27 @@ class SpotControllerTest extends TestCase
             })
             ->assertViewHas('challenges', function ($viewChallenges) {
                 $this->assertCount(1, $viewChallenges);
+                return true;
+            });
+    }
+
+    /** @test */
+    public function view_non_logged_in_user_can_view_paginated_spot_locals()
+    {
+        $spot = Spot::factory()->create(['visibility' => 'public']);
+        $locals = User::factory()->times(41)->create();
+        $spot->locals()->attach($locals);
+
+        $response = $this->get(route('spot_view', [$spot->id, 'tab' => 'locals', 'page' => 2]));
+
+        $response->assertOk()
+            ->assertViewIs('spots.view')
+            ->assertViewHas('spot', function ($viewSpot) use ($spot) {
+                $this->assertSame($spot->id, $viewSpot->id);
+                return true;
+            })
+            ->assertViewHas('locals', function ($viewLocals) {
+                $this->assertCount(1, $viewLocals);
                 return true;
             });
     }

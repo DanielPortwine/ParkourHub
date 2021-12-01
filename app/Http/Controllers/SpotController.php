@@ -104,10 +104,7 @@ class SpotController extends Controller
                 'map' => true,
             ])->render();
         }
-        $reviews = null;
-        $comments = null;
-        $challenges = null;
-        $workouts = null;
+        $reviews = $comments = $challenges = $locals = $workouts = null;
         if (!empty($request['reviews']) && ($tab == null || $tab === 'reviews')) {
             $reviews = $spot->reviews()
                 ->with(['reports', 'user'])
@@ -150,6 +147,11 @@ class SpotController extends Controller
                 ->limit(4)
                 ->get();
         }
+        if ($tab === 'locals') {
+            $locals = $spot->locals()
+                ->orderByDesc('name')
+                ->paginate(40);
+        }
         if (!empty($request['workouts']) && $tab === 'workouts') {
             $workouts = $spot->workouts()
                 ->withCount('movements')
@@ -177,6 +179,8 @@ class SpotController extends Controller
             $hit = $spot->hits()->where('user_id', Auth::id())->first();
         }
 
+        $localsIDs = $spot->locals()->pluck('id')->toArray();
+
         $linkableMovements = Movement::with(['type'])
             ->whereHas('type', function($q) {
                 return $q->where('name', 'Move');
@@ -202,6 +206,8 @@ class SpotController extends Controller
         return view('spots.view', [
             'spot' => $spot,
             'request' => $request,
+            'localsIDs' => $localsIDs,
+            'locals' => $locals,
             'reviews' => $reviews,
             'comments' => $comments,
             'challenges' => $challenges,
@@ -379,6 +385,24 @@ class SpotController extends Controller
         $hit->save();
 
         return false;
+    }
+
+    public function becomeLocal($id)
+    {
+        $spot = Spot::where('id', $id)->first();
+
+        $spot->locals()->attach(Auth::id());
+
+        return back();
+    }
+
+    public function abandonLocal($id)
+    {
+        $spot = Spot::where('id', $id)->first();
+
+        $spot->locals()->detach(Auth::id());
+
+        return back();
     }
 
     public function report($id)

@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
         $this->call(ReviewSeeder::class);
         $this->call(SpotCommentSeeder::class);
         $this->call(HitSeeder::class);
+        $this->call(SpotLocalSeeder::class);
         $this->call(ChallengeSeeder::class);
         $this->call(ChallengeViewSeeder::class);
         $this->call(ChallengeEntrySeeder::class);
