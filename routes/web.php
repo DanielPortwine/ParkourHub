@@ -29,7 +29,7 @@ Route::post('/subscribe', 'UserController@subscribe')->name('user_subscribe');
 
 Route::get('users', 'UserController@listing')->middleware('verified')->name('user_listing');
 Route::prefix('user')->middleware('verified')->group(function() {
-    Route::get('/view/{id}/{tab?}', 'UserController@view')->name('user_view');
+    Route::get('/view/{id}/{tab?}', 'UserController@view')->withoutMiddleware('verified')->name('user_view');
     Route::get('/manage', 'UserController@manage')->withoutMiddleware('verified')->middleware('auth')->name('user_manage');
     Route::post('/manage', 'UserController@update')->withoutMiddleware('verified')->middleware('auth')->name('user_update');
     Route::get('/reset_password', 'UserController@resetPassword')->withoutMiddleware('verified')->middleware('auth')->name('user_reset_password');

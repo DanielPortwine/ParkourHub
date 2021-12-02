@@ -3,6 +3,8 @@
 @push('title'){{ $challenge->name }} - Challenge | @endpush
 
 @section('description')View the '{{ $challenge->name }}' parkour challenge on Parkour Hub.@endsection
+@section('twitter-card-type'){{ 'summary_large_image' }}@endsection
+@section('meta-media-content'){{ url($challenge->thumbnail) }}@endsection
 
 @section('content')
     @if (session('status'))

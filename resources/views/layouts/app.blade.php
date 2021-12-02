@@ -4,6 +4,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="@yield('description', 'Parkour Hub is a place for people to share their spots, challenges, moves and more. There is also a premium membership that boasts a full training system to help users develop their skills and achieve their goals.')">
+    <meta name="twitter:card" content="@yield('twitter-card-type', 'summary')">
+    <meta property="og:site-name" content="Parkour Hub">
+    <meta property="og:title" content="@stack('title'){{ config('app.name') }}">
+    <meta property="og:description" content="@yield('description', 'Parkour Hub is a place for people to share their spots, challenges, moves and more.')">
+    <meta property="og:url" content="{{ Request()->url() }}">
+    <meta property="og:@yield('meta-media-type', 'image')" content="@yield('meta-media-content', url('/favicon.png'))">
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">

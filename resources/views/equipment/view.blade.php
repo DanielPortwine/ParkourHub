@@ -3,6 +3,8 @@
 @push('title'){{ $equipment->name }} - Equipment | @endpush
 
 @section('description')View the '{{ $equipment->name }}' workout equipment on Parkour Hub.@endsection
+@section('twitter-card-type'){{ 'summary_large_image' }}@endsection
+@section('meta-media-content'){{ url($equipment->image) }}@endsection
 
 @section('content')
     @if (session('status'))

@@ -2,7 +2,9 @@
 
 @push('title'){{ $spot->name }} - Spot | @endpush
 
-@section('description')All parkour spots on Parkour Hub.@endsection
+@section('description')View spot '{{ $spot->name }}' on Parkour Hub.@endsection
+@section('twitter-card-type'){{ 'summary_large_image' }}@endsection
+@section('meta-media-content'){{ url($spot->image) }}@endsection
 
 @section('content')
     @if (session('status'))
