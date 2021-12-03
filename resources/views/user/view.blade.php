@@ -20,6 +20,16 @@
             @if(!empty($user->cover_image))
                 <img src="{{ $user->cover_image }}" alt="Cover image of the user named {{ $user->name }}.">
             @endif
+            @if(!empty($user->instagram) || !empty($user->youtube))
+                <div class="bottom-right z-10 px-2 py-1 large-text" style="background:rgba(0, 0, 0, 0.1)">
+                    @if(!empty($user->instagram))
+                        <a href="https://www.instagram.com/{{ $user->instagram }}" target="_blank" title="Instagram"><i class="fa fa-instagram text-instagram mx-1"></i></a>
+                    @endif
+                    @if(!empty($user->youtube))
+                        <a href="https://www.instagram.com/{{ $user->youtube }}" target="_blank" title="YouTube"><i class="fa fa-youtube text-youtube mx-1"></i></a>
+                    @endif
+                </div>
+            @endif
         </div>
     </div>
     <div class="section grey-section">

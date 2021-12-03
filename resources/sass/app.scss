@@ -82,6 +82,12 @@ html, body {
     top: 18px;
 }
 
+.bottom-right {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+}
+
 .bottom-centre {
     position: absolute;
     bottom: 20px;
@@ -266,6 +272,14 @@ html, body {
 
 .text-premium {
     color: $premium;
+}
+
+.text-instagram {
+    color: $instagram;
+}
+
+.text-youtube {
+    color: $youtube;
 }
 
 .text-shadow {

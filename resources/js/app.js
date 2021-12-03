@@ -542,6 +542,16 @@ $(document).ready(function() {
         $('#cover-image-container').html('');
     });
 
+    // clear the user's instagram
+    $('#remove-instagram-button').click(function() {
+        $('#instagram').val('');
+    });
+
+    // clear the user's youtube
+    $('#remove-youtube-button').click(function() {
+        $('#youtube').val('');
+    });
+
     // toggle the card-body
     $('.card-hidden-body').click(function() {
         var $cardBody = $(this).siblings('.card-body');

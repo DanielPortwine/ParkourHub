@@ -23,6 +23,8 @@ class CreateUsersTable extends Migration
             $table->string('cover_image')->nullable();
             $table->string('hometown_name')->nullable();
             $table->string('hometown_bounding')->nullable();
+            $table->string('instagram')->nullable();
+            $table->string('youtube')->nullable();
             $table->string('password');
             $table->text('settings');
             $table->rememberToken();

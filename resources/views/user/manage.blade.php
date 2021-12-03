@@ -131,6 +131,54 @@
                                 </div>
                             </div>
                             <div class="form-group row">
+                                <label for="name" class="col-md-2 col-form-label text-md-right">Instagram</label>
+                                <div class="col-md-8">
+                                    <input id="instagram"
+                                           type="text"
+                                           class="form-control @error('instagram') is-invalid @enderror"
+                                           name="instagram"
+                                           value="{{ !empty($user->instagram) ? 'https://www.instagram.com/' . $user->instagram : '' }}"
+                                           autocomplete="instagram"
+                                           form="account-form"
+                                           placeholder="e.g. https://www.instagram.com/storror/"
+                                    >
+                                    @error('instagram')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
+                                </div>
+                                @if(!empty($user->instagram))
+                                    <div class="col-md-2 pt-2 pt-md-0">
+                                        <a class="btn btn-danger" id="remove-instagram-button">Remove</a>
+                                    </div>
+                                @endif
+                            </div>
+                            <div class="form-group row">
+                                <label for="name" class="col-md-2 col-form-label text-md-right">YouTube</label>
+                                <div class="col-md-8">
+                                    <input id="youtube"
+                                           type="text"
+                                           class="form-control @error('youtube') is-invalid @enderror"
+                                           name="youtube"
+                                           value="{{ !empty($user->youtube) ? 'https://www.youtube.com/c/' . $user->youtube : '' }}"
+                                           autocomplete="youtube"
+                                           form="account-form"
+                                           placeholder="e.g. https://www.youtube.com/c/STORROR"
+                                    >
+                                    @error('youtube')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
+                                </div>
+                                @if(!empty($user->youtube))
+                                    <div class="col-md-2 pt-2 pt-md-0">
+                                        <a class="btn btn-danger" id="remove-youtube-button">Remove</a>
+                                    </div>
+                                @endif
+                            </div>
+                            <div class="form-group row">
                                 <div class="col-md-10 offset-md-2">
                                     <div class="form-check">
                                         <input class="form-check-input @error('subscribed') is-invalid @enderror" type="checkbox" name="subscribed" id="subscribed" value="1" {{ $subscribed ? 'checked' : '' }} form="account-form">

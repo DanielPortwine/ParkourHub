@@ -4,8 +4,10 @@ namespace App\Http\Requests;
 
 use App\Rules\Checkbox;
 use App\Rules\Hometown;
+use App\Rules\Instagram;
 use App\Rules\NotAutoUsername;
 use App\Rules\UniqueOrOldEmail;
+use App\Rules\YoutubeChannel;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
@@ -39,6 +41,8 @@ class UpdateUser extends FormRequest
             'profile_image' => 'nullable|mimes:jpg,jpeg,png|max:' . $imageMax,
             'cover_image' => 'nullable|mimes:jpg,jpeg,png|max:' . $imageMax,
             'hometown' => ['string', 'max:255', new Hometown],
+            'instagram' => ['nullable', 'active_url', new Instagram],
+            'youtube' => ['nullable', 'active_url', new YoutubeChannel],
             'subscribed' => new Checkbox,
             'notifications' => 'required_with:notification-form|in:on-site,email,email-site,none|array:' . $notificationSettings,
             'privacy' => 'required_with:privacy-form|in:nobody,request,follower,anybody,private,public|array:' . $privacySettings,

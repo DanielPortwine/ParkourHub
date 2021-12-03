@@ -287,6 +287,8 @@ class UserController extends Controller
                 $user->hometown_name = null;
                 $user->hometown_bounding = null;
             }
+            $user->instagram = str_replace('https://www.instagram.com/', '', trim($request['instagram'], '/'));
+            $user->youtube = str_replace('https://www.youtube.com/c/', '', trim($request['youtube'], '/'));
             $user->save();
 
             if  ($request['subscribed'] == true) {
