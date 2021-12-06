@@ -1,4 +1,15 @@
 <div class="card bg-grey">
+    @if(!empty($workout->thumbnail))
+        <div class="content-wrapper">
+            <a href="{{ route('workout_view', $workout->id) }}">
+                @if(isset($lazyload) ? $lazyload : true)
+                    <img class="lazyload" data-src="{{ $workout->thumbnail }}" alt="Image of the {{ $workout->name }} workout.">
+                @else
+                    <img src="{{ $workout->thumbnail }}" alt="Image of the {{ $workout->name }} workout.">
+                @endif
+            </a>
+        </div>
+    @endif
     <div class="py-3 px-4">
         <div class="row">
             <div class="col-md vertical-center">

@@ -89,7 +89,7 @@
                                 <label class="col-md-2 col-form-label text-md-right">Thumbnail</label>
                                 <div class="col-md-8">
                                     @if(!empty($movement->thumbnail))
-                                        <img class="w-100 mb-2" src="{{ $movement->thumbnail }}" alt="Image of the {{ $movement->name }} spot.">
+                                        <img class="w-100 mb-2" src="{{ $movement->thumbnail }}" alt="Image of the {{ $movement->name }} movement.">
                                     @endif
                                 </div>
                             </div>

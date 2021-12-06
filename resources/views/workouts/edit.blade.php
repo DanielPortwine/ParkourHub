@@ -18,7 +18,7 @@
                     <div class="card-header bg-green sedgwick">Edit Workout</div>
                     <div class="card-body bg-grey text-white">
                         <div class="mb-3">
-                            <form method="POST">
+                            <form method="POST" enctype="multipart/form-data">
                                 @csrf
                                 <div class="form-group row">
                                     <label for="name" class="col-md-2 col-form-label text-md-right">Name</label>
@@ -45,11 +45,34 @@
                                 <div class="form-group row">
                                     <label for="visibility" class="col-md-2 col-form-label text-md-right">Visibility</label>
                                     <div class="col-md-8">
-                                        <select name="visibility" class="form-control select2-no-search">
+                                        <select name="visibility" class="form-control select2-no-search @error('visibility') is-invalid @enderror">
                                             @foreach(config('settings.privacy.privacy_content.options') as $key => $name)
                                                 <option value="{{ $key }}" @if($workout->visibility === $key)selected @endif>{{ $name }}</option>
                                             @endforeach
                                         </select>
+                                        @error('visibility')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <label class="col-md-2 col-form-label text-md-right">Thumbnail</label>
+                                    <div class="col-md-8">
+                                        @if(!empty($workout->thumbnail))
+                                            <img class="w-100 mb-2" src="{{ $workout->thumbnail }}" alt="Image of the {{ $workout->name }} workout.">
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-lg-4 col-md-8 offset-md-2">
+                                        <input type="file" id="thumbnail" class="form-control-file @error('thumbnail') is-invalid border-danger @enderror" name="thumbnail">
+                                        @error('thumbnail')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                        @enderror
                                     </div>
                                 </div>
                                 <div class="mb-3">
@@ -91,6 +114,11 @@
                                         @php $count++ @endphp
                                     @endforeach
                                     {{-- dynamic select boxes --}}
+                                    @error('redirect')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
                                 </div>
                                 <div class="form-group row mb-0">
                                     <div class="col-md-8 offset-md-2">

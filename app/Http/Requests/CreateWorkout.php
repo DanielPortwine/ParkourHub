@@ -33,6 +33,19 @@ class CreateWorkout extends FormRequest
             'movements.*.movement' => 'integer|exists:App\Models\Movement,id',
             'movements.*.fields' => 'array',
             'visibility' => ['required', new Visibility],
+            'thumbnail' => 'mimes:jpg,jpeg,png|max:5000',
+        ];
+    }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'thumbnail.max' => 'The thumbnail must be less than 5MB',
         ];
     }
 }

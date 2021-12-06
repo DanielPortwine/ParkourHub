@@ -17,6 +17,7 @@ use App\Scopes\VisibilityScope;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 
 class WorkoutController extends Controller
 {
@@ -140,6 +141,9 @@ class WorkoutController extends Controller
         $workout->name = $request['name'];
         $workout->description = $request['description'] ?: null;
         $workout->visibility = $request['visibility'] ?: 'private';
+        if (!empty($request['thumbnail'])) {
+            $workout->thumbnail = Storage::url($request->file('thumbnail')->store('images/workouts', 'public'));
+        }
         $workout->save();
 
         foreach ($request['movements'] as $movementRequest) {
@@ -239,6 +243,10 @@ class WorkoutController extends Controller
         $workout->name = $request['name'];
         $workout->description = $request['description'] ?: null;
         $workout->visibility = $request['visibility'] ?: 'private';
+        if (!empty($request['thumbnail'])) {
+            Storage::disk('public')->delete(str_replace('storage/', '', $workout->thumbnail));
+            $workout->thumbnail = Storage::url($request->file('thumbnail')->store('images/workouts', 'public'));
+        }
         $workout->save();
 
         foreach ($request['movements'] as $movementRequest) {
@@ -254,7 +262,7 @@ class WorkoutController extends Controller
             } else {
                 $movement = new WorkoutMovement;
                 $movement->user_id = $userId;
-                $movement->movement_id = $movementRequest['movement'];
+                $movement->movement_id = (int)$movementRequest['movement'];
                 $movement->workout_id = $workout->id;
                 $movement->save();
 
@@ -343,6 +351,10 @@ class WorkoutController extends Controller
 
         if ($workout->user_id !== Auth::id() && !Auth::user()->hasPermissionTo('remove content')) {
             return back();
+        }
+
+        if (!empty($workout->thumbnail)) {
+            Storage::disk('public')->delete(str_replace('storage/', '', $workout->thumbnail));
         }
 
         $workout->forceDelete();

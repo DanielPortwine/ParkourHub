@@ -21,6 +21,7 @@ class Workout extends Model
         'name',
         'description',
         'visibility',
+        'thumbnail',
     ];
 
     protected $searchable = [

@@ -3,6 +3,10 @@
 @push('title'){{ $workout->name }} - Workout | @endpush
 
 @section('description')View the '{{ $workout->name }}' workout on Parkour Hub.@endsection
+@if(!empty($workout->thumbnail))
+    @section('twitter-card-type'){{ 'summary_large_image' }}@endsection
+    @section('meta-media-content'){{ url($workout->thumbnail) }}@endsection
+@endif
 
 @section('content')
     @if (session('status'))
@@ -15,7 +19,9 @@
     @endif
     <div class="container p-0">
         <div class="content-wrapper">
-            @if(!empty($displayMovement->video))
+            @if(!empty($workout->thumbnail))
+                <img class="w-100 mb-2" src="{{ $workout->thumbnail }}" alt="Image of the {{ $workout->name }} workout.">
+            @elseif(!empty($displayMovement->video))
                 <video controls>
                     <source src="{{ $displayMovement->video }}" type="video/{{ $displayMovement->video_type }}">
                 </video>

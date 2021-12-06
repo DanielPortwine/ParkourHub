@@ -18,7 +18,7 @@
                     <div class="card-header bg-green sedgwick">Create a Workout</div>
                     <div class="card-body bg-grey text-white">
                         <div class="mb-3">
-                            <form method="POST">
+                            <form method="POST" enctype="multipart/form-data">
                                 @csrf
                                 <div class="form-group row">
                                     <label for="name" class="col-md-2 col-form-label text-md-right">Name</label>
@@ -50,6 +50,17 @@
                                                 <option value="{{ $key }}" @if(setting('privacy_content', 'private') === $key)selected @endif>{{ $name }}</option>
                                             @endforeach
                                         </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-2 col-form-label text-md-right">Thumbnail</label>
+                                    <div class="col-lg-4 col-md-8 offset-md-2 offset-lg-0">
+                                        <input type="file" id="thumbnail" class="form-control-file @error('thumbnail') is-invalid border-danger @enderror" name="thumbnail">
+                                        @error('thumbnail')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                        @enderror
                                     </div>
                                 </div>
                                 <div class="mb-3">

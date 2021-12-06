@@ -29,12 +29,23 @@ class UpdateWorkout extends FormRequest
             'name' => 'required|string|max:25',
             'description' => 'nullable|string|max:255',
             'movements' => 'required|array',
-            'movements.*' => 'array:movement,fields',
-            'movements.*.movement' => 'integer|exists:App\Models\Movement,id',
+            'movements.*' => 'array:id,movement,fields',
             'movements.*.fields' => 'array',
             'visibility' => ['required', new Visibility],
             'delete' => 'sometimes',
             'redirect' => 'sometimes|url',
+        ];
+    }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'thumbnail.max' => 'The thumbnail must be less than 5MB',
         ];
     }
 }
