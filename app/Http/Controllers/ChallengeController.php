@@ -180,6 +180,10 @@ class ChallengeController extends Controller
             $challenge->youtube = null;
             $challenge->youtube_start = null;
         }
+        if (!empty($request['thumbnail'])) {
+            Storage::disk('public')->delete(str_replace('storage/', '', $challenge->thumbnail));
+            $challenge->thumbnail = Storage::url($request->file('thumbnail')->store('images/challenges', 'public'));
+        }
         $challenge->save();
 
         return back()->with([
