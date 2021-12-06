@@ -243,6 +243,17 @@
                                             </div>
                                         </div>
                                         <div class="form-group row">
+                                            <label class="col-md-2 col-form-label text-md-right">Thumbnail</label>
+                                            <div class="col-lg-4 col-md-8 offset-md-2 offset-lg-0">
+                                                <input type="file" id="thumbnail" class="form-control-file @error('thumbnail') is-invalid border-danger @enderror" name="thumbnail">
+                                                @error('thumbnail')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
                                             <label class="col-md-2 col-form-label text-md-right">Fields</label>
                                             <div class="col-md-8 vertical-center">
                                                 <select class="select2-no-search @error('fields') is-invalid border-danger @enderror" name="fields[]" multiple="multiple">

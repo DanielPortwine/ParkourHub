@@ -270,6 +270,9 @@ class MovementController extends Controller
             $movement->video = Storage::url($video->store('videos/movements', 'public'));
             $movement->video_type = $video->extension();
         }
+        if (!empty($request['thumbnail'])) {
+            $movement->thumbnail = Storage::url($request->file('thumbnail')->store('images/movements', 'public'));
+        }
         $movement->save();
 
         foreach ($request['fields'] as $field) {
@@ -325,11 +328,16 @@ class MovementController extends Controller
             $movement->youtube_start = $youtube[1] ?? null;
             $movement->video = null;
         } else if (!empty($request['video'])) {
+            Storage::disk('public')->delete(str_replace('storage/', '', $movement->video));
             $video = $request->file('video');
             $movement->video = Storage::url($video->store('videos/movements', 'public'));
             $movement->video_type = $video->extension();
             $movement->youtube = null;
             $movement->youtube_start = null;
+        }
+        if (!empty($request['thumbnail'])) {
+            Storage::disk('public')->delete(str_replace('storage/', '', $movement->thumbnail));
+            $movement->thumbnail = Storage::url($request->file('thumbnail')->store('images/movements', 'public'));
         }
         $movement->save();
 
@@ -390,6 +398,9 @@ class MovementController extends Controller
 
         if (!empty($movement->video)) {
             Storage::disk('public')->delete(str_replace('storage/', '', $movement->video));
+        }
+        if (!empty($movement->thumbnail)) {
+            Storage::disk('public')->delete(str_replace('storage/', '', $movement->thumbnail));
         }
 
         $movement->forceDelete();

@@ -38,6 +38,7 @@ class CreateMovement extends FormRequest
             'description' => 'required|string|max:255',
             'youtube' => ['required_without:video', 'nullable', 'active_url', new YoutubeLink],
             'video' => 'required_without:youtube|mimes:mp4,mov,mpg,mpeg|max:500000',
+            'thumbnail' => 'mimes:jpg,jpeg,png|max:5000',
             'fields' => 'required|array',
             'visibility' => ['required', new Visibility],
         ];
@@ -54,6 +55,7 @@ class CreateMovement extends FormRequest
             'youtube.required_without' => 'You must provide either a Youtube link or video file',
             'video.required_without' => 'You must provide either a video file or Youtube link',
             'video.max' => 'The video must be less than 500MB',
+            'thumbnail.max' => 'The thumbnail must be less than 5MB',
         ];
     }
 }

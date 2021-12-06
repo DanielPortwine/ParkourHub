@@ -23,6 +23,7 @@ class MovementFactory extends Factory
             'description' => $this->faker->paragraph,
             'visibility' => $this->faker->randomElement(['private', 'follower', 'public']),
             'youtube' => $this->faker->randomElement(['fpX9dOcBjaQ', 'RHnXg6piz20', 'jPhuefvauuk', '_Ciuaz6duvw', 'KFfLUdnsvjY', 'Au2Zz7W99bQ', 'Mg7WANy8QE4', 'XUzkBa0p-SM']),
+            'thumbnail' => str_replace('public', '', $this->faker->image('public/storage/images/movements', 640, 480, null, true)),
             'official' => $this->faker->boolean,
         ];
     }

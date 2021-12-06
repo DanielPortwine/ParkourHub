@@ -3,6 +3,10 @@
 @push('title'){{ $originalMovement->name }} - Movement | @endpush
 
 @section('description')View the '{{ $originalMovement->name }}' movement on Parkour Hub.@endsection
+@if(!empty($originalMovement->thumbnail))
+    @section('twitter-card-type'){{ 'summary_large_image' }}@endsection
+    @section('meta-media-content'){{ url($originalMovement->thumbnail) }}@endsection
+@endif
 
 @section('content')
     @if (session('status'))

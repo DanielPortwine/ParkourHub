@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Rules\Visibility;
 use App\Rules\YoutubeLink;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class UpdateMovement extends FormRequest
 {
@@ -30,6 +31,7 @@ class UpdateMovement extends FormRequest
             'description' => 'required|string|max:255',
             'youtube' => ['nullable', 'active_url', new YoutubeLink],
             'video' => 'mimes:mp4,mov,mpg,mpeg|max:500000',
+            'thumbnail' => 'mimes:jpg,jpeg,png|max:5000',
             'fields' => 'required|array',
             'visibility' => ['required', new Visibility],
             'delete' => 'sometimes',
@@ -46,6 +48,7 @@ class UpdateMovement extends FormRequest
     {
         return [
             'video.max' => 'The video must be less than 500MB',
+            'thumbnail.max' => 'The thumbnail must be less than 5MB',
         ];
     }
 }

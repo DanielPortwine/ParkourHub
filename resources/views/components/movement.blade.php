@@ -3,7 +3,15 @@
         @if($movement->official)
             <span class="h3 official-tick" title="Official"><i class="fa fa-gavel"></i></span>
         @endif
-        @if(!empty($movement->video))
+        @if(!empty($movement->thumbnail))
+            <a href="{{ route('movement_view', $movement->id) }}">
+                @if(isset($lazyload) ? $lazyload : true)
+                    <img class="lazyload" data-src="{{ $movement->thumbnail }}" alt="Image of the {{ $movement->name }} movement.">
+                @else
+                    <img src="{{ $movement->thumbnail }}" alt="Image of the {{ $movement->name }} movement.">
+                @endif
+            </a>
+        @elseif(!empty($movement->video))
             <video controls>
                 <source src="{{ $movement->video }}" type="video/{{ $movement->video_type }}">
             </video>
