@@ -10,7 +10,7 @@ use App\Models\MovementField;
 use App\Models\MovementType;
 use App\Models\Review;
 use App\Models\Spot;
-use App\Models\SpotComment;
+use App\Models\Comment;
 use App\Models\SpotView;
 use App\Models\User;
 use App\Models\Workout;
@@ -883,7 +883,7 @@ class SpotControllerTest extends TestCase
     public function view_non_logged_in_user_can_view_unpaginated_spot_comments()
     {
         $spot = Spot::factory()->create(['visibility' => 'public']);
-        $comments = SpotComment::factory()->times(5)->create(['visibility' => 'public']);
+        $comments = Comment::factory()->times(5)->create(['visibility' => 'public']);
 
         $response = $this->get(route('spot_view', [$spot->id, 'tab' => 'comments']));
 
@@ -903,7 +903,7 @@ class SpotControllerTest extends TestCase
     public function view_non_logged_in_user_can_view_paginated_spot_comments()
     {
         $spot = Spot::factory()->create(['visibility' => 'public']);
-        $comments = SpotComment::factory()->times(21)->create(['visibility' => 'public']);
+        $comments = Comment::factory()->times(21)->create(['visibility' => 'public']);
 
         $response = $this->get(route('spot_view', [$spot->id, 'tab' => 'comments', 'comments' => 2]));
 

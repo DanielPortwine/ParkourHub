@@ -61,13 +61,14 @@ class MovementController extends Controller
         ]);
     }
 
-    public function view(Request $request, $id, $tab = null)
+    public function view(Request $request, $id, $tab = 'comments')
     {
         $movement = Movement::withTrashed()
             ->with([
                 'category',
                 'fields',
                 'reports',
+                'comments',
                 'spots',
                 'equipment',
                 'progressions',
@@ -82,78 +83,53 @@ class MovementController extends Controller
             abort(404);
         }
 
-        $spots = null;
-        $progressions = null;
-        $advancements = null;
-        $exercises = null;
-        $moves = null;
-        $equipment = null;
-        $progressionID = null;
-        $advancementID = null;
-        $history = null;
-        //$baselineFields = null;
-        if (!empty($request['spots']) && (($tab == null && $movement->type->name === 'Move') || $tab === 'spots')) {
-            $spots = $movement->spots()
-                ->withCount('views')
-                ->with(['reviews', 'reports', 'hits', 'user'])
-                ->paginate(20, ['*'], 'spots');
-        } else if (($tab == null && $movement->type->name === 'Move') || $tab === 'spots') {
-            $spots = $movement->spots()
-                ->withCount('views')
-                ->with(['reviews', 'reports', 'hits', 'user'])
-                ->limit(4)
-                ->get();
-        }
-        if (!empty($request['equipment']) && (($tab == null && $movement->type->name === 'Exercise') || $tab === 'equipment')) {
-            $equipment = $movement->equipment()
-                ->withCount(['movements'])
-                ->with(['movements', 'reports', 'user'])
-                ->paginate(20, ['*'], 'equipment');
-        } else if (($tab == null && $movement->type->name === 'Exercise') || $tab === 'equipment') {
-            $equipment = $movement->equipment()
-                ->withCount(['movements'])
-                ->with(['movements', 'reports', 'user'])
-                ->limit(4)
-                ->get();
-        }
-        if (!empty($request['progressions']) && $tab === 'progressions') {
-            $progressions = $movement->progressions()->paginate(20, ['*'], 'progressions');
-        } else if ($tab === 'progressions') {
-            $progressions = $movement->progressions()->limit(4)->get();
-        }
-        if (!empty($request['advancements']) && $tab === 'advancements') {
-            $advancements = $movement->advancements()->paginate(20, ['*'], 'advancements');
-        } else if ($tab === 'advancements') {
-            $advancements = $movement->advancements()->limit(4)->get();
-        }
-        if (!empty($request['exercises']) && $tab === 'exercises') {
-            $exercises = $movement->exercises()->paginate(20, ['*'], 'exercises');
-        } else if ($tab === 'exercises') {
-            $exercises = $movement->exercises()->limit(4)->get();
-        }
-        if (!empty($request['moves']) && $tab === 'moves') {
-            $moves = $movement->moves()->paginate(20, ['*'], 'moves');
-        } else if ($tab === 'moves') {
-            $moves = $movement->moves()->limit(4)->get();
-        }
-        if (!empty($request['history']) && $tab === 'history') {
-            $history = $movement->workouts()->where('user_id', Auth::id())->whereNotNull('recorded_workout_id')->orderBy('created_at', 'desc')->paginate(20, ['*'], 'history');
-        } else if ($tab === 'history') {
-            $history = $movement->workouts()->where('user_id', Auth::id())->whereNotNull('recorded_workout_id')->orderBy('created_at', 'desc')->limit(4)->get();
-        }
-        /*if ($tab === 'baseline') {
-            if (count(Auth::user()->baselineMovementFields()->where('movement_id', $id)->get())) {
-                $baselineFields = Auth::user()->baselineMovementFields()->withPivot('value', 'movement_id')->where('movement_id', $id)->get();
-            } else {
-                $baselineFields = $movement->fields;
-            }
-        }*/
-        $linkableEquipment = null;
-        $linkableMovements = null;
-        $movementCategories = null;
-        $movementFields = null;
         switch ($tab) {
-            case null:
+            case 'comments':
+                $comments = $movement->comments()
+                    ->with(['reports', 'user'])
+                    ->orderByDesc('created_at')
+                    ->paginate(20, ['*']);
+                break;
+            case 'spots':
+                $spots = $movement->spots()
+                    ->withCount('views')
+                    ->with(['reviews', 'reports', 'hits', 'user'])
+                    ->paginate(20, ['*']);
+                break;
+            case 'equipment':
+                $equipment = $movement->equipment()
+                    ->withCount(['movements'])
+                    ->with(['movements', 'reports', 'user'])
+                    ->paginate(20, ['*']);
+                break;
+            case 'progressions':
+                $progressions = $movement->progressions()->paginate(20, ['*']);
+                break;
+            case 'advancements':
+                $advancements = $movement->advancements()->paginate(20, ['*']);
+                break;
+            case 'exercises':
+                $exercises = $movement->exercises()->paginate(20, ['*']);
+                break;
+            case 'moves':
+                $moves = $movement->moves()->paginate(20, ['*']);
+                break;
+            case 'history':
+                $history = $movement->workouts()
+                    ->where('user_id', Auth::id())
+                    ->whereNotNull('recorded_workout_id')
+                    ->orderBy('created_at', 'desc')
+                    ->paginate(20, ['*']);
+            /*case 'baseline':
+                if (count(Auth::user()->baselineMovementFields()->where('movement_id', $id)->get())) {
+                    $baselineFields = Auth::user()->baselineMovementFields()->withPivot('value', 'movement_id')->where('movement_id', $id)->get();
+                } else {
+                    $baselineFields = $movement->fields;
+                }
+                break;*/
+        }
+
+        switch ($tab) {
             case 'equipment':
                 $linkableEquipment = Equipment::get();
                 break;
@@ -223,21 +199,22 @@ class MovementController extends Controller
         return view('movements.view', [
             'originalMovement' => $movement,
             'linkType' => $linkType,
-            'progressionID' => $progressionID,
-            'advancementID' => $advancementID,
-            'spots' => $spots,
-            'progressions' => $progressions,
-            'advancements' => $advancements,
-            'exercises' => $exercises,
-            'moves' => $moves,
-            'equipments' => $equipment,
-            'history' => $history,
-            //'baselineFields' => $baselineFields,
+            'progressionID' => $progressionID ?? null,
+            'advancementID' => $advancementID ?? null,
+            'comments' => $comments ?? null,
+            'spots' => $spots ?? null,
+            'progressions' => $progressions ?? null,
+            'advancements' => $advancements ?? null,
+            'exercises' => $exercises ?? null,
+            'moves' => $moves ?? null,
+            'equipments' => $equipment ?? null,
+            'history' => $history ?? null,
+            //'baselineFields' => $baselineFields ?? null,
             'tab' => $tab,
-            'linkableEquipment' => $linkableEquipment,
-            'linkableMovements' => $linkableMovements,
-            'movementCategories' => $movementCategories,
-            'movementFields' => $movementFields,
+            'linkableEquipment' => $linkableEquipment ?? null,
+            'linkableMovements' => $linkableMovements ?? null,
+            'movementCategories' => $movementCategories ?? null,
+            'movementFields' => $movementFields ?? null,
         ]);
     }
 

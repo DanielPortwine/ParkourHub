@@ -8,7 +8,7 @@ use App\Rules\YoutubeLink;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class UpdateSpotComment extends FormRequest
+class UpdateComment extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -29,17 +29,18 @@ class UpdateSpotComment extends FormRequest
     {
         if (Auth::user()->isPremium()) {
             $videoImage = [
-                'video_image' => ['required_without_all:comment,youtube', 'nullable', 'mimes:jpg,jpeg,png,mp4,mov,mpg,mpeg', new VideoImage],
+                'video_image' => ['required_without_all:comment,youtube,old_video_image', 'nullable', 'mimes:jpg,jpeg,png,mp4,mov,mpg,mpeg', new VideoImage],
             ];
         } else {
             $videoImage = [
-                'video_image' => 'required_without_all:comment,youtube|nullable|mimes:jpg,jpeg,png|max:500',
+                'video_image' => 'required_without_all:comment,youtube,old_video_image|nullable|mimes:jpg,jpeg,png|max:500',
             ];
         }
 
         return array_merge([
-            'comment' => 'required_without_all:youtube,video_image|nullable|string|max:255',
-            'youtube' => ['required_without_all:comment,video_image', 'nullable', 'active_url', new YoutubeLink],
+            'comment' => 'required_without_all:youtube,video_image,old_video_image|nullable|string|max:255',
+            'youtube' => ['required_without_all:comment,video_image,old_video_image', 'nullable', 'active_url', new YoutubeLink],
+            'old_video_image' => 'required_without_all:comment,youtube,video_image',
             'visibility' => ['required', new Visibility],
             'delete' => 'sometimes',
             'redirect' => 'sometimes|url',

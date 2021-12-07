@@ -58,7 +58,7 @@ class ChallengeController extends Controller
         ]);
     }
 
-    public function view(Request $request, $id)
+    public function view(Request $request, $id, $tab = 'entries')
     {
         // if coming from a notification, set the notification as read
         if (!empty($request['notification'])) {
@@ -75,6 +75,7 @@ class ChallengeController extends Controller
         $challenge = Challenge::withTrashed()
             ->with([
                 'entries',
+                'comments',
                 'views',
                 'spot',
                 'reports',
@@ -87,9 +88,23 @@ class ChallengeController extends Controller
             abort(404);
         }
 
-        $entries = $challenge->entries()->with(['challenge', 'reports', 'user'])->orderByDesc('created_at')->paginate(10, ['*'], 'entries');
-        $entered = !empty($challenge->entries->where('user_id', Auth::id())->first());
-        $winner = $challenge->entries->where('winner', true)->first();
+        switch ($tab) {
+            case 'entries':
+                $entries = $challenge->entries()
+                    ->with(['challenge', 'reports', 'user'])
+                    ->orderByDesc('created_at')
+                    ->paginate(20, ['*']);
+                $entered = !empty($challenge->entries->where('user_id', Auth::id())->first());
+                $winner = $challenge->entries->where('winner', true)->first();
+                break;
+            case 'comments':
+                $comments = $challenge->comments()
+                    ->with(['reports', 'user'])
+                    ->orderByDesc('created_at')
+                    ->paginate(20, ['*']);
+                break;
+        }
+
         $usersViewed = $challenge->views->pluck('user_id')->toArray();
         if (Auth::check() && !in_array(Auth::id(), $usersViewed) && Auth::id() !== $challenge->user_id) {
             $view = new ChallengeView;
@@ -100,9 +115,11 @@ class ChallengeController extends Controller
 
         return view('challenges.view', [
             'challenge' => $challenge,
-            'entries' => $entries,
-            'entered' => $entered,
-            'winner' => $winner,
+            'tab' => $tab,
+            'entries' => $entries ?? null,
+            'entered' => $entered ?? null,
+            'winner' => $winner ?? null,
+            'comments' => $comments ?? null,
         ]);
     }
 
@@ -174,6 +191,7 @@ class ChallengeController extends Controller
             $challenge->youtube_start = $youtube[1] ?? null;
             $challenge->video = null;
         } else if (!empty($request['video'])) {
+            Storage::disk('public')->delete(str_replace('storage/', '', $challenge->video));
             $video = $request->file('video');
             $challenge->video = Storage::url($video->store('videos/challenges', 'public'));
             $challenge->video_type = $video->extension();

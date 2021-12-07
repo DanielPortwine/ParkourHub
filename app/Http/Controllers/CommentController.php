@@ -2,26 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CreateSpotComment;
-use App\Http\Requests\UpdateSpotComment;
+use App\Http\Requests\CreateComment;
+use App\Http\Requests\UpdateComment;
 use App\Models\Spot;
-use App\Notifications\SpotCommented;
+use App\Notifications\NewComment;
 use App\Models\Report;
-use App\Models\SpotComment;
+use App\Models\Comment;
 use App\Scopes\VisibilityScope;
-use App\SpotCommentLike;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
-class SpotCommentController extends Controller
+class CommentController extends Controller
 {
-    public function store(CreateSpotComment $request)
+    public function store(CreateComment $request)
     {
-        $comment = new SpotComment;
-        $comment->spot_id = $request['spot'];
+        $model = app('App\Models\\' . $request['commentable_type'])->findOrFail($request['commentable_id']);
+        $comment = new Comment;
         $comment->user_id = Auth::id();
+        $comment->commentable()->associate($model);
+        $comment->parent_comment_id = $request['parent_comment_id'];
         $comment->comment = $request['comment'];
         $comment->visibility = $request['visibility'] ?: 'private';
         if (!empty($request['youtube'])){
@@ -32,67 +33,73 @@ class SpotCommentController extends Controller
             $file = $request->file('video_image');
             $extension = $file->extension();
             if (in_array($extension, ['mp4','mov','mpg','mpeg'])) {
-                $comment->video = Storage::url($file->store('videos/spot_comments', 'public'));
+                $comment->video = Storage::url($file->store('videos/comments', 'public'));
                 $comment->video_type = $extension;
             } else if (in_array($extension, ['jpg','jpeg','png'])) {
-                $comment->image = Storage::url($file->store('images/spot_comments', 'public'));
+                $comment->image = Storage::url($file->store('images/comments', 'public'));
             }
         }
         $comment->save();
 
-        // notify the spot creator that someone created a comment
-        $creator = User::where('id', $comment->spot->user_id)->first();
+        // notify the creator that someone created a comment
+        $creator = User::where('id', $comment->commentable()->first()->user->id)->first();
         if ($creator->id != Auth::id() && in_array(setting('notifications_comment', 'on-site', $creator->id), ['on-site', 'email', 'email-site'])) {
-            $creator->notify(new SpotCommented($comment));
+            $creator->notify(new NewComment($comment));
         }
 
-        return back()->with('status', 'Successfully commented on spot');
+        return back()->with('status', 'Successfully commented on content');
     }
 
     public function edit($id)
     {
-        $comment = SpotComment::withoutGlobalScope(VisibilityScope::class)->where('id', $id)->first();
+        $comment = Comment::withoutGlobalScope(VisibilityScope::class)->where('id', $id)->first();
         if ($comment->user_id !== Auth::id()) {
-            return redirect()->route('spot_view', $comment->spot()->withoutGlobalScope(VisibilityScope::class)->first()->id);
+            return redirect()->route(strtolower(str_replace('App\Models\\', '', $comment->commentable_type)) . '_view', $comment->commentable_id);
         }
 
-        return view('spots.comments.edit', ['comment' => $comment]);
+        return view('comments.edit', ['comment' => $comment]);
     }
 
-    public function update(UpdateSpotComment $request, $id)
+    public function update(UpdateComment $request, $id)
     {
         if (!empty($request['delete'])) {
             return $this->delete($id, $request['redirect']);
         }
 
-        $comment = SpotComment::withoutGlobalScope(VisibilityScope::class)->where('id', $id)->first();
+        $comment = Comment::withoutGlobalScope(VisibilityScope::class)->where('id', $id)->first();
         if ($comment->user_id !== Auth::id()) {
-            return redirect()->route('spot_view', $comment->spot()->withoutGlobalScope(VisibilityScope::class)->first()->id);
+            return redirect()->route(strtolower(str_replace('App\Models\\', '', $comment->commentable_type)) . '_view', $comment->commentable_id);
         }
 
         $comment->comment = $request['comment'];
         $comment->visibility = $request['visibility'] ?: 'private';
-        if (!empty($request['youtube'])){
-            $youtube = explode('t=', str_replace(['https://youtu.be/', 'https://www.youtube.com/watch?v=', '&', '?'], '', $request['youtube']));
-            $comment->youtube = $youtube[0];
-            $comment->youtube_start = $youtube[1] ?? null;
-            $comment->video = null;
-            $comment->image = null;
-        } else if (!empty($request['video_image'])) {
+        if (!empty($request['youtube']) || !empty($request['video_image'])) {
+            Storage::disk('public')->delete(str_replace('storage/', '', $comment->video));
+            Storage::disk('public')->delete(str_replace('storage/', '', $comment->image));
+        }
+        if (!empty($request['video_image'])) {
             $file = $request->file('video_image');
             $extension = $file->extension();
             if (in_array($extension, ['mp4','mov','mpg','mpeg'])) {
-                $comment->video = Storage::url($file->store('videos/spot_comments', 'public'));
+                $comment->video = Storage::url($file->store('videos/comments', 'public'));
                 $comment->video_type = $extension;
                 $comment->youtube = null;
                 $comment->youtube_start = null;
                 $comment->image = null;
             } else if (in_array($extension, ['jpg','jpeg','png'])) {
-                $comment->image = Storage::url($file->store('images/spot_comments', 'public'));
+                $comment->image = Storage::url($file->store('images/comments', 'public'));
                 $comment->youtube = null;
                 $comment->youtube_start = null;
                 $comment->video = null;
+                $comment->video_type = null;
             }
+        } else if (!empty($request['youtube'])) {
+            $youtube = explode('t=', str_replace(['https://youtu.be/', 'https://www.youtube.com/watch?v=', '&', '?'], '', $request['youtube']));
+            $comment->youtube = $youtube[0];
+            $comment->youtube_start = $youtube[1] ?? null;
+            $comment->video = null;
+            $comment->video_type = null;
+            $comment->image = null;
         }
         $comment->save();
 
@@ -105,12 +112,11 @@ class SpotCommentController extends Controller
 
     public function delete($id, $redirect = null)
     {
-        $comment = SpotComment::withoutGlobalScope(VisibilityScope::class)->where('id', $id)->first();
+        $comment = Comment::withoutGlobalScope(VisibilityScope::class)->where('id', $id)->first();
         if ($comment->user_id === Auth::id()) {
             $comment->delete();
         } else {
-            $spot = Spot::withoutGlobalScope(VisibilityScope::class)->where('id', $comment->spot_id)->first();
-            return redirect()->route('spot_view', $spot->id);
+            return redirect()->route(strtolower(str_replace('App\Models\\', '', $comment->commentable_type)) . '_view', $comment->commentable_id);
         }
 
         if (!empty($redirect)) {
@@ -122,7 +128,7 @@ class SpotCommentController extends Controller
 
     public function recover(Request $request, $id)
     {
-        $comment = SpotComment::onlyTrashed()->where('id', $id)->first();
+        $comment = Comment::onlyTrashed()->where('id', $id)->first();
 
         if (empty($comment) || $comment->user_id !== Auth::id()) {
             return back();
@@ -135,7 +141,7 @@ class SpotCommentController extends Controller
 
     public function remove(Request $request, $id)
     {
-        $comment = SpotComment::withoutGlobalScope(VisibilityScope::class)->withTrashed()->where('id', $id)->first();
+        $comment = Comment::withoutGlobalScope(VisibilityScope::class)->withTrashed()->where('id', $id)->first();
 
         if ($comment->user_id !== Auth::id() && !Auth::user()->hasPermissionTo('remove content')) {
             return back();
@@ -155,21 +161,21 @@ class SpotCommentController extends Controller
 
     public function report($id)
     {
-        $spotComment = SpotComment::where('id', $id)->first();
+        $spotComment = Comment::where('id', $id)->first();
 
         $spotComment->report();
 
-        return back()->with('status', 'Successfully reported spot comment');
+        return back()->with('status', 'Successfully reported comment');
     }
 
-    public function discardReports(SpotComment $spotComment)
+    public function discardReports(Comment $comment)
     {
-        if (!Auth::user()->hasPermissionTo('manage reports') || $spotComment->user_id === Auth::id()) {
+        if (!Auth::user()->hasPermissionTo('manage reports') || $comment->user_id === Auth::id()) {
             return back();
         }
 
-        $spotComment->discardReports();
+        $comment->discardReports();
 
-        return back()->with('status', 'Successfully discarded reports against this content');
+        return back()->with('status', 'Successfully discarded reports against this comment');
     }
 }

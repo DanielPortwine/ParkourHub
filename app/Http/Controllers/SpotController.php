@@ -66,7 +66,7 @@ class SpotController extends Controller
         ]);
     }
 
-    public function view(Request $request, $id, $tab = null)
+    public function view(Request $request, $id, $tab = 'reviews')
     {
         // if coming from a notification, set the notification as read
         if (!empty($request['notification'])) {
@@ -84,6 +84,7 @@ class SpotController extends Controller
             ->with([
                 'user',
                 'reviews',
+                'comments',
                 'reports',
                 'movements',
                 'comments',
@@ -104,67 +105,41 @@ class SpotController extends Controller
                 'map' => true,
             ])->render();
         }
-        $reviews = $comments = $challenges = $locals = $workouts = null;
-        if (!empty($request['reviews']) && ($tab == null || $tab === 'reviews')) {
-            $reviews = $spot->reviews()
-                ->with(['reports', 'user'])
-                ->whereNotNull('title')
-                ->orderByDesc('created_at')
-                ->paginate(20, ['*'], 'reviews');
-            $spotReviewsWithTextCount = $spot->reviews()->withText()->count();
-        } else if ($tab == null || $tab === 'reviews') {
-            $reviews = $spot->reviews()
-                ->with(['reports', 'user'])
-                ->whereNotNull('title')
-                ->orderByDesc('created_at')
-                ->limit(4)
-                ->get();
-            $spotReviewsWithTextCount = $spot->reviews()->withText()->count();
-        }
-        if (!empty($request['comments']) && $tab === 'comments') {
-            $comments = $spot->comments()
-                ->with(['reports', 'user'])
-                ->orderByDesc('created_at')
-                ->paginate(20, ['*'], 'comments');
-        } else if ($tab === 'comments') {
-            $comments = $spot->comments()
-                ->with(['reports', 'user'])
-                ->orderByDesc('created_at')
-                ->limit(4)
-                ->get();
-        }
-        if (!empty($request['challenges']) && $tab === 'challenges') {
-            $challenges = $spot->challenges()
-                ->withCount('entries')
-                ->with(['entries', 'reports', 'user'])
-                ->orderByDesc('created_at')
-                ->paginate(20, ['*'], 'challenges');
-        } else if ($tab === 'challenges') {
-            $challenges = $spot->challenges()
-                ->withCount('entries')
-                ->with(['entries', 'reports', 'user'])
-                ->orderByDesc('created_at')
-                ->limit(4)
-                ->get();
-        }
-        if ($tab === 'locals') {
-            $locals = $spot->locals()
-                ->orderByDesc('name')
-                ->paginate(40);
-        }
-        if (!empty($request['workouts']) && $tab === 'workouts') {
-            $workouts = $spot->workouts()
-                ->withCount('movements')
-                ->with(['movements', 'bookmarks', 'user'])
-                ->orderByDesc('created_at')
-                ->paginate(20, ['*'], 'workouts');
-        } else if ($tab === 'workouts') {
-            $workouts = $spot->workouts()
-                ->withCount('movements')
-                ->with(['movements', 'bookmarks', 'user'])
-                ->orderByDesc('created_at')
-                ->limit(4)
-                ->get();
+
+        switch ($tab) {
+            case 'reviews':
+                $reviews = $spot->reviews()
+                    ->with(['reports', 'user'])
+                    ->whereNotNull('title')
+                    ->orderByDesc('created_at')
+                    ->paginate(20, ['*']);
+                $spotReviewsWithTextCount = $spot->reviews()->withText()->count();
+                break;
+            case 'comments':
+                $comments = $spot->comments()
+                    ->with(['reports', 'user'])
+                    ->orderByDesc('created_at')
+                    ->paginate(20, ['*']);
+                break;
+            case 'challenges':
+                $challenges = $spot->challenges()
+                    ->withCount('entries')
+                    ->with(['entries', 'reports', 'user'])
+                    ->orderByDesc('created_at')
+                    ->paginate(20, ['*']);
+                break;
+            case 'locals':
+                $locals = $spot->locals()
+                    ->orderByDesc('name')
+                    ->paginate(40, ['*']);
+                break;
+            case 'workouts':
+                $workouts = $spot->workouts()
+                    ->withCount('movements')
+                    ->with(['movements', 'bookmarks', 'user'])
+                    ->orderByDesc('created_at')
+                    ->paginate(20, ['*']);
+                break;
         }
         $usersViewed = SpotView::where('spot_id', $id)->pluck('user_id')->toArray();
         if (Auth::check() && !in_array(Auth::id(), $usersViewed) && Auth::id() !== $spot->user_id) {
@@ -174,7 +149,6 @@ class SpotController extends Controller
             $view->save();
         }
 
-        $hit = null;
         if (Auth::check()) {
             $hit = $spot->hits()->where('user_id', Auth::id())->first();
         }
@@ -197,7 +171,7 @@ class SpotController extends Controller
         $movementFields = Cache::remember('movement_fields', 86400, function() {
             return MovementField::get();
         });
-        $linkableWorkouts = null;
+
         if ($tab === 'workouts') {
             $linkableWorkouts = Workout::whereNotIn('id', $spot->workouts()->pluck('workouts.id')->toArray())
                 ->get();
@@ -207,18 +181,18 @@ class SpotController extends Controller
             'spot' => $spot,
             'request' => $request,
             'localsIDs' => $localsIDs,
-            'locals' => $locals,
-            'reviews' => $reviews,
-            'comments' => $comments,
-            'challenges' => $challenges,
-            'workouts' => $workouts,
+            'locals' => $locals ?? null,
+            'reviews' => $reviews ?? null,
+            'comments' => $comments ?? null,
+            'challenges' => $challenges ?? null,
+            'workouts' => $workouts ?? null,
             'tab' => $tab,
             'movements' => $spot->movements,
-            'hit' => $hit,
-            'linkableMovements' => $linkableMovements,
+            'hit' => $hit ?? null,
+            'linkableMovements' => $linkableMovements ?? null,
             'movementCategories' => $movementCategories,
             'movementFields' => $movementFields,
-            'linkableWorkouts' => $linkableWorkouts,
+            'linkableWorkouts' => $linkableWorkouts ?? null,
             'spotReviewsWithTextCount' => $spotReviewsWithTextCount ?? 0,
         ]);
     }

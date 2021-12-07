@@ -209,7 +209,7 @@
                                 </div>
                             </div>
                         @endforeach
-                        @if (count($user->spotComments) === 0)
+                        @if (count($user->comments) === 0)
                             <p class="mb-0">{{ $user->id === Auth()->id() ? 'You have ' : 'This user has ' }}no comments.</p>
                         @endif
                         {{ $comments->links() }}

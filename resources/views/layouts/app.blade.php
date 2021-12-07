@@ -111,7 +111,7 @@
                                         @if(!empty($notification->data['review']))
                                             <a class="dropdown-item text-white" href="{{ route('spot_view', ['id' => $notification->data['review']['spot_id'], 'notification' => $notification->id]) }}">New review on {{ $notification->data['review']['spot']['name'] }}</a>
                                         @elseif(!empty($notification->data['comment']))
-                                            <a class="dropdown-item text-white" href="{{ route('spot_view', ['id' => $notification->data['comment']['spot_id'], 'notification' => $notification->id]) }}">New comment on {{ $notification->data['comment']['spot']['name'] }}</a>
+                                            <a class="dropdown-item text-white" href="{{ route($notification->data['route'], ['id' => $notification->data['comment']['commentable_id'], 'notification' => $notification->id]) }}">New comment on {{ $notification->data['commentableType'] }} '{{ $notification->data['commentableName'] }}'</a>
                                         @elseif(!empty($notification->data['challenge']))
                                             <a class="dropdown-item text-white" href="{{ route('challenge_view', ['id' => $notification->data['challenge']['id'], 'notification' => $notification->id]) }}">New challenge on {{ $notification->data['challenge']['spot']['name'] }}</a>
                                         @elseif(!empty($notification->data['entry']))

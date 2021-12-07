@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class SpotCommented extends Notification implements ShouldQueue
+class NewComment extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -56,9 +56,18 @@ class SpotCommented extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
+        $commentable = $this->comment->commentable()->first();
+
         return (new MailMessage)
-            ->subject('New Comment on ' . $this->comment->spot->name)
-            ->markdown('mail.notifications.comment', ['comment' => $this->comment]);
+            ->subject('New Comment on ' . $commentable->name)
+            ->markdown('mail.notifications.comment', [
+                'comment' => $this->comment,
+                'commenter' => $this->comment->user->name,
+                'commentableOwnerName' => $commentable->user->name,
+                'commentableType' => str_replace('App\Models\\', '', $this->comment->commentable_type),
+                'commentableName' => $commentable->name,
+                'route' => route(strtolower(str_replace('App\Models\\', '', $this->comment->commentable_type)) . '_view', $this->comment->commentable_id),
+            ]);
     }
 
     /**
@@ -69,8 +78,13 @@ class SpotCommented extends Notification implements ShouldQueue
      */
     public function toArray($notifiable)
     {
+        $commentable = $this->comment->commentable()->first();
+
         return [
-            'comment' => $this->comment
+            'comment' => $this->comment,
+            'commentableType' => str_replace('App\Models\\', '', $this->comment->commentable_type),
+            'commentableName' => $commentable->name,
+            'route' => strtolower(str_replace('App\Models\\', '', $this->comment->commentable_type)) . '_view',
         ];
     }
 }

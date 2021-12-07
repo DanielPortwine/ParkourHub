@@ -10,7 +10,7 @@ use App\Models\MovementCategory;
 use App\Models\Report;
 use App\Models\Review;
 use App\Models\Spot;
-use App\Models\SpotComment;
+use App\Models\Comment;
 use App\Models\Workout;
 use App\Scopes\VisibilityScope;
 use Illuminate\Http\Request;
@@ -84,7 +84,7 @@ class ReportController extends Controller
                     ->appends(request()->query());
                 break;
             case 'comment':
-                $content = SpotComment::withoutGlobalScope(VisibilityScope::class)
+                $content = Comment::withoutGlobalScope(VisibilityScope::class)
                     ->withTrashed()
                     ->withCount('reports')
                     ->whereHas('reports')

@@ -88,7 +88,10 @@
                 <div class="card-header card-header-black">
                     <ul class="nav nav-tabs card-header-tabs">
                         <li class="nav-item">
-                            <a class="nav-link btn-link @if($tab == null || $tab === 'movements')active @endif" href="{{ route('workout_view', ['id' => $workout->id, 'tab' => null]) }}">Movements</a>
+                            <a class="nav-link btn-link @if($tab === 'movements')active @endif" href="{{ route('workout_view', ['id' => $workout->id, 'tab' => null]) }}">Movements</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn-link @if($tab === 'comments')active @endif" href="{{ route('workout_view', ['id' => $workout->id, 'tab' => 'comments']) }}">Comments</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link btn-link @if($tab === 'recorded')active @endif" href="{{ route('workout_view', ['id' => $workout->id, 'tab' => 'recorded']) }}">Recorded Workouts</a>
@@ -98,7 +101,7 @@
                         </li>
                     </ul>
                 </div>
-                @if($tab == null || $tab === 'movements')
+                @if($tab === 'movements')
                     <div class="card-body bg-black">
                         @if(count($workoutMovements))
                             @foreach($workoutMovements as $workoutMovement)
@@ -106,6 +109,95 @@
                             @endforeach
                         @else
                             There are no movements in this workout.
+                        @endif
+                    </div>
+                @elseif($tab === 'comments')
+                    <div class="card-body bg-black">
+                        @if(auth()->check() && $workout->deleted_at === null)
+                            <div class="row mb-4">
+                                <div class="col">
+                                    <div class="card @error('comment') border-danger @enderror @error('image') border-danger @enderror @error('youtube') border-danger @enderror @error('video') border-danger @enderror">
+                                        <div class="card-header bg-green sedgwick card-hidden-body">
+                                            <div class="row">
+                                                <div class="col">
+                                                    Submit Comment
+                                                </div>
+                                                <div class="col-auto">
+                                                    <i class="fa fa-caret-down"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-body bg-grey text-white">
+                                            <form method="POST" action="{{ route('comment_store') }}" enctype="multipart/form-data">
+                                                @csrf
+                                                <input type="hidden" name="commentable_type" value="Workout">
+                                                <input type="hidden" name="commentable_id" value="{{ $workout->id }}">
+                                                <div class="form-group row">
+                                                    <label for="comment" class="col-md-2 col-form-label text-md-right">Comment</label>
+                                                    <div class="col-md-8">
+                                                        <textarea id="comment" class="form-control @error('comment') is-invalid @enderror" name="comment" maxlength="255">{{ old('comment') }}</textarea>
+                                                        @error('comment')
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                        @enderror
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    @premium
+                                                    <label class="col-md-2 col-form-label text-md-right">Youtube, Video or Image</label>
+                                                    @else
+                                                        <label class="col-md-2 col-form-label text-md-right">Youtube or Image</label>
+                                                        @endpremium
+                                                        <div class="col-md-4">
+                                                            <input type="text" id="youtube" class="form-control @error('youtube') is-invalid @enderror" name="youtube" autocomplete="youtube" placeholder="e.g. https://youtu.be/QDIVrf2ZW0s" value="{{ old('youtube') }}">
+                                                            @error('youtube')
+                                                            <span class="invalid-feedback" role="alert">
+                                                                <strong>{{ $message }}</strong>
+                                                            </span>
+                                                            @enderror
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <input type="file" id="video_image" class="form-control-file @error('video_image') is-invalid @enderror" name="video_image">
+                                                            @error('video_image')
+                                                            <span class="invalid-feedback" role="alert">
+                                                                <strong>{{ $message }}</strong>
+                                                            </span>
+                                                            @enderror
+                                                        </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="visibility" class="col-md-2 col-form-label text-md-right">Visibility</label>
+                                                    <div class="col-md-8">
+                                                        <select name="visibility" class="form-control select2-no-search">
+                                                            @foreach(config('settings.privacy.privacy_content.options') as $key => $name)
+                                                                <option value="{{ $key }}" @if(setting('privacy_content', 'private') === $key)selected @endif>{{ $name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <div class="col-md-8 offset-md-2">
+                                                        <button type="submit" class="btn btn-green">Submit</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+                        {{ $comments->links() }}
+                        @foreach($comments as $comment)
+                            <div class="row">
+                                <div class="col mb-4">
+                                    @include('components.comment')
+                                </div>
+                            </div>
+                        @endforeach
+                        {{ $comments->links() }}
+                        @if (count($workout->comments) === 0)
+                            <p class="mb-0">This spot has no comments yet.@auth Create one by clicking 'Submit Comment' above.@else <a class="btn-link" href="/login">Login</a> or <a class="btn-link" href="/register">Register</a> to create one. @endauth</p>
                         @endif
                     </div>
                 @elseif($tab === 'recorded')

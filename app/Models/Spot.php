@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Scopes\VisibilityScope;
+use App\Traits\Commentable;
 use App\Traits\Reportable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -14,6 +15,7 @@ class Spot extends Model
 {
     use SoftDeletes,
         Reportable,
+        Commentable,
         SearchableTrait,
         HasFactory;
 
@@ -135,11 +137,6 @@ class Spot extends Model
     public function reviews()
     {
         return $this->hasMany('App\Models\Review');
-    }
-
-    public function comments()
-    {
-        return $this->hasMany('App\Models\SpotComment');
     }
 
     public function challenges()

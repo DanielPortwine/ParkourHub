@@ -298,7 +298,7 @@
                 <div class="card-header card-header-black">
                     <ul class="nav nav-tabs card-header-tabs">
                         <li class="nav-item">
-                            <a class="nav-link btn-link @if($tab == null || $tab === 'reviews')active @endif" href="{{ route('spot_view', ['id' => $spot->id, 'tab' => null]) }}">Reviews</a>
+                            <a class="nav-link btn-link @if($tab === 'reviews')active @endif" href="{{ route('spot_view', ['id' => $spot->id, 'tab' => null]) }}">Reviews</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link btn-link @if($tab === 'comments')active @endif" href="{{ route('spot_view', ['id' => $spot->id, 'tab' => 'comments']) }}">Comments</a>
@@ -316,7 +316,7 @@
                         @endpremium
                     </ul>
                 </div>
-                @if($tab == null || $tab === 'reviews')
+                @if($tab === 'reviews')
                     <div class="card-body bg-black">
                         @if(auth()->check() && $spot->deleted_at === null)
                             <div class="row mb-4">
@@ -443,9 +443,10 @@
                                             </div>
                                         </div>
                                         <div class="card-body bg-grey text-white">
-                                            <form method="POST" action="{{ route('spot_comment_store') }}" enctype="multipart/form-data">
+                                            <form method="POST" action="{{ route('comment_store') }}" enctype="multipart/form-data">
                                                 @csrf
-                                                <input type="hidden" name="spot" value="{{ $spot->id }}">
+                                                <input type="hidden" name="commentable_type" value="Spot">
+                                                <input type="hidden" name="commentable_id" value="{{ $spot->id }}">
                                                 <div class="form-group row">
                                                     <label for="comment" class="col-md-2 col-form-label text-md-right">Comment</label>
                                                     <div class="col-md-8">
@@ -501,9 +502,7 @@
                                 </div>
                             </div>
                         @endif
-                        @if(!empty($request['comments']))
-                            {{ $comments->links() }}
-                        @endif
+                        {{ $comments->links() }}
                         @foreach($comments as $comment)
                             <div class="row">
                                 <div class="col mb-4">
@@ -511,19 +510,9 @@
                                 </div>
                             </div>
                         @endforeach
-                        @if(!empty($request['comments']))
-                            {{ $comments->links() }}
-                        @endif
+                        {{ $comments->links() }}
                         @if (count($spot->comments) === 0)
                             <p class="mb-0">This spot has no comments yet.@auth Create one by clicking 'Submit Comment' above.@else <a class="btn-link" href="/login">Login</a> or <a class="btn-link" href="/register">Register</a> to create one. @endauth</p>
-                        @elseif(count($spot->comments) > 4)
-                            <div class="col text-center mb-4">
-                                @if(empty($request['comments']))
-                                    <a class="btn btn-green w-75" href="?comments=1">More</a>
-                                @else
-                                    <a class="btn btn-green w-75" href="{{ route('spot_view', $spot->id) }}">Less</a>
-                                @endif
-                            </div>
                         @endif
                     </div>
                 @elseif($tab === 'challenges')

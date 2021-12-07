@@ -36,21 +36,21 @@
             </div>
             <div class="col-lg-auto vertical-center pl-0">
                 @if($comment->user_id === Auth()->id())
-                    <a class="btn text-white" href="{{ route('spot_comment_edit', $comment->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
-                    <a class="btn text-white" href="{{ route('spot_comment_delete', $comment->id) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
+                    <a class="btn text-white" href="{{ route('comment_edit', $comment->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
+                    <a class="btn text-white" href="{{ route('comment_delete', $comment->id) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
                 @endif
                 @if(!empty($linkSpotOnComment) && $linkSpotOnComment)
-                        <a class="btn text-white" href="{{ route('spot_view', $comment->spot_id) }}" title="View Spot"><i class="fa fa-map-marker"></i></a>
+                    <a class="btn text-white" href="{{ route(strtolower(str_replace('App\Models\\', '', $comment->commentable_type)) . '_view', $comment->commentable_id) }}" title="View {{ str_replace('App\Models\\', '', $comment->commentable_type) }}"><i class="fa fa-eye"></i></a>
                 @endif
                 @auth
-                    <a class="btn text-white" href="{{ route('spot_comment_report', $comment->id) }}" title="Report"><i class="fa fa-flag"></i></a>
+                    <a class="btn text-white" href="{{ route('comment_report', $comment->id) }}" title="Report"><i class="fa fa-flag"></i></a>
                 @endauth
                 @if(count($comment->reports) > 0 && Route::currentRouteName() === 'report_listing')
                     @can('manage reports')
-                        <a class="btn text-white" href="{{ route('spot_comment_report_discard', $comment->id) }}" title="Discard Reports"><i class="fa fa-balance-scale"></i></a>
+                        <a class="btn text-white" href="{{ route('comment_report_discard', $comment->id) }}" title="Discard Reports"><i class="fa fa-balance-scale"></i></a>
                     @endcan
                     @can('remove content')
-                        <a class="btn text-white" href="{{ route('spot_comment_remove', $comment->id) }}" title="Remove Content"><i class="fa fa-trash"></i></a>
+                        <a class="btn text-white" href="{{ route('comment_remove', $comment->id) }}" title="Remove Content"><i class="fa fa-trash"></i></a>
                     @endcan
                 @endif
             </div>

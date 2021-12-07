@@ -7,7 +7,7 @@ use App\Models\Equipment;
 use App\Models\Movement;
 use App\Models\Review;
 use App\Models\Spot;
-use App\Models\SpotComment;
+use App\Models\Comment;
 use App\Models\Workout;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -61,7 +61,7 @@ class RemoveDeletedContent extends Command
         $reviews = Review::onlyTrashed()->where('deleted_at', '<', Carbon::now()->subDays(30))->get();
         $this->performRemoval($reviews, 'reviews');
 
-        $comments = SpotComment::onlyTrashed()->where('deleted_at', '<', Carbon::now()->subDays(30))->get();
+        $comments = Comment::onlyTrashed()->where('deleted_at', '<', Carbon::now()->subDays(30))->get();
         $this->performRemoval($comments, 'comments');
 
         $challenges = Challenge::onlyTrashed()->where('deleted_at', '<', Carbon::now()->subDays(30))->get();

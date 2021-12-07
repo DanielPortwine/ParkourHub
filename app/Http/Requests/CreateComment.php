@@ -8,7 +8,7 @@ use App\Rules\YoutubeLink;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class CreateSpotComment extends FormRequest
+class CreateComment extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -38,7 +38,8 @@ class CreateSpotComment extends FormRequest
         }
 
         return array_merge([
-            'spot' => 'required|integer|exists:App\Models\Spot,id',
+            'commentable_type' => 'required|string',
+            'commentable_id' => 'required|integer',
             'comment' => 'required_without_all:youtube,video_image|nullable|string|max:255',
             'youtube' => ['required_without_all:comment,video_image', 'nullable', 'active_url', new YoutubeLink],
             'visibility' => ['required', new Visibility],

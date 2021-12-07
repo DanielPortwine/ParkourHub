@@ -11,7 +11,7 @@ use App\Models\MovementCategory;
 use App\Models\MovementType;
 use App\Models\Review;
 use App\Models\Spot;
-use App\Models\SpotComment;
+use App\Models\Comment;
 use App\Models\SpotView;
 use App\Models\Subscriber;
 use App\Models\User;
@@ -550,7 +550,7 @@ class UserControllerTest extends TestCase
     {
         $user = User::factory()->create();
         $spot = Spot::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
-        $comments = SpotComment::factory()->times(21)->create(['user_id' => $this->premiumUser->id, 'visibility' => 'public']);
+        $comments = Comment::factory()->times(21)->create(['user_id' => $this->premiumUser->id, 'visibility' => 'public']);
 
         $response = $this->actingAs($user)->get(route('user_view', [$this->premiumUser->id, 'tab' => 'comments', 'page' => 2]));
 
@@ -573,7 +573,7 @@ class UserControllerTest extends TestCase
         $user = User::factory()->create();
         $this->premiumUser->followers()->attach($user->id, ['accepted' => true]);
         $spot = Spot::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
-        $comment = SpotComment::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'follower']);
+        $comment = Comment::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'follower']);
 
         $response = $this->actingAs($user)->get(route('user_view', [$this->premiumUser->id, 'tab' => 'comments']));
 
@@ -595,7 +595,7 @@ class UserControllerTest extends TestCase
     {
         $user = User::factory()->create();
         $spot = Spot::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
-        $comment = SpotComment::factory()->create(['user_id' => $user->id, 'visibility' => 'follower']);
+        $comment = Comment::factory()->create(['user_id' => $user->id, 'visibility' => 'follower']);
 
         $response = $this->actingAs($this->premiumUser)->get(route('user_view', [$user->id, 'tab' => 'comments']));
 
@@ -616,7 +616,7 @@ class UserControllerTest extends TestCase
     public function view_premium_user_can_view_their_own_private_verified_user_comments()
     {
         $spot = Spot::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'public']);
-        $comment = SpotComment::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'private']);
+        $comment = Comment::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'private']);
 
         $response = $this->actingAs($this->premiumUser)->get(route('user_view', [$this->premiumUser->id, 'tab' => 'comments']));
 
@@ -638,7 +638,7 @@ class UserControllerTest extends TestCase
     {
         $user = User::factory()->create();
         $spot = Spot::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
-        $comment = SpotComment::factory()->create(['user_id' => $user->id, 'visibility' => 'private']);
+        $comment = Comment::factory()->create(['user_id' => $user->id, 'visibility' => 'private']);
 
         $response = $this->actingAs($this->premiumUser)->get(route('user_view', [$user->id, 'tab' => 'comments']));
 
@@ -660,7 +660,7 @@ class UserControllerTest extends TestCase
     {
         $user = User::factory()->create();
         $spot = Spot::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
-        $comment = SpotComment::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+        $comment = Comment::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
         $comment->delete();
 
         $response = $this->actingAs($this->premiumUser)->get(route('user_view', [$user->id, 'tab' => 'comments']));
@@ -2486,7 +2486,7 @@ class UserControllerTest extends TestCase
     public function bin_premium_user_can_view_their_own_deleted_comments()
     {
         $spot = Spot::factory()->create();
-        $comment = SpotComment::factory()->create();
+        $comment = Comment::factory()->create();
         $comment->delete();
 
         $response = $this->actingAs($this->premiumUser)->get(route('user_bin', 'comments'));
@@ -2505,7 +2505,7 @@ class UserControllerTest extends TestCase
     public function bin_premium_user_can_not_view_their_own_non_deleted_comments()
     {
         $spot = Spot::factory()->create();
-        $comment = SpotComment::factory()->create();
+        $comment = Comment::factory()->create();
 
         $response = $this->actingAs($this->premiumUser)->get(route('user_bin', 'comments'));
 
@@ -2522,7 +2522,7 @@ class UserControllerTest extends TestCase
     {
         $user = User::factory()->create();
         $spot = Spot::factory()->create(['user_id' => $this->premiumUser->id]);
-        $comment = SpotComment::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+        $comment = Comment::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
         $comment->delete();
 
         $response = $this->actingAs($this->premiumUser)->get(route('user_bin', 'comments'));
@@ -2539,8 +2539,8 @@ class UserControllerTest extends TestCase
     public function bin_premium_user_views_most_recently_deleted_comments_first()
     {
         $spot = Spot::factory()->create();
-        $oldestComment = SpotComment::factory()->create(['deleted_at' => '2021-11-20 17:30:00']);
-        $newestComment = SpotComment::factory()->create(['deleted_at' => '2021-11-25 17:30:00']);
+        $oldestComment = Comment::factory()->create(['deleted_at' => '2021-11-20 17:30:00']);
+        $newestComment = Comment::factory()->create(['deleted_at' => '2021-11-25 17:30:00']);
 
         $response = $this->actingAs($this->premiumUser)->get(route('user_bin', 'comments'));
 

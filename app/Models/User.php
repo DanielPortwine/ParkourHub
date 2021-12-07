@@ -99,9 +99,9 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany('App\Models\Review');
     }
 
-    public function spotComments()
+    public function comments()
     {
-        return $this->hasMany('App\Models\SpotComment');
+        return $this->hasMany('App\Models\Comment');
     }
 
     public function challenges()

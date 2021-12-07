@@ -40,8 +40,8 @@ class RouteServiceProvider extends ServiceProvider
             return \App\Models\Review::withoutGlobalScopes()->withTrashed()->findOrFail($id);
         });
 
-        Route::bind('any_spotComment', function($id) {
-            return \App\Models\SpotComment::withoutGlobalScopes()->withTrashed()->findOrFail($id);
+        Route::bind('any_comment', function($id) {
+            return \App\Models\Comment::withoutGlobalScopes()->withTrashed()->findOrFail($id);
         });
 
         Route::bind('any_workout', function($id) {

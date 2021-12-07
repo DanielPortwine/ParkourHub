@@ -89,20 +89,20 @@ Route::prefix('/reviews')->middleware('verified')->group(function() {
     Route::get('/discard_reports/{any_review}', 'ReviewController@discardReports')->name('review_report_discard');
 });
 
-Route::prefix('/spot_comments')->middleware('verified')->group(function() {
-    Route::post('/create', 'SpotCommentController@store')->middleware('optimizeImages')->name('spot_comment_store');
-    Route::get('/edit/{id}', 'SpotCommentController@edit')->name('spot_comment_edit');
-    Route::post('/edit/{id}', 'SpotCommentController@update')->middleware('optimizeImages')->name('spot_comment_update');
-    Route::get('/delete/{id}', 'SpotCommentController@delete')->name('spot_comment_delete');
-    Route::get('/recover/{id}', 'SpotCommentController@recover')->name('spot_comment_recover');
-    Route::get('/remove/{id}', 'SpotCommentController@remove')->name('spot_comment_remove');
-    Route::get('/report/{id}', 'SpotCommentController@report')->name('spot_comment_report');
-    Route::get('/discard_reports/{any_spotComment}', 'SpotCommentController@discardReports')->name('spot_comment_report_discard');
+Route::prefix('/comments')->middleware('verified')->group(function() {
+    Route::post('/create', 'CommentController@store')->middleware('optimizeImages')->name('comment_store');
+    Route::get('/edit/{id}', 'CommentController@edit')->name('comment_edit');
+    Route::post('/edit/{id}', 'CommentController@update')->middleware('optimizeImages')->name('comment_update');
+    Route::get('/delete/{id}', 'CommentController@delete')->name('comment_delete');
+    Route::get('/recover/{id}', 'CommentController@recover')->name('comment_recover');
+    Route::get('/remove/{id}', 'CommentController@remove')->name('comment_remove');
+    Route::get('/report/{id}', 'CommentController@report')->name('comment_report');
+    Route::get('/discard_reports/{any_comment}', 'CommentController@discardReports')->name('comment_report_discard');
 });
 
 Route::prefix('challenges')->middleware('verified')->group(function() {
     Route::get('/', 'ChallengeController@listing')->withoutMiddleware('verified')->name('challenge_listing');
-    Route::get('/challenge/{id}', 'ChallengeController@view')->withoutMiddleware('verified')->name('challenge_view');
+    Route::get('/challenge/{id}/{tab?}', 'ChallengeController@view')->withoutMiddleware('verified')->name('challenge_view');
     Route::post('/create', 'ChallengeController@store')->middleware('optimizeImages')->name('challenge_store');
     Route::get('/edit/{id}', 'ChallengeController@edit')->name('challenge_edit');
     Route::post('/edit/{id}', 'ChallengeController@update')->middleware('optimizeImages')->name('challenge_update');

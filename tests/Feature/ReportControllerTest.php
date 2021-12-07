@@ -12,7 +12,7 @@ use App\Models\MovementType;
 use App\Models\Report;
 use App\Models\Review;
 use App\Models\Spot;
-use App\Models\SpotComment;
+use App\Models\Comment;
 use App\Models\SpotView;
 use App\Models\User;
 use App\Models\Workout;
@@ -1264,10 +1264,10 @@ class ReportControllerTest extends TestCase
     {
         $user = User::factory()->create();
         $spot = Spot::factory()->create(['user_id' => $this->adminUser->id]);
-        $comment = SpotComment::factory()->create(['user_id' => $user->id, 'visibility' => 'private']);
+        $comment = Comment::factory()->create(['user_id' => $user->id, 'visibility' => 'private']);
         $report = new Report([
             'user_id' => $this->adminUser->id,
-            'reportable_type' => SpotComment::class,
+            'reportable_type' => Comment::class,
             'reportable_id' => $comment->id,
         ]);
         $report->save();
@@ -1288,11 +1288,11 @@ class ReportControllerTest extends TestCase
     {
         $user = User::factory()->create();
         $spot = Spot::factory()->create(['user_id' => $this->adminUser->id]);
-        $comment = SpotComment::factory()->create(['user_id' => $user->id, 'visibility' => 'private']);
+        $comment = Comment::factory()->create(['user_id' => $user->id, 'visibility' => 'private']);
         $comment->delete();
         $report = new Report([
             'user_id' => $this->adminUser->id,
-            'reportable_type' => SpotComment::class,
+            'reportable_type' => Comment::class,
             'reportable_id' => $comment->id,
         ]);
         $report->save();
@@ -1312,10 +1312,10 @@ class ReportControllerTest extends TestCase
     public function listing_manage_reports_user_can_view_reported_comments_between_two_dates()
     {
         $spot = Spot::factory()->create();
-        $comment = SpotComment::factory()->create(['created_at' => '2021-06-01 21:30:00']);
+        $comment = Comment::factory()->create(['created_at' => '2021-06-01 21:30:00']);
         $report = new Report([
             'user_id' => $this->adminUser->id,
-            'reportable_type' => SpotComment::class,
+            'reportable_type' => Comment::class,
             'reportable_id' => $comment->id,
         ]);
         $report->save();
@@ -1335,10 +1335,10 @@ class ReportControllerTest extends TestCase
     public function listing_manage_reports_user_can_not_view_reported_comments_outside_two_dates()
     {
         $spot = Spot::factory()->create();
-        $comment = SpotComment::factory()->create(['created_at' => '2021-06-01 21:30:00']);
+        $comment = Comment::factory()->create(['created_at' => '2021-06-01 21:30:00']);
         $report = new Report([
             'user_id' => $this->adminUser->id,
-            'reportable_type' => SpotComment::class,
+            'reportable_type' => Comment::class,
             'reportable_id' => $comment->id,
         ]);
         $report->save();
@@ -1357,17 +1357,17 @@ class ReportControllerTest extends TestCase
     public function listing_manage_reports_user_can_view_latest_reported_comments_first()
     {
         $spot = Spot::factory()->create();
-        $latestComment = SpotComment::factory()->create(['created_at' => '2021-05-31 19:30:00']);
-        $oldestComment = SpotComment::factory()->create(['created_at' => '2021-04-30 19:30:00']);
+        $latestComment = Comment::factory()->create(['created_at' => '2021-05-31 19:30:00']);
+        $oldestComment = Comment::factory()->create(['created_at' => '2021-04-30 19:30:00']);
         $latestReport = new Report([
             'user_id' => $this->adminUser->id,
-            'reportable_type' => SpotComment::class,
+            'reportable_type' => Comment::class,
             'reportable_id' => $latestComment->id,
         ]);
         $latestReport->save();
         $oldestReport = new Report([
             'user_id' => $this->adminUser->id,
-            'reportable_type' => SpotComment::class,
+            'reportable_type' => Comment::class,
             'reportable_id' => $oldestComment->id,
         ]);
         $oldestReport->save();
@@ -1387,17 +1387,17 @@ class ReportControllerTest extends TestCase
     public function listing_manage_reports_user_can_view_oldest_reported_comments_first()
     {
         $spot = Spot::factory()->create();
-        $latestComment = SpotComment::factory()->create(['created_at' => '2021-05-31 19:30:00']);
-        $oldestComment = SpotComment::factory()->create(['created_at' => '2021-04-30 19:30:00']);
+        $latestComment = Comment::factory()->create(['created_at' => '2021-05-31 19:30:00']);
+        $oldestComment = Comment::factory()->create(['created_at' => '2021-04-30 19:30:00']);
         $latestReport = new Report([
             'user_id' => $this->adminUser->id,
-            'reportable_type' => SpotComment::class,
+            'reportable_type' => Comment::class,
             'reportable_id' => $latestComment->id,
         ]);
         $latestReport->save();
         $oldestReport = new Report([
             'user_id' => $this->adminUser->id,
-            'reportable_type' => SpotComment::class,
+            'reportable_type' => Comment::class,
             'reportable_id' => $oldestComment->id,
         ]);
         $oldestReport->save();

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@push('title')Edit Spot Comment | @endpush
+@push('title')Edit Comment | @endpush
 
 @section('content')
     @if (session('status'))
@@ -15,11 +15,10 @@
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header bg-green sedgwick">Edit Spot Comment</div>
+                    <div class="card-header bg-green sedgwick">Edit Comment</div>
                     <div class="card-body bg-grey text-white">
-                        <form method="POST" action="{{ route('spot_comment_update', $comment->id) }}" enctype="multipart/form-data">
+                        <form method="POST" action="{{ route('comment_update', $comment->id) }}" enctype="multipart/form-data">
                             @csrf
-                            <input type="hidden" name="spot" value="{{ $comment->spot->id }}">
                             <div class="form-group row">
                                 <label for="comment" class="col-md-2 col-form-label text-md-right">Comment</label>
                                 <div class="col-md-8">
@@ -65,7 +64,14 @@
                                     @endif
                                     <div class="row">
                                         <div class="col-lg-6 mb-2 mb-lg-0">
-                                            <input type="text" id="youtube" class="form-control @error('youtube') is-invalid @enderror" name="youtube" autocomplete="youtube" placeholder="e.g. https://youtu.be/QDIVrf2ZW0s" value="{{ old('youtube') }}">
+                                            <input type="text"
+                                                   id="youtube"
+                                                   class="form-control @error('youtube') is-invalid @enderror"
+                                                   name="youtube"
+                                                   autocomplete="youtube"
+                                                   placeholder="e.g. https://youtu.be/QDIVrf2ZW0s"
+                                                   value="{{ !empty($comment->youtube) ? 'https://youtu.be/' . $comment->youtube : '' }}"
+                                            >
                                             @error('youtube')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
@@ -73,6 +79,9 @@
                                             @enderror
                                         </div>
                                         <div class="col-lg-6">
+                                            @if(!empty($comment->video) || !empty($comment->image))
+                                                <input type="hidden" name="old_video_image" value="true">
+                                            @endif
                                             <input type="file" id="video_image" class="form-control-file @error('video_image') is-invalid @enderror" name="video_image">
                                             @error('video_image')
                                                 <span class="invalid-feedback" role="alert">

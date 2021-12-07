@@ -13,7 +13,7 @@ use App\Notifications\UserFollowed;
 use App\Notifications\UserFollowRequested;
 use App\Models\Review;
 use App\Models\Spot;
-use App\Models\SpotComment;
+use App\Models\Comment;
 use App\Models\Subscriber;
 use App\Models\User;
 use App\Models\UserSettingsLog;
@@ -69,7 +69,7 @@ class UserController extends Controller
                 $spotWith = 'hits';
                 break;
             case 'comments':
-                $spotWith = 'spotComments';
+                $spotWith = 'comments';
                 break;
             case 'entries':
                 $spotWith = 'challengeEntries';
@@ -116,7 +116,7 @@ class UserController extends Controller
         }
         if ($tab === 'comments') {
             $linkSpotOnComment = true;
-            $comments = $user->spotComments()
+            $comments = $user->comments()
                 ->with(['reports', 'user'])
                 ->orderByDesc('created_at')
                 ->paginate(20);
@@ -420,9 +420,9 @@ class UserController extends Controller
         }
         if ($tab === 'comments') {
             $linkSpotOnComment = true;
-            $comments = $user->spotComments()
+            $comments = $user->comments()
                 ->onlyTrashed()
-                ->with(['reports', 'user'])
+                ->with(['reports', 'user', 'commentable'])
                 ->orderByDesc('deleted_at')
                 ->paginate(20);
         }

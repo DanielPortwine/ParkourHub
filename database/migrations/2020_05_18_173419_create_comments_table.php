@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSpotCommentsTable extends Migration
+class CreateCommentsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,12 @@ class CreateSpotCommentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('spot_comments', function (Blueprint $table) {
+        Schema::create('comments', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('spot_id');
             $table->unsignedBigInteger('user_id');
+            $table->string('commentable_type');
+            $table->unsignedBigInteger('commentable_id');
+            $table->unsignedBigInteger('parent_comment_id')->nullable();
             $table->string('comment')->nullable();
             $table->enum('visibility', ['private', 'follower', 'public'])->default('private');
             $table->string('image')->nullable();
@@ -27,7 +29,6 @@ class CreateSpotCommentsTable extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign('spot_id')->references('id')->on('spots')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
@@ -39,6 +40,6 @@ class CreateSpotCommentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('spot_comments');
+        Schema::dropIfExists('comments');
     }
 }

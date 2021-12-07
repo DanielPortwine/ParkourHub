@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class SpotComment extends Model
+class Comment extends Model
 {
     use SoftDeletes,
         Reportable,
@@ -40,9 +40,9 @@ class SpotComment extends Model
         return $query;
     }
 
-    public function spot()
+    public function commentable()
     {
-        return $this->belongsTo('App\Models\Spot');
+        return $this->morphTo();
     }
 
     public function user()

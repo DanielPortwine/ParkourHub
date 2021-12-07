@@ -105,108 +105,206 @@
     </div>
     <div class="fragment-link" id="entries"></div>
     <div class="section">
-        <div class="container">
-            <div class="row py-4">
-                <div class="col">
-                    <h2 class="sedgwick subtitle mb-0">Entries</h2>
+        <div class="container-fluid container-lg p-0">
+            <div class="card bg-black border-0">
+                <div class="card-header card-header-black">
+                    <ul class="nav nav-tabs card-header-tabs">
+                        <li class="nav-item">
+                            <a class="nav-link btn-link @if($tab === 'entries')active @endif" href="{{ route('challenge_view', ['id' => $challenge->id, 'tab' => null]) }}">Entries</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn-link @if($tab === 'comments')active @endif" href="{{ route('challenge_view', ['id' => $challenge->id, 'tab' => 'comments']) }}">Comments</a>
+                        </li>
+                    </ul>
                 </div>
-            </div>
-            @if(!empty($winner))
-                <div class="row mb-4">
-                    <div class="col">
-                        @include('components.entry', ['entry' => $winner, 'winnerHighlight' => true])
-                    </div>
-                </div>
-            @endif
-            @if(auth()->check() && $challenge->deleted_at === null)
-                <div class="row mb-4">
-                    <div class="col">
-                        <div class="card">
-                            <div class="card-header bg-green sedgwick card-hidden-body">
-                                <div class="row">
-                                    <div class="col">
-                                        Enter Challenge
-                                    </div>
-                                    <div class="col-auto">
-                                        <i class="fa fa-caret-down"></i>
+                @if($tab === 'entries')
+                    <div class="card-body bg-black">
+                        @if(!empty($winner))
+                            <div class="row mb-4">
+                                <div class="col">
+                                    @include('components.entry', ['entry' => $winner, 'winnerHighlight' => true])
+                                </div>
+                            </div>
+                        @endif
+                        @if(auth()->check() && $challenge->deleted_at === null)
+                            <div class="row mb-4">
+                                <div class="col">
+                                    <div class="card">
+                                        <div class="card-header bg-green sedgwick card-hidden-body">
+                                            <div class="row">
+                                                <div class="col">
+                                                    Enter Challenge
+                                                </div>
+                                                <div class="col-auto">
+                                                    <i class="fa fa-caret-down"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-body bg-grey text-white">
+                                            @if ($entered)
+                                                <p class="mb-0">You have already entered this challenge.</p>
+                                            @else
+                                                <form method="POST" action="{{ route('entry_store') }}" enctype="multipart/form-data">
+                                                    @csrf
+                                                    <input type="hidden" name="challenge" value="{{ $challenge->id }}">
+                                                    @premium
+                                                        <div class="form-group row">
+                                                            <label class="col-md-2 col-form-label text-md-right">Youtube or Video</label>
+                                                            <div class="col-md-4">
+                                                                <input type="text" id="youtube" class="form-control @error('youtube') is-invalid @enderror" name="youtube" autocomplete="youtube" placeholder="e.g. https://youtu.be/QDIVrf2ZW0s" value="{{ old('youtube') }}">
+                                                                @error('youtube')
+                                                                <span class="invalid-feedback" role="alert">
+                                                                        <strong>{{ $message }}</strong>
+                                                                    </span>
+                                                                @enderror
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <input type="file" id="video" class="form-control-file @error('video') is-invalid @enderror" name="video">
+                                                                @error('video')
+                                                                <span class="invalid-feedback" role="alert">
+                                                                        <strong>{{ $message }}</strong>
+                                                                    </span>
+                                                                @enderror
+                                                            </div>
+                                                        </div>
+                                                    @else
+                                                        <div class="form-group row">
+                                                            <label class="col-md-2 col-form-label text-md-right">Youtube</label>
+                                                            <div class="col-md-4">
+                                                                <input type="text" id="youtube" class="form-control @error('youtube') is-invalid @enderror" name="youtube" autocomplete="youtube" placeholder="e.g. https://youtu.be/QDIVrf2ZW0s" value="{{ old('youtube') }}">
+                                                                @error('youtube')
+                                                                <span class="invalid-feedback" role="alert">
+                                                                        <strong>{{ $message }}</strong>
+                                                                    </span>
+                                                                @enderror
+                                                            </div>
+                                                        </div>
+                                                    @endpremium
+                                                    <div class="row">
+                                                        <div class="col-md-8 offset-2">
+                                                            <small>You may only enter a challenge once so please make sure you select the correct video.</small>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <div class="col-md-8 offset-2">
+                                                            <button type="submit" class="btn btn-green">Enter</button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            @endif
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="card-body bg-grey text-white">
-                                @if ($entered)
-                                    <p class="mb-0">You have already entered this challenge.</p>
-                                @else
-                                    <form method="POST" action="{{ route('entry_store') }}" enctype="multipart/form-data">
-                                        @csrf
-                                        <input type="hidden" name="challenge" value="{{ $challenge->id }}">
-                                        @premium
-                                            <div class="form-group row">
-                                                <label class="col-md-2 col-form-label text-md-right">Youtube or Video</label>
-                                                <div class="col-md-4">
-                                                    <input type="text" id="youtube" class="form-control @error('youtube') is-invalid @enderror" name="youtube" autocomplete="youtube" placeholder="e.g. https://youtu.be/QDIVrf2ZW0s" value="{{ old('youtube') }}">
-                                                    @error('youtube')
-                                                    <span class="invalid-feedback" role="alert">
-                                                            <strong>{{ $message }}</strong>
-                                                        </span>
-                                                    @enderror
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <input type="file" id="video" class="form-control-file @error('video') is-invalid @enderror" name="video">
-                                                    @error('video')
-                                                    <span class="invalid-feedback" role="alert">
-                                                            <strong>{{ $message }}</strong>
-                                                        </span>
-                                                    @enderror
-                                                </div>
-                                            </div>
-                                        @else
-                                            <div class="form-group row">
-                                                <label class="col-md-2 col-form-label text-md-right">Youtube</label>
-                                                <div class="col-md-4">
-                                                    <input type="text" id="youtube" class="form-control @error('youtube') is-invalid @enderror" name="youtube" autocomplete="youtube" placeholder="e.g. https://youtu.be/QDIVrf2ZW0s" value="{{ old('youtube') }}">
-                                                    @error('youtube')
-                                                    <span class="invalid-feedback" role="alert">
-                                                            <strong>{{ $message }}</strong>
-                                                        </span>
-                                                    @enderror
-                                                </div>
-                                            </div>
-                                        @endpremium
-                                        <div class="row">
-                                            <div class="col-md-8 offset-2">
-                                                <small>You may only enter a challenge once so please make sure you select the correct video.</small>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <div class="col-md-8 offset-2">
-                                                <button type="submit" class="btn btn-green">Enter</button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                @endif
+                        @elseif($challenge->deleted_at === null)
+                            <a class="btn-link" href="/login">Login</a> or <a class="btn-link" href="/register">Register</a> to enter.
+                        @endif
+                        {{ $entries->links() }}
+                        @foreach($entries->chunk(2) as $chunk)
+                            <div class="row">
+                                @foreach($chunk as $entry)
+                                    <div class="col-md-6 mb-4">
+                                        @include('components.entry')
+                                    </div>
+                                @endforeach
                             </div>
-                        </div>
+                        @endforeach
+                        @if (count($challenge->entries) === 0)
+                            <p>This challenge has no entries yet.@auth Create one by clicking 'Enter Challenge' above.@endauth </p>
+                        @endif
+                        {{ $entries->links() }}
                     </div>
-                </div>
-            @elseif($challenge->deleted_at === null)
-                <a class="btn-link" href="/login">Login</a> or <a class="btn-link" href="/register">Register</a> to enter.
-            @endif
-        </div>
-        <div class="container">
-            {{ $entries->links() }}
-            @foreach($entries->chunk(2) as $chunk)
-                <div class="row">
-                    @foreach($chunk as $entry)
-                        <div class="col-md-6 mb-4">
-                            @include('components.entry')
-                        </div>
-                    @endforeach
-                </div>
-            @endforeach
-            @if (count($challenge->entries) === 0)
-                <p>This challenge has no entries yet.@auth Create one by clicking 'Enter Challenge' above.@endauth </p>
-            @endif
-            {{ $entries->links() }}
+                @elseif($tab === 'comments')
+                    <div class="card-body bg-black">
+                        @if(auth()->check() && $challenge->deleted_at === null)
+                            <div class="row mb-4">
+                                <div class="col">
+                                    <div class="card @error('comment') border-danger @enderror @error('image') border-danger @enderror @error('youtube') border-danger @enderror @error('video') border-danger @enderror">
+                                        <div class="card-header bg-green sedgwick card-hidden-body">
+                                            <div class="row">
+                                                <div class="col">
+                                                    Submit Comment
+                                                </div>
+                                                <div class="col-auto">
+                                                    <i class="fa fa-caret-down"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-body bg-grey text-white">
+                                            <form method="POST" action="{{ route('comment_store') }}" enctype="multipart/form-data">
+                                                @csrf
+                                                <input type="hidden" name="commentable_type" value="Challenge">
+                                                <input type="hidden" name="commentable_id" value="{{ $challenge->id }}">
+                                                <div class="form-group row">
+                                                    <label for="comment" class="col-md-2 col-form-label text-md-right">Comment</label>
+                                                    <div class="col-md-8">
+                                                        <textarea id="comment" class="form-control @error('comment') is-invalid @enderror" name="comment" maxlength="255">{{ old('comment') }}</textarea>
+                                                        @error('comment')
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                        @enderror
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    @premium
+                                                    <label class="col-md-2 col-form-label text-md-right">Youtube, Video or Image</label>
+                                                    @else
+                                                        <label class="col-md-2 col-form-label text-md-right">Youtube or Image</label>
+                                                        @endpremium
+                                                        <div class="col-md-4">
+                                                            <input type="text" id="youtube" class="form-control @error('youtube') is-invalid @enderror" name="youtube" autocomplete="youtube" placeholder="e.g. https://youtu.be/QDIVrf2ZW0s" value="{{ old('youtube') }}">
+                                                            @error('youtube')
+                                                            <span class="invalid-feedback" role="alert">
+                                                                <strong>{{ $message }}</strong>
+                                                            </span>
+                                                            @enderror
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <input type="file" id="video_image" class="form-control-file @error('video_image') is-invalid @enderror" name="video_image">
+                                                            @error('video_image')
+                                                            <span class="invalid-feedback" role="alert">
+                                                                <strong>{{ $message }}</strong>
+                                                            </span>
+                                                            @enderror
+                                                        </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="visibility" class="col-md-2 col-form-label text-md-right">Visibility</label>
+                                                    <div class="col-md-8">
+                                                        <select name="visibility" class="form-control select2-no-search">
+                                                            @foreach(config('settings.privacy.privacy_content.options') as $key => $name)
+                                                                <option value="{{ $key }}" @if(setting('privacy_content', 'private') === $key)selected @endif>{{ $name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <div class="col-md-8 offset-md-2">
+                                                        <button type="submit" class="btn btn-green">Submit</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+                        {{ $comments->links() }}
+                        @foreach($comments as $comment)
+                            <div class="row">
+                                <div class="col mb-4">
+                                    @include('components.comment')
+                                </div>
+                            </div>
+                        @endforeach
+                        {{ $comments->links() }}
+                        @if (count($challenge->comments) === 0)
+                            <p class="mb-0">This spot has no comments yet.@auth Create one by clicking 'Submit Comment' above.@else <a class="btn-link" href="/login">Login</a> or <a class="btn-link" href="/register">Register</a> to create one. @endauth</p>
+                        @endif
+                    </div>
+                @endif
+            </div>
         </div>
     </div>
 @endsection

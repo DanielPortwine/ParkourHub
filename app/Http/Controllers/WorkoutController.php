@@ -71,6 +71,7 @@ class WorkoutController extends Controller
                 ->with([
                     'user',
                     'movements',
+                    'comments',
                     'bookmarks',
                     'spots',
                     'reports',
@@ -82,25 +83,34 @@ class WorkoutController extends Controller
             abort(404);
         }
 
-        $linkableSpots = null;
-        if ($tab === 'movements') {
-            $workoutMovements = $workout->movements()
-                ->with(['fields'])
-                ->whereHas('movement')
-                ->whereNull('recorded_workout_id')
-                ->paginate(20);
-        } else if ($tab === 'recorded') {
-            $recordedWorkouts = RecordedWorkout::where('workout_id', $id)
-                ->with(['workout', 'movements'])
-                ->where('user_id', Auth::id())
-                ->paginate(20);
-        } else if ($tab === 'spots') {
-            $spots = $workout->spots()
-                ->withCount('views')
-                ->with(['reviews', 'reports', 'hits', 'user'])
-                ->orderByDesc('created_at')
-                ->paginate(20);
-            $linkableSpots = Spot::whereNotIn('id', $workout->spots()->pluck('spots.id')->toArray())->get();
+        switch ($tab) {
+            case 'movements':
+                $workoutMovements = $workout->movements()
+                    ->with(['fields'])
+                    ->whereHas('movement')
+                    ->whereNull('recorded_workout_id')
+                    ->paginate(20);
+                break;
+            case 'comments':
+                $comments = $workout->comments()
+                    ->with(['reports', 'user'])
+                    ->orderByDesc('created_at')
+                    ->paginate(20, ['*']);
+                break;
+            case 'recorded':
+                $recordedWorkouts = RecordedWorkout::where('workout_id', $id)
+                    ->with(['workout', 'movements'])
+                    ->where('user_id', Auth::id())
+                    ->paginate(20);
+                break;
+            case 'spots':
+                $spots = $workout->spots()
+                    ->withCount('views')
+                    ->with(['reviews', 'reports', 'hits', 'user'])
+                    ->orderByDesc('created_at')
+                    ->paginate(20);
+                $linkableSpots = Spot::whereNotIn('id', $workout->spots()->pluck('spots.id')->toArray())->get();
+                break;
         }
 
         $displayWorkoutMovement = $workout->movements()
@@ -115,12 +125,13 @@ class WorkoutController extends Controller
         return view('workouts.view', [
             'workout' => $workout,
             'workoutMovements' => $workoutMovements ?? null,
+            'comments' => $comments ?? null,
             'recordedWorkouts' => $recordedWorkouts ?? null,
             'spots' => $spots ?? null,
             'request' => $request,
             'tab' => $tab,
             'displayMovement' => $displayMovement ?? null,
-            'linkableSpots' => $linkableSpots,
+            'linkableSpots' => $linkableSpots ?? null,
         ]);
     }
 
