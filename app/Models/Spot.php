@@ -129,6 +129,11 @@ class Spot extends Model
         return $this->hasMany('App\Models\Hit');
     }
 
+    public function events()
+    {
+        return $this->belongsToMany('App\Models\Event', 'spots_events');
+    }
+
     public function locals()
     {
         return $this->belongsToMany('App\Models\User', 'spots_locals');

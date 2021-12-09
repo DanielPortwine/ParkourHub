@@ -88,6 +88,7 @@
                                         <i class="fa fa-diamond nav-icon text-premium"></i><span class="d-md-none d-lg-inline">Premium</span>
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-right bg-grey" id="notification-menu" aria-labelledby="notification-dropdown">
+                                        <a class="dropdown-item text-white" href="{{ route('event_listing') }}"><i class="fa fa-map-marked nav-icon"></i>Events</a>
                                         <a class="dropdown-item text-white" href="{{ route('workout_listing') }}"><i class="fa fa-running nav-icon"></i>Workouts</a>
                                         <a class="dropdown-item text-white" href="{{ route('movement_listing') }}"><i class="fa fa-child nav-icon"></i>Movements</a>
                                         <a class="dropdown-item text-white" href="{{ route('equipment_listing') }}"><i class="fa fa-dumbbell nav-icon"></i>Equipment</a>

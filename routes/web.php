@@ -122,6 +122,22 @@ Route::prefix('challenges')->middleware('verified')->group(function() {
     });
 });
 
+Route::prefix('events')->middleware('verified')->group(function() {
+    Route::get('/', 'EventController@listing')->name('event_listing');
+    Route::get('/view/{id}/{tab?}', 'EventController@view')->name('event_view');
+    Route::middleware('isPremium')->group(function() {
+        Route::get('/create', 'EventController@create')->name('event_create');
+        Route::post('/create', 'EventController@store')->middleware('optimizeImages')->name('event_store');
+        Route::get('/edit/{id}', 'EventController@edit')->name('event_edit');
+        Route::post('/edit/{id}', 'EventController@update')->middleware('optimizeImages')->name('event_update');
+        Route::get('/delete/{id}', 'EventController@delete')->name('event_delete');
+        Route::get('/recover/{id}', 'EventController@recover')->name('event_recover');
+        Route::get('/remove/{id}', 'EventController@remove')->name('event_remove');
+    });
+    Route::get('/report/{id}', 'EventController@report')->name('event_report');
+    Route::get('/discard_reports/{id}', 'EventController@discardReports')->name('event_report_discard');
+});
+
 Route::prefix('movements')->middleware(['verified', 'isPremium'])->group(function() {
     Route::get('/', 'MovementController@listing')->name('movement_listing');
     Route::get('/view/{id}/{tab?}', 'MovementController@view')->name('movement_view');

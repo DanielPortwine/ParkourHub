@@ -39,6 +39,12 @@
                             <span class="d-none d-lg-inline">Challenges</span>
                         </a>
                     </li>
+                    <li class="nav-item px-2">
+                        <a class="nav-link @if(Route::currentRouteName() === 'event_listing')active @endif" href="{{ route('event_listing', ['search' => $_GET['search'] ?? '']) }}">
+                            <i class="fa fa-map-marked nav-icon"></i>
+                            <span class="d-none d-lg-inline">Events</span>
+                        </a>
+                    </li>
                     @premium
                         <li class="nav-item px-2">
                             <a class="nav-link @if(Route::currentRouteName() === 'workout_listing')active @endif" href="{{ route('workout_listing', ['search' => $_GET['search'] ?? '']) }}">
@@ -105,6 +111,12 @@
                             <span class="d-none d-lg-inline">Entries</span>
                         </a>
                     </li>
+                    <li class="nav-item px-2">
+                        <a class="nav-link @if($component === 'event')active @endif" href="{{ route('report_listing', 'event') }}">
+                            <i class="fa fa-map-marked nav-icon"></i>
+                            <span class="d-none d-lg-inline">Events</span>
+                        </a>
+                    </li>
                     @premium
                         <li class="nav-item px-2">
                             <a class="nav-link @if($component === 'workout')active @endif" href="{{ route('report_listing', 'workout') }}">
@@ -162,7 +174,7 @@
                                             <input type="date" name="date_to" value="{{ $_GET['date_to'] ?? '' }}">
                                         </div>
                                     </div>
-                                    @if(($component === 'spot' || $component === 'challenge') && Auth::check())
+                                    @if(in_array($component, ['spot', 'challenge', 'event']) && Auth::check())
                                         <div class="col-auto pb-3">
                                             <label><strong>Following</strong></label>
                                             <div class="form-check text-center">
@@ -240,6 +252,46 @@
                                                 <i class="rating-circle editable fa fa-circle-o" id="rating-circle-5"></i>
                                             </div>
                                         </div>
+                                    @elseif($component === 'event')
+                                        <div class="col-auto pb-3">
+                                            <label><strong>Date Between: </strong></label>
+                                            <div>
+                                                <input type="date" name="event_date_from" value="{{ $_GET['event_date_from'] ?? '' }}">
+                                                <input type="date" name="event_date_to" value="{{ $_GET['event_date_to'] ?? '' }}">
+                                            </div>
+                                        </div>
+                                        <div class="col-auto pb-3">
+                                            <label><strong>Historic</strong></label>
+                                            <div class="form-check text-center">
+                                                <input class="form-check-input" type="checkbox" name="historic" id="historic" {{ !empty($_GET['historic']) ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="historic"></label>
+                                            </div>
+                                        </div>
+                                        @if(Auth::check())
+                                            <div class="col-auto pb-3">
+                                                <label><strong>Attending</strong></label>
+                                                <div class="form-check text-center">
+                                                    <input class="form-check-input" type="checkbox" name="attending" id="attending" {{ !empty($_GET['attending']) ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="attending"></label>
+                                                </div>
+                                            </div>
+                                            <div class="col-auto pb-3">
+                                                <label><strong>Applied</strong></label>
+                                                <div class="form-check text-center">
+                                                    <input class="form-check-input" type="checkbox" name="applied" id="applied" {{ !empty($_GET['applied']) ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="applied"></label>
+                                                </div>
+                                            </div>
+                                        @endif
+                                        @if(!empty(Auth()->user()->hometown_bounding))
+                                            <div class="col-auto pb-3">
+                                                <label><strong>In Hometown</strong></label>
+                                                <div class="form-check text-center">
+                                                    <input class="form-check-input" type="checkbox" name="in_hometown" id="in_hometown" {{ !empty($_GET['in_hometown']) ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="in_hometown"></label>
+                                                </div>
+                                            </div>
+                                        @endif
                                     @elseif($component === 'entry' && Auth::check())
                                         <div class="col-auto pb-3">
                                             <label><strong>Winner</strong></label>
@@ -312,6 +364,18 @@
                                                     <option value="difficulty_asc" @if(($_GET['sort'] ?? '') === 'difficulty_asc')selected @endif>Least Difficult</option>
                                                     <option value="entries_desc" @if(($_GET['sort'] ?? '') === 'entries_desc')selected @endif>Most Entries</option>
                                                     <option value="entries_asc" @if(($_GET['sort'] ?? '') === 'entries_asc')selected @endif>Least Entries</option>
+                                                @elseif($component === 'event')
+                                                    @if(empty($_GET['historic']))
+                                                        <option value="eventdate_asc" @if(($_GET['sort'] ?? '') === 'eventdate_asc' || empty($_GET['sort']))selected @endif>Soonest</option>
+                                                        <option value="eventdate_desc" @if(($_GET['sort'] ?? '') === 'eventdate_desc')selected @endif>Furthest</option>
+                                                    @else
+                                                        <option value="eventdate_desc" @if(($_GET['sort'] ?? '') === 'eventdate_desc')selected @endif>Latest</option>
+                                                        <option value="eventdate_asc" @if(($_GET['sort'] ?? '') === 'eventdate_asc')selected @endif>Furthest</option>
+                                                    @endif
+                                                    <option value="attendees_desc" @if(($_GET['sort'] ?? '') === 'attendees_desc')selected @endif>Most Attendees</option>
+                                                    <option value="attendees_asc" @if(($_GET['sort'] ?? '') === 'attendees_asc')selected @endif>Least Attendees</option>
+                                                    <option value="spots_desc" @if(($_GET['sort'] ?? '') === 'spots_desc')selected @endif>Most Spots</option>
+                                                    <option value="spots_asc" @if(($_GET['sort'] ?? '') === 'spots_asc')selected @endif>Least Spots</option>
                                                 @endif
                                             </select>
                                         </div>
