@@ -29,6 +29,7 @@ class EventFactory extends Factory
             'date_time' => $this->faker->dateTimeBetween('-3 days', '+1 month'),
             'visibility' => $this->faker->randomElement(['private', 'follower', 'public']),
             'link_access' => $this->faker->boolean,
+            'accept_method' => $this->faker->randomElement(['none', 'invite', 'accept']),
             'youtube' => 'Oykjn35X3EY',
             'thumbnail' => str_replace('public', '', $this->faker->image('public/storage/images/events', 640, 480, null, true)),
         ];

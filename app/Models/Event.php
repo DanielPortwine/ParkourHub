@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Nicolaslopezj\Searchable\SearchableTrait;
 
 class Event extends Model
@@ -39,6 +40,21 @@ class Event extends Model
     protected static function booted()
     {
         static::addGlobalScope(new VisibilityScope);
+    }
+
+    public function scopeLinkVisibility($query)
+    {
+        $followers = Cache::remember('visibility_followers_events_' . Auth::id(), 30, function() {
+            return Follower::where('follower_id', Auth::id())->where('accepted', true)->pluck('user_id')->toArray();
+        });
+
+        $query->where('visibility', 'public')
+            ->orWhere(function($q) use ($followers) {
+                $q->where('visibility', 'follower')
+                    ->whereIn('user_id', $followers);
+            })
+            ->orWhere('user_id', Auth::id())
+            ->orWhere('link_access', true);
     }
 
     public function scopeDateBetween($query, $dates = [])

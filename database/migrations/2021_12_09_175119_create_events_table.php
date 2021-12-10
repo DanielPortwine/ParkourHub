@@ -21,6 +21,7 @@ class CreateEventsTable extends Migration
             $table->dateTime('date_time');
             $table->enum('visibility', ['private', 'follower', 'public'])->default('private');
             $table->boolean('link_access')->default(false);
+            $table->enum('accept_method', ['none', 'invite', 'accept'])->default('none');
             $table->string('video')->nullable();
             $table->string('video_type')->nullable();
             $table->string('youtube')->nullable();

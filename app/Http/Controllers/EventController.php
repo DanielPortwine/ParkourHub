@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\Follower;
+use App\Scopes\VisibilityScope;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class EventController extends Controller
 {
@@ -46,6 +50,68 @@ class EventController extends Controller
             'title' => 'Events',
             'content' => $events,
             'component' => 'event',
+        ]);
+    }
+
+    public function view(Request $request, $id, $tab = 'spots')
+    {
+        // if coming from a notification, set the notification as read
+        if (!empty($request['notification'])) {
+            foreach (Auth::user()->unreadNotifications as $notification) {
+                if ($notification->id === $request['notification']) {
+                    $notification->markAsRead();
+                    break;
+                }
+            }
+
+            return redirect()->route('event_view', $id);
+        }
+
+        $event = Event::withoutGlobalScope(VisibilityScope::class)
+            ->withTrashed()
+            ->linkVisibility()
+            ->with([
+                'spots',
+                'attendees',
+                'reports',
+            ])
+            ->where('id', $id)
+            ->first();
+
+        if (empty($event) || ($event->deleted_at !== null && Auth::id() !== $event->user_id)) {
+            abort(404);
+        }
+
+        $userAttendance = $event->attendees()->withPivot('accepted')->where('user_id', Auth::id())->first();
+
+        switch ($tab) {
+            case 'spots':
+                $spots = $event->spots()
+                    ->with(['reports', 'user'])
+                    ->orderByDesc('created_at')
+                    ->paginate(20, ['*']);
+                break;
+            case 'attendees':
+                $attendees = $event->attendees()
+                    ->where('accepted' , true)
+                    ->orderByDesc('name')
+                    ->paginate(20, ['*']);
+                break;
+            case 'comments':
+                $comments = $event->comments()
+                    ->with(['reports', 'user'])
+                    ->orderByDesc('created_at')
+                    ->paginate(20, ['*']);
+                break;
+        }
+
+        return view('events.view', [
+            'event' => $event,
+            'tab' => $tab,
+            'userAttendance' => $userAttendance,
+            'spots' => $spots ?? null,
+            'attendees' => $attendees ?? null,
+            'comments' => $comments ?? null,
         ]);
     }
 }

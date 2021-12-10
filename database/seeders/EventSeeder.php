@@ -25,7 +25,7 @@ class EventSeeder extends Seeder
                 $applicants = User::whereNotIn('id', $attendees->pluck('id')->toArray())->inRandomOrder()->limit(rand(2, 5))->get();
                 $event->spots()->attach($spots->pluck('id')->toArray());
                 $event->attendees()->attach($attendees->pluck('id')->toArray(), ['accepted' => true]);
-                $event->attendees()->attach($applicants->pluck('id')->toArray());
+                $event->attendees()->attach($applicants->pluck('id')->toArray(), ['comment' => 'Please accept my attendance request']);
             }
         }
     }
