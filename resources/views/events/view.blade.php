@@ -91,7 +91,7 @@
             </div>
             <div class="row py-3">
                 <div class="col">
-                    @if(empty($userAttendance) && $event->accept_method === 'none')
+                    @if(empty($userAttendance) && ($event->accept_method === 'none' || $event->user_id === Auth()->id()))
                         <form method="POST" action="{{ route('event_attendee_store', $event->id) }}" enctype="multipart/form-data">
                             @csrf
                             <input type="hidden" name="event" value="{{ $event->id }}">
@@ -141,22 +141,21 @@
                     @elseif(!empty($userAttendance) && $userAttendance->pivot->accepted == false && $event->accept_method === 'invite')
                         <form method="POST" action="{{ route('event_attendee_update', $event->id) }}" enctype="multipart/form-data">
                             @csrf
-                            <input type="hidden" name="event" value="{{ $event->id }}">
                             <input type="hidden" name="user" value="{{ Auth()->id() }}">
                             <input type="hidden" name="accepted" value="true">
-                            <button type="submit" class="btn btn-green">Attend</button>
+                            <button type="submit" class="btn btn-green">Accept Invite</button>
                         </form>
                     @elseif(!empty($userAttendance) && $userAttendance->pivot->accepted == false && $event->accept_method === 'accept')
                         Your request to attend is under review.
-                    @elseif(!empty($userAttendance) && $userAttendance->pivot->accepted == true && $event->accept_method === 'invite')
+                    @elseif(!empty($userAttendance) && $userAttendance->pivot->accepted == true && $event->accept_method === 'invite' && $event->user_id !== Auth()->id())
                         <form method="POST" action="{{ route('event_attendee_update', $event->id) }}" enctype="multipart/form-data">
                             @csrf
                             <input type="hidden" name="user" value="{{ Auth()->id() }}">
                             <input type="hidden" name="accepted" value="false">
-                            <button type="submit" class="btn btn-danger">Cancel</button>
+                            <button type="submit" class="btn btn-danger">Cancel Attendance</button>
                         </form>
                     @else
-                        <a href="{{ route('event_attendee_delete', $event->id) }}" class="btn btn-danger">Cancel</a>
+                        <a href="{{ route('event_attendee_delete', ['event' => $event->id, 'user' => Auth()->id()]) }}" class="btn btn-danger">Cancel Attendance</a>
                     @endif
                 </div>
             </div>

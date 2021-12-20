@@ -71,7 +71,7 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="form-group row">
                                 <label class="col-md-2 col-form-label text-md-right">YouTube or Video</label>
                                 <div class="col-lg-4 col-md-8">
                                     <input type="text" id="youtube" class="form-control @error('youtube') is-invalid border-danger @enderror" name="youtube" autocomplete="youtube" placeholder="e.g. https://youtu.be/QDIVrf2ZW0s" value="{{ old('youtube') }}">
@@ -88,11 +88,6 @@
                                         <strong>{{ $message }}</strong>
                                     </span>
                                     @enderror
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <div class="col offset-md-2">
-                                    <small>The video should contain a demonstration of the movement and nothing else!</small>
                                 </div>
                             </div>
                             <div class="form-group row">

@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateEvent;
 use App\Models\Event;
-use App\Models\Follower;
+use App\Models\Spot;
+use App\Models\User;
+use App\Notifications\EventCreated;
 use App\Scopes\VisibilityScope;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 
 class EventController extends Controller
 {
@@ -50,6 +53,7 @@ class EventController extends Controller
             'title' => 'Events',
             'content' => $events,
             'component' => 'event',
+            'create' => true,
         ]);
     }
 
@@ -113,5 +117,54 @@ class EventController extends Controller
             'attendees' => $attendees ?? null,
             'comments' => $comments ?? null,
         ]);
+    }
+
+    public function create()
+    {
+        $spots = Spot::where('visibility', 'public')->get();
+        $users = User::whereNotNull('email_verified_at')->get();
+
+        return view('events.create', [
+            'spots' => $spots,
+            'users' => $users,
+        ]);
+    }
+
+    public function store(CreateEvent $request)
+    {
+        $event = new Event;
+        $event->user_id = Auth::id();
+        $event->name = $request['name'];
+        $event->description = $request['description'];
+        $event->date_time = $request['date_time'];
+        $event->visibility = $request['visibility'] ?: 'private';
+        $event->link_access = $request['link_access'] ? true : false;
+        $event->accept_method = $request['accept_method'] ?: 'accept';
+        if (!empty($request['youtube'])){
+            $youtube = explode('t=', str_replace(['https://youtu.be/', 'https://www.youtube.com/watch?v=', '&', '?'], '', $request['youtube']));
+            $event->youtube = $youtube[0];
+            $event->youtube_start = $youtube[1] ?? null;
+        } else if (!empty($request['video'])) {
+            $video = $request->file('video');
+            $event->video = Storage::url($video->store('videos/events', 'public'));
+            $event->video_type = $video->extension();
+        }
+        $event->thumbnail = Storage::url($request->file('thumbnail')->store('images/events', 'public'));
+        $event->save();
+
+        $event->spots()->attach($request['spots']);
+        if ($request['accept_method'] === 'invite' && !empty($request['users'])) {
+            $event->attendees()->attach($request['users'], ['accepted' => false]);
+        }
+
+        // notify followers that user created an event
+        $followers = Auth::user()->followers()->get();
+        foreach ($followers as $follower) {
+            if (in_array(setting('notifications_new_event', 'on-site', $follower->id), ['on-site', 'email', 'email-site'])) {
+                $follower->notify(new EventCreated($event));
+            }
+        }
+
+        return redirect()->route('event_view', $event->id)->with('status', 'Successfully created event');
     }
 }

@@ -139,7 +139,7 @@ Route::prefix('events')->middleware('verified')->group(function() {
     Route::prefix('attendees')->group(function() {
         Route::post('/store', 'EventAttendeeController@store')->name('event_attendee_store');
         Route::post('/edit/{id}', 'EventAttendeeController@update')->name('event_attendee_update');
-        Route::get('/delete/{id}', 'EventAttendeeController@delete')->name('event_attendee_delete');
+        Route::get('/delete/{event}/{user}', 'EventAttendeeController@delete')->name('event_attendee_delete');
     });
 });
 
