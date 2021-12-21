@@ -330,4 +330,26 @@ class EventController extends Controller
 
         return back()->with('status', 'Successfully removed event forever');
     }
+
+    public function report($id)
+    {
+        $event = Event::where('id', $id)->first();
+
+        $event->report();
+
+        return back()->with('status', 'Successfully reported event');
+    }
+
+    public function discardReports($id)
+    {
+        $event = Event::where('id', $id)->first();
+
+        if (!Auth::user()->hasPermissionTo('manage reports') || $event->user_id === Auth::id()) {
+            return back();
+        }
+
+        $event->discardReports();
+
+        return back()->with('status', 'Successfully discarded reports against this content');
+    }
 }

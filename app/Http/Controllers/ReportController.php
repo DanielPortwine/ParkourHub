@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Challenge;
 use App\Models\ChallengeEntry;
 use App\Models\Equipment;
+use App\Models\Event;
 use App\Models\Movement;
 use App\Models\MovementCategory;
 use App\Models\Report;
@@ -30,6 +31,9 @@ class ReportController extends Controller
                 'date' => 'created_at',
                 'rating' => 'rating',
                 'views' => 'views_count',
+                'eventdate' => 'date_time',
+                'attendees' => 'attendees_count',
+                'spots' => 'spots_count',
                 'difficulty' => 'difficulty',
                 'entries' => 'entries_count',
             ];
@@ -37,7 +41,49 @@ class ReportController extends Controller
             $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
         }
 
+        $title = ucfirst(str_replace('_', ' ', $type)) . 's';
+
         switch ($type) {
+            case 'spot':
+                $content = Spot::withoutGlobalScope(VisibilityScope::class)
+                    ->withTrashed()
+                    ->withCount('reports')
+                    ->withCount('views')
+                    ->whereHas('reports')
+                    ->hitlist(!empty($request['on_hitlist']) ? true : false)
+                    ->ticked(!empty($request['ticked_hitlist']) ? true : false)
+                    ->rating($request['rating'] ?? null)
+                    ->dateBetween([
+                        'from' => $request['date_from'] ?? null,
+                        'to' => $request['date_to'] ?? null
+                    ])
+                    ->following(!empty($request['following']) ? true : false)
+                    ->orderBy($sort[0], $sort[1])
+                    ->paginate(20)
+                    ->appends(request()->query());
+                break;
+            case 'event':
+                $content = Event::withoutGlobalScope(VisibilityScope::class)
+                    ->withTrashed()
+                    ->withCount('reports')
+                    ->whereHas('reports')
+                    ->attending(!empty($request['attending']) ? true : false)
+                    ->applied($request['applied'] ?? null)
+                    ->historic($request['historic'] ? true : false)
+                    ->hometown(!empty($request['in_hometown']) ? true : false)
+                    ->dateBetween([
+                        'from' => $request['date_from'] ?? null,
+                        'to' => $request['date_to'] ?? null
+                    ])
+                    ->eventBetween([
+                        'from' => $request['event_date_from'] ?? null,
+                        'to' => $request['event_date_to'] ?? null
+                    ])
+                    ->following(!empty($request['following']) ? true : false)
+                    ->orderBy($sort[0], $sort[1])
+                    ->paginate(20)
+                    ->appends(request()->query());
+                break;
             case 'challenge':
                 $content = Challenge::withoutGlobalScope(VisibilityScope::class)
                     ->withTrashed()
@@ -141,29 +187,10 @@ class ReportController extends Controller
                     ->paginate(20)
                     ->appends(request()->query());
                 break;
-            case 'spot':
-            default:
-                $content = Spot::withoutGlobalScope(VisibilityScope::class)
-                    ->withTrashed()
-                    ->withCount('reports')
-                    ->withCount('views')
-                    ->whereHas('reports')
-                    ->hitlist(!empty($request['on_hitlist']) ? true : false)
-                    ->ticked(!empty($request['ticked_hitlist']) ? true : false)
-                    ->rating($request['rating'] ?? null)
-                    ->dateBetween([
-                        'from' => $request['date_from'] ?? null,
-                        'to' => $request['date_to'] ?? null
-                    ])
-                    ->following(!empty($request['following']) ? true : false)
-                    ->orderBy($sort[0], $sort[1])
-                    ->paginate(20)
-                    ->appends(request()->query());
-                break;
         }
 
         return view('content_listings', [
-            'title' => 'Reported ' . $title ?? ucfirst(str_replace('_', ' ', $type)) . 's',
+            'title' => 'Reported ' . $title,
             'content' => $content,
             'component' => $type,
             'movementCategories' => $movementCategories ?? null,

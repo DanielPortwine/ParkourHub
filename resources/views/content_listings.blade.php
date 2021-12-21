@@ -34,15 +34,15 @@
                         </a>
                     </li>
                     <li class="nav-item px-2">
-                        <a class="nav-link @if(Route::currentRouteName() === 'challenge_listing')active @endif" href="{{ route('challenge_listing', ['search' => $_GET['search'] ?? '']) }}">
-                            <i class="fa fa-bullseye nav-icon"></i>
-                            <span class="d-none d-lg-inline">Challenges</span>
-                        </a>
-                    </li>
-                    <li class="nav-item px-2">
                         <a class="nav-link @if(Route::currentRouteName() === 'event_listing')active @endif" href="{{ route('event_listing', ['search' => $_GET['search'] ?? '']) }}">
                             <i class="fa fa-map-marked nav-icon"></i>
                             <span class="d-none d-lg-inline">Events</span>
+                        </a>
+                    </li>
+                    <li class="nav-item px-2">
+                        <a class="nav-link @if(Route::currentRouteName() === 'challenge_listing')active @endif" href="{{ route('challenge_listing', ['search' => $_GET['search'] ?? '']) }}">
+                            <i class="fa fa-bullseye nav-icon"></i>
+                            <span class="d-none d-lg-inline">Challenges</span>
                         </a>
                     </li>
                     @premium
@@ -100,6 +100,12 @@
                         </a>
                     </li>
                     <li class="nav-item px-2">
+                        <a class="nav-link @if($component === 'event')active @endif" href="{{ route('report_listing', 'event') }}">
+                            <i class="fa fa-map-marked nav-icon"></i>
+                            <span class="d-none d-lg-inline">Events</span>
+                        </a>
+                    </li>
+                    <li class="nav-item px-2">
                         <a class="nav-link @if($component === 'challenge')active @endif" href="{{ route('report_listing', 'challenge') }}">
                             <i class="fa fa-bullseye nav-icon"></i>
                             <span class="d-none d-lg-inline">Challenges</span>
@@ -109,12 +115,6 @@
                         <a class="nav-link @if($component === 'entry')active @endif" href="{{ route('report_listing', 'entry') }}">
                             <i class="fa fa-trophy nav-icon"></i>
                             <span class="d-none d-lg-inline">Entries</span>
-                        </a>
-                    </li>
-                    <li class="nav-item px-2">
-                        <a class="nav-link @if($component === 'event')active @endif" href="{{ route('report_listing', 'event') }}">
-                            <i class="fa fa-map-marked nav-icon"></i>
-                            <span class="d-none d-lg-inline">Events</span>
                         </a>
                     </li>
                     @premium
