@@ -12,8 +12,8 @@
                 <a class="btn-link h3 mb-0 sedgwick" href="{{ route('event_view', $event->id) }}">{{ $event->name }}</a>
             </div>
             <div class="col-lg-auto vertical-center pl-0">
-                <a class="btn text-white" href="{{ route('challenge_recover', $challenge->id) }}" title="Recover"><i class="fa fa-history"></i></a>
-                <a class="btn text-white" href="{{ route('challenge_remove', $challenge->id) }}" title="Remove Forever"><i class="fa fa-trash"></i></a>
+                <a class="btn text-white" href="{{ route('event_recover', $event->id) }}" title="Recover"><i class="fa fa-history"></i></a>
+                <a class="btn text-white" href="{{ route('event_remove', $event->id) }}" title="Remove Forever"><i class="fa fa-trash"></i></a>
             </div>
         </div>
         <div class="row">

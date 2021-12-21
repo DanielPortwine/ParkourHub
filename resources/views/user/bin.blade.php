@@ -34,6 +34,14 @@
                         <span class="d-none d-lg-inline">Comments</span>
                     </a>
                 </li>
+                @premium
+                    <li class="nav-item px-2">
+                        <a class="nav-link @if($tab === 'events')active @endif" href="{{ route('user_bin', ['tab' => 'events']) }}">
+                            <i class="fa fa-map-marked nav-icon"></i>
+                            <span class="d-none d-lg-inline">Events</span>
+                        </a>
+                    </li>
+                @endpremium
                 <li class="nav-item px-2">
                     <a class="nav-link @if($tab === 'challenges')active @endif" href="{{ route('user_bin', ['tab' => 'challenges']) }}">
                         <i class="fa fa-bullseye nav-icon"></i>
@@ -118,7 +126,22 @@
                     </div>
                 @endforeach
                 @if (count($comments) === 0)
-                    <p class="mb-0">You haven't  got any deleted comments.</p>
+                    <p class="mb-0">You haven't got any deleted comments.</p>
+                @endif
+            </div>
+        @elseif($tab === 'events')
+            <div class="card-body bg-black">
+                @foreach($events->chunk(4) as $chunk)
+                    <div class="row">
+                        @foreach($chunk as $event)
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                @include('components.bin.event')
+                            </div>
+                        @endforeach
+                    </div>
+                @endforeach
+                @if (count($events) === 0)
+                    <p class="mb-0">You haven't got any deleted events.</p>
                 @endif
             </div>
         @elseif($tab === 'challenges')

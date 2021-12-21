@@ -44,7 +44,7 @@
                             <div class="form-group row">
                                 <label for="date_time" class="col-md-2 col-form-label text-md-right">Date & Time</label>
                                 <div class="col-md-8">
-                                    <input id="date_time" type="datetime-local" class="@error('date_time') is-invalid @enderror" name="date_time" required value="{{ $event->date_time }}">
+                                    <input id="date_time" type="datetime-local" class="@error('date_time') is-invalid @enderror" name="date_time" required value="{{ Carbon\Carbon::parse($event->date_time)->format('Y-m-d H:i') }}">
                                     @error('date_time')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>

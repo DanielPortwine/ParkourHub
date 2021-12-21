@@ -279,4 +279,55 @@ class EventController extends Controller
             'redirect' => $request['redirect'],
         ]);
     }
+
+    public function delete($id, $redirect = null)
+    {
+        $event = Event::where('id', $id)->first();
+
+        if ($event->user_id === Auth::id()) {
+            $event->delete();
+        } else {
+            return redirect()->route('event_view', $event->id);
+        }
+
+        if (!empty($redirect)) {
+            return redirect($redirect)->with('status', 'Successfully deleted event');
+        }
+
+        return back()->with('status', 'Successfully deleted event');
+    }
+
+    public function recover($id)
+    {
+        $event = Event::onlyTrashed()->where('id', $id)->first();
+
+        if (empty($event) ||  $event->user_id !== Auth::id()) {
+            return back();
+        }
+
+        $event->restore();
+
+        return back()->with('status', 'Successfully recovered event');
+    }
+
+    public function remove($id)
+    {
+        $event = Event::withTrashed()->where('id', $id)->first();
+
+        if ($event->user_id !== Auth::id() && !Auth::user()->hasPermissionTo('remove content')) {
+            return back();
+        }
+
+        if (!empty($event->thumbnail)) {
+            Storage::disk('public')->delete(str_replace('storage/', '', $event->thumbnail));
+        }
+
+        if (!empty($event->video)) {
+            Storage::disk('public')->delete(str_replace('storage/', '', $event->video));
+        }
+
+        $event->forceDelete();
+
+        return back()->with('status', 'Successfully removed event forever');
+    }
 }

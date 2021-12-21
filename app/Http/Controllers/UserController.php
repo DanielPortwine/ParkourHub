@@ -401,7 +401,7 @@ class UserController extends Controller
     {
         $user = User::where('id', Auth::id())->first();
 
-        $spots = $reviews = $comments = $challenges = $entries = $movements = $equipment = $workouts = null;
+        $spots = $reviews = $comments = $events = $challenges = $entries = $movements = $equipment = $workouts = null;
         if ($tab === 'spots') {
             $spots = $user->spots()
                 ->onlyTrashed()
@@ -423,6 +423,13 @@ class UserController extends Controller
             $comments = $user->comments()
                 ->onlyTrashed()
                 ->with(['reports', 'user', 'commentable'])
+                ->orderByDesc('deleted_at')
+                ->paginate(20);
+        }
+        if ($tab === 'events') {
+            $events = $user->events()
+                ->onlyTrashed()
+                ->with(['reports', 'user'])
                 ->orderByDesc('deleted_at')
                 ->paginate(20);
         }
@@ -474,6 +481,7 @@ class UserController extends Controller
             'reviews' => $reviews,
             'comments' => $comments,
             'linkSpotOnComment' => $linkSpotOnComment ?? false,
+            'events' => $events,
             'challenges' => $challenges,
             'entries' => $entries,
             'movements' => $movements,
