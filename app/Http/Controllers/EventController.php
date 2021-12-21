@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateEvent;
+use App\Http\Requests\UpdateEvent;
 use App\Models\Event;
 use App\Models\Spot;
 use App\Models\User;
 use App\Notifications\EventCreated;
+use App\Notifications\EventInvite;
+use App\Notifications\EventUpdated;
 use App\Scopes\VisibilityScope;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -165,6 +168,115 @@ class EventController extends Controller
             }
         }
 
+        // notify invitees of their invitation
+        if ($event->accept_method === 'invite') {
+            foreach ($event->attendees as $invitee) {
+                if (in_array(setting('notifications_event_invite', 'on-site', $invitee->id), ['on-site', 'email', 'email-site'])) {
+                    $invitee->notify(new EventInvite($event));
+                }
+            }
+        }
+
         return redirect()->route('event_view', $event->id)->with('status', 'Successfully created event');
+    }
+
+    public function edit($id)
+    {
+        $event = Event::with(['spots', 'attendees'])
+            ->where('id', $id)
+            ->first();
+
+        if ($event->user_id !== Auth::id()) {
+            return redirect()->route('event_view', $id);
+        }
+
+        $spots = Spot::where('visibility', 'public')->get();
+        $users = User::whereNotNull('email_verified_at')->get();
+        $currentSpots = $event->spots()->pluck('id')->toArray();
+        $attendees = $event->attendees()->pluck('id')->toArray();
+
+        return view('events.edit', [
+            'event' => $event,
+            'spots' => $spots,
+            'users' => $users,
+            'currentSpots' => $currentSpots,
+            'attendees' => $attendees,
+        ]);
+    }
+
+    public function update(UpdateEvent $request, $id)
+    {
+        if (!empty($request['delete'])) {
+            return $this->delete($id, $request['redirect']);
+        }
+
+        $userId = Auth::id();
+        $oldEvent = Event::withoutGlobalScope(VisibilityScope::class)->with(['spots', 'attendees'])->where('id', $id)->first();
+        $event = Event::withoutGlobalScope(VisibilityScope::class)->with(['spots', 'attendees'])->where('id', $id)->first();
+        if ($event->user_id != $userId) {
+            return redirect()->route('event_view', $id);
+        }
+
+        $event->name = $request['name'];
+        $event->description = $request['description'] ?: null;
+        $event->date_time = $request['date_time'];
+        $event->visibility = $request['visibility'] ?: 'private';
+        $event->link_access = $request['link_access'] ? true : false;
+        $event->accept_method = $request['accept_method'] ?: 'accept';
+        if (!empty($request['youtube'])) {
+            Storage::disk('public')->delete(str_replace('storage/', '', $event->video));
+            $event->video = null;
+            $event->video_type = null;
+            $youtube = explode('t=', str_replace(['https://youtu.be/', 'https://www.youtube.com/watch?v=', '&', '?'], '', $request['youtube']));
+            $event->youtube = $youtube[0];
+            $event->youtube_start = $youtube[1] ?? null;
+        } else if (!empty($request['video'])) {
+            Storage::disk('public')->delete(str_replace('storage/', '', $event->video));
+            $event->youtube = null;
+            $event->youtube_start = null;
+            $video = $request->file('video');
+            $event->video = Storage::url($video->store('videos/events', 'public'));
+            $event->video_type = $video->extension();
+        }
+        if (!empty($request['thumbnail'])) {
+            Storage::disk('public')->delete(str_replace('storage/', '', $event->thumbnail));
+            $event->thumbnail = Storage::url($request->file('thumbnail')->store('images/events', 'public'));
+        }
+        $event->save();
+
+        $event->spots()->sync($request['spots']);
+        $attendees = $event->attendees;
+        if ($request['accept_method'] === 'invite' && !empty($request['users'])) {
+            foreach (User::whereIn('id', $request['users'])->get() as $user) {
+                if (!in_array($user->id, $attendees->pluck('id')->toArray())) {
+                    $event->attendees()->attach($user->id);
+                    if (in_array(setting('notifications_event_invite', 'on-site', $user->id), ['on-site', 'email', 'email-site'])) {
+                        $user->notify(new EventInvite($event));
+                    }
+                }
+            }
+        }
+
+        // notify followers that user updated an event
+        if ($event->visibility !== 'private' &&
+            (
+                $event->name !== $oldEvent->name ||
+                $event->description !== $oldEvent->description ||
+                $event->date_time !== $oldEvent->date_time ||
+                $event->spots != $oldEvent->spots
+            )
+        ) {
+            $followers = Auth::user()->followers()->get();
+            foreach ($followers as $follower) {
+                if (in_array(setting('notifications_event_updated', 'on-site', $follower->id), ['on-site', 'email', 'email-site'])) {
+                    $follower->notify(new EventUpdated($event));
+                }
+            }
+        }
+
+        return back()->with([
+            'status' => 'Successfully updated event',
+            'redirect' => $request['redirect'],
+        ]);
     }
 }

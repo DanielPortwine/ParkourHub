@@ -53,39 +53,6 @@
                                         @enderror
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <label for="visibility" class="col-md-2 col-form-label text-md-right">Visibility</label>
-                                    <div class="col-md-8">
-                                        <select name="visibility" class="form-control select2-no-search">
-                                            @foreach(config('settings.privacy.privacy_content.options') as $key => $name)
-                                                <option value="{{ $key }}" @if(setting('privacy_content', 'private') === $key)selected @endif>{{ $name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-md-10 offset-md-2">
-                                        <div class="form-check">
-                                            <input class="form-check-input @error('link_access') is-invalid @enderror" type="checkbox" name="link_access" id="link_access" value="1">
-                                            <label class="form-check-label" for="link_access">Anyone with link can view</label>
-                                            @error('link_access')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="accept_method" class="col-md-2 col-form-label text-md-right">Accept Method</label>
-                                    <div class="col-md-8">
-                                        <select id="accept_method" name="accept_method" class="form-control select2-no-search">
-                                            <option value="accept">Accept</option>
-                                            <option value="invite">Invite</option>
-                                            <option value="none">Anyone</option>
-                                        </select>
-                                    </div>
-                                </div>
                                 <div class="form-group row">
                                     <label class="col-md-2 col-form-label text-md-right">Thumbnail</label>
                                     <div class="col-lg-4 col-md-8 offset-md-2 offset-lg-0">
@@ -129,6 +96,39 @@
                                 <div class="form-group row">
                                     <div class="col offset-md-2">
                                         <small>You can only add public spots so that everyone can see them.</small>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <label for="visibility" class="col-md-2 col-form-label text-md-right">Visibility</label>
+                                    <div class="col-md-8">
+                                        <select name="visibility" class="form-control select2-no-search">
+                                            @foreach(config('settings.privacy.privacy_content.options') as $key => $name)
+                                                <option value="{{ $key }}" @if(setting('privacy_content', 'private') === $key)selected @endif>{{ $name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-md-10 offset-md-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input @error('link_access') is-invalid @enderror" type="checkbox" name="link_access" id="link_access" value="1">
+                                            <label class="form-check-label" for="link_access">Anyone with link can view</label>
+                                            @error('link_access')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="accept_method" class="col-md-2 col-form-label text-md-right">Accept Method</label>
+                                    <div class="col-md-8">
+                                        <select id="accept_method" name="accept_method" class="form-control select2-no-search">
+                                            <option value="accept">Accept</option>
+                                            <option value="invite">Invite</option>
+                                            <option value="none">Anyone</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div id="invites" class="form-group row" style="display:none">

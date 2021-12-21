@@ -125,6 +125,10 @@
                                             <a class="dropdown-item text-white" href="{{ route('challenge_view', ['id' => $notification->data['new_challenge']['id'], 'notification' => $notification->id]) }}">New challenge {{ $notification->data['new_challenge']['name'] }} from {{ $notification->data['user']['name'] }}</a>
                                         @elseif(!empty($notification->data['new_event']))
                                             <a class="dropdown-item text-white" href="{{ route('event_view', ['id' => $notification->data['new_event']['id'], 'notification' => $notification->id]) }}">New event {{ $notification->data['new_event']['name'] }} from {{ $notification->data['user']['name'] }}</a>
+                                        @elseif(!empty($notification->data['event_update']))
+                                            <a class="dropdown-item text-white" href="{{ route('event_view', ['id' => $notification->data['event_update']['id'], 'notification' => $notification->id]) }}">Event {{ $notification->data['event_update']['name'] }} updated</a>
+                                        @elseif(!empty($notification->data['event_invite']))
+                                            <a class="dropdown-item text-white" href="{{ route('event_view', ['id' => $notification->data['event_invite']['id'], 'notification' => $notification->id]) }}">You have been invited to attend {{ $notification->data['event_invite']['name'] }}</a>
                                         @elseif(!empty($notification->data['follower']))
                                             <a class="dropdown-item text-white" href="{{ route('user_view', ['id' => $notification->data['follower']['follower_id'], 'notification' => $notification->id]) }}">New follower {{ $notification->data['follower']['name'] }}</a>
                                         @elseif(!empty($notification->data['follow_requester']))

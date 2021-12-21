@@ -111,7 +111,7 @@
                                 <label class="col-md-2 col-form-label text-md-right">Thumbnail</label>
                                 <div class="col-md-8">
                                     @if(!empty($challenge->thumbnail))
-                                        <img class="w-100 mb-2" src="{{ $challenge->thumbnail }}" alt="Image of the {{ $challenge->name }} spot.">
+                                        <img class="w-100 mb-2" src="{{ $challenge->thumbnail }}" alt="Image of the {{ $challenge->name }} challenge.">
                                     @endif
                                 </div>
                             </div>
