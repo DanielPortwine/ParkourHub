@@ -32,12 +32,18 @@ class EventController extends Controller
             $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];
         }
 
-        $events = Event::withCount(['attendees', 'spots'])
+        $events = Event::withCount(
+            [
+                'attendees',
+                'spots' => function ($q) {
+                    return $q->withoutGlobalScope(VisibilityScope::class); // further investigation: why do the bindings for this count select pollute the aggregate query which doesn't have the count selects in?
+                },
+            ])
             ->with(['attendees', 'reports', 'user', 'spots'])
-            ->attending(!empty($request['attending']) ? true : false)
-            ->applied($request['applied'] ?? null)
-            ->historic($request['historic'] ? true : false)
-            ->hometown(!empty($request['in_hometown']) ? true : false)
+            ->attending(!empty($request['attending']))
+            ->applied(!empty($request['applied']))
+            ->historic(!empty($request['historic']))
+            ->hometown(!empty($request['in_hometown']))
             ->dateBetween([
                 'from' => $request['date_from'] ?? null,
                 'to' => $request['date_to'] ?? null
@@ -46,7 +52,7 @@ class EventController extends Controller
                 'from' => $request['event_date_from'] ?? null,
                 'to' => $request['event_date_to'] ?? null
             ])
-            ->following(!empty($request['following']) ? true : false)
+            ->following(!empty($request['following']))
             ->search($request['search'] ?? false)
             ->orderBy($sort[0], $sort[1])
             ->paginate(20)
@@ -74,8 +80,7 @@ class EventController extends Controller
             return redirect()->route('event_view', $id);
         }
 
-        $event = Event::withoutGlobalScope(VisibilityScope::class)
-            ->withTrashed()
+        $event = Event::withTrashed()
             ->linkVisibility()
             ->with([
                 'spots',
@@ -125,7 +130,7 @@ class EventController extends Controller
     public function create()
     {
         $spots = Spot::where('visibility', 'public')->get();
-        $users = User::whereNotNull('email_verified_at')->get();
+        $users = User::whereNotNull('email_verified_at')->where('id', '!=', Auth::id())->get();
 
         return view('events.create', [
             'spots' => $spots,
@@ -191,7 +196,7 @@ class EventController extends Controller
         }
 
         $spots = Spot::where('visibility', 'public')->get();
-        $users = User::whereNotNull('email_verified_at')->get();
+        $users = User::whereNotNull('email_verified_at')->where('id', '!=', Auth::id())->get();
         $currentSpots = $event->spots()->pluck('id')->toArray();
         $attendees = $event->attendees()->pluck('id')->toArray();
 

@@ -25,7 +25,10 @@ class Event extends Model
         'description',
         'date_time',
         'video',
+        'video_type',
         'youtube',
+        'youtube_start',
+        'thumbnail',
         'visibility',
         'link_access',
     ];
@@ -66,8 +69,6 @@ class Event extends Model
         } else if (empty($dates['from']) && !empty($dates['to'])) {
             $query->where('created_at', '<=', $dates['to']);
         }
-
-        return $query;
     }
 
     public function scopeEventBetween($query, $dates = [])
@@ -79,8 +80,6 @@ class Event extends Model
         } else if (empty($dates['from']) && !empty($dates['to'])) {
             $query->where('date_time', '<=', $dates['to']);
         }
-
-        return $query;
     }
 
     public function scopeFollowing($query, $following = false)
@@ -88,10 +87,8 @@ class Event extends Model
         if ($following) {
             $followedUsers = Follower::where('follower_id', Auth::id())->pluck('user_id');
 
-            return $query->whereIn('user_id', $followedUsers);
+            $query->whereIn('user_id', $followedUsers);
         }
-
-        return $query;
     }
 
     public function scopeHometown($query, $hometown = false)
