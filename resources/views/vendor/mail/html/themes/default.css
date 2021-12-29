@@ -260,18 +260,18 @@ img {
 /* Panels */
 
 .panel {
-    border-left: #2d3748 solid 4px;
+    border-left: #73c979 solid 4px;
     margin: 21px 0;
 }
 
 .panel-content {
-    background-color: #edf2f7;
-    color: #718096;
+    background-color: #363636;
+    color: #f0f5f0;
     padding: 16px;
 }
 
 .panel-content p {
-    color: #718096;
+    color: #f0f5f0;
 }
 
 .panel-item {

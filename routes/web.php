@@ -136,6 +136,11 @@ Route::prefix('events')->middleware('verified')->group(function() {
     });
     Route::get('/report/{id}', 'EventController@report')->name('event_report');
     Route::get('/discard_reports/{id}', 'EventController@discardReports')->name('event_report_discard');
+    Route::prefix('attendees')->group(function() {
+        Route::post('/store', 'EventAttendeeController@store')->name('event_attendee_store');
+        Route::post('/edit/{id}', 'EventAttendeeController@update')->name('event_attendee_update');
+        Route::get('/delete/{event}/{user}', 'EventAttendeeController@delete')->name('event_attendee_delete');
+    });
 });
 
 Route::prefix('movements')->middleware(['verified', 'isPremium'])->group(function() {

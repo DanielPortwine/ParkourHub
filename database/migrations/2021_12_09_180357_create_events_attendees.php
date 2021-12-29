@@ -17,6 +17,7 @@ class CreateEventsAttendees extends Migration
             $table->unsignedBigInteger('event_id');
             $table->unsignedBigInteger('user_id');
             $table->boolean('accepted')->default(false);
+            $table->string('comment')->nullable();
 
             $table->foreign('event_id')->references('id')->on('events')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

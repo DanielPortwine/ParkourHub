@@ -584,16 +584,16 @@
                                                             <input type="text" id="youtube" class="form-control @error('youtube') is-invalid @enderror" name="youtube" autocomplete="youtube" placeholder="e.g. https://youtu.be/QDIVrf2ZW0s" value="{{ old('youtube') }}">
                                                             @error('youtube')
                                                             <span class="invalid-feedback" role="alert">
-                                                            <strong>{{ $message }}</strong>
-                                                        </span>
+                                                                <strong>{{ $message }}</strong>
+                                                            </span>
                                                             @enderror
                                                         </div>
                                                         <div class="col-md-4">
                                                             <input type="file" id="video" class="form-control-file @error('video') is-invalid @enderror" name="video">
                                                             @error('video')
                                                             <span class="invalid-feedback" role="alert">
-                                                            <strong>{{ $message }}</strong>
-                                                        </span>
+                                                                <strong>{{ $message }}</strong>
+                                                            </span>
                                                             @enderror
                                                         </div>
                                                     </div>
@@ -604,8 +604,8 @@
                                                             <input type="text" id="youtube" class="form-control @error('youtube') is-invalid @enderror" name="youtube" autocomplete="youtube" placeholder="e.g. https://youtu.be/QDIVrf2ZW0s" value="{{ old('youtube') }}">
                                                             @error('youtube')
                                                             <span class="invalid-feedback" role="alert">
-                                                            <strong>{{ $message }}</strong>
-                                                        </span>
+                                                                <strong>{{ $message }}</strong>
+                                                            </span>
                                                             @enderror
                                                         </div>
                                                     </div>

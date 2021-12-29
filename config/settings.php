@@ -40,6 +40,18 @@ return [
             'title' => 'New Challenge',
             'description' => 'someone you follow creates a new challenge.'
         ],
+        'notifications_new_event' => [
+            'title' => 'New Event',
+            'description' => 'someone you follow creates a new event.'
+        ],
+        'notifications_event_updated' => [
+            'title' => 'Event Updated',
+            'description' => 'an event someone you follow updates.'
+        ],
+        'notifications_event_invite' => [
+            'title' => 'Event Invite',
+            'description' => 'someone invites you to attend an event.'
+        ],
         'notifications_new_workout' => [
             'title' => 'New Workout',
             'description' => 'someone you follow create a new workout.'

@@ -12,21 +12,8 @@
                 <a class="btn-link h3 mb-0 sedgwick" href="{{ route('event_view', $event->id) }}">{{ $event->name }}</a>
             </div>
             <div class="col-lg-auto vertical-center pl-0">
-                @if($event->user_id === Auth()->id())
-                    <a class="btn text-white" href="{{ route('event_edit', $event->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
-                    <a class="btn text-white" href="{{ route('event_delete', $event->id) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
-                @endif
-                @auth
-                    <a class="btn text-white" href="{{ route('event_report', $event->id) }}" title="Report"><i class="fa fa-flag"></i></a>
-                @endauth
-                @if(count($event->reports) > 0 && Route::currentRouteName() === 'report_listing')
-                    @can('manage reports')
-                        <a class="btn text-white" href="{{ route('event_report_discard', $event->id) }}" title="Discard Reports"><i class="fa fa-balance-scale"></i></a>
-                    @endcan
-                    @can('remove content')
-                        <a class="btn text-white" href="{{ route('event_remove', $event->id) }}" title="Remove Content"><i class="fa fa-trash"></i></a>
-                    @endcan
-                @endif
+                <a class="btn text-white" href="{{ route('event_recover', $event->id) }}" title="Recover"><i class="fa fa-history"></i></a>
+                <a class="btn text-white" href="{{ route('event_remove', $event->id) }}" title="Remove Forever"><i class="fa fa-trash"></i></a>
             </div>
         </div>
         <div class="row">
@@ -41,7 +28,7 @@
         </div>
         <div class="row pt-lg-2">
             <div class="col-lg vertical-center">
-                {{ Carbon\Carbon::parse($event->date_time)->format('D, d M H:i') }} | {{ Carbon\Carbon::parse($event->date_time)->diffForHumans(['options' => Carbon\Carbon::ONE_DAY_WORDS]) }}
+                {{ Carbon\Carbon::parse($event->date_time)->format('d/m/Y H:i') }} | {{ Carbon\Carbon::parse($event->date_time)->diffForHumans(['options' => Carbon\Carbon::ONE_DAY_WORDS]) }}
             </div>
         </div>
         <div class="row">
