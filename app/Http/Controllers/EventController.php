@@ -95,6 +95,8 @@ class EventController extends Controller
         }
 
         $userAttendance = $event->attendees()->withPivot('accepted')->where('user_id', Auth::id())->first();
+        $attendeesCount = count($event->attendees()->wherePivot('accepted', true)->get());
+        $applicantsCount = count($event->attendees()->wherePivot('accepted', false)->get());
 
         switch ($tab) {
             case 'spots':
@@ -115,15 +117,25 @@ class EventController extends Controller
                     ->orderByDesc('created_at')
                     ->paginate(20, ['*']);
                 break;
+            case 'applicants':
+                $applicants = $event->attendees()
+                    ->withPivot('comment')
+                    ->where('accepted' , false)
+                    ->orderByDesc('name')
+                    ->paginate(20, ['*']);
+                break;
         }
 
         return view('events.view', [
             'event' => $event,
             'tab' => $tab,
             'userAttendance' => $userAttendance,
+            'attendeesCount' => $attendeesCount,
+            'applicantsCount' => $applicantsCount,
             'spots' => $spots ?? null,
             'attendees' => $attendees ?? null,
             'comments' => $comments ?? null,
+            'applicants' => $applicants ?? null,
         ]);
     }
 

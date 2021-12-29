@@ -13,6 +13,18 @@
                 <div>
                     @if ($user->id === Auth()->id())
                         <a class="btn text-white" href="{{ route('user_manage') }}" title="Manage"><i class="fa fa-pencil"></i></a>
+                    @elseif(!empty($event) && $event->user_id === Auth()->id() && $event->accept_method === 'accept' && !empty($tab))
+                        @if($tab === 'attendees')
+                            <a class="accept-follower-button btn text-white" href="{{ route('event_attendee_delete', ['event' => $event->id, 'user' => $user->id]) }}" title="Remove User"><i class="fa fa-times"></i></a>
+                        @elseif($tab === 'applicants')
+                            <form id="accept-form" method="POST" action="{{ route('event_attendee_update', $event->id) }}" enctype="multipart/form-data">
+                                @csrf
+                                <input type="hidden" name="user" value="{{ $user->id }}">
+                                <input type="hidden" name="accepted" value="true">
+                            </form>
+                            <button class="accept-follower-button btn text-white" type="submit" form="accept-form" title="Accept User"><i class="fa fa-check"></i></button>
+                            <a class="accept-follower-button btn text-white" href="{{ route('event_attendee_delete', ['event' => $event->id, 'user' => $user->id]) }}" title="Reject User"><i class="fa fa-times"></i></a>
+                        @endif
                     @else
                         @php
                             $followSetting = Auth()->check() ? setting('privacy_follow', 'nobody', Auth()->id()) : 'nobody';
@@ -54,6 +66,13 @@
             <div class="row">
                 <div class="col">
                     {{ explode(',', $user->hometown_name)[0] . ', ' . explode(',', $user->hometown_name)[1] }}
+                </div>
+            </div>
+        @endif
+        @if(!empty($event) && !empty($tab) && $event->accept_method === 'accept' && $tab === 'applicants' && !empty($user->pivot->comment))
+            <div class="row mt-2">
+                <div class="col">
+                    {{ $user->pivot->comment }}
                 </div>
             </div>
         @endif

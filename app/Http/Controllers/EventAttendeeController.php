@@ -22,7 +22,7 @@ class EventAttendeeController extends Controller
             return redirect()->back()->with('status', 'Successfully attending event');
         }
 
-        return back()->with('status', 'You are already attending this event');
+        return back()->with('status', 'User is already attending this event');
     }
 
     public function update(Request $request, $id)
@@ -39,7 +39,7 @@ class EventAttendeeController extends Controller
             return redirect()->back()->with('status', 'Successfully attending event');
         }
 
-        return back()->with('status', 'You are already attending this event');
+        return back()->with('status', 'User is already attending this event');
     }
 
     public function delete($event, $user)

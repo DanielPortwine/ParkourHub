@@ -630,6 +630,28 @@ class EventControllerTest extends TestCase
     }
 
     /** @test */
+    public function view_premium_user_can_view_paginated_event_applicants()
+    {
+        $event = Event::factory()->create();
+        $attendees = User::factory()->times(21)->create();
+        $event->attendees()->attach($attendees, ['accepted' => false]);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('event_view', [$event->id, 'tab' => 'applicants', 'page' => 2]));
+
+        $response->assertOk()
+            ->assertViewIs('events.view')
+            ->assertViewHas('event', function ($viewEvent) use ($event) {
+                $this->assertSame($event->id, $viewEvent->id);
+                $this->assertSame($event->name, $viewEvent->name);
+                return true;
+            })
+            ->assertViewHas('applicants', function ($viewApplicants) {
+                $this->assertCount(1, $viewApplicants);
+                return true;
+            });
+    }
+
+    /** @test */
     public function create_non_logged_in_user_redirects_to_login()
     {
         $response = $this->get(route('event_create'));

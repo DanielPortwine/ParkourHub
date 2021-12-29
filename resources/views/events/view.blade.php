@@ -175,6 +175,11 @@
                         <li class="nav-item">
                             <a class="nav-link btn-link @if($tab === 'comments')active @endif" href="{{ route('event_view', ['id' => $event->id, 'tab' => 'comments']) }}">Comments</a>
                         </li>
+                        @if($event->user_id === Auth()->id() && $event->accept_method === 'accept')
+                            <li class="nav-item">
+                                <a class="nav-link btn-link @if($tab === 'applicants')active @endif" href="{{ route('event_view', ['id' => $event->id, 'tab' => 'applicants']) }}">Applicants</a>
+                            </li>
+                        @endif
                     </ul>
                 </div>
                 @if($tab === 'spots')
@@ -206,7 +211,7 @@
                                 @endforeach
                             </div>
                         @endforeach
-                        @if (count($event->attendees) === 0)
+                        @if ($attendeesCount === 0)
                             <p>This event has no attendees.</p>
                         @endif
                         {{ $attendees->links() }}
@@ -299,6 +304,23 @@
                         @if (count($event->comments) === 0)
                             <p class="mb-0">This event has no comments yet.@auth Create one by clicking 'Submit Comment' above.@else <a class="btn-link" href="/login">Login</a> or <a class="btn-link" href="/register">Register</a> to create one. @endauth</p>
                         @endif
+                    </div>
+                @elseif($tab === 'applicants' && $event->user_id === Auth()->id() && $event->accept_method === 'accept')
+                    <div class="card-body bg-black">
+                        {{ $applicants->links() }}
+                        @foreach($applicants->chunk(2) as $chunk)
+                            <div class="row">
+                                @foreach($chunk as $user)
+                                    <div class="col-md-6 mb-4">
+                                        @include('components.user')
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endforeach
+                        @if ($applicantsCount === 0)
+                            <p>This event has no applicants.</p>
+                        @endif
+                        {{ $applicants->links() }}
                     </div>
                 @endif
             </div>
