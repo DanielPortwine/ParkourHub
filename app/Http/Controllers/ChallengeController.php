@@ -185,7 +185,8 @@ class ChallengeController extends Controller
         $challenge->description = $request['description'];
         $challenge->difficulty = empty($request['difficulty']) ? '3' : $request['difficulty'];
         $challenge->visibility = $request['visibility'] ?: 'private';
-        if (!empty($request['youtube'])){
+        if (!empty($request['youtube'])) {
+            Storage::disk('public')->delete(str_replace('storage/', '', $challenge->video));
             $youtube = explode('t=', str_replace(['https://youtu.be/', 'https://www.youtube.com/watch?v=', '&', '?'], '', $request['youtube']));
             $challenge->youtube = $youtube[0];
             $challenge->youtube_start = $youtube[1] ?? null;

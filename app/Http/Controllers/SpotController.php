@@ -255,7 +255,7 @@ class SpotController extends Controller
         $spot->description = $request['description'];
         $spot->visibility = $request['visibility'] ?: 'private';
         if (!empty($request['image'])) {
-            Storage::disk('public')->delete($spot->image);
+            Storage::disk('public')->delete(str_replace('storage/', '', $spot->image));
             $spot->image = Storage::url($request->file('image')->store('images/spots', 'public'));
         }
         $spot->save();

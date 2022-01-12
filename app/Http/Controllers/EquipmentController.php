@@ -137,6 +137,7 @@ class EquipmentController extends Controller
         $equipment->description = $request['description'];
         $equipment->visibility = $request['visibility'] ?: 'private';
         if (!empty($request['image'])) {
+            Storage::disk('public')->delete(str_replace('storage/', '', $equipment->image));
             $equipment->image = Storage::url($request->file('image')->store('images/equipment', 'public'));
         }
         $equipment->save();

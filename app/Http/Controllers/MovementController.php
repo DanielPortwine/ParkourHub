@@ -300,6 +300,7 @@ class MovementController extends Controller
         $movement->description = $request['description'];
         $movement->visibility = $request['visibility'] ?: 'private';
         if (!empty($request['youtube'])) {
+            Storage::disk('public')->delete(str_replace('storage/', '', $movement->video));
             $youtube = explode('t=', str_replace(['https://youtu.be/', 'https://www.youtube.com/watch?v=', '&', '?'], '', $request['youtube']));
             $movement->youtube = $youtube[0];
             $movement->youtube_start = $youtube[1] ?? null;
