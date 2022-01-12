@@ -40,6 +40,7 @@ class WorkoutController extends Controller
                 'to' => $request['date_to'] ?? null
             ])
             ->bookmarked($request['bookmarked'] ?? false)
+            ->following($request['following'] ?? false)
             ->personal($request['personal'] ?? false)
             ->search($request['search'] ?? false)
             ->orderBy($sort[0], $sort[1])

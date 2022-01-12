@@ -60,6 +60,17 @@ class Workout extends Model
         }
     }
 
+    public function scopeFollowing($query, $following = false)
+    {
+        if ($following) {
+            $followedUsers = Follower::where('follower_id', Auth::id())->pluck('user_id');
+
+            return $query->whereIn('user_id', $followedUsers);
+        }
+
+        return $query;
+    }
+
     public function scopePersonal($query, $personal = false)
     {
         if ($personal) {

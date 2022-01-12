@@ -174,7 +174,7 @@
                                             <input type="date" name="date_to" value="{{ $_GET['date_to'] ?? '' }}">
                                         </div>
                                     </div>
-                                    @if(in_array($component, ['spot', 'challenge', 'event']) && Auth::check())
+                                    @if(in_array($component, ['spot', 'challenge', 'event', 'workout']) && Auth::check())
                                         <div class="col-auto pb-3">
                                             <label><strong>Following</strong></label>
                                             <div class="form-check text-center">
