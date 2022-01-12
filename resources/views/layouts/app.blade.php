@@ -61,34 +61,36 @@
                     <ul class="navbar-nav ml-auto">
                         <!-- Authentication Links -->
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('spots') }}"><i class="fa fa-map nav-icon"></i><span class="d-md-none d-lg-inline">Map</span></a>
+                            <a class="nav-link" href="{{ route('spots') }}"><i class="fa fa-map nav-icon"></i><span class="d-inline d-md-none">Map</span></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('spot_listing') }}"><i class="fa fa-map-marker nav-icon"></i><span class="d-md-none d-lg-inline">Spots</span></a>
+                            <a class="nav-link" href="{{ route('spot_listing') }}"><i class="fa fa-map-marker nav-icon"></i><span class="d-inline d-md-none">Spots</span></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('challenge_listing') }}"><i class="fa fa-bullseye nav-icon"></i><span class="d-md-none d-lg-inline">Challenges</span></a>
+                            <a class="nav-link" href="{{ route('challenge_listing') }}"><i class="fa fa-bullseye nav-icon"></i><span class="d-inline d-md-none">Challenges</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('event_listing') }}"><i class="fa fa-map-marked nav-icon"></i><span class="d-inline d-md-none">Events</span></a>
                         </li>
                         @guest
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('premium') }}"><i class="fa fa-diamond nav-icon text-premium"></i><span class="d-md-none d-lg-inline">Premium</span></a>
+                                <a class="nav-link" href="{{ route('premium') }}"><i class="fa fa-diamond nav-icon text-premium"></i><span class="d-inline d-md-none">Premium</span></a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('login') }}"><i class="fa fa-user nav-icon"></i><span class="d-md-none d-lg-inline">{{ __('Login') }}</span></a>
+                                <a class="nav-link" href="{{ route('login') }}"><i class="fa fa-user nav-icon"></i><span class="d-inline d-md-none">{{ __('Login') }}</span></a>
                             </li>
                             @if (Route::has('register'))
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}"><i class="fa fa-user-plus nav-icon"></i><span class="d-md-none d-lg-inline">{{ __('Register') }}</span></a>
+                                    <a class="nav-link" href="{{ route('register') }}"><i class="fa fa-user-plus nav-icon"></i><span class="d-inline d-md-none">{{ __('Register') }}</span></a>
                                 </li>
                             @endif
                         @else
                             @premium
                                 <li class="nav-item dropdown">
-                                    <a id="premium-dropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                        <i class="fa fa-diamond nav-icon text-premium"></i><span class="d-md-none d-lg-inline">Premium</span>
+                                    <a id="premium-dropdown" class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                        <i class="fa fa-diamond nav-icon text-premium"></i><span class="d-inline d-md-none">Premium</span>
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-right bg-grey" id="notification-menu" aria-labelledby="notification-dropdown">
-                                        <a class="dropdown-item text-white" href="{{ route('event_listing') }}"><i class="fa fa-map-marked nav-icon"></i>Events</a>
                                         <a class="dropdown-item text-white" href="{{ route('workout_listing') }}"><i class="fa fa-running nav-icon"></i>Workouts</a>
                                         <a class="dropdown-item text-white" href="{{ route('movement_listing') }}"><i class="fa fa-child nav-icon"></i>Movements</a>
                                         <a class="dropdown-item text-white" href="{{ route('equipment_listing') }}"><i class="fa fa-dumbbell nav-icon"></i>Equipment</a>
@@ -142,8 +144,8 @@
                                 </div>
                             </li>
                             <li class="nav-item dropdown">
-                                <a id="user-dropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    <i class="fa fa-user nav-icon"></i><span class="d-md-none d-lg-inline">{{ Auth::user()->name }}</span>
+                                <a id="user-dropdown" class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                    <i class="fa fa-user nav-icon"></i><span class="d-inline d-md-none">{{ Auth::user()->name }}</span>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right bg-grey" id="user-menu" aria-labelledby="user-dropdown">
                                     @premium
