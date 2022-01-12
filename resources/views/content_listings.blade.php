@@ -354,6 +354,8 @@
                                             <select name="sort" class="select2-no-search">
                                                 <option value="date_desc" @if(($_GET['sort'] ?? '') === 'date_desc')selected @endif>Newest</option>
                                                 <option value="date_asc" @if(($_GET['sort'] ?? '') === 'date_asc')selected @endif>Oldest</option>
+                                                <option value="updated_desc" @if(($_GET['sort'] ?? '') === 'updated_desc')selected @endif>Newest Updated</option>
+                                                <option value="updated_asc" @if(($_GET['sort'] ?? '') === 'updated_asc')selected @endif>Oldest Updated</option>
                                                 @if($component === 'spot' || $component === 'review')
                                                     <option value="rating_desc" @if(($_GET['sort'] ?? '') === 'rating_desc')selected @endif>Highest Rated</option>
                                                     <option value="rating_asc" @if(($_GET['sort'] ?? '') === 'rating_asc')selected @endif>Lowest Rated</option>

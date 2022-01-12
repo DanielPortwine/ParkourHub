@@ -24,6 +24,7 @@ class EquipmentController extends Controller
         if (!empty($request['sort'])) {
             $fieldMapping = [
                 'date' => 'created_at',
+                'updated' => 'updated_at',
             ];
             $sortParams = explode('_', $request['sort']);
             $sort = [$fieldMapping[$sortParams[0]], $sortParams[1]];

@@ -28,6 +28,7 @@ class ChallengeController extends Controller
         if (!empty($request['sort'])) {
             $fieldMapping = [
                 'date' => 'created_at',
+                'updated' => 'updated_at',
                 'difficulty' => 'difficulty',
                 'entries' => 'entries_count',
             ];

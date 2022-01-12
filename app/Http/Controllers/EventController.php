@@ -24,6 +24,7 @@ class EventController extends Controller
         if (!empty($request['sort'])) {
             $fieldMapping = [
                 'date' => 'created_at',
+                'updated' => 'updated_at',
                 'eventdate' => 'date_time',
                 'attendees' => 'attendees_count',
                 'spots' => 'spots_count',
