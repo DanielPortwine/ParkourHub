@@ -517,7 +517,7 @@
                     </div>
                 @elseif($tab === 'challenges')
                     <div class="card-body bg-black">
-                        @if(auth()->check() && $spot->deleted_at === null)
+                        @if(auth()->check() && auth()->user()->isPremium() && $spot->deleted_at === null)
                             <div class="row mb-4">
                                 <div class="col">
                                     <div class="card @error('name') border-danger @enderror @error('description') border-danger @enderror @error('difficulty') border-danger @enderror @error('youtube') border-danger @enderror @error('video') border-danger @enderror @error('thumbnail') border-danger @enderror">

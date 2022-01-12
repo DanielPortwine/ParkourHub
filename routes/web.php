@@ -102,13 +102,15 @@ Route::prefix('/comments')->middleware('verified')->group(function() {
 
 Route::prefix('challenges')->middleware('verified')->group(function() {
     Route::get('/', 'ChallengeController@listing')->withoutMiddleware('verified')->name('challenge_listing');
-    Route::get('/challenge/{id}/{tab?}', 'ChallengeController@view')->withoutMiddleware('verified')->name('challenge_view');
-    Route::post('/create', 'ChallengeController@store')->middleware('optimizeImages')->name('challenge_store');
-    Route::get('/edit/{id}', 'ChallengeController@edit')->name('challenge_edit');
-    Route::post('/edit/{id}', 'ChallengeController@update')->middleware('optimizeImages')->name('challenge_update');
-    Route::get('/delete/{id}', 'ChallengeController@delete')->name('challenge_delete');
-    Route::get('/recover/{id}', 'ChallengeController@recover')->name('challenge_recover');
-    Route::get('/remove/{id}', 'ChallengeController@remove')->name('challenge_remove');
+    Route::get('/view/{id}/{tab?}', 'ChallengeController@view')->withoutMiddleware('verified')->name('challenge_view');
+    Route::middleware('isPremium')->group(function() {
+        Route::post('/create', 'ChallengeController@store')->middleware('optimizeImages')->name('challenge_store');
+        Route::get('/edit/{id}', 'ChallengeController@edit')->name('challenge_edit');
+        Route::post('/edit/{id}', 'ChallengeController@update')->middleware('optimizeImages')->name('challenge_update');
+        Route::get('/delete/{id}', 'ChallengeController@delete')->name('challenge_delete');
+        Route::get('/recover/{id}', 'ChallengeController@recover')->name('challenge_recover');
+        Route::get('/remove/{id}', 'ChallengeController@remove')->name('challenge_remove');
+    });
     Route::get('/report/{id}', 'ChallengeController@report')->name('challenge_report');
     Route::get('/discard_reports/{id}', 'ChallengeController@discardReports')->name('challenge_report_discard');
     Route::prefix('entries')->group(function() {

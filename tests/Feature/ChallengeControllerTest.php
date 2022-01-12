@@ -572,9 +572,9 @@ class ChallengeControllerTest extends TestCase
     {
         $spot = Spot::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'public']);
         $challenge = Challenge::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'public']);
-        ChallengeEntry::factory()->times(11)->create(['challenge_id' => $challenge->id, 'user_id' => $this->premiumUser->id]);
+        ChallengeEntry::factory()->times(21)->create(['challenge_id' => $challenge->id, 'user_id' => $this->premiumUser->id]);
 
-        $response = $this->get(route('challenge_view', $challenge->id));
+        $response = $this->get(route('challenge_view', [$challenge->id, 'page' => 2]));
 
         $response->assertOk()
             ->assertViewIs('challenges.view')
@@ -583,7 +583,7 @@ class ChallengeControllerTest extends TestCase
                 return true;
             })
             ->assertViewHas('entries', function ($viewEntries) {
-                $this->assertCount(10, $viewEntries);
+                $this->assertCount(1, $viewEntries);
                 return true;
             });
     }
@@ -738,15 +738,30 @@ class ChallengeControllerTest extends TestCase
     }
 
     /** @test */
-    public function store_non_premium_user_can_store_valid_challenge_and_redirects_to_view()
+    public function store_non_premium_user_redirects_to_premium()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->post(route('challenge_store'), [
+            'name' => 'Test Challenge',
+            'description' => 'This is a test challenge',
+            'difficulty' => 4,
+            'visibility' => 'public',
+            'youtube' => 'https://youtu.be/Oykjn35X3EY',
+        ]);
+
+        $response->assertRedirect('/premium');
+    }
+
+    /** @test */
+    public function store_premium_user_can_store_valid_challenge_and_redirects_to_view()
     {
         Storage::fake('public');
 
-        $user = User::factory()->create();
-        $spot = Spot::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'public']);
+        $spot = Spot::factory()->create(['visibility' => 'public']);
         $thumbnail = UploadedFile::fake()->image('thumbnail.png', 640, 480);
 
-        $response = $this->actingAs($user)->post(route('challenge_store'), [
+        $response = $this->actingAs($this->premiumUser)->post(route('challenge_store'), [
             'spot' => $spot->id,
             'name' => 'Test Challenge',
             'description' => 'This is a test challenge',
@@ -813,6 +828,16 @@ class ChallengeControllerTest extends TestCase
     }
 
     /** @test */
+    public function edit_non_premium_user_redirects_to_premium()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->get(route('challenge_edit', 1));
+
+        $response->assertRedirect('/premium');
+    }
+
+    /** @test */
     public function edit_random_premium_user_redirects_to_view()
     {
         $user = User::factory()->create();
@@ -821,6 +846,23 @@ class ChallengeControllerTest extends TestCase
         $response = $this->actingAs($this->premiumUser)->get(route('challenge_edit', $challenge->id));
 
         $response->assertRedirect(route('challenge_view', $challenge->id));
+    }
+
+    /** @test */
+    public function edit_owner_premium_user_can_view_edit()
+    {
+        $spot = Spot::factory()->create(['visibility' => 'public']);
+        $challenge = Challenge::factory()->create(['visibility' => 'public']);
+
+        $response = $this->actingAs($this->premiumUser)->get(route('challenge_edit', $challenge->id));
+
+        $response->assertOk()
+            ->assertViewIs('challenges.edit')
+            ->assertViewHas('challenge', function ($viewChallenge) use ($challenge) {
+                $this->assertSame($challenge->id, $viewChallenge->first()->id);
+                $this->assertSame($challenge->name, $viewChallenge->first()->name);
+                return true;
+            });
     }
 
     /** @test */
@@ -838,6 +880,24 @@ class ChallengeControllerTest extends TestCase
     }
 
     /** @test */
+    public function update_non_premium_user_redirects_to_premium()
+    {
+        $user = User::factory()->create();
+        $spot = Spot::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+        $challenge = Challenge::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+
+        $response = $this->actingAs($user)->post(route('challenge_update', $challenge->id), [
+            'name' => 'Test Challenge',
+            'description' => 'This is a test challenge',
+            'difficulty' => 4,
+            'visibility' => 'public',
+            'youtube' => 'https://youtu.be/Oykjn35X3EY',
+        ]);
+
+        $response->assertRedirect('/premium');
+    }
+
+    /** @test */
     public function update_random_premium_user_redirects_to_view()
     {
         $user = User::factory()->create();
@@ -852,29 +912,6 @@ class ChallengeControllerTest extends TestCase
         ]);
 
         $response->assertRedirect(route('challenge_view', $challenge->id));
-    }
-
-    /** @test */
-    public function update_owner_non_premium_user_can_update_challenge_with_valid_data()
-    {
-        $user = User::factory()->create();
-        $spot = Spot::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
-        $challenge = Challenge::factory()->create(['user_id' => $user->id, 'visibility' => 'public', 'name' => 'Test Challenge']);
-        $response = $this->actingAs($user)->post(route('challenge_update', $challenge->id), [
-            'name' => 'Updated Challenge',
-            'description' => 'This is a test challenge',
-            'difficulty' => 4,
-            'visibility' => 'public',
-            'youtube' => 'https://youtu.be/Oykjn35X3EY',
-        ]);
-
-        $this->assertDatabaseCount('challenges', 1)
-            ->assertDatabaseHas('challenges', [
-                'name' => 'Updated Challenge',
-            ])
-            ->assertDatabaseMissing('challenges', [
-                'name' => 'Test Challenge',
-            ]);
     }
 
     /** @test */
@@ -911,6 +948,18 @@ class ChallengeControllerTest extends TestCase
     }
 
     /** @test */
+    public function delete_non_premium_user_redirects_to_premium()
+    {
+        $user = User::factory()->create();
+        $spot = Spot::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+        $challenge = Challenge::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+
+        $response = $this->actingAs($user)->get(route('challenge_delete', $challenge->id));
+
+        $response->assertRedirect('/premium');
+    }
+
+    /** @test */
     public function delete_random_premium_user_redirects_to_view()
     {
         $user = User::factory()->create();
@@ -923,26 +972,24 @@ class ChallengeControllerTest extends TestCase
     }
 
     /** @test */
-    public function delete_owner_non_premium_user_can_delete_challenge()
+    public function delete_owner_premium_user_can_delete_challenge()
     {
-        $user = User::factory()->create();
-        $spot = Spot::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
-        $challenge = Challenge::factory()->create(['user_id' => $user->id]);
+        $spot = Spot::factory()->create(['visibility' => 'public']);
+        $challenge = Challenge::factory()->create();
 
-        $response = $this->actingAs($user)->get(route('challenge_delete', $challenge->id));
+        $response = $this->actingAs($this->premiumUser)->get(route('challenge_delete', $challenge->id));
 
         $this->assertDatabaseCount('challenges', 1)
             ->assertSoftDeleted($challenge);
     }
 
     /** @test */
-    public function delete_owner_non_premium_user_can_delete_challenge_and_redirect()
+    public function delete_owner_premium_user_can_delete_challenge_and_redirect()
     {
-        $user = User::factory()->create();
-        $spot = Spot::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
-        $challenge = Challenge::factory()->create(['user_id' => $user->id]);
+        $spot = Spot::factory()->create(['visibility' => 'public']);
+        $challenge = Challenge::factory()->create();
 
-        $response = $this->actingAs($user)->post(route('challenge_update', $challenge->id), [
+        $response = $this->actingAs($this->premiumUser)->post(route('challenge_update', $challenge->id), [
             'name' => $challenge->name,
             'description' => $challenge->description,
             'difficulty' => 4,
@@ -967,6 +1014,18 @@ class ChallengeControllerTest extends TestCase
     }
 
     /** @test */
+    public function recover_non_premium_user_redirects_to_premium()
+    {
+        $user = User::factory()->create();
+        $spot = Spot::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+        $challenge = Challenge::factory()->create(['user_id' => $user->id, 'visibility' => 'public', 'deleted_at' => now()]);
+
+        $response = $this->actingAs($user)->get(route('challenge_recover', $challenge->id));
+
+        $response->assertRedirect('/premium');
+    }
+
+    /** @test */
     public function recover_random_premium_user_can_not_recover_challenge()
     {
         $user = User::factory()->create();
@@ -980,13 +1039,12 @@ class ChallengeControllerTest extends TestCase
     }
 
     /** @test */
-    public function recover_owner_non_premium_user_can_recover_challenge()
+    public function recover_owner_premium_user_can_recover_challenge()
     {
-        $user = User::factory()->create();
-        $spot = Spot::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
-        $challenge = Challenge::factory()->create(['user_id' => $user->id, 'deleted_at' => now()]);
+        $spot = Spot::factory()->create(['visibility' => 'public']);
+        $challenge = Challenge::factory()->create(['deleted_at' => now()]);
 
-        $response = $this->actingAs($user)->get(route('challenge_recover', $challenge->id));
+        $response = $this->actingAs($this->premiumUser)->get(route('challenge_recover', $challenge->id));
 
         $this->assertDatabaseCount('challenges', 1)
             ->assertDatabaseHas('challenges', [
@@ -1002,6 +1060,18 @@ class ChallengeControllerTest extends TestCase
         $response = $this->get(route('challenge_remove', 1));
 
         $response->assertRedirect('/email/verify');
+    }
+
+    /** @test */
+    public function remove_non_premium_user_redirects_to_premium()
+    {
+        $user = User::factory()->create();
+        $spot = Spot::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+        $challenge = Challenge::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+
+        $response = $this->actingAs($user)->get(route('challenge_remove', $challenge->id));
+
+        $response->assertRedirect('/premium');
     }
 
     /** @test */
@@ -1021,36 +1091,28 @@ class ChallengeControllerTest extends TestCase
     }
 
     /** @test */
-    public function remove_owner_non_premium_user_can_remove_challenge()
+    public function remove_owner_premium_user_can_remove_challenge()
     {
-        $user = User::factory()->create();
-        $spot = Spot::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
-        $challenge = Challenge::factory()->create(['user_id' => $user->id]);
+        $spot = Spot::factory()->create(['visibility' => 'public']);
+        $challenge = Challenge::factory()->create();
 
-        $response = $this->actingAs($user)->get(route('challenge_remove', $challenge->id));
+        $response = $this->actingAs($this->premiumUser)->get(route('challenge_remove', $challenge->id));
 
-        $this->assertDatabaseCount('challenges', 0)
-            ->assertDatabaseMissing('challenges', [
-                'name' => $challenge->name,
-                'description' => $challenge->description,
-            ]);
+        $this->assertDatabaseCount('challenges', 0);
     }
 
     /** @test */
-    public function remove_user_with_remove_permission_can_remove_challenge()
+    public function remove_premium_user_with_remove_permission_can_remove_challenge()
     {
         $removeContent = Permission::create(['name' => 'remove content']);
-        $user = User::factory()->create()->givePermissionTo($removeContent);
-        $spot = Spot::factory()->create(['user_id' => $this->premiumUser->id, 'visibility' => 'public']);
-        $challenge = Challenge::factory()->create(['user_id' => $this->premiumUser->id]);
+        $this->premiumUser->givePermissionTo($removeContent);
+        $user = User::factory()->create();
+        $spot = Spot::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
+        $challenge = Challenge::factory()->create(['user_id' => $user->id, 'visibility' => 'public']);
 
-        $response = $this->actingAs($user)->get(route('challenge_remove', $challenge->id));
+        $response = $this->actingAs($this->premiumUser)->get(route('challenge_remove', $challenge->id));
 
-        $this->assertDatabaseCount('challenges', 0)
-            ->assertDatabaseMissing('challenges', [
-                'name' => $challenge->name,
-                'description' => $challenge->description,
-            ]);
+        $this->assertDatabaseCount('challenges', 0);
     }
 
     /** @test */
