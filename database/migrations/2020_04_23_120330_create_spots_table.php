@@ -20,6 +20,7 @@ class CreateSpotsTable extends Migration
             $table->string('description');
             $table->enum('rating', ['0', '1', '2', '3', '4', '5'])->nullable();
             $table->enum('visibility', ['private', 'follower', 'public'])->default('private');
+            $table->boolean('link_access')->default(false);
             $table->string('coordinates');
             $table->decimal('latitude', 9, 6);
             $table->decimal('longitude', 9, 6);

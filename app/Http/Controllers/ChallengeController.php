@@ -14,6 +14,7 @@ use App\Notifications\ChallengeEntered;
 use App\Notifications\ChallengeWon;
 use App\Notifications\SpotChallenged;
 use App\Models\User;
+use App\Scopes\LinkVisibilityScope;
 use App\Scopes\VisibilityScope;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -74,6 +75,8 @@ class ChallengeController extends Controller
         }
 
         $challenge = Challenge::withTrashed()
+            ->withoutGlobalScope(VisibilityScope::class)
+            ->withGlobalScope('linkVisibility', LinkVisibilityScope::class)
             ->with([
                 'entries',
                 'comments',
@@ -133,6 +136,7 @@ class ChallengeController extends Controller
         $challenge->description = $request['description'];
         $challenge->difficulty = empty($request['difficulty']) ? '0' : $request['difficulty'];
         $challenge->visibility = $request['visibility'] ?: 'private';
+        $challenge->link_access = $request['link_access'];
         if (!empty($request['youtube'])){
             $youtube = explode('t=', str_replace(['https://youtu.be/', 'https://www.youtube.com/watch?v=', '&', '?'], '', $request['youtube']));
             $challenge->youtube = $youtube[0];
@@ -186,6 +190,7 @@ class ChallengeController extends Controller
         $challenge->description = $request['description'];
         $challenge->difficulty = empty($request['difficulty']) ? '3' : $request['difficulty'];
         $challenge->visibility = $request['visibility'] ?: 'private';
+        $challenge->link_access = $request['link_access'];
         if (!empty($request['youtube'])) {
             Storage::disk('public')->delete(str_replace('storage/', '', $challenge->video));
             $youtube = explode('t=', str_replace(['https://youtu.be/', 'https://www.youtube.com/watch?v=', '&', '?'], '', $request['youtube']));

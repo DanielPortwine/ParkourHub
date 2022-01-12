@@ -12,6 +12,7 @@ use App\Models\Movement;
 use App\Models\MovementCategory;
 use App\Models\MovementField;
 use App\Notifications\SpotCreated;
+use App\Scopes\LinkVisibilityScope;
 use App\Scopes\VisibilityScope;
 use App\Models\Spot;
 use App\Models\SpotView;
@@ -82,6 +83,8 @@ class SpotController extends Controller
         }
 
         $spot = Spot::withTrashed()
+            ->withoutGlobalScope(VisibilityScope::class)
+            ->withGlobalScope('linkVisibility', LinkVisibilityScope::class)
             ->with([
                 'user',
                 'reviews',
@@ -212,6 +215,7 @@ class SpotController extends Controller
         $spot->name = $request['name'];
         $spot->description = $request['description'];
         $spot->visibility = $request['visibility'] ?: 'private';
+        $spot->link_access = $request['link_access'];
         $spot->coordinates = $request['coordinates'];
         $latLon = explode(',', $request['lat_lon']);
         $spot->latitude = $latLon[0];
@@ -255,6 +259,7 @@ class SpotController extends Controller
         $spot->name = $request['name'];
         $spot->description = $request['description'];
         $spot->visibility = $request['visibility'] ?: 'private';
+        $spot->link_access = $request['link_access'];
         if (!empty($request['image'])) {
             Storage::disk('public')->delete(str_replace('storage/', '', $spot->image));
             $spot->image = Storage::url($request->file('image')->store('images/spots', 'public'));

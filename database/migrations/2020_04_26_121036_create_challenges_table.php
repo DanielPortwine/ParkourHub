@@ -21,6 +21,7 @@ class CreateChallengesTable extends Migration
             $table->string('description')->nullable();
             $table->enum('difficulty', ['1', '2', '3', '4', '5']);
             $table->enum('visibility', ['private', 'follower', 'public'])->default('private');
+            $table->boolean('link_access')->default(false);
             $table->string('video')->nullable();
             $table->string('video_type')->nullable();
             $table->string('youtube')->nullable();

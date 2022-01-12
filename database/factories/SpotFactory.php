@@ -29,6 +29,7 @@ class SpotFactory extends Factory
             'name' => $this->faker->word,
             'description' => $this->faker->realText(255),
             'visibility' => $this->faker->randomElement(['private', 'follower', 'public']),
+            'link_access' => $this->faker->boolean,
             'coordinates' => $coordinates->x . ',' . $coordinates->y,
             'latitude' => $lat,
             'longitude' => $lon,

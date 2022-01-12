@@ -10,6 +10,7 @@ use App\Models\Movement;
 use App\Models\MovementCategory;
 use App\Models\MovementField;
 use App\Models\Report;
+use App\Scopes\LinkVisibilityScope;
 use App\Scopes\VisibilityScope;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -51,6 +52,8 @@ class EquipmentController extends Controller
     public function view(Request $request, $id)
     {
         $equipment = Equipment::withTrashed()
+            ->withoutGlobalScope(VisibilityScope::class)
+            ->withGlobalScope('linkVisibility', LinkVisibilityScope::class)
             ->with([
                 'movements',
                 'reports',
@@ -102,6 +105,7 @@ class EquipmentController extends Controller
         $equipment->name = $request['name'];
         $equipment->description = $request['description'];
         $equipment->visibility = $request['visibility'] ?: 'private';
+        $equipment->link_access = $request['link_access'];
         if (!empty($request['image'])) {
             $equipment->image = Storage::url($request->file('image')->store('images/equipment', 'public'));
         }
@@ -137,6 +141,7 @@ class EquipmentController extends Controller
         $equipment->name = $request['name'];
         $equipment->description = $request['description'];
         $equipment->visibility = $request['visibility'] ?: 'private';
+        $equipment->link_access = $request['link_access'];
         if (!empty($request['image'])) {
             Storage::disk('public')->delete(str_replace('storage/', '', $equipment->image));
             $equipment->image = Storage::url($request->file('image')->store('images/equipment', 'public'));

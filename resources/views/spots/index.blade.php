@@ -100,7 +100,7 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="form-group row">
+                            <div class="row">
                                 <label for="visibility" class="col-12 col-form-label">Visibility</label>
                                 <div class="col-12">
                                     <select name="visibility" class="form-control select2-no-search">
@@ -108,6 +108,19 @@
                                             <option value="{{ $key }}" @if(setting('privacy_content', 'private') === $key)selected @endif>{{ $name }}</option>
                                         @endforeach
                                     </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input @error('link_access') is-invalid @enderror" type="checkbox" name="link_access" id="link_access" value="1">
+                                        <label class="form-check-label" for="link_access">Anyone with link can view</label>
+                                        @error('link_access')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                        @enderror
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-group row mb-0">

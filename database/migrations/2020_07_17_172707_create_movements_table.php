@@ -22,6 +22,7 @@ class CreateMovementsTable extends Migration
             $table->string('name');
             $table->longText('description')->nullable();
             $table->enum('visibility', ['private', 'follower', 'public'])->default('private');
+            $table->boolean('link_access')->default(false);
             $table->string('youtube')->nullable();
             $table->integer('youtube_start')->nullable();
             $table->string('video')->nullable();

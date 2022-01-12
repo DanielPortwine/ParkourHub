@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Notifications\EventCreated;
 use App\Notifications\EventInvite;
 use App\Notifications\EventUpdated;
+use App\Scopes\LinkVisibilityScope;
 use App\Scopes\VisibilityScope;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -82,7 +83,8 @@ class EventController extends Controller
         }
 
         $event = Event::withTrashed()
-            ->linkVisibility()
+            ->withoutGlobalScope(VisibilityScope::class)
+            ->withGlobalScope('linkVisibility', LinkVisibilityScope::class)
             ->with([
                 'spots',
                 'attendees',
@@ -159,7 +161,7 @@ class EventController extends Controller
         $event->description = $request['description'];
         $event->date_time = $request['date_time'];
         $event->visibility = $request['visibility'] ?: 'private';
-        $event->link_access = $request['link_access'] ? true : false;
+        $event->link_access = $request['link_access'];
         $event->accept_method = $request['accept_method'] ?: 'accept';
         if (!empty($request['youtube'])){
             $youtube = explode('t=', str_replace(['https://youtu.be/', 'https://www.youtube.com/watch?v=', '&', '?'], '', $request['youtube']));
@@ -239,7 +241,7 @@ class EventController extends Controller
         $event->description = $request['description'] ?: null;
         $event->date_time = $request['date_time'];
         $event->visibility = $request['visibility'] ?: 'private';
-        $event->link_access = $request['link_access'] ? true : false;
+        $event->link_access = $request['link_access'];
         $event->accept_method = $request['accept_method'] ?: 'accept';
         if (!empty($request['youtube'])) {
             Storage::disk('public')->delete(str_replace('storage/', '', $event->video));

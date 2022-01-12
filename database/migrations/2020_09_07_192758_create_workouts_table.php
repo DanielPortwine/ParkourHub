@@ -19,6 +19,7 @@ class CreateWorkoutsTable extends Migration
             $table->string('name')->nullable();
             $table->string('description')->nullable();
             $table->enum('visibility', ['private', 'follower', 'public'])->default('private');
+            $table->boolean('link_access')->default(false);
             $table->string('thumbnail')->nullable();
             $table->timestamps();
             $table->softDeletes();

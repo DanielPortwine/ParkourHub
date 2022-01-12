@@ -621,7 +621,7 @@
                                                         @enderror
                                                     </div>
                                                 </div>
-                                                <div class="form-group row">
+                                                <div class="row">
                                                     <label for="visibility" class="col-md-2 col-form-label text-md-right">Visibility</label>
                                                     <div class="col-md-8">
                                                         <select name="visibility" class="form-control select2-no-search @error('visibility') is-invalid @enderror">
@@ -634,6 +634,19 @@
                                                             <strong>{{ $message }}</strong>
                                                         </span>
                                                         @enderror
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <div class="col-md-10 offset-md-2">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input @error('link_access') is-invalid @enderror" type="checkbox" name="link_access" id="link_access" value="1">
+                                                            <label class="form-check-label" for="link_access">Anyone with link can view</label>
+                                                            @error('link_access')
+                                                            <span class="invalid-feedback" role="alert">
+                                                                <strong>{{ $message }}</strong>
+                                                            </span>
+                                                            @enderror
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div class="form-group row">

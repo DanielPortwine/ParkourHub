@@ -123,6 +123,19 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="form-group row">
+                                <div class="col-md-10 offset-md-2">
+                                    <div class="form-check">
+                                        <input class="form-check-input @error('link_access') is-invalid @enderror" type="checkbox" name="link_access" id="link_access" value="1" @if($movement->link_access) checked @endif>
+                                        <label class="form-check-label" for="link_access">Anyone with link can view</label>
+                                        @error('link_access')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
                             <div class="form-group row mb-0">
                                 <div class="col-md-8 offset-md-2">
                                     <button type="submit" class="btn btn-green">Save</button>

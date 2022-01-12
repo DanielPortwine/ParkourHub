@@ -13,6 +13,7 @@ use App\Models\Spot;
 use App\Models\Workout;
 use App\Models\WorkoutMovement;
 use App\Models\WorkoutMovementField;
+use App\Scopes\LinkVisibilityScope;
 use App\Scopes\VisibilityScope;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -70,16 +71,18 @@ class WorkoutController extends Controller
         }
 
         $workout = Workout::withTrashed()
-                ->with([
-                    'user',
-                    'movements',
-                    'comments',
-                    'bookmarks',
-                    'spots',
-                    'reports',
-                ])
-                ->where('id', $id)
-                ->first();
+            ->withoutGlobalScope(VisibilityScope::class)
+            ->withGlobalScope('linkVisibility', LinkVisibilityScope::class)
+            ->with([
+                'user',
+                'movements',
+                'comments',
+                'bookmarks',
+                'spots',
+                'reports',
+            ])
+            ->where('id', $id)
+            ->first();
 
         if (empty($workout) || ($workout->deleted_at !== null && Auth::id() !== $workout->user_id)) {
             abort(404);
@@ -154,6 +157,7 @@ class WorkoutController extends Controller
         $workout->name = $request['name'];
         $workout->description = $request['description'] ?: null;
         $workout->visibility = $request['visibility'] ?: 'private';
+        $workout->link_access = $request['link_access'];
         if (!empty($request['thumbnail'])) {
             $workout->thumbnail = Storage::url($request->file('thumbnail')->store('images/workouts', 'public'));
         }
@@ -256,6 +260,7 @@ class WorkoutController extends Controller
         $workout->name = $request['name'];
         $workout->description = $request['description'] ?: null;
         $workout->visibility = $request['visibility'] ?: 'private';
+        $workout->link_access = $request['link_access'];
         if (!empty($request['thumbnail'])) {
             Storage::disk('public')->delete(str_replace('storage/', '', $workout->thumbnail));
             $workout->thumbnail = Storage::url($request->file('thumbnail')->store('images/workouts', 'public'));

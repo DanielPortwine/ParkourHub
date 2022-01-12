@@ -27,6 +27,7 @@ class WorkoutFactory extends Factory
             'name' => $this->faker->word,
             'description' => $this->faker->realText(255),
             'visibility' => $this->faker->randomElement(['private', 'follower', 'public']),
+            'link_access' => $this->faker->boolean,
             'thumbnail' => str_replace('public', '', $this->faker->image('public/storage/images/workouts', 640, 480, null, true)),
         ];
     }

@@ -45,21 +45,6 @@ class Event extends Model
         static::addGlobalScope(new VisibilityScope);
     }
 
-    public function scopeLinkVisibility($query)
-    {
-        $followers = Cache::remember('visibility_followers_events_' . Auth::id(), 30, function() {
-            return Follower::where('follower_id', Auth::id())->where('accepted', true)->pluck('user_id')->toArray();
-        });
-
-        $query->where('visibility', 'public')
-            ->orWhere(function($q) use ($followers) {
-                $q->where('visibility', 'follower')
-                    ->whereIn('user_id', $followers);
-            })
-            ->orWhere('user_id', Auth::id())
-            ->orWhere('link_access', true);
-    }
-
     public function scopeDateBetween($query, $dates = [])
     {
         if (!empty($dates['from']) && !empty($dates['to'])) {

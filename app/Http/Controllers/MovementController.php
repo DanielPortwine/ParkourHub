@@ -15,6 +15,7 @@ use App\Models\MovementField;
 use App\Models\MovementType;
 use App\Models\Report;
 use App\Models\Spot;
+use App\Scopes\LinkVisibilityScope;
 use App\Scopes\VisibilityScope;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -65,6 +66,8 @@ class MovementController extends Controller
     public function view(Request $request, $id, $tab = 'comments')
     {
         $movement = Movement::withTrashed()
+            ->withoutGlobalScope(VisibilityScope::class)
+            ->withGlobalScope('linkVisibility', LinkVisibilityScope::class)
             ->with([
                 'category',
                 'fields',
@@ -239,6 +242,7 @@ class MovementController extends Controller
         $movement->name = $request['name'];
         $movement->description = $request['description'];
         $movement->visibility = $request['visibility'] ?: 'private';
+        $movement->link_access = $request['link_access'];
         if (!empty($request['youtube'])) {
             $youtube = explode('t=', str_replace(['https://youtu.be/', 'https://www.youtube.com/watch?v=', '&', '?'], '', $request['youtube']));
             $movement->youtube = $youtube[0];
@@ -300,6 +304,7 @@ class MovementController extends Controller
         $movement->name = $request['name'];
         $movement->description = $request['description'];
         $movement->visibility = $request['visibility'] ?: 'private';
+        $movement->link_access = $request['link_access'];
         if (!empty($request['youtube'])) {
             Storage::disk('public')->delete(str_replace('storage/', '', $movement->video));
             $youtube = explode('t=', str_replace(['https://youtu.be/', 'https://www.youtube.com/watch?v=', '&', '?'], '', $request['youtube']));

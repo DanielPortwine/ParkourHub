@@ -19,6 +19,7 @@ class CreateEquipmentTable extends Migration
             $table->string('name');
             $table->string('description');
             $table->enum('visibility', ['private', 'follower', 'public'])->default('private');
+            $table->boolean('link_access')->default(false);
             $table->string('image')->nullable();
             $table->timestamps();
             $table->softDeletes();
