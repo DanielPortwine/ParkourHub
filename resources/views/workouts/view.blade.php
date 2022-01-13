@@ -43,7 +43,6 @@
                 <div class="col-auto vertical-center">
                     @if($workout->deleted_at === null)
                         @if ($workout->user->id === Auth()->id())
-                            <a class="btn text-white" href="{{ route('workout_edit', $workout->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
                             <a class="btn text-white" href="{{ route('workout_delete', $workout->id) }}" title="Delete"><i class="fa fa-trash"></i></a>
                         @endif
                         @auth
@@ -68,6 +67,21 @@
                         <a class="btn text-white" href="{{ route('workout_remove', $workout->id) }}" title="Remove Forever"><i class="fa fa-trash"></i></a>
                     @endif
                 </div>
+            </div>
+            <div class="row pt-2">
+                <div class="col vertical-center">
+                    @if(!empty($workout->user->profile_image))
+                        <div class="profile-image-wrapper--component pr-3">
+                            <a href="{{ $workout->user->profile_image }}"><img src="{{ $workout->user->profile_image }}" alt="Profile image of the user named {{ $workout->user->name }}."></a>
+                        </div>
+                    @endif
+                    <a class="btn-link large-text sedgwick" href="{{ route('user_view', $workout->user->id) }}">{{ $workout->user->name }}</a>
+                </div>
+                @if ($workout->user->id === Auth()->id() && $workout->deleted_at === null)
+                    <div class="col-auto">
+                        <a class="btn text-white" href="{{ route('workout_edit', $workout->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
+                    </div>
+                @endif
             </div>
             <div class="row pb-2 border-subtle">
                 <div class="col">

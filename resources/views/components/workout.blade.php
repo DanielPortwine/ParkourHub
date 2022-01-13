@@ -45,6 +45,16 @@
             </div>
         </div>
         <div class="row">
+            <div class="col-lg vertical-center">
+                @if(!empty($workout->user->profile_image))
+                    <div class="profile-image-wrapper--component pr-3">
+                        <a href="{{ $workout->user->profile_image }}"><img src="{{ $workout->user->profile_image }}" alt="Profile image of the user named {{ $workout->user->name }}."></a>
+                    </div>
+                @endif
+                <a class="btn-link large-text sedgwick" href="{{ route('user_view', $workout->user->id) }}">{{ $workout->user->name }}</a>
+            </div>
+        </div>
+        <div class="row">
             <div class="col">
                 @php $movementsCount = $workout->movements_count @endphp
                 {{ $movementsCount === 1 ? $movementsCount . ' movement' : $movementsCount . ' movements' }} | {{ $workout->created_at->diffForHumans() }}
