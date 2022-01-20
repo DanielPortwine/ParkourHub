@@ -105,7 +105,7 @@ class EquipmentController extends Controller
         $equipment->name = $request['name'];
         $equipment->description = $request['description'];
         $equipment->visibility = $request['visibility'] ?: 'private';
-        $equipment->link_access = $request['link_access'];
+        $equipment->link_access = $request['link_access'] ?? false;
         if (!empty($request['image'])) {
             $equipment->image = Storage::url($request->file('image')->store('images/equipment', 'public'));
         }
@@ -141,7 +141,7 @@ class EquipmentController extends Controller
         $equipment->name = $request['name'];
         $equipment->description = $request['description'];
         $equipment->visibility = $request['visibility'] ?: 'private';
-        $equipment->link_access = $request['link_access'];
+        $equipment->link_access = $request['link_access'] ?? false;
         if (!empty($request['image'])) {
             Storage::disk('public')->delete(str_replace('storage/', '', $equipment->image));
             $equipment->image = Storage::url($request->file('image')->store('images/equipment', 'public'));

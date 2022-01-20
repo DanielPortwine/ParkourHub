@@ -242,7 +242,7 @@ class MovementController extends Controller
         $movement->name = $request['name'];
         $movement->description = $request['description'];
         $movement->visibility = $request['visibility'] ?: 'private';
-        $movement->link_access = $request['link_access'];
+        $movement->link_access = $request['link_access'] ?? false;
         if (!empty($request['youtube'])) {
             $youtube = explode('t=', str_replace(['https://youtu.be/', 'https://www.youtube.com/watch?v=', '&', '?'], '', $request['youtube']));
             $movement->youtube = $youtube[0];
@@ -304,7 +304,7 @@ class MovementController extends Controller
         $movement->name = $request['name'];
         $movement->description = $request['description'];
         $movement->visibility = $request['visibility'] ?: 'private';
-        $movement->link_access = $request['link_access'];
+        $movement->link_access = $request['link_access'] ?? false;
         if (!empty($request['youtube'])) {
             Storage::disk('public')->delete(str_replace('storage/', '', $movement->video));
             $youtube = explode('t=', str_replace(['https://youtu.be/', 'https://www.youtube.com/watch?v=', '&', '?'], '', $request['youtube']));

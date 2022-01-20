@@ -157,7 +157,7 @@ class WorkoutController extends Controller
         $workout->name = $request['name'];
         $workout->description = $request['description'] ?: null;
         $workout->visibility = $request['visibility'] ?: 'private';
-        $workout->link_access = $request['link_access'];
+        $workout->link_access = $request['link_access'] ?? false;
         if (!empty($request['thumbnail'])) {
             $workout->thumbnail = Storage::url($request->file('thumbnail')->store('images/workouts', 'public'));
         }
@@ -260,7 +260,7 @@ class WorkoutController extends Controller
         $workout->name = $request['name'];
         $workout->description = $request['description'] ?: null;
         $workout->visibility = $request['visibility'] ?: 'private';
-        $workout->link_access = $request['link_access'];
+        $workout->link_access = $request['link_access'] ?? false;
         if (!empty($request['thumbnail'])) {
             Storage::disk('public')->delete(str_replace('storage/', '', $workout->thumbnail));
             $workout->thumbnail = Storage::url($request->file('thumbnail')->store('images/workouts', 'public'));

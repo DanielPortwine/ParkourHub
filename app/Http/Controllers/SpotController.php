@@ -215,7 +215,7 @@ class SpotController extends Controller
         $spot->name = $request['name'];
         $spot->description = $request['description'];
         $spot->visibility = $request['visibility'] ?: 'private';
-        $spot->link_access = $request['link_access'];
+        $spot->link_access = $request['link_access'] ?? false;
         $spot->coordinates = $request['coordinates'];
         $latLon = explode(',', $request['lat_lon']);
         $spot->latitude = $latLon[0];
@@ -259,7 +259,7 @@ class SpotController extends Controller
         $spot->name = $request['name'];
         $spot->description = $request['description'];
         $spot->visibility = $request['visibility'] ?: 'private';
-        $spot->link_access = $request['link_access'];
+        $spot->link_access = $request['link_access'] ?? false;
         if (!empty($request['image'])) {
             Storage::disk('public')->delete(str_replace('storage/', '', $spot->image));
             $spot->image = Storage::url($request->file('image')->store('images/spots', 'public'));

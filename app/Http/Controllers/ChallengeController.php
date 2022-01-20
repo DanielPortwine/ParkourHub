@@ -136,7 +136,7 @@ class ChallengeController extends Controller
         $challenge->description = $request['description'];
         $challenge->difficulty = empty($request['difficulty']) ? '0' : $request['difficulty'];
         $challenge->visibility = $request['visibility'] ?: 'private';
-        $challenge->link_access = $request['link_access'];
+        $challenge->link_access = $request['link_access'] ?? false;
         if (!empty($request['youtube'])){
             $youtube = explode('t=', str_replace(['https://youtu.be/', 'https://www.youtube.com/watch?v=', '&', '?'], '', $request['youtube']));
             $challenge->youtube = $youtube[0];
@@ -190,7 +190,7 @@ class ChallengeController extends Controller
         $challenge->description = $request['description'];
         $challenge->difficulty = empty($request['difficulty']) ? '3' : $request['difficulty'];
         $challenge->visibility = $request['visibility'] ?: 'private';
-        $challenge->link_access = $request['link_access'];
+        $challenge->link_access = $request['link_access'] ?? false;
         if (!empty($request['youtube'])) {
             Storage::disk('public')->delete(str_replace('storage/', '', $challenge->video));
             $youtube = explode('t=', str_replace(['https://youtu.be/', 'https://www.youtube.com/watch?v=', '&', '?'], '', $request['youtube']));
