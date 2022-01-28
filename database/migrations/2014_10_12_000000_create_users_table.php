@@ -27,6 +27,7 @@ class CreateUsersTable extends Migration
             $table->string('youtube')->nullable();
             $table->string('password');
             $table->text('settings');
+            $table->boolean('accepted_community_guidelines')->default(false);
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

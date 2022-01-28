@@ -5,8 +5,8 @@
                 <h3 class="footer-subtitle sedgwick">Resources</h3>
                 <ul class="footer-links">
                     <li class="footer-link"><a href="">Support</a></li>
-                    <li class="footer-link"><a href="">Contact</a></li>
-                    <li class="footer-link"><a href="">Privacy & Terms</a></li>
+                    <li class="footer-link"><a href="">Privacy Policy</a></li>
+                    <li class="footer-link"><a href="{{ route('policy_view', 'community-guidelines') }}">Community Guidelines</a></li>
                 </ul>
             </div>
             <div class="col-md-8">

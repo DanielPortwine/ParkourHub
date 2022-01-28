@@ -15,7 +15,7 @@
                     <form method="POST" action="{{ route('register') }}">
                         @csrf
 
-                        <div class="form-group row">
+                        <div class="row">
                             <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('Username') }}*</label>
 
                             <div class="col-md-6">
@@ -26,6 +26,12 @@
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-md-6 offset-md-4">
+                                <small>*not required</small>
                             </div>
                         </div>
 
@@ -57,7 +63,7 @@
                             </div>
                         </div>
 
-                        <div class="row">
+                        <div class="form-group row">
                             <label for="password-confirm" class="col-md-4 col-form-label text-md-right">{{ __('Confirm Password') }}</label>
 
                             <div class="col-md-6">
@@ -67,11 +73,21 @@
 
                         <div class="form-group row">
                             <div class="col-md-6 offset-md-4">
-                                <small>*not required</small>
+                                <div class="form-check">
+                                    <input class="form-check-input @error('guidelines') is-invalid @enderror" type="checkbox" name="guidelines" id="guidelines" value="1">
+                                    <label class="form-check-label text-white" for="guidelines">
+                                        I have read and accept the <a href="{{ route('policy_view', 'community-guidelines') }}" class="btn-link">Community Guidelines</a>
+                                    </label>
+                                    @error('guidelines')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
                             </div>
                         </div>
 
-                        <div class="form-group row mb-0">
+                        <div class="row">
                             <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn btn-green">
                                     {{ __('Register') }}

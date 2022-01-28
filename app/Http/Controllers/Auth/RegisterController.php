@@ -51,9 +51,12 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => ['sometimes', 'string', 'max:25', 'unique:users', new NotAutoUsername],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'name' => ['nullable', 'string', 'max:25', 'unique:users', new NotAutoUsername],
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
+            'guidelines' => 'accepted',
+        ], [
+            'guidelines.accepted' => 'You must accept the Community Guidelines.',
         ]);
     }
 
@@ -70,6 +73,7 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
             'settings' => '{}',
+            'accepted_community_guidelines' => $data['guidelines'] ?: false,
         ]);
 
         if (empty($data['name'])) {

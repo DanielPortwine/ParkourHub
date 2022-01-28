@@ -21,6 +21,7 @@ class UserFactory extends Factory
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // 'password'
             'remember_token' => Str::random(10),
             'settings' => '{"notifications_review":"email-site","notifications_comment":"email-site","notifications_challenge":"email-site","notifications_entry":"email-site","notifications_challenge_won":"email-site","notifications_follower":"email-site","notifications_new_spot":"email-site","notifications_new_challenge":"email-site","notifications_new_event":"email-site","notifications_event_updated":"email-site","notifications_event_invite":"email-site","notifications_new_workout":"email-site","notifications_workout_updated":"email-site"}',
+            'accepted_community_guidelines' => true,
         ];
     }
 }

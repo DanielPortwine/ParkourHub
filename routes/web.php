@@ -218,6 +218,11 @@ Route::prefix('admin')->middleware('verified')->group(function() {
     Route::get('/reports/{type?}', 'ReportController@index')->name('report_listing');
 });
 
+Route::prefix('policies')->group(function() {
+    Route::get('/', 'PolicyController@index')->name('policy_listing');
+    Route::get('/{policy}', 'PolicyController@view')->name('policy_view');
+});
+
 Route::prefix('ajax')->group(function() {
     Route::get('searchAddress/{search}', 'AjaxController@searchAddress');
     Route::get('searchHometown/{hometown}', 'AjaxController@searchHometown');
