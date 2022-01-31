@@ -1,4 +1,4 @@
-@extends('layouts.error')
+@extends('layouts.app')
 
 @push('title')500 - Server Error | @endpush
 

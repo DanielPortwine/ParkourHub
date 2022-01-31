@@ -1,4 +1,4 @@
-@extends('layouts.error')
+@extends('layouts.app')
 
 @push('title')404 - Not Found | @endpush
 

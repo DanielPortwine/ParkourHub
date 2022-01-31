@@ -83,7 +83,7 @@ class HomeController extends Controller
             ->limit(5)
             ->get();
 
-        return view('home', [
+        return view('user.home', [
             'followedSpots' => $followedSpots,
             'followedChallenges' => $followedChallenges,
             'hitlist' => $hitlist,

@@ -4,6 +4,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Sign up for the Premium membership to access exclusive features such as the training system and increased file upload sizes.">
+    <meta name="twitter:card" content="summary">
+    <meta property="og:site-name" content="Parkour Hub">
+    <meta property="og:title" content="{{ config('app.name') }}">
+    <meta property="og:description" content="Sign up for Parkour Hub Premium to gain access to exclusive features.">
+    <meta property="og:url" content="{{ Request()->url() }}">
+    <meta property="og:image" content="{{ url('/favicon.png') }}">
 
     <title>Premium | {{ config('app.name') }}</title>
 

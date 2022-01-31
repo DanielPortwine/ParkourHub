@@ -4,7 +4,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Parkour Hub is a place for people to share their spots, challenges, moves and more. There is also a premium membership that boasts a full training system to help users develop their skills and achieve their goals.">
-    <meta name="description" content="Parkour Hub is a place for people to share their spots, challenges, moves and more. There is also a premium membership that boasts a full training system to help users develop their skills and achieve their goals.">
     <meta name="twitter:card" content="summary">
     <meta property="og:site-name" content="Parkour Hub">
     <meta property="og:title" content="{{ config('app.name') }}">
