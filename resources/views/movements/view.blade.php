@@ -88,11 +88,11 @@
                 <div class="card-header card-header-black">
                     <ul class="nav nav-tabs card-header-tabs">
                         <li class="nav-item">
-                            <a class="nav-link btn-link @if($tab === 'comments')active @endif" href="{{ route('movement_view', ['id' => $originalMovement->id, 'tab' => 'comments']) }}">Comments</a>
+                            <a class="nav-link btn-link @if($tab === 'comments')active @endif" href="{{ route('movement_view', ['id' => $originalMovement->id, 'tab' => null]) }}">Comments</a>
                         </li>
                         @if($originalMovement->type_id === 1)
                             <li class="nav-item">
-                                <a class="nav-link btn-link @if($tab === 'spots')active @endif" href="{{ route('movement_view', ['id' => $originalMovement->id, 'tab' => null]) }}">Spots</a>
+                                <a class="nav-link btn-link @if($tab === 'spots')active @endif" href="{{ route('movement_view', ['id' => $originalMovement->id, 'tab' => 'spots']) }}">Spots</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link btn-link @if($tab === 'progressions')active @endif" href="{{ route('movement_view', ['id' => $originalMovement->id, 'tab' => 'progressions']) }}">Progressions</a>
@@ -108,7 +108,7 @@
                         @elseif($originalMovement->type_id === 2)
                             @premium
                                 <li class="nav-item">
-                                    <a class="nav-link btn-link @if($tab === 'equipment')active @endif" href="{{ route('movement_view', ['id' => $originalMovement->id, 'tab' => null]) }}">Equipment</a>
+                                    <a class="nav-link btn-link @if($tab === 'equipment')active @endif" href="{{ route('movement_view', ['id' => $originalMovement->id, 'tab' => 'equipment']) }}">Equipment</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link btn-link @if($tab === 'progressions')active @endif" href="{{ route('movement_view', ['id' => $originalMovement->id, 'tab' => 'progressions']) }}">Progressions</a>

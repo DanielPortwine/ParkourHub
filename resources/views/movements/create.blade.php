@@ -117,6 +117,21 @@
                                 </div>
                             </div>
                             <div class="form-group row">
+                                <label class="col-md-2 col-form-label text-md-right">Equipment</label>
+                                <div class="col-md-8 vertical-center">
+                                    <select class="select2-no-search @error('equipment') is-invalid border-danger @enderror" name="equipment[]" multiple="multiple">
+                                        @foreach($equipments as $equipment)
+                                            <option value="{{ $equipment->id }}">{{ $equipment->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('equipment')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="form-group row">
                                 <label for="visibility" class="col-md-2 col-form-label text-md-right">Visibility</label>
                                 <div class="col-md-8">
                                     <select name="visibility" class="form-control select2-no-search">

@@ -226,10 +226,12 @@ class MovementController extends Controller
     {
         $movementTypes = MovementType::with(['categories'])->get();
         $movementFields = MovementField::get();
+        $equipment = Equipment::get();
 
         return view('movements.create', [
             'movementTypes' => $movementTypes,
             'movementFields' => $movementFields,
+            'equipments' => $equipment,
         ]);
     }
 
@@ -261,6 +263,10 @@ class MovementController extends Controller
             $movement->fields()->attach($field);
         }
 
+        foreach ($request['equipment'] as $equipment) {
+            $movement->equipment()->attach($equipment, ['user_id' => Auth::id()]);
+        }
+
         if (!empty($request['spot'])) {
             $movement->spots()->attach($request['spot'], ['user_id' => Auth::id()]);
         } else if (!empty($request['progression'])) {
@@ -284,10 +290,12 @@ class MovementController extends Controller
         }
 
         $movementFields = MovementField::get();
+        $equipment = Equipment::get();
 
         return view('movements.edit', [
             'movement' => $movement,
             'movementFields' => $movementFields,
+            'equipments' => $equipment,
         ]);
     }
 
@@ -297,7 +305,7 @@ class MovementController extends Controller
             return $this->delete($id, $request['redirect']);
         }
 
-        $movement = Movement::with(['fields'])->where('id', $id)->first();
+        $movement = Movement::with(['fields', 'equipment'])->where('id', $id)->first();
         if ($movement->user_id != Auth::id()) {
             return redirect()->route('movement_view', $id);
         }
@@ -334,6 +342,18 @@ class MovementController extends Controller
         foreach ($movementFields as $movementField) {
             if (!in_array($movementField, $request['fields'])) {
                 $movement->fields()->detach($movementField);
+            }
+        }
+
+        $movementEquipments = $movement->equipment()->pluck('equipment.id')->toArray();
+        foreach ($request['equipment'] ?? [] as $equipment) {
+            if (!in_array($equipment, $movementEquipments)) {
+                $movement->equipment()->attach($equipment, ['user_id' => Auth::id()]);
+            }
+        }
+        foreach ($movementEquipments as $movementEquipment) {
+            if (!in_array($movementEquipment, $request['equipment'] ?? [])) {
+                $movement->equipment()->detach($movementEquipment);
             }
         }
 
