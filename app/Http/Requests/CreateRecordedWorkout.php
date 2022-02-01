@@ -25,6 +25,7 @@ class CreateRecordedWorkout extends FormRequest
     public function rules()
     {
         return [
+            'time' => 'required|date_format:H:i:s',
             'movements' => 'required|array',
         ];
     }

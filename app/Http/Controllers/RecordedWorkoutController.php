@@ -91,6 +91,7 @@ class RecordedWorkoutController extends Controller
         $recordedWorkout = new RecordedWorkout;
         $recordedWorkout->user_id = $userId;
         $recordedWorkout->workout_id = $workoutId;
+        $recordedWorkout->time = $request['time'];
         $recordedWorkout->save();
 
         $todaysWorkout = Auth::user()->planWorkouts()
@@ -159,6 +160,9 @@ class RecordedWorkoutController extends Controller
         if(empty($recordedWorkout)) {
             return redirect()->route('recorded_workout_view', $id);
         }
+
+        $recordedWorkout->time = $request['time'];
+        $recordedWorkout->save();
 
         $fields = WorkoutMovementField::whereIn('id', array_keys($request['fields']))
             ->whereHas('workoutMovement', function($q) use($recordedWorkout) {

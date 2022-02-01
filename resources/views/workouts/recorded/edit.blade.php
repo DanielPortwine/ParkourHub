@@ -20,7 +20,17 @@
                         <div class="mb-3">
                             <form method="POST">
                                 @csrf
-                                <input type="hidden" name="workout" value="{{ $recordedWorkout->workout_id }}">
+                                <div class="form-group row">
+                                    <label class="col-md-2 col-form-label text-md-right">Time</label>
+                                    <div class="col-md-8 vertical-center">
+                                        <input type="time" class="@error('time')is-invalid @enderror" id="time-input" step="1" name="time" value="{{ $recordedWorkout->time }}">
+                                        @error('time')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                        @enderror
+                                    </div>
+                                </div>
                                 <div class="movement-entries-container">
                                     @foreach($recordedWorkout->movements as $workoutMovement)
                                         <div class="form-group row">

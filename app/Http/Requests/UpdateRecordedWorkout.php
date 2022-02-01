@@ -25,6 +25,7 @@ class UpdateRecordedWorkout extends FormRequest
     public function rules()
     {
         return [
+            'time' => 'required|date_format:H:i:s',
             'fields' => 'required|array',
             'delete' => 'sometimes',
             'redirect' => 'sometimes|url',

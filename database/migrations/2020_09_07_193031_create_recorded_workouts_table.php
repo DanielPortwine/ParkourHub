@@ -17,6 +17,7 @@ class CreateRecordedWorkoutsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('workout_id');
+            $table->time('time')->default('00:00:00');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

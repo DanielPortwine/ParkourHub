@@ -17,6 +17,7 @@ class RecordedWorkoutFactory extends Factory
         return [
             'user_id' => User::inRandomOrder()->first()->id,
             'workout_id' => Workout::withoutGlobalScope(VisibilityScope::class)->inRandomOrder()->first()->id,
+            'time' => $this->faker->time,
         ];
     }
 }

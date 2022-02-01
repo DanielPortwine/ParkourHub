@@ -11,6 +11,10 @@
             </button>
         </div>
     @endif
+    <div class="position-fixed vertical-center text-center text-white bg-grey border-bottom w-100 z-10 py-2">
+        <h4 class="text-center w-100 m-0" id="timer-display">00:00:00</h4>
+    </div>
+    <br>
     <div class="container py-4">
         <div class="row justify-content-center">
             <div class="col-md-12">
@@ -20,6 +24,7 @@
                         <div class="mb-3">
                             <form method="POST">
                                 @csrf
+                                <input type="hidden" id="time-input" name="time" value="0">
                                 <div class="movement-entries-container">
                                     @php $count = 1 @endphp
                                     @foreach($workout->movements as $workoutMovement)
@@ -72,3 +77,25 @@
 @section('footer')
     @include('components.footer')
 @endsection
+
+@push('scripts')
+    <script>
+        function pad2(number) {
+            return (number < 10 ? '0' : '') + number
+        }
+
+        function updateTimer(start) {
+            let current = ($.now() - start) / 1000;
+            let currentFormatted = pad2(Math.floor(current / 60 / 60)) + ':' + // hours
+                pad2(Math.floor(current / 60) % 60) + ':' + //minutes
+                pad2(Math.floor(current % 60)) // seconds
+            $('#time-input').val(currentFormatted);
+            $('#timer-display').html(currentFormatted);
+        }
+
+        $(document).ready(function () {
+            let start = $.now();
+            setInterval(updateTimer, 1000, start);
+        });
+    </script>
+@endpush

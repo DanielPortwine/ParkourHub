@@ -42,7 +42,7 @@
         </div>
         <div class="row pb-2 border-subtle">
             <div class="col">
-                <span>{{ $recordedWorkout->created_at->format('jS M, Y') }}</span>
+                <span>{{ $recordedWorkout->created_at->format('jS M, Y') }} | {{ $recordedWorkout->time }}</span>
             </div>
         </div>
         <div class="py-3">
