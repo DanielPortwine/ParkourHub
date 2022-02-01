@@ -133,11 +133,17 @@ class SpotController extends Controller
                     ->paginate(20, ['*']);
                 break;
             case 'locals':
+                if (!Auth::check()) {
+                    abort(404);
+                }
                 $locals = $spot->locals()
                     ->orderByDesc('name')
                     ->paginate(40, ['*']);
                 break;
             case 'workouts':
+                if (!Auth::check() || !Auth::user()->isPremium()) {
+                    abort(404);
+                }
                 $workouts = $spot->workouts()
                     ->withCount('movements')
                     ->with(['movements', 'bookmarks', 'user'])

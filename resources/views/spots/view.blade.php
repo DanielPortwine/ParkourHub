@@ -306,9 +306,11 @@
                         <li class="nav-item">
                             <a class="nav-link btn-link @if($tab === 'challenges')active @endif" href="{{ route('spot_view', ['id' => $spot->id, 'tab' => 'challenges']) }}">Challenges</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link btn-link @if($tab === 'locals')active @endif" href="{{ route('spot_view', ['id' => $spot->id, 'tab' => 'locals']) }}">Locals</a>
-                        </li>
+                        @auth
+                            <li class="nav-item">
+                                <a class="nav-link btn-link @if($tab === 'locals')active @endif" href="{{ route('spot_view', ['id' => $spot->id, 'tab' => 'locals']) }}">Locals</a>
+                            </li>
+                        @endauth
                         @premium
                             <li class="nav-item">
                                 <a class="nav-link btn-link @if($tab === 'workouts')active @endif" href="{{ route('spot_view', ['id' => $spot->id, 'tab' => 'workouts']) }}">Workouts</a>
