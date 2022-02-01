@@ -308,6 +308,9 @@
                         </li>
                         @auth
                             <li class="nav-item">
+                                <a class="nav-link btn-link @if($tab === 'events')active @endif" href="{{ route('spot_view', ['id' => $spot->id, 'tab' => 'events']) }}">Events</a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link btn-link @if($tab === 'locals')active @endif" href="{{ route('spot_view', ['id' => $spot->id, 'tab' => 'locals']) }}">Locals</a>
                             </li>
                         @endauth
@@ -687,6 +690,27 @@
                                     <a class="btn btn-green w-75" href="{{ route('spot_view', $spot->id) }}">Less</a>
                                 @endif
                             </div>
+                        @endif
+                    </div>
+                @elseif($tab === 'events')
+                    <div class="card-body bg-black">
+                        @if(!empty($request['events']))
+                            {{ $events->links() }}
+                        @endif
+                        @foreach($events->chunk(2) as $chunk)
+                            <div class="row">
+                                @foreach($chunk as $event)
+                                    <div class="col-md-6 mb-4">
+                                        @include('components.event')
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endforeach
+                        @if(!empty($request['events']))
+                            {{ $events->links() }}
+                        @endif
+                        @if (count($spot->events) === 0)
+                            <p class="mb-0">This spot has no events yet.</p>
                         @endif
                     </div>
                 @elseif($tab === 'locals')
