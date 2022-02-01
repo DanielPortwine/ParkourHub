@@ -33,12 +33,14 @@
                             <span class="d-none d-lg-inline">Spots</span>
                         </a>
                     </li>
-                    <li class="nav-item px-2">
-                        <a class="nav-link @if(Route::currentRouteName() === 'event_listing')active @endif" href="{{ route('event_listing', ['search' => $_GET['search'] ?? '']) }}">
-                            <i class="fa fa-map-marked nav-icon"></i>
-                            <span class="d-none d-lg-inline">Events</span>
-                        </a>
-                    </li>
+                    @auth
+                        <li class="nav-item px-2">
+                            <a class="nav-link @if(Route::currentRouteName() === 'event_listing')active @endif" href="{{ route('event_listing', ['search' => $_GET['search'] ?? '']) }}">
+                                <i class="fa fa-map-marked nav-icon"></i>
+                                <span class="d-none d-lg-inline">Events</span>
+                            </a>
+                        </li>
+                    @endauth
                     <li class="nav-item px-2">
                         <a class="nav-link @if(Route::currentRouteName() === 'challenge_listing')active @endif" href="{{ route('challenge_listing', ['search' => $_GET['search'] ?? '']) }}">
                             <i class="fa fa-bullseye nav-icon"></i>

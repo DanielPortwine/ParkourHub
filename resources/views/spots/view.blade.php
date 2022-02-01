@@ -63,12 +63,12 @@
                                 <a class="btn text-white tick-off-hitlist-button @if(!(!empty($hit) && $hit->completed_at == null))d-none @endif" id="hitlist-spot-{{ $spot->id }}-add" title="Tick Off Hitlist"><i class="fa fa-check"></i></a>
                                 <a class="btn text-white add-to-hitlist-button @if(!empty($hit))d-none @endif" id="hitlist-spot-{{ $spot->id }}-tick" title="Add To Hitlist"><i class="fa fa-crosshairs"></i></a>
                                 <a class="btn text-white remove-from-hitlist-button @if(empty($hit))d-none @endif" id="hitlist-spot-{{ $spot->id }}-remove" title="Remove From Hitlist"><i class="fa fa-times"></i></a>
+                                @if(!in_array(Auth()->id(), $localsIDs))
+                                    <a class="btn text-white" href="{{ route('spot_become_local', $spot->id) }}" title="Become a Local"><i class="fa fa-house-user"></i></a>
+                                @else
+                                    <a class="btn text-white" href="{{ route('spot_abandon_local', $spot->id) }}" title="Abandon Being a Local"><i class="fa fa-house-damage"></i></a>
+                                @endif
                             @endauth
-                            @if(!in_array(Auth()->id(), $localsIDs))
-                                <a class="btn text-white" href="{{ route('spot_become_local', $spot->id) }}" title="Become a Local"><i class="fa fa-house-user"></i></a>
-                            @else
-                                <a class="btn text-white" href="{{ route('spot_abandon_local', $spot->id) }}" title="Abandon Being a Local"><i class="fa fa-house-damage"></i></a>
-                            @endif
                             <a class="btn text-white" href="{{ route('spots', ['spot' => $spot->id]) }}" title="Locate"><i class="fa fa-map-marker"></i></a>
                         @elseif($spot->user_id === Auth()->id())
                             <a class="btn text-white" href="{{ route('spot_recover', $spot->id) }}" title="Recover"><i class="fa fa-history"></i></a>
