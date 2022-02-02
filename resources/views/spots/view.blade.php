@@ -681,7 +681,7 @@
                             {{ $challenges->links() }}
                         @endif
                         @if (count($spot->challenges) === 0)
-                            <p class="mb-0">This spot has no challenges yet.@auth Create one by clicking 'Create Challenge' above.@else <a class="btn-link" href="/login">Login</a> or <a class="btn-link" href="/register">Register</a> to create one. @endauth</p>
+                            <p class="mb-0">This spot has no challenges yet.@auth @premium Create one by clicking 'Create Challenge' above. @else Become a <a class="btn-link text-premium" href="/premium">Premium Member</a> to create a challenge. @endpremium @else <a class="btn-link" href="/login">Login</a> or <a class="btn-link" href="/register">Register</a> to create one. @endauth</p>
                         @elseif(count($spot->challenges) > 4)
                             <div class="col text-center mb-4">
                                 @if(empty($request['challenges']))

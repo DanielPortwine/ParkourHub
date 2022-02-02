@@ -60,9 +60,10 @@
             <div class="row">
                 <div class="col"></div>
                 <div class="col-md-8">
-                    <p class="text-center large-text">Parkour Hub is a place for athletes to share their spots and set challenges for others to attempt.</p>
+                    <p class="text-center large-text">Parkour Hub is based on the sharing of Parkour spots via the spots map. Other features expand on this concept such as setting challenges at spots, hosting events at spots and creating moves that can be linked to spots.</p>
                     <p class="text-center large-text">Going to a new town and don't know if there are any spots? Check on Parkour Hub to see what the locals have uploaded.</p>
-                    <p class="text-center large-text">Found a particularly tricky spot? Why not create a challenge there and see if anyone can complete it?</p>
+                    <p class="text-center large-text">Found a good spot in your local area? Add it to Parkour Hub via the spots map so others can find it.</p>
+                    <p class="text-center large-text">Want to meet up with other freerunners? See what events are happening at spots you go to.</p>
                 </div>
                 <div class="col"></div>
             </div>
@@ -91,21 +92,30 @@
                     <h1 class="text-center subtitle sedgwick">Features</h1>
                 </div>
             </div>
-            <div class="row my-md-4">
+            <div class="row my-md-4 text-center">
                 <div class="col-md-4">
                     <div class="flex d-md-block vertical-center">
                         <i class="fa fa-map feature-icon"></i>
                         <h3 class="sedgwick ml-2 ml-md-0">Spots Map</h3>
                     </div>
-                    <p class="large-text">See spots that other users have created on a global map.</p>
+                    <p class="large-text">See spots that other users have created on a global map and create your own.</p>
                 </div>
                 <div class="col-md-4">
                     <div class="flex d-md-block vertical-center">
                         <i class="fa fa-bullseye feature-icon"></i>
                         <h3 class="sedgwick ml-2 ml-md-0">Challenges</h3>
                     </div>
-                    <p class="large-text">Set challenges at your own or others' spots and see if anyone can complete them.</p>
+                    <p class="large-text">Enter challenges at spots and see if you can win.</p>
                 </div>
+                <div class="col-md-4">
+                    <div class="flex d-md-block vertical-center">
+                        <i class="fa fa-map-marked feature-icon"></i>
+                        <h3 class="sedgwick ml-2 ml-md-0">Events</h3>
+                    </div>
+                    <p class="large-text">Find out what events are being held at spots you go to.</p>
+                </div>
+            </div>
+            <div class="row text-center">
                 <div class="col-md-4">
                     <div class="flex d-md-block vertical-center">
                         <i class="fa fa-crosshairs feature-icon"></i>
@@ -113,14 +123,12 @@
                     </div>
                     <p class="large-text">Add spots to your Hitlist and tick them off once you complete them.</p>
                 </div>
-            </div>
-            <div class="row">
                 <div class="col-md-4">
                     <div class="flex d-md-block vertical-center">
-                        <i class="fa fa-comment feature-icon"></i>
-                        <h3 class="sedgwick ml-2 ml-md-0">Comments</h3>
+                        <i class="fa fa-house-user feature-icon"></i>
+                        <h3 class="sedgwick ml-2 ml-md-0">Locals</h3>
                     </div>
-                    <p class="large-text">Comment on a spot with text, image or video to share your experiences at the spot.</p>
+                    <p class="large-text">Mark yourself as a Local at spots you frequently attend so that other locals or people passing through can get in touch to meet up.</p>
                 </div>
                 <div class="col-md-4">
                     <div class="flex d-md-block vertical-center">
@@ -128,13 +136,6 @@
                         <h3 class="sedgwick ml-2 ml-md-0">Reviews</h3>
                     </div>
                     <p class="large-text">Review a spot to let others know what you think of it.</p>
-                </div>
-                <div class="col-md-4">
-                    <div class="flex d-md-block vertical-center">
-                        <i class="fa fa-youtube-play feature-icon"></i>
-                        <h3 class="sedgwick ml-2 ml-md-0">YouTube</h3>
-                    </div>
-                    <p class="large-text">Embed YouTube videos to showcase spots or demonstrate challenges.</p>
                 </div>
             </div>
         </div>
@@ -150,7 +151,8 @@
             <div class="row">
                 <div class="col"></div>
                 <div class="col-md-8">
-                    <p class="text-center large-text">Premium is a place for athletes to create and share moves, exercises and workouts to help themselves and others get better at parkour.</p>
+                    <p class="text-center large-text">With Premium you can create your own challenges and events as well as moves, exercises, equipment and workouts to help yourself and others get better at parkour or just general fitness. You can also upload raw videos (up to 500MB) rather than use a YouTube link and your images can be up to 5MB rather than 500KB.</p>
+                    <p class="text-center large-text">Found a fun challenge at a spot but nobody has set it yet? Create your own and crown a winner.</p>
                     <p class="text-center large-text">Need some more structure to your training? Add workouts to your plan in advance so you can jump straight into it on the day.</p>
                     <p class="text-center large-text">Want to learn a particular move? Create a plan of workouts with progressions of that move to build up to it safely.</p>
                 </div>
@@ -165,7 +167,37 @@
                     <h1 class="text-center text-premium sedgwick"><i class="fa fa-diamond d-none d-md-inline-block"></i> Premium Features <i class="fa fa-diamond d-none d-md-inline-block"></i></h1>
                 </div>
             </div>
-            <div class="row my-md-4">
+            <div class="row my-md-4 text-center">
+                <div class="col-md-4">
+                    <div class="flex d-md-block vertical-center">
+                        <i class="fa fa-bullseye feature-icon text-premium"></i>
+                        <h3 class="sedgwick ml-2 ml-md-0">Challenges</h3>
+                    </div>
+                    <p class="large-text">Create & manage your own challenges.</p>
+                </div>
+                <div class="col-md-4">
+                    <div class="flex d-md-block vertical-center">
+                        <i class="fa fa-map-marked feature-icon text-premium"></i>
+                        <h3 class="sedgwick ml-2 ml-md-0">Events</h3>
+                    </div>
+                    <p class="large-text">Organise your own events such as a training session, jam or competition.</p>
+                </div>
+                <div class="col-md-4">
+                    <div class="flex d-md-block vertical-center">
+                        <i class="fa fa-file-video-o feature-icon text-premium"></i>
+                        <h3 class="sedgwick ml-2 ml-md-0">File Uploads</h3>
+                    </div>
+                    <p class="large-text">Upload videos up to 500MB and upload larger images up to 5MB to showcase your content.</p>
+                </div>
+            </div>
+            <div class="row text-center">
+                <div class="col-md-4">
+                    <div class="flex d-md-block vertical-center">
+                        <i class="fa fa-child feature-icon text-premium"></i>
+                        <h3 class="sedgwick ml-2 ml-md-0">Moves</h3>
+                    </div>
+                    <p class="large-text">Create moves and link them to spots where they can be performed.</p>
+                </div>
                 <div class="col-md-4">
                     <div class="flex d-md-block vertical-center">
                         <i class="fa fa-running feature-icon text-premium"></i>
@@ -179,13 +211,6 @@
                         <h3 class="sedgwick ml-2 ml-md-0">Training Planner</h3>
                     </div>
                     <p class="large-text">Use a simple calendar to plan which workouts you want to do when.</p>
-                </div>
-                <div class="col-md-4">
-                    <div class="flex d-md-block vertical-center">
-                        <i class="fa fa-file-video-o feature-icon text-premium"></i>
-                        <h3 class="sedgwick ml-2 ml-md-0">File Uploads</h3>
-                    </div>
-                    <p class="large-text">Upload videos up to 500MB and upload larger images up to 5MB to showcase your content.</p>
                 </div>
             </div>
         </div>

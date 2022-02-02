@@ -53,8 +53,11 @@
             <hr class="subtitle-line-premium">
             <div class="row">
                 <div class="col"></div>
-                <div class="col-md-8">
-                    <p class="text-center large-text">A premium membership gives you access to the training system along with an increased image upload size limit and the ability to upload video files directly from your device.</p>
+                <div class="col-md-8 text-center large-text">
+                    <p>Premium is where you get the most out of Parkour Hub.</p>
+                    <p>As a Premium Member, you will be able to create your own challenges and events.</p>
+                    <p>You will also have access to the training system to help you improve on your parkour and fitness goals.</p>
+                    <p>Premium also allows you to upload videos (up to 500MB) directly to Parkour Hub without uploading to YouTube first and upload images up to 5MB rather than 500KB.</p>
                 </div>
                 <div class="col"></div>
             </div>
@@ -64,7 +67,7 @@
         <div class="container">
             <div class="row mt-3">
                 <div class="col">
-                    <h1 class="text-center sedgwick">Only £5/month - Cancel anytime</h1>
+                    <h1 class="text-center sedgwick">Only £5/month</h1>
                 </div>
             </div>
         </div>
@@ -76,52 +79,77 @@
                     <h1 class="text-center subtitle text-premium sedgwick">Features</h1>
                 </div>
             </div>
-            <div class="row my-md-4">
-                <div class="col-md-6">
-                    <div class="flex d-md-block vertical-center">
-                        <div class="text-md-center"><i class="fa fa-file-video-o feature-icon-premium"></i></div>
-                        <h3 class="sedgwick ml-2 ml-md-0 text-md-center">Video Upload</h3>
+            <div class="row my-md-4 text-center">
+                <div class="col-md-6 text-center">
+                    <div class="d-block vertical-center">
+                        <i class="fa fa-bullseye feature-icon text-premium"></i>
+                        <h3 class="sedgwick ml-2 ml-md-0">Challenges</h3>
                     </div>
-                    <p class="large-text">Upload videos of up to 50MB directly from your device without needing to upload to YouTube first.</p>
+                    <p class="large-text">Create & manage your own challenges.</p>
                 </div>
                 <div class="col-md-6">
-                    <div class="flex d-md-block vertical-center">
-                        <div class="text-md-center"><i class="fa fa-file-image-o feature-icon-premium"></i></div>
-                        <h3 class="sedgwick ml-2 ml-md-0 text-md-center">Image Upload</h3>
+                    <div class="d-block vertical-center">
+                        <i class="fa fa-map-marked feature-icon text-premium"></i>
+                        <h3 class="sedgwick ml-2 ml-md-0">Events</h3>
                     </div>
-                    <p class="large-text">Upload images of up to 5MB, a significant increase over the standard 500KB.</p>
+                    <p class="large-text">Organise your own events such as a training session, jam or competition.</p>
                 </div>
             </div>
-            <div class="row my-md-4">
+            <div class="row my-md-4 text-center">
                 <div class="col-md-6">
-                    <div class="flex d-md-block vertical-center">
-                        <div class="text-md-center"><i class="fa fa-child feature-icon-premium"></i></div>
-                        <h3 class="sedgwick ml-2 ml-md-0 text-md-center">Movements</h3>
+                    <div class="d-block vertical-center">
+                        <i class="fa fa-child feature-icon-premium"></i>
+                        <h3 class="sedgwick ml-2 ml-md-0">Movements</h3>
                     </div>
                     <p class="large-text">Create and share movements - either a parkour move such as a vault or an exercise such as push-ups.</p>
                 </div>
                 <div class="col-md-6">
-                    <div class="flex d-md-block vertical-center">
-                        <div class="text-md-center"><i class="fa fa-running feature-icon-premium"></i></div>
-                        <h3 class="sedgwick ml-2 ml-md-0 text-md-center">Workouts</h3>
+                    <div class="d-block vertical-center">
+                        <i class="fa fa-dumbbell feature-icon-premium"></i>
+                        <h3 class="sedgwick ml-2 ml-md-0">Equipment</h3>
+                    </div>
+                    <p class="large-text">Add equipment that can be used in moves or exercises.</p>
+                </div>
+            </div>
+            <div class="row my-md-4 text-center">
+                <div class="col-md-6">
+                    <div class="d-block vertical-center">
+                        <i class="fa fa-running feature-icon-premium"></i>
+                        <h3 class="sedgwick ml-2 ml-md-0">Workouts</h3>
                     </div>
                     <p class="large-text">Combine movements into a workout to record your training and track your progress.</p>
                 </div>
-            </div>
-            <div class="row my-md-4">
                 <div class="col-md-6">
-                    <div class="flex d-md-block vertical-center">
-                        <div class="text-md-center"><i class="fa fa-calendar feature-icon-premium"></i></div>
-                        <h3 class="sedgwick ml-2 ml-md-0 text-md-center">Training Planner</h3>
+                    <div class="d-block vertical-center">
+                        <i class="fa fa-calendar feature-icon-premium"></i>
+                        <h3 class="sedgwick ml-2 ml-md-0">Training Planner</h3>
                     </div>
                     <p class="large-text">Add workouts to your calendar to plan your journey to achieving your parkour or fitness goals.</p>
                 </div>
+            </div>
+            <div class="row my-md-4 text-center">
                 <div class="col-md-6">
-                    <div class="flex d-md-block vertical-center">
-                        <div class="text-md-center"><i class="fa fa-ellipsis-h feature-icon-premium"></i></div>
-                        <h3 class="sedgwick ml-2 ml-md-0 text-md-center">More</h3>
+                    <div class="d-block vertical-center">
+                        <i class="fa fa-file-video-o feature-icon-premium"></i>
+                        <h3 class="sedgwick ml-2 ml-md-0">Video Upload</h3>
                     </div>
-                    <p class="large-text">There are more amazing features coming in future.</p>
+                    <p class="large-text">Upload videos of up to 50MB directly from your device without needing to upload to YouTube first.</p>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-block vertical-center">
+                        <i class="fa fa-file-image-o feature-icon-premium"></i>
+                        <h3 class="sedgwick ml-2 ml-md-0">Image Upload</h3>
+                    </div>
+                    <p class="large-text">Upload images of up to 5MB, a significant increase over the standard 500KB.</p>
+                </div>
+            </div>
+            <div class="row my-md-4 text-center">
+                <div class="col-md-6 offset-md-3">
+                    <div class="d-block vertical-center">
+                        <i class="fa fa-ellipsis-h feature-icon-premium"></i>
+                        <h3 class="sedgwick ml-2 ml-md-0">More</h3>
+                    </div>
+                    <p class="large-text">There are more great features coming in future.</p>
                 </div>
             </div>
         </div>
@@ -142,7 +170,7 @@
             @else
                 @if(Auth()->user()->hasPermissionTo('access premium'))
                         <div class="alert alert-warning position-static mt-4">
-                            <p class="mb-0 text-black-50"><strong>You have free access to <span class="text-premium">premium</span> services! You can cancel below if you previously signed up for <span class="text-premium">premium</span> membership or continue your membership if you'd like to support the site.</strong></p>
+                            <p class="mb-0 text-black-50"><strong>You have free access to Premium services! You can cancel below if you previously signed up for Premium membership or continue your membership if you'd like to support the site.</strong></p>
                         </div>
                 @endif
                 @if(!Auth()->user()->hasDefaultPaymentMethod())
