@@ -28,7 +28,9 @@
             </div>
             <div class="col-lg-auto vertical-center pl-0">
                 @if($movement->user_id === Auth()->id())
-                    <a class="btn text-white" href="{{ route('movement_edit', $movement->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
+                    @premium
+                        <a class="btn text-white" href="{{ route('movement_edit', $movement->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
+                    @endpremium
                     @if(!empty($progressionID) || !empty($advancementID))
                         <form method="POST" action="{{ route('movements_unlink') }}" class="d-inline-block">
                             @csrf

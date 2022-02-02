@@ -13,7 +13,9 @@
             </div>
             <div class="col-lg-auto vertical-center pl-0">
                 @if($event->user_id === Auth()->id())
-                    <a class="btn text-white" href="{{ route('event_edit', $event->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
+                    @premium
+                        <a class="btn text-white" href="{{ route('event_edit', $event->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
+                    @endpremium
                     <a class="btn text-white" href="{{ route('event_delete', $event->id) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
                 @endif
                 @auth

@@ -17,7 +17,7 @@
             </div>
             <div class="col-md-auto vertical-center">
                 <div>
-                    @if ($workout->user_id === Auth()->id())
+                    @if ($workout->user_id === Auth()->id() && Auth()->user()->isPremium())
                         <a class="btn text-white" href="{{ route('workout_edit', $workout->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
                     @endif
                     @auth

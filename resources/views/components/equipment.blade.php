@@ -13,7 +13,9 @@
             </div>
             <div class="col-lg-auto vertical-center pl-0">
                 @if($equipment->user_id === Auth()->id())
-                    <a class="btn text-white" href="{{ route('equipment_edit', $equipment->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
+                    @premium
+                        <a class="btn text-white" href="{{ route('equipment_edit', $equipment->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
+                    @endpremium
                     @if(isset($tab) && (($tab == null && $originalMovement->type_id === 2) || $tab === 'equipment' && !empty($originalMovement)))
                         <form method="POST" action="{{ route('movement_equipment_unlink') }}" class="d-inline-block">
                             @csrf

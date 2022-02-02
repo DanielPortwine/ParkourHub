@@ -77,7 +77,7 @@
                     @endif
                     <a class="btn-link large-text sedgwick" href="{{ route('user_view', $workout->user->id) }}">{{ $workout->user->name }}</a>
                 </div>
-                @if ($workout->user->id === Auth()->id() && $workout->deleted_at === null)
+                @if ($workout->user->id === Auth()->id() && $workout->deleted_at === null && Auth()->user()->isPremium())
                     <div class="col-auto">
                         <a class="btn text-white" href="{{ route('workout_edit', $workout->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
                     </div>

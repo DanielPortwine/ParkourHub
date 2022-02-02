@@ -72,7 +72,7 @@
                     @endif
                     <a class="btn-link large-text sedgwick" href="{{ route('user_view', $event->user->id) }}">{{ $event->user->name }}</a>
                 </div>
-                @if ($event->user->id === Auth()->id() && $event->deleted_at === null)
+                @if ($event->user->id === Auth()->id() && $event->deleted_at === null && Auth()->user()->isPremium())
                     <div class="col-auto">
                         <a class="btn text-white" href="{{ route('event_edit', $event->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
                     </div>

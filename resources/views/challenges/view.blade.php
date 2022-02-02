@@ -84,7 +84,7 @@
                     @endif
                     <a class="btn-link large-text sedgwick" href="{{ route('user_view', $challenge->user->id) }}">{{ $challenge->user->name }}</a>
                 </div>
-                @if ($challenge->user->id === Auth()->id() && $challenge->deleted_at === null)
+                @if ($challenge->user->id === Auth()->id() && $challenge->deleted_at === null && Auth()->user()->isPremium())
                     <div class="col-auto">
                         <a class="btn text-white" href="{{ route('challenge_edit', $challenge->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
                     </div>

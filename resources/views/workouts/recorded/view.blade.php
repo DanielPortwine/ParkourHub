@@ -32,7 +32,9 @@
             </div>
             <div class="col-auto vertical-center">
                 @if ($recordedWorkout->user->id === Auth()->id())
-                    <a class="btn text-white" href="{{ route('recorded_workout_edit', $recordedWorkout->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
+                    @premium
+                        <a class="btn text-white" href="{{ route('recorded_workout_edit', $recordedWorkout->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
+                    @endpremium
                     <a class="btn text-white" href="{{ route('recorded_workout_delete', $recordedWorkout->id) }}" title="Delete"><i class="fa fa-trash"></i></a>
                 @endif
                 @if(!empty($recordedWorkout->workout))
