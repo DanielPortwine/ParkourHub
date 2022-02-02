@@ -182,6 +182,16 @@ class WorkoutController extends Controller
             }
         }
 
+        // notify followers that user created a workout
+        if ($workout->visibility !== 'private') {
+            $followers = Auth::user()->followers()->get();
+            foreach ($followers as $follower) {
+                if (in_array(setting('notifications_new_workout', 'on-site', $follower->id), ['on-site', 'email', 'email-site']) && $follower->isPremium()) {
+                    $follower->notify(new NewWorkout($workout));
+                }
+            }
+        }
+
         if (!empty($request['create-record'])) {
             $recordedWorkout = new RecordedWorkout;
             $recordedWorkout->user_id = $userId;
@@ -207,16 +217,8 @@ class WorkoutController extends Controller
                     $field->save();
                 }
             }
-        }
 
-        // notify followers that user created a workout
-        if ($workout->visibility !== 'private') {
-            $followers = Auth::user()->followers()->get();
-            foreach ($followers as $follower) {
-                if (in_array(setting('notifications_new_workout', 'on-site', $follower->id), ['on-site', 'email', 'email-site']) && $follower->isPremium()) {
-                    $follower->notify(new NewWorkout($workout));
-                }
-            }
+            return redirect()->route('recorded_workout_view', $recordedWorkout->id)->with('status', 'Successfully created & recorded workout');
         }
 
         return redirect()->route('workout_view', $workout->id)->with('status', 'Successfully created workout');
