@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Scopes\BannedUserScope;
 use App\Scopes\VisibilityScope;
 use App\Traits\Commentable;
 use App\Traits\Reportable;
@@ -38,6 +39,7 @@ class Movement extends Model
     protected static function booted()
     {
         static::addGlobalScope(new VisibilityScope);
+        static::addGlobalScope(new BannedUserScope);
     }
 
     public function scopeDateBetween($query, $dates = [])

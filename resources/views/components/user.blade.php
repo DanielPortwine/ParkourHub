@@ -26,6 +26,13 @@
                             <a class="accept-follower-button btn text-white" href="{{ route('event_attendee_delete', ['event' => $event->id, 'user' => $user->id]) }}" title="Reject User"><i class="fa fa-times"></i></a>
                         @endif
                     @else
+                        @can('manage bans')
+                            @if($user->banned_at === null)
+                                <a class="btn text-white" href="{{ route('user_ban', $user->id) }}" title="Ban"><i class="fa fa-gavel"></i></a>
+                            @else
+                                <a class="btn text-white" href="{{ route('user_unban', $user->id) }}" title="Unban"><i class="fa fa-balance-scale"></i></a>
+                            @endif
+                        @endcan
                         @php
                             $followSetting = Auth()->check() ? setting('privacy_follow', 'nobody', Auth()->id()) : 'nobody';
                             $followRequests = Auth()->check() ? Auth()->user()->followers()->where('accepted', false)->pluck('follower_id')->toArray() : [];

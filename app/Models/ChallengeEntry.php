@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Scopes\BannedUserScope;
 use App\Traits\Reportable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -17,6 +18,11 @@ class ChallengeEntry extends Model
         'video',
         'youtube',
     ];
+
+    protected static function booted()
+    {
+        static::addGlobalScope(new BannedUserScope);
+    }
 
     public function scopeDateBetween($query, $dates = [])
     {

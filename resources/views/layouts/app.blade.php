@@ -167,10 +167,10 @@
                                         </div>
                                     @endif
                                     @can('manage reports')
-                                        <a class="dropdown-item text-white dropdown-toggle" id="admin-nav-item"><i class="fa fa-tools nav-icon"></i>Admin <span class="caret"></span></a>
-                                        <div id="admin-nav-items">
-                                            <a class="dropdown-item text-white" href="{{ route('report_listing') }}"><i class="fa fa-flag nav-icon nav-spacer"></i>Reports</a>
-                                        </div>
+                                        <a class="dropdown-item text-white" href="{{ route('report_listing') }}"><i class="fa fa-flag nav-icon"></i>Reports</a>
+                                    @endcan
+                                    @can('manage bans')
+                                        <a class="dropdown-item text-white" href="{{ route('ban_listing') }}"><i class="fa fa-gavel nav-icon"></i>Bans</a>
                                     @endcan
                                     <a class="dropdown-item text-white" href="{{ route('user_bin') }}"><i class="fa fa-trash nav-icon"></i>Bin</a>
                                     <a class="dropdown-item text-white" href="{{ route('logout') }}"

@@ -24,17 +24,18 @@ Route::get('email/verify', 'Auth\VerificationController@show')->name('verificati
 Route::get('email/verify/{id}/{hash}', 'Auth\VerificationController@verify')->name('verification.verify');
 Route::post('email/resend', 'Auth\VerificationController@resend')->name('verification.resend');
 
-Route::get('/home', 'HomeController@index')->name('home')->middleware('verified');
+Route::get('/home', 'HomeController@index')->name('home')->middleware(['verified', 'notBanned']);
 Route::post('/subscribe', 'UserController@subscribe')->name('user_subscribe');
+Route::get('/banned', 'BanController@view')->name('banned');
 
-Route::get('users', 'UserController@listing')->middleware('verified')->name('user_listing');
-Route::prefix('user')->middleware('verified')->group(function() {
+Route::get('users', 'UserController@listing')->middleware(['verified', 'notBanned'])->name('user_listing');
+Route::prefix('user')->middleware(['verified', 'notBanned'])->group(function() {
     Route::get('/view/{id}/{tab?}', 'UserController@view')->withoutMiddleware('verified')->name('user_view');
-    Route::get('/manage', 'UserController@manage')->withoutMiddleware('verified')->middleware('auth')->name('user_manage');
-    Route::post('/manage', 'UserController@update')->withoutMiddleware('verified')->middleware('auth')->name('user_update');
-    Route::get('/reset_password', 'UserController@resetPassword')->withoutMiddleware('verified')->middleware('auth')->name('user_reset_password');
-    Route::get('/obfuscate/{field}', 'UserController@obfuscate')->withoutMiddleware('verified')->middleware('auth')->name('obfuscate');
-    Route::get('/delete', 'UserController@delete')->withoutMiddleware('verified')->middleware('auth')->name('user_delete');
+    Route::get('/manage', 'UserController@manage')->withoutMiddleware(['verified', 'notBanned'])->middleware('auth')->name('user_manage');
+    Route::post('/manage', 'UserController@update')->withoutMiddleware(['verified', 'notBanned'])->middleware('auth')->name('user_update');
+    Route::get('/reset_password', 'UserController@resetPassword')->withoutMiddleware(['verified', 'notBanned'])->middleware('auth')->name('user_reset_password');
+    Route::get('/obfuscate/{field}', 'UserController@obfuscate')->withoutMiddleware(['verified', 'notBanned'])->middleware('auth')->name('obfuscate');
+    Route::get('/delete', 'UserController@delete')->withoutMiddleware(['verified', 'notBanned'])->middleware('auth')->name('user_delete');
     Route::get('/hitlist', 'UserController@hitlist')->name('user_hitlist');
     Route::get('/bin/{tab?}', 'UserController@bin')->name('user_bin');
     Route::get('/fetch_hometown_bounding', 'UserController@fetchHometownBounding');
@@ -43,10 +44,12 @@ Route::prefix('user')->middleware('verified')->group(function() {
     Route::get('/remove_follower/{id}', 'UserController@removeFollower')->name('user_remove_follower');
     Route::get('/accept_follower/{id}', 'UserController@acceptFollower')->name('user_accept_follower');
     Route::get('/reject_follower/{id}', 'UserController@rejectFollower')->name('user_reject_follower');
+    Route::get('/ban/{id}', 'BanController@create')->name('user_ban');
+    Route::get('/unban/{id}', 'BanController@delete')->name('user_unban');
 });
 
 Route::get('/premium', 'PremiumController@index')->name('premium');
-Route::prefix('premium')->middleware('verified')->group(function() {
+Route::prefix('premium')->middleware(['verified', 'notBanned'])->group(function() {
     Route::post('/register', 'PremiumController@register')->name('premium_register');
     Route::post('/update', 'PremiumController@update')->name('premium_update');
     Route::get('/cancel', 'PremiumController@cancel')->name('premium_cancel');
@@ -54,18 +57,18 @@ Route::prefix('premium')->middleware('verified')->group(function() {
     Route::get('/restart', 'PremiumController@restart')->name('premium_restart');
 });
 
-Route::prefix('spots')->middleware('verified')->group(function() {
-    Route::get('/', 'SpotController@listing')->withoutMiddleware('verified')->name('spot_listing');
-    Route::get('/map', 'SpotController@index')->withoutMiddleware('verified')->name('spots');
-    Route::get('/fetch', 'SpotController@fetch')->withoutMiddleware('verified')->name('spot_fetch');
-    Route::get('/spot/{id}/{tab?}', 'SpotController@view')->withoutMiddleware('verified')->name('spot_view');
+Route::prefix('spots')->middleware(['verified', 'notBanned'])->group(function() {
+    Route::get('/', 'SpotController@listing')->withoutMiddleware(['verified', 'notBanned'])->name('spot_listing');
+    Route::get('/map', 'SpotController@index')->withoutMiddleware(['verified', 'notBanned'])->name('spots');
+    Route::get('/fetch', 'SpotController@fetch')->withoutMiddleware(['verified', 'notBanned'])->name('spot_fetch');
+    Route::get('/spot/{id}/{tab?}', 'SpotController@view')->withoutMiddleware(['verified', 'notBanned'])->name('spot_view');
     Route::post('/create', 'SpotController@store')->middleware('optimizeImages')->name('spot_store');
     Route::get('/edit/{id}', 'SpotController@edit')->name('spot_edit');
     Route::post('/edit/{id}', 'SpotController@update')->middleware('optimizeImages')->name('spot_update');
     Route::get('/delete/{id}', 'SpotController@delete')->name('spot_delete');
     Route::get('/recover/{id}', 'SpotController@recover')->name('spot_recover');
     Route::get('/remove/{id}', 'SpotController@remove')->name('spot_remove');
-    Route::get('/search', 'SpotController@search')->withoutMiddleware('verified')->name('spot_search');
+    Route::get('/search', 'SpotController@search')->withoutMiddleware(['verified', 'notBanned'])->name('spot_search');
     Route::get('/add_to_hitlist/{id}', 'SpotController@addToHitlist')->name('add_to_hitlist');
     Route::get('/remove_from_hitlist/{id}', 'SpotController@removeFromHitlist')->name('remove_from_hitlist');
     Route::get('/tick_off_hitlist/{id}', 'SpotController@tickOffHitlist')->name('tick_off_hitlist');
@@ -78,7 +81,7 @@ Route::prefix('spots')->middleware('verified')->group(function() {
     Route::post('/link_workout', 'SpotController@linkWorkout')->name('spot_workout_link');
 });
 
-Route::prefix('/reviews')->middleware('verified')->group(function() {
+Route::prefix('/reviews')->middleware(['verified', 'notBanned'])->group(function() {
     Route::post('/create', 'ReviewController@store')->name('review_store');
     Route::get('/edit/{id}', 'ReviewController@edit')->name('review_edit');
     Route::post('/edit/{id}', 'ReviewController@update')->name('review_update');
@@ -89,7 +92,7 @@ Route::prefix('/reviews')->middleware('verified')->group(function() {
     Route::get('/discard_reports/{any_review}', 'ReviewController@discardReports')->name('review_report_discard');
 });
 
-Route::prefix('/comments')->middleware('verified')->group(function() {
+Route::prefix('/comments')->middleware(['verified', 'notBanned'])->group(function() {
     Route::post('/create', 'CommentController@store')->middleware('optimizeImages')->name('comment_store');
     Route::get('/edit/{id}', 'CommentController@edit')->name('comment_edit');
     Route::post('/edit/{id}', 'CommentController@update')->middleware('optimizeImages')->name('comment_update');
@@ -100,9 +103,9 @@ Route::prefix('/comments')->middleware('verified')->group(function() {
     Route::get('/discard_reports/{any_comment}', 'CommentController@discardReports')->name('comment_report_discard');
 });
 
-Route::prefix('challenges')->middleware('verified')->group(function() {
-    Route::get('/', 'ChallengeController@listing')->withoutMiddleware('verified')->name('challenge_listing');
-    Route::get('/view/{id}/{tab?}', 'ChallengeController@view')->withoutMiddleware('verified')->name('challenge_view');
+Route::prefix('challenges')->middleware(['verified', 'notBanned'])->group(function() {
+    Route::get('/', 'ChallengeController@listing')->withoutMiddleware(['verified', 'notBanned'])->name('challenge_listing');
+    Route::get('/view/{id}/{tab?}', 'ChallengeController@view')->withoutMiddleware(['verified', 'notBanned'])->name('challenge_view');
     Route::middleware('isPremium')->group(function() {
         Route::post('/create', 'ChallengeController@store')->middleware('optimizeImages')->name('challenge_store');
         Route::get('/edit/{id}', 'ChallengeController@edit')->name('challenge_edit');
@@ -124,9 +127,9 @@ Route::prefix('challenges')->middleware('verified')->group(function() {
     });
 });
 
-Route::prefix('events')->middleware('verified')->group(function() {
-    Route::get('/', 'EventController@listing')->name('event_listing');
-    Route::get('/view/{id}/{tab?}', 'EventController@view')->name('event_view');
+Route::prefix('events')->middleware(['verified', 'notBanned'])->group(function() {
+    Route::get('/', 'EventController@listing')->withoutMiddleware(['verified', 'notBanned'])->name('event_listing');
+    Route::get('/view/{id}/{tab?}', 'EventController@view')->withoutMiddleware(['verified', 'notBanned'])->name('event_view');
     Route::middleware('isPremium')->group(function() {
         Route::get('/create', 'EventController@create')->name('event_create');
         Route::post('/create', 'EventController@store')->middleware('optimizeImages')->name('event_store');
@@ -145,7 +148,7 @@ Route::prefix('events')->middleware('verified')->group(function() {
     });
 });
 
-Route::prefix('movements')->middleware(['verified', 'isPremium'])->group(function() {
+Route::prefix('movements')->middleware(['verified', 'notBanned', 'isPremium'])->group(function() {
     Route::get('/', 'MovementController@listing')->name('movement_listing');
     Route::get('/view/{id}/{tab?}', 'MovementController@view')->name('movement_view');
     Route::get('/create', 'MovementController@create')->name('movement_create');
@@ -168,7 +171,7 @@ Route::prefix('movements')->middleware(['verified', 'isPremium'])->group(functio
     Route::post('/set_movement_baseline', 'MovementController@setMovementBaseline')->name('set_movement_baseline');
 });
 
-Route::prefix('equipment')->middleware(['verified', 'isPremium'])->group(function() {
+Route::prefix('equipment')->middleware(['verified', 'notBanned', 'isPremium'])->group(function() {
     Route::get('/', 'EquipmentController@listing')->name('equipment_listing');
     Route::get('/view/{id}', 'EquipmentController@view')->name('equipment_view');
     Route::get('/create', 'EquipmentController@create')->name('equipment_create');
@@ -182,7 +185,7 @@ Route::prefix('equipment')->middleware(['verified', 'isPremium'])->group(functio
     Route::get('/discard_reports/{id}', 'EquipmentController@discardReports')->name('equipment_report_discard');
 });
 
-Route::prefix('workouts')->middleware(['verified', 'isPremium'])->group(function() {
+Route::prefix('workouts')->middleware(['verified', 'notBanned', 'isPremium'])->group(function() {
     Route::get('/', 'WorkoutController@listing')->name('workout_listing');
     Route::get('/view/{id}/{tab?}', 'WorkoutController@view')->name('workout_view');
     Route::get('/create', 'WorkoutController@create')->name('workout_create');
@@ -216,6 +219,7 @@ Route::prefix('workouts')->middleware(['verified', 'isPremium'])->group(function
 
 Route::prefix('admin')->middleware('verified')->group(function() {
     Route::get('/reports/{type?}', 'ReportController@index')->name('report_listing');
+    Route::get('/bans', 'BanController@index')->name('ban_listing');
 });
 
 Route::prefix('policies')->group(function() {

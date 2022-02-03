@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Scopes\BannedUserScope;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -28,7 +29,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'settings', 'image', 'instagram', 'youtube'
+        'name', 'email', 'password', 'settings', 'image', 'instagram', 'youtube', 'banned_at'
     ];
 
     /**
@@ -55,6 +56,11 @@ class User extends Authenticatable implements MustVerifyEmail
             'email' => 5,
         ],
     ];
+
+    protected static function booted()
+    {
+        static::addGlobalScope(new BannedUserScope);
+    }
 
     public function scopeDateBetween($query, $dates = [])
     {
