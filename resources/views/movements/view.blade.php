@@ -34,7 +34,7 @@
         <div class="container">
             <div class="row pt-4">
                 <div class="col vertical-center">
-                    <h1 class="sedgwick mb-0"><span class="text-movement-{{ $originalMovement->category->colour }}">[{{ $originalMovement->category->name }}]</span> {{ $originalMovement->name }} @if($originalMovement->official)<sup class="text-green" title="Official"><i class="fa fa-gavel"></i></sup> @endif </h1>
+                    <h1 class="sedgwick mb-0"><span class="text-movement-{{ $originalMovement->category->colour }}">[{{ $originalMovement->category->name }}]</span> {{ $originalMovement->name }} @if($originalMovement->official)<sup class="text-green" title="Official"><i class="fa fa-check-circle"></i></sup> @endif </h1>
                 </div>
                 <div class="col-auto vertical-center">
                     <div>
@@ -53,9 +53,9 @@
                                 @endcan
                             @endif
                             @if(!$originalMovement->official)
-                                <a class="btn text-white" href="{{ route('movement_officialise', $originalMovement->id) }}" title="Officialise"><i class="fa fa-gavel"></i></a>
+                                <a class="btn text-white" href="{{ route('movement_officialise', $originalMovement->id) }}" title="Officialise"><i class="fa fa-check-circle"></i></a>
                             @else
-                                <a class="btn text-white" href="{{ route('movement_unofficialise', $originalMovement->id) }}" title="Unofficialise"><i class="fa fa-gavel"></i></a>
+                                <a class="btn text-white" href="{{ route('movement_unofficialise', $originalMovement->id) }}" title="Unofficialise"><i class="fa fa-check-circle"></i></a>
                             @endif
                             <a class="btn text-white" href="{{ route('spot_listing', ['movement' => $originalMovement->id]) }}" title="Spots With Movement"><i class="fa fa-map-marker"></i></a>
                         @elseif($originalMovement->user_id === Auth()->id())

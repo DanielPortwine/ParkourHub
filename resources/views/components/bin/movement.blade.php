@@ -1,7 +1,7 @@
 <div class="card bg-grey">
     <div class="content-wrapper">
         @if($movement->official)
-            <span class="h3 official-tick" title="Official"><i class="fa fa-gavel"></i></span>
+            <span class="h3 official-tick" title="Official"><i class="fa fa-check-circle"></i></span>
         @endif
         @if(!empty($movement->thumbnail))
             <a href="{{ route('movement_view', $movement->id) }}">

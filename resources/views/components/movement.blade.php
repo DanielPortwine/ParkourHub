@@ -1,7 +1,7 @@
 <div class="card bg-grey">
     <div class="content-wrapper">
         @if($movement->official)
-            <span class="h3 official-tick" title="Official"><i class="fa fa-gavel"></i></span>
+            <span class="h3 official-tick" title="Official"><i class="fa fa-check-circle"></i></span>
         @endif
         @if(!empty($movement->thumbnail))
             <a href="{{ route('movement_view', $movement->id) }}">
@@ -59,9 +59,9 @@
                     @endcan
                 @endif
                 @if(!$movement->official)
-                    <a class="btn text-white" href="{{ route('movement_officialise', $movement->id) }}" title="Officialise"><i class="fa fa-gavel"></i></a>
+                    <a class="btn text-white" href="{{ route('movement_officialise', $movement->id) }}" title="Officialise"><i class="fa fa-check-circle"></i></a>
                 @else
-                    <a class="btn text-white" href="{{ route('movement_unofficialise', $movement->id) }}" title="Unofficialise"><i class="fa fa-gavel"></i></a>
+                    <a class="btn text-white" href="{{ route('movement_unofficialise', $movement->id) }}" title="Unofficialise"><i class="fa fa-check-circle"></i></a>
                 @endif
                 @if($movement->type_id === 1)
                     <a class="btn text-white" href="{{ route('spot_listing', ['movement' => $movement->id]) }}" title="View Spots With Move"><i class="fa fa-map-marker"></i></a>

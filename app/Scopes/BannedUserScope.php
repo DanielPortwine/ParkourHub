@@ -22,7 +22,7 @@ class BannedUserScope implements Scope
     public function apply(Builder $builder, Model $model)
     {
         $tableName = $model->getTable();
-        $fieldName = 'user_id';
+        $fieldName = $tableName . '.user_id';
         if ($tableName === 'users') {
             $fieldName = 'users.id';
         }
