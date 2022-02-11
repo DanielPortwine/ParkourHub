@@ -527,7 +527,7 @@ class UserController extends Controller
                     ->paginate(20);
                 break;
             case 'entries':
-                $entries = $user->entries()
+                $entries = $user->challengeEntries()
                     ->withoutGlobalScope(CopyrightScope::class)
                     ->with(['challenge', 'reports', 'user'])
                     ->whereNotNull('copyright_infringed_at')
@@ -563,7 +563,7 @@ class UserController extends Controller
                 break;
         }
 
-        return view('copyright_infringements', [
+        return view('user.copyright_claims', [
             'request' => $request,
             'spots' => $spots,
             'linkSpotOnComment' => $linkSpotOnComment ?? false,

@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
-@push('title')Copyright Infringements | @endpush
+@push('title')Copyright Claims | @endpush
 
-@section('description')View copyright infringements on Parkour Hub.@endsection
+@section('description')View copyright claims on Parkour Hub.@endsection
 
 @section('content')
     @if (session('status'))
@@ -17,46 +17,46 @@
         <div class="container">
             <ul class="navbar-nav flex-row justify-content-around w-100">
                 <li class="nav-item px-2">
-                    <a class="nav-link @if(empty($tab) || $tab === 'spots')active @endif" href="{{ route('copyright_listing') }}">
+                    <a class="nav-link @if(empty($tab) || $tab === 'spots')active @endif" href="{{ route('user_copyright_listing') }}">
                         <i class="fa fa-map-marker nav-icon"></i>
                         <span class="d-none d-lg-inline">Spots</span>
                     </a>
                 </li>
                 @premium
                     <li class="nav-item px-2">
-                        <a class="nav-link @if($tab === 'events')active @endif" href="{{ route('copyright_listing', ['tab' => 'events']) }}">
+                        <a class="nav-link @if($tab === 'events')active @endif" href="{{ route('user_copyright_listing', ['tab' => 'events']) }}">
                             <i class="fa fa-map-marked nav-icon"></i>
                             <span class="d-none d-lg-inline">Events</span>
                         </a>
                     </li>
                 @endpremium
                 <li class="nav-item px-2">
-                    <a class="nav-link @if($tab === 'challenges')active @endif" href="{{ route('copyright_listing', ['tab' => 'challenges']) }}">
+                    <a class="nav-link @if($tab === 'challenges')active @endif" href="{{ route('user_copyright_listing', ['tab' => 'challenges']) }}">
                         <i class="fa fa-bullseye nav-icon"></i>
                         <span class="d-none d-lg-inline">Challenges</span>
                     </a>
                 </li>
                 <li class="nav-item px-2">
-                    <a class="nav-link @if($tab === 'entries')active @endif" href="{{ route('copyright_listing', ['tab' => 'entries']) }}">
+                    <a class="nav-link @if($tab === 'entries')active @endif" href="{{ route('user_copyright_listing', ['tab' => 'entries']) }}">
                         <i class="fa fa-trophy nav-icon"></i>
                         <span class="d-none d-lg-inline">Entries</span>
                     </a>
                 </li>
                 @premium
                     <li class="nav-item px-2">
-                        <a class="nav-link @if($tab === 'workouts')active @endif" href="{{ route('copyright_listing', ['tab' => 'workouts']) }}">
+                        <a class="nav-link @if($tab === 'workouts')active @endif" href="{{ route('user_copyright_listing', ['tab' => 'workouts']) }}">
                             <i class="fa fa-running nav-icon"></i>
                             <span class="d-none d-lg-inline">Workouts</span>
                         </a>
                     </li>
                     <li class="nav-item px-2">
-                        <a class="nav-link @if($tab === 'movements')active @endif" href="{{ route('copyright_listing', ['tab' => 'movements']) }}">
+                        <a class="nav-link @if($tab === 'movements')active @endif" href="{{ route('user_copyright_listing', ['tab' => 'movements']) }}">
                             <i class="fa fa-child nav-icon"></i>
                             <span class="d-none d-lg-inline">Movements</span>
                         </a>
                     </li>
                     <li class="nav-item px-2">
-                        <a class="nav-link @if($tab === 'equipment')active @endif" href="{{ route('copyright_listing', ['tab' => 'equipment']) }}">
+                        <a class="nav-link @if($tab === 'equipment')active @endif" href="{{ route('user_copyright_listing', ['tab' => 'equipment']) }}">
                             <i class="fa fa-dumbbell nav-icon"></i>
                             <span class="d-none d-lg-inline">Equipment</span>
                         </a>
