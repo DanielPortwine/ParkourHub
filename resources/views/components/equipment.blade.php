@@ -35,6 +35,13 @@
                         <a class="btn text-white" href="{{ route('equipment_remove', $equipment->id) }}" title="Remove Content"><i class="fa fa-trash"></i></a>
                     @endcan
                 @endif
+                @can('manage copyright')
+                    @if($equipment->copyright_infringed_at === null)
+                        <a class="btn text-white" href="{{ route('equipment_copyright_set', $equipment->id) }}" title="Mark Copyright Infringement"><i class="fa fa-copyright"></i></a>
+                    @else
+                        <a class="btn text-white" href="{{ route('equipment_copyright_remove', $equipment->id) }}" title="Clear Copyright Infringement"><i class="fa fa-copyright"></i></a>
+                    @endif
+                @endcan
                 <a class="btn text-white" href="{{ route('movement_listing', ['equipment' => $equipment->id]) }}" title="View Exercises With Equipment"><i class="fa fa-child"></i></a>
             </div>
         </div>

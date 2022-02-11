@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Challenge;
 use App\Models\ChallengeEntry;
 use App\Models\Equipment;
+use App\Models\Event;
 use App\Models\Follower;
 use App\Http\Requests\Subscribe;
 use App\Http\Requests\UpdateUser;
 use App\Models\Movement;
+use App\Models\Workout;
 use App\Notifications\UserFollowed;
 use App\Notifications\UserFollowRequested;
 use App\Models\Review;
@@ -17,6 +19,7 @@ use App\Models\Comment;
 use App\Models\Subscriber;
 use App\Models\User;
 use App\Models\UserSettingsLog;
+use App\Scopes\CopyrightScope;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -481,6 +484,88 @@ class UserController extends Controller
             'spots' => $spots,
             'reviews' => $reviews,
             'comments' => $comments,
+            'linkSpotOnComment' => $linkSpotOnComment ?? false,
+            'events' => $events,
+            'challenges' => $challenges,
+            'entries' => $entries,
+            'movements' => $movements,
+            'equipments' => $equipment,
+            'workouts' => $workouts,
+            'tab' => $tab,
+        ]);
+    }
+    public function claims(Request $request, $tab = 'spots')
+    {
+        $user = Auth::user();
+
+        $spots = $events = $challenges = $entries = $movements = $equipment = $workouts = null;
+        switch ($tab) {
+            case 'spots':
+                $spots = $user->spots()
+                    ->withoutGlobalScope(CopyrightScope::class)
+                    ->with(['hits', 'reviews', 'reports', 'user'])
+                    ->whereNotNull('copyright_infringed_at')
+                    ->orderByDesc('copyright_infringed_at')
+                    ->paginate(20);
+                break;
+            case 'events':
+                $events = $user->events()
+                    ->withoutGlobalScope(CopyrightScope::class)
+                    ->with(['reports', 'user'])
+                    ->whereNotNull('copyright_infringed_at')
+                    ->orderByDesc('copyright_infringed_at')
+                    ->paginate(20);
+                break;
+            case 'challenges':
+                $challenges = $user->challenges()
+                    ->withoutGlobalScope(CopyrightScope::class)
+                    ->withCount('entries')
+                    ->with(['entries', 'reports', 'spot', 'user'])
+                    ->whereNotNull('copyright_infringed_at')
+                    ->whereHas('spot')
+                    ->orderByDesc('copyright_infringed_at')
+                    ->paginate(20);
+                break;
+            case 'entries':
+                $entries = $user->entries()
+                    ->withoutGlobalScope(CopyrightScope::class)
+                    ->with(['challenge', 'reports', 'user'])
+                    ->whereNotNull('copyright_infringed_at')
+                    ->whereHas('challenge')
+                    ->orderByDesc('copyright_infringed_at')
+                    ->paginate(20);
+                break;
+            case 'movements':
+                $movements = $user->movements()
+                    ->withoutGlobalScope(CopyrightScope::class)
+                    ->with(['reports', 'moves', 'user', 'spots'])
+                    ->whereNotNull('copyright_infringed_at')
+                    ->orderByDesc('copyright_infringed_at')
+                    ->paginate(20);
+                break;
+            case 'equipment':
+                $equipment = $user->equipment()
+                    ->withoutGlobalScope(CopyrightScope::class)
+                    ->withCount(['movements'])
+                    ->with(['movements', 'reports', 'user'])
+                    ->whereNotNull('copyright_infringed_at')
+                    ->orderByDesc('copyright_infringed_at')
+                    ->paginate(20);
+                break;
+            case 'workouts':
+                $workouts = $user->workouts()
+                    ->withoutGlobalScope(CopyrightScope::class)
+                    ->withCount(['movements'])
+                    ->with(['movements', 'user'])
+                    ->whereNotNull('copyright_infringed_at')
+                    ->orderByDesc('copyright_infringed_at')
+                    ->paginate(20);
+                break;
+        }
+
+        return view('copyright_infringements', [
+            'request' => $request,
+            'spots' => $spots,
             'linkSpotOnComment' => $linkSpotOnComment ?? false,
             'events' => $events,
             'challenges' => $challenges,

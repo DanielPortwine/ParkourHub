@@ -29,6 +29,13 @@
                         <a class="btn text-white" href="{{ route('challenge_remove', $challenge->id) }}" title="Remove Content"><i class="fa fa-trash"></i></a>
                     @endcan
                 @endif
+                @can('manage copyright')
+                    @if($challenge->copyright_infringed_at === null)
+                        <a class="btn text-white" href="{{ route('challenge_copyright_set', $challenge->id) }}" title="Mark Copyright Infringement"><i class="fa fa-copyright"></i></a>
+                    @else
+                        <a class="btn text-white" href="{{ route('challenge_copyright_remove', $challenge->id) }}" title="Clear Copyright Infringement"><i class="fa fa-copyright"></i></a>
+                    @endif
+                @endcan
                 @if(!empty($challenge->spot))
                     <a class="btn text-white" href="{{ route('spots', ['spot' => $challenge->spot_id]) }}" title="Locate Spot"><i class="fa fa-map-marker"></i></a>
                 @endif

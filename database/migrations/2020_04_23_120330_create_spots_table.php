@@ -25,6 +25,7 @@ class CreateSpotsTable extends Migration
             $table->decimal('latitude', 9, 6);
             $table->decimal('longitude', 9, 6);
             $table->string('image')->nullable()->default(null);
+            $table->dateTime('copyright_infringed_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
 

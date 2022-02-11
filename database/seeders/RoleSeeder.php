@@ -23,12 +23,14 @@ class RoleSeeder extends Seeder
         $manageReports = Permission::create(['name' => 'manage reports']);
         $manageBans = Permission::create(['name' => 'manage bans']);
         $officialise = Permission::create(['name' => 'officialise']);
+        $manageCopyright = Permission::create(['name' => 'manage copyright']);
 
         $admin->givePermissionTo($removeContent);
         $admin->givePermissionTo($accessPremium);
         $admin->givePermissionTo($manageReports);
         $admin->givePermissionTo($manageBans);
         $admin->givePermissionTo($officialise);
+        $admin->givePermissionTo($manageCopyright);
 
         $tester->givePermissionTo($accessPremium);
     }

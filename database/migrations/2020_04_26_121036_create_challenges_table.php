@@ -28,6 +28,7 @@ class CreateChallengesTable extends Migration
             $table->integer('youtube_start')->nullable();
             $table->string('thumbnail');
             $table->boolean('won')->default(false);
+            $table->dateTime('copyright_infringed_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
 

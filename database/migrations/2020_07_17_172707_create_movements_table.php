@@ -29,6 +29,7 @@ class CreateMovementsTable extends Migration
             $table->string('video_type')->nullable();
             $table->string('thumbnail')->nullable();
             $table->boolean('official')->default(false);
+            $table->dateTime('copyright_infringed_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
 

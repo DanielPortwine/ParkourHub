@@ -6,6 +6,8 @@ use App\Http\Requests\UpdateWorkout;
 use App\Models\Follower;
 use App\Http\Requests\CreateWorkout;
 use App\Models\Movement;
+use App\Notifications\ContentCopyrighted;
+use App\Notifications\ContentUncopyrighted;
 use App\Notifications\NewWorkout;
 use App\Notifications\WorkoutUpdated;
 use App\Models\RecordedWorkout;
@@ -13,6 +15,7 @@ use App\Models\Spot;
 use App\Models\Workout;
 use App\Models\WorkoutMovement;
 use App\Models\WorkoutMovementField;
+use App\Scopes\CopyrightScope;
 use App\Scopes\LinkVisibilityScope;
 use App\Scopes\VisibilityScope;
 use Illuminate\Http\Request;
@@ -71,7 +74,7 @@ class WorkoutController extends Controller
         }
 
         $workout = Workout::withTrashed()
-            ->withoutGlobalScope(VisibilityScope::class)
+            ->withoutGlobalScopes([VisibilityScope::class, CopyrightScope::class])
             ->withGlobalScope('linkVisibility', LinkVisibilityScope::class)
             ->with([
                 'user',
@@ -224,9 +227,22 @@ class WorkoutController extends Controller
         return redirect()->route('workout_view', $workout->id)->with('status', 'Successfully created workout');
     }
 
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
-        $workout = Workout::with([
+        // if coming from a notification, set the notification as read
+        if (!empty($request['notification'])) {
+            foreach (Auth::user()->unreadNotifications as $notification) {
+                if ($notification->id === $request['notification']) {
+                    $notification->markAsRead();
+                    break;
+                }
+            }
+
+            return redirect()->route('workout_edit', $id);
+        }
+
+        $workout = Workout::withoutGlobalScope(CopyrightScope::class)
+            ->with([
                 'movements' => function($q) {
                     $q->where('recorded_workout_id', null)
                         ->whereHas('movement');
@@ -255,7 +271,7 @@ class WorkoutController extends Controller
         }
 
         $userId = Auth::id();
-        $workout = Workout::withoutGlobalScope(VisibilityScope::class)->where('id', $id)->first();
+        $workout = Workout::withoutGlobalScopes([VisibilityScope::class, CopyrightScope::class])->where('id', $id)->first();
         if ($workout->user_id != $userId) {
             return redirect()->route('workout_view', $id);
         }
@@ -337,7 +353,9 @@ class WorkoutController extends Controller
 
     public function delete($id, $redirect = null)
     {
-        $workout = Workout::where('id', $id)->first();
+        $workout = Workout::withoutGlobalScope(CopyrightScope::class)
+            ->where('id', $id)
+            ->first();
 
         if ($workout->user_id === Auth::id()) {
             $workout->delete();
@@ -354,7 +372,10 @@ class WorkoutController extends Controller
 
     public function recover(Request $request, $id)
     {
-        $workout = Workout::onlyTrashed()->where('id', $id)->first();
+        $workout = Workout::withoutGlobalScope(CopyrightScope::class)
+            ->onlyTrashed()
+            ->where('id', $id)
+            ->first();
 
         if (empty($workout) ||  $workout->user_id !== Auth::id()) {
             return back();
@@ -367,7 +388,10 @@ class WorkoutController extends Controller
 
     public function remove(Request $request, $id)
     {
-        $workout = Workout::withTrashed()->where('id', $id)->first();
+        $workout = Workout::withoutGlobalScope(CopyrightScope::class)
+            ->withTrashed()
+            ->where('id', $id)
+            ->first();
 
         if ($workout->user_id !== Auth::id() && !Auth::user()->hasPermissionTo('remove content')) {
             return back();
@@ -482,5 +506,35 @@ class WorkoutController extends Controller
         }
 
         return $results;
+    }
+
+    public function setCopyright($id)
+    {
+        if (!Auth::user()->hasPermissionTo('manage copyright')) {
+            return back();
+        }
+
+        $workout = Workout::withoutGlobalScope(VisibilityScope::class)->where('id', $id)->first();
+        $workout->copyright_infringed_at = now();
+        $workout->save();
+
+        $workout->user->notify(new ContentCopyrighted('workout', $workout));
+
+        return back()->with('status', 'Successfully marked content as a copyright infringement');
+    }
+
+    public function removeCopyright($id)
+    {
+        if (!Auth::user()->hasPermissionTo('manage copyright')) {
+            return back();
+        }
+
+        $workout = Workout::withoutGlobalScopes([VisibilityScope::class, CopyrightScope::class])->where('id', $id)->first();
+        $workout->copyright_infringed_at = null;
+        $workout->save();
+
+        $workout->user->notify(new ContentUncopyrighted('workout', $workout));
+
+        return back()->with('status', 'Successfully marked content as no longer a copyright infringement');
     }
 }

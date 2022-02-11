@@ -8,6 +8,9 @@ use App\Models\ChallengeEntry;
 use App\Models\User;
 use App\Notifications\ChallengeEntered;
 use App\Notifications\ChallengeWon;
+use App\Notifications\ContentCopyrighted;
+use App\Notifications\ContentUncopyrighted;
+use App\Scopes\CopyrightScope;
 use App\Scopes\VisibilityScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -74,7 +77,9 @@ class ChallengeEntryController extends Controller
 
     public function delete($id)
     {
-        $challengeEntry = ChallengeEntry::where('id', $id)->first();
+        $challengeEntry = ChallengeEntry::withoutGlobalScope(CopyrightScope::class)
+            ->where('id', $id)
+            ->first();
 
         if ($challengeEntry->user_id === Auth::id()) {
             $challengeEntry->delete();
@@ -87,7 +92,10 @@ class ChallengeEntryController extends Controller
 
     public function recover(Request $request, $id)
     {
-        $entry = ChallengeEntry::onlyTrashed()->where('id', $id)->first();
+        $entry = ChallengeEntry::withoutGlobalScope(CopyrightScope::class)
+            ->onlyTrashed()
+            ->where('id', $id)
+            ->first();
 
         if (empty($entry) || $entry->user_id !== Auth::id()) {
             return back();
@@ -100,7 +108,10 @@ class ChallengeEntryController extends Controller
 
     public function remove(Request $request, $id)
     {
-        $entry = ChallengeEntry::withTrashed()->where('id', $id)->first();
+        $entry = ChallengeEntry::withoutGlobalScope(CopyrightScope::class)
+            ->withTrashed()
+            ->where('id', $id)
+            ->first();
 
         if ($entry->user_id !== Auth::id() && !Auth::user()->hasPermissionTo('remove content')) {
             return back();
@@ -137,5 +148,38 @@ class ChallengeEntryController extends Controller
         $challengeEntry->discardReports();
 
         return back()->with('status', 'Successfully discarded reports against this content');
+    }
+
+    public function setCopyright($id)
+    {
+        if (!Auth::user()->hasPermissionTo('manage copyright')) {
+            return back();
+        }
+
+        $entry = ChallengeEntry::withoutGlobalScope(VisibilityScope::class)->with('challenge')->where('id', $id)->first();
+        $entry->copyright_infringed_at = now();
+        $entry->save();
+
+        $entry->user->notify(new ContentCopyrighted('entry', $entry));
+
+        return back()->with('status', 'Successfully marked content as a copyright infringement');
+    }
+
+    public function removeCopyright($id)
+    {
+        if (!Auth::user()->hasPermissionTo('manage copyright')) {
+            return back();
+        }
+
+        $entry = ChallengeEntry::withoutGlobalScopes([VisibilityScope::class, CopyrightScope::class])
+            ->with('challenge')
+            ->where('id', $id)
+            ->first();
+        $entry->copyright_infringed_at = null;
+        $entry->save();
+
+        $entry->user->notify(new ContentUncopyrighted('entry', $entry));
+
+        return back()->with('status', 'Successfully marked content as no longer a copyright infringement');
     }
 }

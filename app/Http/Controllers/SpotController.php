@@ -11,7 +11,10 @@ use App\Http\Requests\UpdateSpot;
 use App\Models\Movement;
 use App\Models\MovementCategory;
 use App\Models\MovementField;
+use App\Notifications\ContentCopyrighted;
+use App\Notifications\ContentUncopyrighted;
 use App\Notifications\SpotCreated;
+use App\Scopes\CopyrightScope;
 use App\Scopes\LinkVisibilityScope;
 use App\Scopes\VisibilityScope;
 use App\Models\Spot;
@@ -83,7 +86,7 @@ class SpotController extends Controller
         }
 
         $spot = Spot::withTrashed()
-            ->withoutGlobalScope(VisibilityScope::class)
+            ->withoutGlobalScopes([VisibilityScope::class, CopyrightScope::class])
             ->withGlobalScope('linkVisibility', LinkVisibilityScope::class)
             ->with([
                 'user',
@@ -253,9 +256,23 @@ class SpotController extends Controller
         return redirect()->route('spots', ['spot' => $spot->id]);
     }
 
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
-        $spot = Spot::where('id', $id)->first();
+        // if coming from a notification, set the notification as read
+        if (!empty($request['notification'])) {
+            foreach (Auth::user()->unreadNotifications as $notification) {
+                if ($notification->id === $request['notification']) {
+                    $notification->markAsRead();
+                    break;
+                }
+            }
+
+            return redirect()->route('spot_edit', $id);
+        }
+
+        $spot = Spot::withoutGlobalScope(CopyrightScope::class)
+            ->where('id', $id)
+            ->first();
         if ($spot->user_id != Auth::id()) {
             return redirect()->route('spot_view', $id);
         }
@@ -269,7 +286,9 @@ class SpotController extends Controller
             return $this->delete($id, $request['redirect']);
         }
 
-        $spot = Spot::where('id', $id)->first();
+        $spot = Spot::withoutGlobalScope(CopyrightScope::class)
+            ->where('id', $id)
+            ->first();
         if ($spot->user_id != Auth::id()) {
             return redirect()->route('spot_view', $id);
         }
@@ -291,7 +310,9 @@ class SpotController extends Controller
 
     public function delete($id, $redirect = null)
     {
-        $spot = Spot::where('id', $id)->first();
+        $spot = Spot::withoutGlobalScope(CopyrightScope::class)
+            ->where('id', $id)
+            ->first();
         if ($spot->user_id === Auth::id()) {
             $spot->delete();
         } else {
@@ -307,7 +328,10 @@ class SpotController extends Controller
 
     public function recover(Request $request, $id)
     {
-        $spot = Spot::onlyTrashed()->where('id', $id)->first();
+        $spot = Spot::withoutGlobalScope(CopyrightScope::class)
+            ->onlyTrashed()
+            ->where('id', $id)
+            ->first();
 
         if (empty($spot) || $spot->user_id !== Auth::id()) {
             return back();
@@ -320,7 +344,10 @@ class SpotController extends Controller
 
     public function remove(Request $request, $id)
     {
-        $spot = Spot::withTrashed()->withoutGlobalScope(VisibilityScope::class)->where('id', $id)->first();
+        $spot = Spot::withTrashed()
+            ->withoutGlobalScopes([VisibilityScope::class, CopyrightScope::class])
+            ->where('id', $id)
+            ->first();
 
         if ($spot->user_id !== Auth::id() && !Auth::user()->hasPermissionTo('remove content')) {
             return back();
@@ -462,5 +489,35 @@ class SpotController extends Controller
         }
 
         return back()->with('status', 'Successfully linked workout with spot');
+    }
+
+    public function setCopyright($id)
+    {
+        if (!Auth::user()->hasPermissionTo('manage copyright')) {
+            return back();
+        }
+
+        $spot = Spot::withoutGlobalScope(VisibilityScope::class)->where('id', $id)->first();
+        $spot->copyright_infringed_at = now();
+        $spot->save();
+
+        $spot->user->notify(new ContentCopyrighted('spot', $spot));
+
+        return back()->with('status', 'Successfully marked content as a copyright infringement');
+    }
+
+    public function removeCopyright($id)
+    {
+        if (!Auth::user()->hasPermissionTo('manage copyright')) {
+            return back();
+        }
+
+        $spot = Spot::withoutGlobalScopes([VisibilityScope::class, CopyrightScope::class])->where('id', $id)->first();
+        $spot->copyright_infringed_at = null;
+        $spot->save();
+
+        $spot->user->notify(new ContentUncopyrighted('spot', $spot));
+
+        return back()->with('status', 'Successfully marked content as no longer a copyright infringement');
     }
 }

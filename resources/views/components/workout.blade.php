@@ -31,6 +31,13 @@
                             <a class="btn text-white" href="{{ route('workout_remove', $workout->id) }}" title="Remove Content"><i class="fa fa-trash"></i></a>
                         @endcan
                     @endif
+                    @can('manage copyright')
+                        @if($workout->copyright_infringed_at === null)
+                            <a class="btn text-white" href="{{ route('workout_copyright_set', $workout->id) }}" title="Mark Copyright Infringement"><i class="fa fa-copyright"></i></a>
+                        @else
+                            <a class="btn text-white" href="{{ route('workout_copyright_remove', $workout->id) }}" title="Clear Copyright Infringement"><i class="fa fa-copyright"></i></a>
+                        @endif
+                    @endcan
                     @if($workout->bookmarks->contains(Auth()->id()))
                         <a class="btn text-white" href="{{ route('workout_unbookmark', $workout->id) }}" title="Remove Bookmark"><i class="fa fa-bookmark"></i></a>
                     @else

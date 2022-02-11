@@ -27,6 +27,7 @@ class CreateEventsTable extends Migration
             $table->string('youtube')->nullable();
             $table->integer('youtube_start')->nullable();
             $table->string('thumbnail');
+            $table->dateTime('copyright_infringed_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
 

@@ -1,0 +1,186 @@
+@extends('layouts.app')
+
+@push('title')Bin | @endpush
+
+@section('description')View your bin on Parkour Hub.@endsection
+
+@section('content')
+    @if (session('status'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('status') }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    @endif
+    <nav class="navbar navbar-expand-md navbar-dark text-white bg-grey shadow-sm">
+        <div class="container">
+            <ul class="navbar-nav flex-row justify-content-around w-100">
+                <li class="nav-item px-2">
+                    <a class="nav-link @if(empty($tab) || $tab === 'spots')active @endif" href="{{ route('copyright_listing') }}">
+                        <i class="fa fa-map-marker nav-icon"></i>
+                        <span class="d-none d-lg-inline">Spots</span>
+                    </a>
+                </li>
+                @premium
+                    <li class="nav-item px-2">
+                        <a class="nav-link @if($tab === 'events')active @endif" href="{{ route('copyright_listing', ['tab' => 'events']) }}">
+                            <i class="fa fa-map-marked nav-icon"></i>
+                            <span class="d-none d-lg-inline">Events</span>
+                        </a>
+                    </li>
+                @endpremium
+                <li class="nav-item px-2">
+                    <a class="nav-link @if($tab === 'challenges')active @endif" href="{{ route('copyright_listing', ['tab' => 'challenges']) }}">
+                        <i class="fa fa-bullseye nav-icon"></i>
+                        <span class="d-none d-lg-inline">Challenges</span>
+                    </a>
+                </li>
+                <li class="nav-item px-2">
+                    <a class="nav-link @if($tab === 'entries')active @endif" href="{{ route('copyright_listing', ['tab' => 'entries']) }}">
+                        <i class="fa fa-trophy nav-icon"></i>
+                        <span class="d-none d-lg-inline">Entries</span>
+                    </a>
+                </li>
+                @premium
+                    <li class="nav-item px-2">
+                        <a class="nav-link @if($tab === 'workouts')active @endif" href="{{ route('copyright_listing', ['tab' => 'workouts']) }}">
+                            <i class="fa fa-running nav-icon"></i>
+                            <span class="d-none d-lg-inline">Workouts</span>
+                        </a>
+                    </li>
+                    <li class="nav-item px-2">
+                        <a class="nav-link @if($tab === 'movements')active @endif" href="{{ route('copyright_listing', ['tab' => 'movements']) }}">
+                            <i class="fa fa-child nav-icon"></i>
+                            <span class="d-none d-lg-inline">Movements</span>
+                        </a>
+                    </li>
+                    <li class="nav-item px-2">
+                        <a class="nav-link @if($tab === 'equipment')active @endif" href="{{ route('copyright_listing', ['tab' => 'equipment']) }}">
+                            <i class="fa fa-dumbbell nav-icon"></i>
+                            <span class="d-none d-lg-inline">Equipment</span>
+                        </a>
+                    </li>
+                @endpremium
+            </ul>
+        </div>
+    </nav>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                <h1 class="sedgwick text-center pt-3">{{ ucwords(str_replace('_', ' ', $tab ?? 'Spots')) }}</h1>
+            </div>
+        </div>
+        @if($tab == null || $tab === 'spots')
+            <div class="card-body bg-black">
+                @foreach($spots->chunk(4) as $chunk)
+                    <div class="row">
+                        @foreach($chunk as $spot)
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                @include('components.spot')
+                            </div>
+                        @endforeach
+                    </div>
+                @endforeach
+                {{ $spots->links() }}
+                @if (count($spots) === 0)
+                    <p class="mb-0">There aren't any spots with copyright claims.</p>
+                @endif
+            </div>
+        @elseif($tab === 'events')
+            <div class="card-body bg-black">
+                @foreach($events->chunk(4) as $chunk)
+                    <div class="row">
+                        @foreach($chunk as $event)
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                @include('components.event')
+                            </div>
+                        @endforeach
+                    </div>
+                @endforeach
+                @if (count($events) === 0)
+                    <p class="mb-0">There aren't any events with copyright claims.</p>
+                @endif
+            </div>
+        @elseif($tab === 'challenges')
+            <div class="card-body bg-black">
+                @foreach($challenges->chunk(4) as $chunk)
+                    <div class="row">
+                        @foreach($chunk as $challenge)
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                @include('components.challenge')
+                            </div>
+                        @endforeach
+                    </div>
+                @endforeach
+                @if (count($challenges) === 0)
+                    <p class="mb-0">There aren't any challenges with copyright claims.</p>
+                @endif
+            </div>
+        @elseif($tab === 'entries')
+            <div class="card-body bg-black">
+                @foreach($entries->chunk(4) as $chunk)
+                    <div class="row">
+                        @foreach($chunk as $entry)
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                @include('components.entry')
+                            </div>
+                        @endforeach
+                    </div>
+                @endforeach
+                @if (count($entries) === 0)
+                    <p class="mb-0">There aren't any entries with copyright claims.</p>
+                @endif
+            </div>
+        @elseif($tab === 'movements')
+            <div class="card-body bg-black">
+                @foreach($movements->chunk(4) as $chunk)
+                    <div class="row">
+                        @foreach($chunk as $movement)
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                @include('components.movement')
+                            </div>
+                        @endforeach
+                    </div>
+                @endforeach
+                @if (count($movements) === 0)
+                    <p class="mb-0">There aren't any movements with copyright claims.</p>
+                @endif
+            </div>
+        @elseif($tab === 'equipment')
+            <div class="card-body bg-black">
+                @foreach($equipments->chunk(4) as $chunk)
+                    <div class="row">
+                        @foreach($chunk as $equipment)
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                @include('components.equipment')
+                            </div>
+                        @endforeach
+                    </div>
+                @endforeach
+                @if (count($equipments) === 0)
+                    <p class="mb-0">There isn't any equipment with copyright claims.</p>
+                @endif
+            </div>
+        @elseif($tab === 'workouts')
+            <div class="card-body bg-black">
+                @foreach($workouts->chunk(4) as $chunk)
+                    <div class="row">
+                        @foreach($chunk as $workout)
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                @include('components.workout')
+                            </div>
+                        @endforeach
+                    </div>
+                @endforeach
+                @if (count($workouts) === 0)
+                    <p class="mb-0">There aren't any workouts with copyright claims.</p>
+                @endif
+            </div>
+        @endif
+    </div>
+@endsection
+
+@section('footer')
+    @include('components.footer')
+@endsection

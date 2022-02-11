@@ -60,6 +60,13 @@
                         @if(!empty($challenge->spot))
                             <a class="btn text-white" href="{{ route('spots', ['spot' => $challenge->spot->id]) }}" title="Locate Spot"><i class="fa fa-map-marker"></i></a>
                         @endif
+                        @can('manage copyright')
+                            @if($challenge->copyright_infringed_at === null)
+                                <a class="btn text-white" href="{{ route('challenge_copyright_set', $challenge->id) }}" title="Mark Copyright Infringement"><i class="fa fa-copyright"></i></a>
+                            @else
+                                <a class="btn text-white" href="{{ route('challenge_copyright_remove', $challenge->id) }}" title="Clear Copyright Infringement"><i class="fa fa-copyright"></i></a>
+                            @endif
+                        @endcan
                     @elseif($challenge->user_id === Auth()->id())
                         <a class="btn text-white" href="{{ route('challenge_recover', $challenge->id) }}" title="Recover"><i class="fa fa-history"></i></a>
                         <a class="btn text-white" href="{{ route('challenge_remove', $challenge->id) }}" title="Remove Forever"><i class="fa fa-trash"></i></a>

@@ -10,6 +10,9 @@ use App\Models\Movement;
 use App\Models\MovementCategory;
 use App\Models\MovementField;
 use App\Models\Report;
+use App\Notifications\ContentCopyrighted;
+use App\Notifications\ContentUncopyrighted;
+use App\Scopes\CopyrightScope;
 use App\Scopes\LinkVisibilityScope;
 use App\Scopes\VisibilityScope;
 use Illuminate\Http\Request;
@@ -52,7 +55,7 @@ class EquipmentController extends Controller
     public function view(Request $request, $id)
     {
         $equipment = Equipment::withTrashed()
-            ->withoutGlobalScope(VisibilityScope::class)
+            ->withoutGlobalScopes([VisibilityScope::class, CopyrightScope::class])
             ->withGlobalScope('linkVisibility', LinkVisibilityScope::class)
             ->with([
                 'movements',
@@ -118,9 +121,23 @@ class EquipmentController extends Controller
         return redirect()->route('equipment_view', $equipment->id)->with('status', 'Successfully created equipment');
     }
 
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
-        $equipment = Equipment::where('id', $id)->first();
+        // if coming from a notification, set the notification as read
+        if (!empty($request['notification'])) {
+            foreach (Auth::user()->unreadNotifications as $notification) {
+                if ($notification->id === $request['notification']) {
+                    $notification->markAsRead();
+                    break;
+                }
+            }
+
+            return redirect()->route('equipment_edit', $id);
+        }
+
+        $equipment = Equipment::withoutGlobalScope(CopyrightScope::class)
+            ->where('id', $id)
+            ->first();
         if ($equipment->user_id !== Auth::id()) {
             return redirect()->route('equipment_view', $id);
         }
@@ -134,7 +151,9 @@ class EquipmentController extends Controller
             return $this->delete($id, $request['redirect']);
         }
 
-        $equipment = Equipment::where('id', $id)->first();
+        $equipment = Equipment::withoutGlobalScope(CopyrightScope::class)
+            ->where('id', $id)
+            ->first();
         if ($equipment->user_id !== Auth::id()) {
             return redirect()->route('equipment_view', $id);
         }
@@ -156,7 +175,9 @@ class EquipmentController extends Controller
 
     public function delete($id, $redirect = null)
     {
-        $equipment = Equipment::where('id', $id)->first();
+        $equipment = Equipment::withoutGlobalScope(CopyrightScope::class)
+            ->where('id', $id)
+            ->first();
         if ($equipment->user_id === Auth::id()) {
             $equipment->delete();
         } else {
@@ -172,7 +193,10 @@ class EquipmentController extends Controller
 
     public function recover(Request $request, $id)
     {
-        $equipment = Equipment::onlyTrashed()->where('id', $id)->first();
+        $equipment = Equipment::withoutGlobalScope(CopyrightScope::class)
+            ->onlyTrashed()
+            ->where('id', $id)
+            ->first();
 
         if (empty($equipment) || $equipment->user_id !== Auth::id()) {
             return back();
@@ -185,7 +209,10 @@ class EquipmentController extends Controller
 
     public function remove(Request $request, $id)
     {
-        $equipment = Equipment::withTrashed()->withoutGlobalScope(VisibilityScope::class)->where('id', $id)->first();
+        $equipment = Equipment::withTrashed()
+            ->withoutGlobalScopes([VisibilityScope::class, CopyrightScope::class])
+            ->where('id', $id)
+            ->first();
 
         if (empty($equipment) || ($equipment->user_id !== Auth::id() && !Auth::user()->hasPermissionTo('remove content'))) {
             return back();
@@ -218,5 +245,35 @@ class EquipmentController extends Controller
         $equipment->discardReports();
 
         return back()->with('status', 'Successfully discarded reports against this content');
+    }
+
+    public function setCopyright($id)
+    {
+        if (!Auth::user()->hasPermissionTo('manage copyright')) {
+            return back();
+        }
+
+        $equipment = Equipment::withoutGlobalScope(VisibilityScope::class)->where('id', $id)->first();
+        $equipment->copyright_infringed_at = now();
+        $equipment->save();
+
+        $equipment->user->notify(new ContentCopyrighted('equipment', $equipment));
+
+        return back()->with('status', 'Successfully marked content as a copyright infringement');
+    }
+
+    public function removeCopyright($id)
+    {
+        if (!Auth::user()->hasPermissionTo('manage copyright')) {
+            return back();
+        }
+
+        $equipment = Equipment::withoutGlobalScopes([VisibilityScope::class, CopyrightScope::class])->where('id', $id)->first();
+        $equipment->copyright_infringed_at = null;
+        $equipment->save();
+
+        $equipment->user->notify(new ContentUncopyrighted('equipment', $equipment));
+
+        return back()->with('status', 'Successfully marked content as no longer a copyright infringement');
     }
 }

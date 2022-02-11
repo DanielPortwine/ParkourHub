@@ -59,6 +59,13 @@
                                     <a class="btn text-white" href="{{ route('spot_remove', $spot->id) }}" title="Remove Content"><i class="fa fa-trash"></i></a>
                                 @endcan
                             @endif
+                            @can('manage copyright')
+                                @if($spot->copyright_infringed_at === null)
+                                    <a class="btn text-white" href="{{ route('spot_copyright_set', $spot->id) }}" title="Mark Copyright Infringement"><i class="fa fa-copyright"></i></a>
+                                @else
+                                    <a class="btn text-white" href="{{ route('spot_copyright_remove', $spot->id) }}" title="Clear Copyright Infringement"><i class="fa fa-copyright"></i></a>
+                                @endif
+                            @endcan
                             @auth
                                 <a class="btn text-white tick-off-hitlist-button @if(!(!empty($hit) && $hit->completed_at == null))d-none @endif" id="hitlist-spot-{{ $spot->id }}-add" title="Tick Off Hitlist"><i class="fa fa-check"></i></a>
                                 <a class="btn text-white add-to-hitlist-button @if(!empty($hit))d-none @endif" id="hitlist-spot-{{ $spot->id }}-tick" title="Add To Hitlist"><i class="fa fa-crosshairs"></i></a>

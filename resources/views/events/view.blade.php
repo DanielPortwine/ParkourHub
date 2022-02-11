@@ -57,6 +57,13 @@
                                 <a class="btn text-white" href="{{ route('event_remove', $event->id) }}" title="Remove Content"><i class="fa fa-trash"></i></a>
                             @endcan
                         @endif
+                        @can('manage copyright')
+                            @if($event->copyright_infringed_at === null)
+                                <a class="btn text-white" href="{{ route('event_copyright_set', $event->id) }}" title="Mark Copyright Infringement"><i class="fa fa-copyright"></i></a>
+                            @else
+                                <a class="btn text-white" href="{{ route('event_copyright_remove', $event->id) }}" title="Clear Copyright Infringement"><i class="fa fa-copyright"></i></a>
+                            @endif
+                        @endcan
                     @elseif($event->user_id === Auth()->id())
                         <a class="btn text-white" href="{{ route('event_recover', $event->id) }}" title="Recover"><i class="fa fa-history"></i></a>
                         <a class="btn text-white" href="{{ route('event_remove', $event->id) }}" title="Remove Forever"><i class="fa fa-trash"></i></a>

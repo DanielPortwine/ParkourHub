@@ -12,8 +12,11 @@ use App\Http\Requests\UpdateChallenge;
 use App\Notifications\ChallengeCreated;
 use App\Notifications\ChallengeEntered;
 use App\Notifications\ChallengeWon;
+use App\Notifications\ContentCopyrighted;
+use App\Notifications\ContentUncopyrighted;
 use App\Notifications\SpotChallenged;
 use App\Models\User;
+use App\Scopes\CopyrightScope;
 use App\Scopes\LinkVisibilityScope;
 use App\Scopes\VisibilityScope;
 use Illuminate\Http\Request;
@@ -75,7 +78,7 @@ class ChallengeController extends Controller
         }
 
         $challenge = Challenge::withTrashed()
-            ->withoutGlobalScope(VisibilityScope::class)
+            ->withoutGlobalScopes([VisibilityScope::class, CopyrightScope::class])
             ->withGlobalScope('linkVisibility', LinkVisibilityScope::class)
             ->with([
                 'entries',
@@ -98,7 +101,12 @@ class ChallengeController extends Controller
                     ->with(['challenge', 'reports', 'user'])
                     ->orderByDesc('created_at')
                     ->paginate(20, ['*']);
-                $entered = !empty($challenge->entries->where('user_id', Auth::id())->first());
+                $entered = !empty(
+                    $challenge->entries()
+                        ->withoutGlobalScope(CopyrightScope::class)
+                        ->where('user_id', Auth::id())
+                        ->first()
+                );
                 $winner = $challenge->entries->where('winner', true)->first();
                 break;
             case 'comments':
@@ -166,9 +174,23 @@ class ChallengeController extends Controller
         return redirect()->route('challenge_view', $challenge->id)->with('status', 'Successfully created challenge');
     }
 
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
-        $challenge = Challenge::where('id', $id)->first();
+        // if coming from a notification, set the notification as read
+        if (!empty($request['notification'])) {
+            foreach (Auth::user()->unreadNotifications as $notification) {
+                if ($notification->id === $request['notification']) {
+                    $notification->markAsRead();
+                    break;
+                }
+            }
+
+            return redirect()->route('challenge_edit', $id);
+        }
+
+        $challenge = Challenge::withoutGlobalScope(CopyrightScope::class)
+            ->where('id', $id)
+            ->first();
         if ($challenge->user_id !== Auth::id()) {
             return redirect()->route('challenge_view', $id);
         }
@@ -182,7 +204,9 @@ class ChallengeController extends Controller
             return $this->delete($id, $request['redirect']);
         }
 
-        $challenge = Challenge::withoutGlobalScope(VisibilityScope::class)->where('id', $id)->first();
+        $challenge = Challenge::withoutGlobalScopes([VisibilityScope::class, CopyrightScope::class])
+            ->where('id', $id)
+            ->first();
         if ($challenge->user_id !== Auth::id()) {
             return redirect()->route('challenge_view', $id);
         }
@@ -219,7 +243,9 @@ class ChallengeController extends Controller
 
     public function delete($id, $redirect = null)
     {
-        $challenge = Challenge::where('id', $id)->first();
+        $challenge = Challenge::withoutGlobalScope(CopyrightScope::class)
+            ->where('id', $id)
+            ->first();
         if ($challenge->user_id === Auth::id()) {
             $challenge->delete();
         } else {
@@ -235,7 +261,10 @@ class ChallengeController extends Controller
 
     public function recover(Request $request, $id)
     {
-        $challenge = Challenge::onlyTrashed()->where('id', $id)->first();
+        $challenge = Challenge::withoutGlobalScope(CopyrightScope::class)
+            ->onlyTrashed()
+            ->where('id', $id)
+            ->first();
 
         if (empty($challenge) || $challenge->user_id !== Auth::id()) {
             return back();
@@ -248,7 +277,10 @@ class ChallengeController extends Controller
 
     public function remove(Request $request, $id)
     {
-        $challenge = Challenge::withTrashed()->withoutGlobalScope(VisibilityScope::class)->where('id', $id)->first();
+        $challenge = Challenge::withTrashed()
+            ->withoutGlobalScopes([VisibilityScope::class, CopyrightScope::class])
+            ->where('id', $id)
+            ->first();
 
         if ($challenge->user_id !== Auth::id() && !Auth::user()->hasPermissionTo('remove content')) {
             return back();
@@ -284,5 +316,35 @@ class ChallengeController extends Controller
         $challenge->discardReports();
 
         return back()->with('status', 'Successfully discarded reports against this content');
+    }
+
+    public function setCopyright($id)
+    {
+        if (!Auth::user()->hasPermissionTo('manage copyright')) {
+            return back();
+        }
+
+        $challenge = Challenge::withoutGlobalScope(VisibilityScope::class)->where('id', $id)->first();
+        $challenge->copyright_infringed_at = now();
+        $challenge->save();
+
+        $challenge->user->notify(new ContentCopyrighted('challenge', $challenge));
+
+        return back()->with('status', 'Successfully marked content as a copyright infringement');
+    }
+
+    public function removeCopyright($id)
+    {
+        if (!Auth::user()->hasPermissionTo('manage copyright')) {
+            return back();
+        }
+
+        $challenge = Challenge::withoutGlobalScopes([VisibilityScope::class, CopyrightScope::class])->where('id', $id)->first();
+        $challenge->copyright_infringed_at = null;
+        $challenge->save();
+
+        $challenge->user->notify(new ContentUncopyrighted('challenge', $challenge));
+
+        return back()->with('status', 'Successfully marked content as no longer a copyright infringement');
     }
 }

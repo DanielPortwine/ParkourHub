@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Scopes\BannedUserScope;
+use App\Scopes\CopyrightScope;
 use App\Scopes\VisibilityScope;
 use App\Traits\Commentable;
 use App\Traits\Reportable;
@@ -29,6 +30,7 @@ class Spot extends Model
         'latitude',
         'longitude',
         'image',
+        'copyright_infringed_at',
     ];
 
     protected $searchable = [
@@ -42,6 +44,7 @@ class Spot extends Model
     {
         static::addGlobalScope(new VisibilityScope);
         static::addGlobalScope(new BannedUserScope);
+        static::addGlobalScope(new CopyrightScope);
     }
 
     public function scopeRating($query, $rating = null)

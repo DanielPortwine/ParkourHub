@@ -134,6 +134,14 @@
                                             <a class="dropdown-item text-white" href="{{ route('workout_view', ['id' => $notification->data['new_workout']['id'], 'notification' => $notification->id]) }}">New workout from  {{ $notification->data['user']['name'] }}</a>
                                         @elseif(!empty($notification->data['workout_updated']))
                                             <a class="dropdown-item text-white" href="{{ route('workout_view', ['id' => $notification->data['workout_updated']['id'], 'notification' => $notification->id]) }}">Workout {{ $notification->data['workout_updated']['name'] }} updated</a>
+                                        @elseif(!empty($notification->data['copyright_content']) && $notification->data['type'] !== 'entry')
+                                            <a class="dropdown-item text-white" href="{{ route($notification->data['type'] . '_edit', ['id' => $notification->data['copyright_content']['id'], 'notification' => $notification->id]) }}">{{ ucfirst($notification->data['type']) }} <strong>{{ $notification->data['copyright_content']['name'] }}</strong> copyright claimed</a>
+                                        @elseif(!empty($notification->data['copyright_content']) && $notification->data['type'] === 'entry')
+                                            <a class="dropdown-item text-white" href="{{ route('challenge_view', ['id' => $notification->data['copyright_content']['challenge_id'], 'notification' => $notification->id]) }}">{{ ucfirst($notification->data['type']) }} to <strong>{{ $notification->data['copyright_content']['challenge']['name'] }}</strong> copyright claimed</a>
+                                        @elseif(!empty($notification->data['uncopyright_content']) && $notification->data['type'] !== 'entry')
+                                            <a class="dropdown-item text-white" href="{{ route($notification->data['type'] . '_view', ['id' => $notification->data['uncopyright_content']['id'], 'notification' => $notification->id]) }}">{{ ucfirst($notification->data['type']) }} <strong>{{ $notification->data['uncopyright_content']['name'] }}</strong> copyright claim cleared</a>
+                                        @elseif(!empty($notification->data['uncopyright_content']) && $notification->data['type'] === 'entry')
+                                            <a class="dropdown-item text-white" href="{{ route('challenge_view', ['id' => $notification->data['uncopyright_content']['challenge_id'], 'notification' => $notification->id]) }}">{{ ucfirst($notification->data['type']) }} to <strong>{{ $notification->data['uncopyright_content']['challenge']['name'] }}</strong> copyright claim cleared</a>
                                         @endif
                                     @endforeach
                                 </div>
@@ -171,6 +179,10 @@
                                     @endcan
                                     @can('manage bans')
                                         <a class="dropdown-item text-white" href="{{ route('ban_listing') }}"><i class="fa fa-gavel nav-icon"></i>Bans</a>
+                                    @endcan
+                                    <a class="dropdown-item text-white" href="{{ route('user_copyright_listing') }}"><i class="fa fa-copyright nav-icon"></i>Claims</a>
+                                    @can('manage copyright')
+                                        <a class="dropdown-item text-white" href="{{ route('copyright_listing') }}"><i class="fa fa-copyright nav-icon"></i>Copyright</a>
                                     @endcan
                                     <a class="dropdown-item text-white" href="{{ route('user_bin') }}"><i class="fa fa-trash nav-icon"></i>Bin</a>
                                     <a class="dropdown-item text-white" href="{{ route('logout') }}"

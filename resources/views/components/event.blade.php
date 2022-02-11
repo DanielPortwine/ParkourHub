@@ -29,6 +29,13 @@
                         <a class="btn text-white" href="{{ route('event_remove', $event->id) }}" title="Remove Content"><i class="fa fa-trash"></i></a>
                     @endcan
                 @endif
+                @can('manage copyright')
+                    @if($event->copyright_infringed_at === null)
+                        <a class="btn text-white" href="{{ route('event_copyright_set', $event->id) }}" title="Mark Copyright Infringement"><i class="fa fa-copyright"></i></a>
+                    @else
+                        <a class="btn text-white" href="{{ route('event_copyright_remove', $event->id) }}" title="Clear Copyright Infringement"><i class="fa fa-copyright"></i></a>
+                    @endif
+                @endcan
             </div>
         </div>
         <div class="row">

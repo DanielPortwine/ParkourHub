@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Scopes\BannedUserScope;
+use App\Scopes\CopyrightScope;
 use App\Scopes\VisibilityScope;
 use App\Traits\Commentable;
 use App\Traits\Reportable;
@@ -25,6 +26,7 @@ class Workout extends Model
         'description',
         'visibility',
         'thumbnail',
+        'copyright_infringed_at',
     ];
 
     protected $searchable = [
@@ -38,6 +40,7 @@ class Workout extends Model
     {
         static::addGlobalScope(new VisibilityScope);
         static::addGlobalScope(new BannedUserScope);
+        static::addGlobalScope(new CopyrightScope);
     }
 
     public function scopeDateBetween($query, $dates = [])

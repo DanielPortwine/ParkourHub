@@ -15,6 +15,9 @@ use App\Models\MovementField;
 use App\Models\MovementType;
 use App\Models\Report;
 use App\Models\Spot;
+use App\Notifications\ContentCopyrighted;
+use App\Notifications\ContentUncopyrighted;
+use App\Scopes\CopyrightScope;
 use App\Scopes\LinkVisibilityScope;
 use App\Scopes\VisibilityScope;
 use Illuminate\Http\Request;
@@ -66,7 +69,7 @@ class MovementController extends Controller
     public function view(Request $request, $id, $tab = 'comments')
     {
         $movement = Movement::withTrashed()
-            ->withoutGlobalScope(VisibilityScope::class)
+            ->withoutGlobalScopes([VisibilityScope::class, CopyrightScope::class])
             ->withGlobalScope('linkVisibility', LinkVisibilityScope::class)
             ->with([
                 'category',
@@ -282,9 +285,24 @@ class MovementController extends Controller
         return redirect()->route('movement_view', $movement->id)->with('status', 'Successfully created movement');
     }
 
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
-        $movement = Movement::with(['fields'])->where('id', $id)->first();
+        // if coming from a notification, set the notification as read
+        if (!empty($request['notification'])) {
+            foreach (Auth::user()->unreadNotifications as $notification) {
+                if ($notification->id === $request['notification']) {
+                    $notification->markAsRead();
+                    break;
+                }
+            }
+
+            return redirect()->route('movement_edit', $id);
+        }
+
+        $movement = Movement::withoutGlobalScope(CopyrightScope::class)
+            ->with(['fields'])
+            ->where('id', $id)
+            ->first();
         if ($movement->user_id != Auth::id()) {
             return redirect()->route('movement_view', $id);
         }
@@ -305,7 +323,10 @@ class MovementController extends Controller
             return $this->delete($id, $request['redirect']);
         }
 
-        $movement = Movement::with(['fields', 'equipment'])->where('id', $id)->first();
+        $movement = Movement::withoutGlobalScope(CopyrightScope::class)
+            ->with(['fields', 'equipment'])
+            ->where('id', $id)
+            ->first();
         if ($movement->user_id != Auth::id()) {
             return redirect()->route('movement_view', $id);
         }
@@ -365,7 +386,9 @@ class MovementController extends Controller
 
     public function delete($id, $redirect = null)
     {
-        $movement = Movement::withoutGlobalScope(VisibilityScope::class)->where('id', $id)->first();
+        $movement = Movement::withoutGlobalScopes([VisibilityScope::class, CopyrightScope::class])
+            ->where('id', $id)
+            ->first();
         if ($movement->user_id === Auth::id()) {
             $movement->delete();
         } else {
@@ -381,7 +404,10 @@ class MovementController extends Controller
 
     public function recover(Request $request, $id)
     {
-        $movement = Movement::onlyTrashed()->where('id', $id)->first();
+        $movement = Movement::withoutGlobalScope(CopyrightScope::class)
+            ->onlyTrashed()
+            ->where('id', $id)
+            ->first();
 
         if (empty($movement) || $movement->user_id !== Auth::id()) {
             return back();
@@ -394,7 +420,10 @@ class MovementController extends Controller
 
     public function remove(Request $request, $id)
     {
-        $movement = Movement::withTrashed()->withoutGlobalScope(VisibilityScope::class)->where('id', $id)->first();
+        $movement = Movement::withTrashed()
+            ->withoutGlobalScopes([VisibilityScope::class, CopyrightScope::class])
+            ->where('id', $id)
+            ->first();
 
         if (empty($movement) || ($movement->user_id !== Auth::id() && !Auth::user()->hasPermissionTo('remove content'))) {
             return back();
@@ -568,4 +597,34 @@ class MovementController extends Controller
 
         return back()->with('status', 'Successfully set your baseline for this movement');
     }*/
+
+    public function setCopyright($id)
+    {
+        if (!Auth::user()->hasPermissionTo('manage copyright')) {
+            return back();
+        }
+
+        $movement = Movement::withoutGlobalScope(VisibilityScope::class)->where('id', $id)->first();
+        $movement->copyright_infringed_at = now();
+        $movement->save();
+
+        $movement->user->notify(new ContentCopyrighted('movement', $movement));
+
+        return back()->with('status', 'Successfully marked content as a copyright infringement');
+    }
+
+    public function removeCopyright($id)
+    {
+        if (!Auth::user()->hasPermissionTo('manage copyright')) {
+            return back();
+        }
+
+        $movement = Movement::withoutGlobalScopes([VisibilityScope::class, CopyrightScope::class])->where('id', $id)->first();
+        $movement->copyright_infringed_at = null;
+        $movement->save();
+
+        $movement->user->notify(new ContentUncopyrighted('movement', $movement));
+
+        return back()->with('status', 'Successfully marked content as no longer a copyright infringement');
+    }
 }

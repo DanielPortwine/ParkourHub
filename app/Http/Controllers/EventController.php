@@ -7,9 +7,12 @@ use App\Http\Requests\UpdateEvent;
 use App\Models\Event;
 use App\Models\Spot;
 use App\Models\User;
+use App\Notifications\ContentCopyrighted;
+use App\Notifications\ContentUncopyrighted;
 use App\Notifications\EventCreated;
 use App\Notifications\EventInvite;
 use App\Notifications\EventUpdated;
+use App\Scopes\CopyrightScope;
 use App\Scopes\LinkVisibilityScope;
 use App\Scopes\VisibilityScope;
 use Illuminate\Http\Request;
@@ -83,7 +86,7 @@ class EventController extends Controller
         }
 
         $event = Event::withTrashed()
-            ->withoutGlobalScope(VisibilityScope::class)
+            ->withoutGlobalScopes([VisibilityScope::class, CopyrightScope::class])
             ->withGlobalScope('linkVisibility', LinkVisibilityScope::class)
             ->with([
                 'spots',
@@ -200,9 +203,22 @@ class EventController extends Controller
         return redirect()->route('event_view', $event->id)->with('status', 'Successfully created event');
     }
 
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
-        $event = Event::with(['spots', 'attendees'])
+        // if coming from a notification, set the notification as read
+        if (!empty($request['notification'])) {
+            foreach (Auth::user()->unreadNotifications as $notification) {
+                if ($notification->id === $request['notification']) {
+                    $notification->markAsRead();
+                    break;
+                }
+            }
+
+            return redirect()->route('event_edit', $id);
+        }
+
+        $event = Event::withoutGlobalScope(CopyrightScope::class)
+            ->with(['spots', 'attendees'])
             ->where('id', $id)
             ->first();
 
@@ -231,8 +247,14 @@ class EventController extends Controller
         }
 
         $userId = Auth::id();
-        $oldEvent = Event::withoutGlobalScope(VisibilityScope::class)->with(['spots', 'attendees'])->where('id', $id)->first();
-        $event = Event::withoutGlobalScope(VisibilityScope::class)->with(['spots', 'attendees'])->where('id', $id)->first();
+        $oldEvent = Event::withoutGlobalScopes([VisibilityScope::class, CopyrightScope::class])
+            ->with(['spots', 'attendees'])
+            ->where('id', $id)
+            ->first();
+        $event = Event::withoutGlobalScopes([VisibilityScope::class, CopyrightScope::class])
+            ->with(['spots', 'attendees'])
+            ->where('id', $id)
+            ->first();
         if ($event->user_id != $userId) {
             return redirect()->route('event_view', $id);
         }
@@ -302,7 +324,9 @@ class EventController extends Controller
 
     public function delete($id, $redirect = null)
     {
-        $event = Event::where('id', $id)->first();
+        $event = Event::withoutGlobalScope(CopyrightScope::class)
+            ->where('id', $id)
+            ->first();
 
         if ($event->user_id === Auth::id()) {
             $event->delete();
@@ -319,7 +343,10 @@ class EventController extends Controller
 
     public function recover($id)
     {
-        $event = Event::onlyTrashed()->where('id', $id)->first();
+        $event = Event::withoutGlobalScope(CopyrightScope::class)
+            ->onlyTrashed()
+            ->where('id', $id)
+            ->first();
 
         if (empty($event) ||  $event->user_id !== Auth::id()) {
             return back();
@@ -332,7 +359,10 @@ class EventController extends Controller
 
     public function remove($id)
     {
-        $event = Event::withTrashed()->where('id', $id)->first();
+        $event = Event::withoutGlobalScope(CopyrightScope::class)
+            ->withTrashed()
+            ->where('id', $id)
+            ->first();
 
         if ($event->user_id !== Auth::id() && !Auth::user()->hasPermissionTo('remove content')) {
             return back();
@@ -371,5 +401,35 @@ class EventController extends Controller
         $event->discardReports();
 
         return back()->with('status', 'Successfully discarded reports against this content');
+    }
+
+    public function setCopyright($id)
+    {
+        if (!Auth::user()->hasPermissionTo('manage copyright')) {
+            return back();
+        }
+
+        $event = Event::withoutGlobalScope(VisibilityScope::class)->where('id', $id)->first();
+        $event->copyright_infringed_at = now();
+        $event->save();
+
+        $event->user->notify(new ContentCopyrighted('event', $event));
+
+        return back()->with('status', 'Successfully marked content as a copyright infringement');
+    }
+
+    public function removeCopyright($id)
+    {
+        if (!Auth::user()->hasPermissionTo('manage copyright')) {
+            return back();
+        }
+
+        $event = Event::withoutGlobalScopes([VisibilityScope::class, CopyrightScope::class])->where('id', $id)->first();
+        $event->copyright_infringed_at = null;
+        $event->save();
+
+        $event->user->notify(new ContentUncopyrighted('event', $event));
+
+        return back()->with('status', 'Successfully marked content as no longer a copyright infringement');
     }
 }

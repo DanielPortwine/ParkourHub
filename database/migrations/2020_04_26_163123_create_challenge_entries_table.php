@@ -22,6 +22,7 @@ class CreateChallengeEntriesTable extends Migration
             $table->string('video')->nullable();
             $table->string('video_type')->nullable();
             $table->boolean('winner')->default(false);
+            $table->dateTime('copyright_infringed_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
 

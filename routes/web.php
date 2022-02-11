@@ -46,6 +46,7 @@ Route::prefix('user')->middleware(['verified', 'notBanned'])->group(function() {
     Route::get('/reject_follower/{id}', 'UserController@rejectFollower')->name('user_reject_follower');
     Route::get('/ban/{id}', 'BanController@create')->name('user_ban');
     Route::get('/unban/{id}', 'BanController@delete')->name('user_unban');
+    Route::get('/copyright_claims/{tab?}', 'UserController@claims')->name('user_copyright_listing');
 });
 
 Route::get('/premium', 'PremiumController@index')->name('premium');
@@ -79,6 +80,8 @@ Route::prefix('spots')->middleware(['verified', 'notBanned'])->group(function() 
     Route::post('/add_movement/{spot}', 'SpotController@addMovement')->name('spot_add_movement');
     Route::get('/remove_movement/{spotID}/{movement}', 'SpotController@removeMovement')->name('spot_remove_movement');
     Route::post('/link_workout', 'SpotController@linkWorkout')->name('spot_workout_link');
+    Route::get('/set_copyright/{id}', 'SpotController@setCopyright')->name('spot_copyright_set');
+    Route::get('/remove_copyright/{id}', 'SpotController@removeCopyright')->name('spot_copyright_remove');
 });
 
 Route::prefix('/reviews')->middleware(['verified', 'notBanned'])->group(function() {
@@ -116,6 +119,8 @@ Route::prefix('challenges')->middleware(['verified', 'notBanned'])->group(functi
     });
     Route::get('/report/{id}', 'ChallengeController@report')->name('challenge_report');
     Route::get('/discard_reports/{id}', 'ChallengeController@discardReports')->name('challenge_report_discard');
+    Route::get('/set_copyright/{id}', 'ChallengeController@setCopyright')->name('challenge_copyright_set');
+    Route::get('/remove_copyright/{id}', 'ChallengeController@removeCopyright')->name('challenge_copyright_remove');
     Route::prefix('entries')->group(function() {
         Route::post('/create', 'ChallengeEntryController@store')->name('entry_store');
         Route::get('/win/{id}', 'ChallengeEntryController@win')->name('entry_win');
@@ -124,6 +129,8 @@ Route::prefix('challenges')->middleware(['verified', 'notBanned'])->group(functi
         Route::get('/remove/{id}', 'ChallengeEntryController@remove')->name('entry_remove');
         Route::get('/report/{id}', 'ChallengeEntryController@report')->name('entry_report');
         Route::get('/discard_reports/{id}', 'ChallengeEntryController@discardReports')->name('entry_report_discard');
+        Route::get('/set_copyright/{id}', 'ChallengeEntryController@setCopyright')->name('entry_copyright_set');
+        Route::get('/remove_copyright/{id}', 'ChallengeEntryController@removeCopyright')->name('entry_copyright_remove');
     });
 });
 
@@ -146,6 +153,8 @@ Route::prefix('events')->middleware(['verified', 'notBanned'])->group(function()
         Route::post('/edit/{id}', 'EventAttendeeController@update')->name('event_attendee_update');
         Route::get('/delete/{event}/{user}', 'EventAttendeeController@delete')->name('event_attendee_delete');
     });
+    Route::get('/set_copyright/{id}', 'EventController@setCopyright')->name('event_copyright_set');
+    Route::get('/remove_copyright/{id}', 'EventController@removeCopyright')->name('event_copyright_remove');
 });
 
 Route::prefix('movements')->middleware(['verified', 'notBanned', 'isPremium'])->group(function() {
@@ -169,6 +178,8 @@ Route::prefix('movements')->middleware(['verified', 'notBanned', 'isPremium'])->
     Route::get('/officialise/{id}', 'MovementController@officialise')->name('movement_officialise');
     Route::get('/unofficialise/{id}', 'MovementController@unofficialise')->name('movement_unofficialise');
     Route::post('/set_movement_baseline', 'MovementController@setMovementBaseline')->name('set_movement_baseline');
+    Route::get('/set_copyright/{id}', 'MovementController@setCopyright')->name('movement_copyright_set');
+    Route::get('/remove_copyright/{id}', 'MovementController@removeCopyright')->name('movement_copyright_remove');
 });
 
 Route::prefix('equipment')->middleware(['verified', 'notBanned', 'isPremium'])->group(function() {
@@ -183,6 +194,8 @@ Route::prefix('equipment')->middleware(['verified', 'notBanned', 'isPremium'])->
     Route::get('/remove/{id}', 'EquipmentController@remove')->name('equipment_remove');
     Route::get('/report/{equipment}', 'EquipmentController@report')->name('equipment_report');
     Route::get('/discard_reports/{id}', 'EquipmentController@discardReports')->name('equipment_report_discard');
+    Route::get('/set_copyright/{id}', 'EquipmentController@setCopyright')->name('equipment_copyright_set');
+    Route::get('/remove_copyright/{id}', 'EquipmentController@removeCopyright')->name('equipment_copyright_remove');
 });
 
 Route::prefix('workouts')->middleware(['verified', 'notBanned', 'isPremium'])->group(function() {
@@ -201,6 +214,8 @@ Route::prefix('workouts')->middleware(['verified', 'notBanned', 'isPremium'])->g
     Route::get('/delete_movement/{id}', 'WorkoutController@deleteMovement')->name('workout_movement_delete');
     Route::get('/report/{id}', 'WorkoutController@report')->name('workout_report');
     Route::get('/discard_reports/{any_workout}', 'WorkoutController@discardReports')->name('workout_report_discard');
+    Route::get('/set_copyright/{id}', 'WorkoutController@setCopyright')->name('workout_copyright_set');
+    Route::get('/remove_copyright/{id}', 'WorkoutController@removeCopyright')->name('workout_copyright_remove');
     Route::prefix('recorded')->group(function() {
         Route::get('/', 'RecordedWorkoutController@index')->name('recorded_workout_listing');
         Route::get('/view/{id}', 'RecordedWorkoutController@view')->name('recorded_workout_view');
@@ -220,6 +235,7 @@ Route::prefix('workouts')->middleware(['verified', 'notBanned', 'isPremium'])->g
 Route::prefix('admin')->middleware('verified')->group(function() {
     Route::get('/reports/{type?}', 'ReportController@index')->name('report_listing');
     Route::get('/bans', 'BanController@index')->name('ban_listing');
+    Route::get('/copyright_infringements/{tab?}', 'CopyrightController@index')->name('copyright_listing');
 });
 
 Route::prefix('policies')->group(function() {

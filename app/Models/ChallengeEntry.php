@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Scopes\BannedUserScope;
+use App\Scopes\CopyrightScope;
 use App\Traits\Reportable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -17,11 +18,13 @@ class ChallengeEntry extends Model
     protected $fillable = [
         'video',
         'youtube',
+        'copyright_infringed_at',
     ];
 
     protected static function booted()
     {
         static::addGlobalScope(new BannedUserScope);
+        static::addGlobalScope(new CopyrightScope);
     }
 
     public function scopeDateBetween($query, $dates = [])

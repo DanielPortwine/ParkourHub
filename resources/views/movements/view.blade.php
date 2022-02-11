@@ -52,6 +52,13 @@
                                     <a class="btn text-white" href="{{ route('movement_remove', $originalMovement->id) }}" title="Remove Content"><i class="fa fa-trash"></i></a>
                                 @endcan
                             @endif
+                            @can('manage copyright')
+                                @if($originalMovement->copyright_infringed_at === null)
+                                    <a class="btn text-white" href="{{ route('movement_copyright_set', $originalMovement->id) }}" title="Mark Copyright Infringement"><i class="fa fa-copyright"></i></a>
+                                @else
+                                    <a class="btn text-white" href="{{ route('movement_copyright_remove', $originalMovement->id) }}" title="Clear Copyright Infringement"><i class="fa fa-copyright"></i></a>
+                                @endif
+                            @endcan
                             @if(!$originalMovement->official)
                                 <a class="btn text-white" href="{{ route('movement_officialise', $originalMovement->id) }}" title="Officialise"><i class="fa fa-check-circle"></i></a>
                             @else
