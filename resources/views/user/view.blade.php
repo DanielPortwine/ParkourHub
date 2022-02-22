@@ -114,6 +114,9 @@
                             <a class="nav-link btn-link @if($tab === 'challenges')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'challenges']) }}" title="Challenges"><i class="fa fa-bullseye"></i></a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link btn-link @if($tab === 'events')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'events']) }}" title="Events"><i class="fa fa-map-marked"></i></a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link btn-link @if($tab === 'entries')active @endif" href="{{ route('user_view', ['id' => $user->id, 'tab' => 'entries']) }}" title="Challenge Entries"><i class="fa fa-trophy"></i></a>
                         </li>
                         @premium
@@ -229,6 +232,22 @@
                             <p class="mb-0">{{ $user->id === Auth()->id() ? 'You have ' : 'This user has ' }}no challenges.</p>
                         @endif
                         {{ $challenges->links() }}
+                    </div>
+                @elseif($tab === 'events')
+                    <div class="card-body bg-black">
+                        @foreach($events->chunk(2) as $chunk)
+                            <div class="row">
+                                @foreach($chunk as $event)
+                                    <div class="col-md-6 mb-4">
+                                        @include('components.event')
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endforeach
+                        @if (count($user->events) === 0)
+                            <p class="mb-0">{{ $user->id === Auth()->id() ? 'You have ' : 'This user has ' }}no events.</p>
+                        @endif
+                        {{ $events->links() }}
                     </div>
                 @elseif($tab === 'entries')
                     <div class="card-body bg-black">

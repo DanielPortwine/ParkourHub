@@ -94,7 +94,7 @@ class UserController extends Controller
             abort(404);
         }
 
-        $spots = $hits = $reviews = $comments = $challenges = $entries = $workouts = $movements = $equipments = $followers = $following = $followRequests = null;
+        $spots = $hits = $reviews = $comments = $challenges = $events = $entries = $workouts = $movements = $equipments = $followers = $following = $followRequests = null;
         if ($tab === 'spots') {
             $spots = $user->spots()
                 ->with(['hits', 'reviews', 'reports', 'user'])
@@ -129,6 +129,13 @@ class UserController extends Controller
                 ->withCount('entries')
                 ->with(['entries', 'reports', 'spot', 'user'])
                 ->whereHas('spot')
+                ->orderByDesc('created_at')
+                ->paginate(20);
+        }
+        if ($tab === 'events') {
+            $events = $user->events()
+                ->withCount('spots')
+                ->with(['reports', 'spots', 'attendees', 'user'])
                 ->orderByDesc('created_at')
                 ->paginate(20);
         }
@@ -228,6 +235,7 @@ class UserController extends Controller
             'comments' => $comments,
             'linkSpotOnComment' => $linkSpotOnComment ?? false,
             'challenges' => $challenges,
+            'events' => $events,
             'entries' => $entries,
             'workouts' => $workouts,
             'movements' => $movements,
