@@ -135,14 +135,26 @@ class SpotController extends Controller
                     ->orderByDesc('created_at')
                     ->paginate(20, ['*']);
                 break;
-            case 'events':
+            case 'past-events':
                 if (!Auth::check()) {
                     abort(404);
                 }
-                $events = $spot->events()
+                $eventsPast = $spot->events()
                     ->withCount('spots')
                     ->with(['spots', 'attendees', 'reports', 'user'])
-                    ->orderByDesc('created_at')
+                    ->where('date_time', '<', now())
+                    ->orderByDesc('date_time')
+                    ->paginate(20, ['*']);
+                break;
+            case 'upcoming-events':
+                if (!Auth::check()) {
+                    abort(404);
+                }
+                $eventsFuture = $spot->events()
+                    ->withCount('spots')
+                    ->with(['spots', 'attendees', 'reports', 'user'])
+                    ->where('date_time', '>=', now())
+                    ->orderBy('date_time')
                     ->paginate(20, ['*']);
                 break;
             case 'locals':
@@ -208,7 +220,8 @@ class SpotController extends Controller
             'reviews' => $reviews ?? null,
             'comments' => $comments ?? null,
             'challenges' => $challenges ?? null,
-            'events' => $events ?? null,
+            'eventsPast' => $eventsPast ?? null,
+            'eventsFuture' => $eventsFuture ?? null,
             'workouts' => $workouts ?? null,
             'tab' => $tab,
             'movements' => $spot->movements,

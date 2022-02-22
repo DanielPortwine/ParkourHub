@@ -315,7 +315,10 @@
                         </li>
                         @auth
                             <li class="nav-item">
-                                <a class="nav-link btn-link @if($tab === 'events')active @endif" href="{{ route('spot_view', ['id' => $spot->id, 'tab' => 'events']) }}">Events</a>
+                                <a class="nav-link btn-link @if($tab === 'past-events')active @endif" href="{{ route('spot_view', ['id' => $spot->id, 'tab' => 'past-events']) }}">Past Events</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link btn-link @if($tab === 'upcoming-events')active @endif" href="{{ route('spot_view', ['id' => $spot->id, 'tab' => 'upcoming-events']) }}">Upcoming Events</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link btn-link @if($tab === 'locals')active @endif" href="{{ route('spot_view', ['id' => $spot->id, 'tab' => 'locals']) }}">Locals</a>
@@ -699,12 +702,10 @@
                             </div>
                         @endif
                     </div>
-                @elseif($tab === 'events')
+                @elseif($tab === 'past-events')
                     <div class="card-body bg-black">
-                        @if(!empty($request['events']))
-                            {{ $events->links() }}
-                        @endif
-                        @foreach($events->chunk(2) as $chunk)
+                        {{ $eventsPast->links() }}
+                        @foreach($eventsPast->chunk(2) as $chunk)
                             <div class="row">
                                 @foreach($chunk as $event)
                                     <div class="col-md-6 mb-4">
@@ -713,11 +714,26 @@
                                 @endforeach
                             </div>
                         @endforeach
-                        @if(!empty($request['events']))
-                            {{ $events->links() }}
+                        {{ $eventsPast->links() }}
+                        @if ($eventsPast->total() === 0)
+                            <p class="mb-0">This spot has no past events.</p>
                         @endif
-                        @if (count($spot->events) === 0)
-                            <p class="mb-0">This spot has no events yet.</p>
+                    </div>
+                @elseif($tab === 'upcoming-events')
+                    <div class="card-body bg-black">
+                        {{ $eventsFuture->links() }}
+                        @foreach($eventsFuture->chunk(2) as $chunk)
+                            <div class="row">
+                                @foreach($chunk as $event)
+                                    <div class="col-md-6 mb-4">
+                                        @include('components.event')
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endforeach
+                        {{ $eventsFuture->links() }}
+                        @if ($eventsFuture->total() === 0)
+                            <p class="mb-0">This spot has no upcoming events yet.</p>
                         @endif
                     </div>
                 @elseif($tab === 'locals')
