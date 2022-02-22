@@ -57,7 +57,7 @@
                     <p>Premium is where you get the most out of Parkour Hub.</p>
                     <p>As a Premium Member, you will be able to create your own challenges and events.</p>
                     <p>You will also have access to the training system to help you improve on your parkour and fitness goals.</p>
-                    <p>Premium also allows you to upload videos (up to 500MB) directly to Parkour Hub without uploading to YouTube first and upload images up to 5MB rather than 500KB.</p>
+                    <p>The image size restriction increases from 500KB to 5MB and videos (up to 500MB) can be uploaded directly rather than needing to upload to YouTube first.</p>
                 </div>
                 <div class="col"></div>
             </div>
@@ -133,7 +133,7 @@
                         <i class="fa fa-file-video-o feature-icon-premium"></i>
                         <h3 class="sedgwick ml-2 ml-md-0">Video Upload</h3>
                     </div>
-                    <p class="large-text">Upload videos of up to 50MB directly from your device without needing to upload to YouTube first.</p>
+                    <p class="large-text">Upload videos of up to 500MB directly from your device without needing to upload to YouTube first.</p>
                 </div>
                 <div class="col-md-6">
                     <div class="d-block vertical-center">

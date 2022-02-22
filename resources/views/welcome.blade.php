@@ -60,10 +60,10 @@
             <div class="row">
                 <div class="col"></div>
                 <div class="col-md-8">
-                    <p class="text-center large-text">Parkour Hub is based on the sharing of Parkour spots via the spots map. Other features expand on this concept such as setting challenges at spots, hosting events at spots and creating moves that can be linked to spots.</p>
+                    <p class="text-center large-text">Parkour Hub is based on the sharing of parkour spots via the spots map. Other features build on this concept such as setting challenges at spots, hosting events at spots and adding spots to your hitlist.</p>
                     <p class="text-center large-text">Going to a new town and don't know if there are any spots? Check on Parkour Hub to see what the locals have uploaded.</p>
-                    <p class="text-center large-text">Found a good spot in your local area? Add it to Parkour Hub via the spots map so others can find it.</p>
-                    <p class="text-center large-text">Want to meet up with other freerunners? See what events are happening at spots you go to.</p>
+                    <p class="text-center large-text">Found a good spot in your local area? Add it to Parkour Hub so others can find it.</p>
+                    <p class="text-center large-text">Want to meet up with other freerunners? See what events are happening at spots in your area.</p>
                 </div>
                 <div class="col"></div>
             </div>
@@ -98,7 +98,7 @@
                         <i class="fa fa-map feature-icon"></i>
                         <h3 class="sedgwick ml-2 ml-md-0">Spots Map</h3>
                     </div>
-                    <p class="large-text">See spots that other users have created on a global map and create your own.</p>
+                    <p class="large-text">See spots that users have created on a global map and create your own.</p>
                 </div>
                 <div class="col-md-4">
                     <div class="flex d-md-block vertical-center">
@@ -121,7 +121,7 @@
                         <i class="fa fa-crosshairs feature-icon"></i>
                         <h3 class="sedgwick ml-2 ml-md-0">Hitlist</h3>
                     </div>
-                    <p class="large-text">Add spots to your Hitlist and tick them off once you complete them.</p>
+                    <p class="large-text">Add spots to your Hitlist and tick them off once you've visited.</p>
                 </div>
                 <div class="col-md-4">
                     <div class="flex d-md-block vertical-center">
@@ -151,10 +151,13 @@
             <div class="row">
                 <div class="col"></div>
                 <div class="col-md-8">
-                    <p class="text-center large-text">With Premium you can create your own challenges and events as well as moves, exercises, equipment and workouts to help yourself and others get better at parkour or just general fitness. You can also upload raw videos (up to 500MB) rather than use a YouTube link and your images can be up to 5MB rather than 500KB.</p>
+                    <p class="text-center large-text">
+                        With Premium you can create your own challenges and events as well as moves, exercises, equipment and workouts to help yourself and others get better at parkour or general fitness.
+                        You can also upload videos directly (up to 500MB) rather than use a YouTube link and your images can be up to 5MB rather than 500KB.
+                    </p>
                     <p class="text-center large-text">Found a fun challenge at a spot but nobody has set it yet? Create your own and crown a winner.</p>
                     <p class="text-center large-text">Need some more structure to your training? Add workouts to your plan in advance so you can jump straight into it on the day.</p>
-                    <p class="text-center large-text">Want to learn a particular move? Create a plan of workouts with progressions of that move to build up to it safely.</p>
+                    <p class="text-center large-text">Hosting a parkour jam? Add it to Parkour Hub to let other freerunners find out about it.</p>
                 </div>
                 <div class="col"></div>
             </div>
