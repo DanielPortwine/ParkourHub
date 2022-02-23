@@ -43,45 +43,50 @@
                     </div>
                 @endif
                 <div class="col-auto vertical-center">
-                    <div>
-                        @if($spot->deleted_at === null)
+                    @if($spot->user_id === Auth()->id() && $spot->deleted_at !== null)
+                        <a class="btn text-white" href="{{ route('spot_recover', $spot->id) }}" title="Recover"><i class="fa fa-history"></i></a>
+                        <a class="btn text-white" href="{{ route('spot_remove', $spot->id) }}" title="Remove Forever"><i class="fa fa-trash"></i></a>
+                    @endif
+                    @if($spot->deleted_at === null)
+                        @auth
+                            <a class="btn text-white tick-off-hitlist-button @if(!(!empty($hit) && $hit->completed_at == null))d-none @endif" id="hitlist-spot-{{ $spot->id }}-add" title="Tick Off Hitlist"><i class="fa fa-check"></i></a>
+                            <a class="btn text-white add-to-hitlist-button @if(!empty($hit))d-none @endif" id="hitlist-spot-{{ $spot->id }}-tick" title="Add To Hitlist"><i class="fa fa-crosshairs"></i></a>
+                            <a class="btn text-white remove-from-hitlist-button @if(empty($hit))d-none @endif" id="hitlist-spot-{{ $spot->id }}-remove" title="Remove From Hitlist"><i class="fa fa-times"></i></a>
+                            @if(!in_array(Auth()->id(), $localsIDs))
+                                <a class="btn text-white" href="{{ route('spot_become_local', $spot->id) }}" title="Become a Local"><i class="fa fa-house-user"></i></a>
+                            @else
+                                <a class="btn text-white" href="{{ route('spot_abandon_local', $spot->id) }}" title="Abandon Being a Local"><i class="fa fa-house-damage"></i></a>
+                            @endif
+                        @endauth
+                        <a class="btn text-white" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                            <i class="fa fa-ellipsis-v"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right bg-grey">
+                            <a class="dropdown-item text-white" href="{{ route('spots', ['spot' => $spot->id]) }}" title="Locate"><i class="fa fa-map-marker nav-icon"></i>Locate</a>
                             @if($spot->user_id === Auth()->id())
-                                <a class="btn text-white" href="{{ route('spot_delete', $spot->id) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
+                                <a class="dropdown-item text-white" href="{{ route('spot_edit', $spot->id) }}" title="Edit"><i class="fa fa-pencil nav-icon"></i>Edit</a>
+                                <a class="dropdown-item text-white" href="{{ route('spot_delete', $spot->id) }}" title="Delete Content"><i class="fa fa-trash nav-icon"></i>Delete</a>
                             @endif
                             @auth
-                                <a class="btn text-white" href="{{ route('spot_report', $spot->id) }}" title="Report"><i class="fa fa-flag"></i></a>
+                                <a class="dropdown-item text-white" href="{{ route('spot_report', $spot->id) }}" title="Report"><i class="fa fa-flag nav-icon"></i>Report</a>
                             @endauth
                             @if(count($spot->reports) > 0)
                                 @can('manage reports')
-                                    <a class="btn text-white" href="{{ route('spot_report_discard', $spot->id) }}" title="Discard Reports"><i class="fa fa-balance-scale"></i></a>
+                                    <a class="dropdown-item text-white" href="{{ route('spot_report_discard', $spot->id) }}" title="Discard Reports"><i class="fa fa-balance-scale nav-icon"></i>Discard Reports</a>
                                 @endcan
                                 @can('remove content')
-                                    <a class="btn text-white" href="{{ route('spot_remove', $spot->id) }}" title="Remove Content"><i class="fa fa-trash"></i></a>
+                                    <a class="dropdown-item text-white" href="{{ route('spot_remove', $spot->id) }}" title="Remove Content"><i class="fa fa-trash nav-icon"></i>Remove</a>
                                 @endcan
                             @endif
                             @can('manage copyright')
                                 @if($spot->copyright_infringed_at === null)
-                                    <a class="btn text-white" href="{{ route('spot_copyright_set', $spot->id) }}" title="Mark Copyright Infringement"><i class="fa fa-copyright"></i></a>
+                                    <a class="dropdown-item text-white" href="{{ route('spot_copyright_set', $spot->id) }}" title="Mark Copyright Infringement"><i class="fa fa-copyright nav-icon"></i>Claim Copyright</a>
                                 @else
-                                    <a class="btn text-white" href="{{ route('spot_copyright_remove', $spot->id) }}" title="Clear Copyright Infringement"><i class="fa fa-copyright"></i></a>
+                                    <a class="dropdown-item text-white" href="{{ route('spot_copyright_remove', $spot->id) }}" title="Clear Copyright Infringement"><i class="fa fa-copyright nav-icon"></i>Clear Copyright</a>
                                 @endif
                             @endcan
-                            @auth
-                                <a class="btn text-white tick-off-hitlist-button @if(!(!empty($hit) && $hit->completed_at == null))d-none @endif" id="hitlist-spot-{{ $spot->id }}-add" title="Tick Off Hitlist"><i class="fa fa-check"></i></a>
-                                <a class="btn text-white add-to-hitlist-button @if(!empty($hit))d-none @endif" id="hitlist-spot-{{ $spot->id }}-tick" title="Add To Hitlist"><i class="fa fa-crosshairs"></i></a>
-                                <a class="btn text-white remove-from-hitlist-button @if(empty($hit))d-none @endif" id="hitlist-spot-{{ $spot->id }}-remove" title="Remove From Hitlist"><i class="fa fa-times"></i></a>
-                                @if(!in_array(Auth()->id(), $localsIDs))
-                                    <a class="btn text-white" href="{{ route('spot_become_local', $spot->id) }}" title="Become a Local"><i class="fa fa-house-user"></i></a>
-                                @else
-                                    <a class="btn text-white" href="{{ route('spot_abandon_local', $spot->id) }}" title="Abandon Being a Local"><i class="fa fa-house-damage"></i></a>
-                                @endif
-                            @endauth
-                            <a class="btn text-white" href="{{ route('spots', ['spot' => $spot->id]) }}" title="Locate"><i class="fa fa-map-marker"></i></a>
-                        @elseif($spot->user_id === Auth()->id())
-                            <a class="btn text-white" href="{{ route('spot_recover', $spot->id) }}" title="Recover"><i class="fa fa-history"></i></a>
-                            <a class="btn text-white" href="{{ route('spot_remove', $spot->id) }}" title="Remove Forever"><i class="fa fa-trash"></i></a>
-                        @endif
-                    </div>
+                        </div>
+                    @endif
                 </div>
             </div>
             <div class="row pb-3 border-subtle">
@@ -107,11 +112,6 @@
                     @endif
                     <a class="btn-link large-text sedgwick" href="{{ route('user_view', $spot->user->id) }}">{{ $spot->user->name }}</a>
                 </div>
-                @if ($spot->user->id === Auth()->id() && $spot->deleted_at === null)
-                    <div class="col-auto">
-                        <a class="btn text-white" href="{{ route('spot_edit', $spot->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
-                    </div>
-                @endif
             </div>
             <div class="row py-2 border-subtle">
                 <div class="col">

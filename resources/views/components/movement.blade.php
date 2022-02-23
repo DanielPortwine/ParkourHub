@@ -27,54 +27,59 @@
                 <a class="btn-link h3 mb-0 sedgwick" href="{{ route('movement_view', $movement->id) }}">{{ $movement->name }}</a>
             </div>
             <div class="col-lg-auto vertical-center pl-0">
-                @if($movement->user_id === Auth()->id())
-                    @premium
-                        <a class="btn text-white" href="{{ route('movement_edit', $movement->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
-                    @endpremium
-                    @if(!empty($progressionID) || !empty($advancementID))
-                        <form method="POST" action="{{ route('movements_unlink') }}" class="d-inline-block">
-                            @csrf
-                            <input type="hidden" name="progression" value="{{ $progressionID ?? $movement->id }}">
-                            <input type="hidden" name="advancement" value="{{ $advancementID ?? $movement->id }}">
-                            <button type="submit" class="btn text-white" title="Unlink"><i class="fa fa-unlink"></i></button>
-                        </form>
+                <a class="btn text-white" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                    <i class="fa fa-ellipsis-v"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right bg-grey">
+                    @if($movement->user_id === Auth()->id())
+                        @premium
+                            <a class="dropdown-item text-white" href="{{ route('movement_edit', $movement->id) }}" title="Edit"><i class="fa fa-pencil nav-icon"></i>Edit</a>
+                        @endpremium
+                        @if(!empty($progressionID) || !empty($advancementID))
+                            <form method="POST" action="{{ route('movements_unlink') }}" class="d-inline-block">
+                                @csrf
+                                <input type="hidden" name="progression" value="{{ $progressionID ?? $movement->id }}">
+                                <input type="hidden" name="advancement" value="{{ $advancementID ?? $movement->id }}">
+                                <button type="submit" class="dropdown-item text-white" title="Unlink"><i class="fa fa-unlink nav-icon"></i>Unlink</button>
+                            </form>
+                        @endif
+                        @if(!empty($tab) && $tab === 'exercises' && !empty($originalMovement))
+                            <form method="POST" action="{{ route('movement_exercise_unlink') }}" class="d-inline-block">
+                                @csrf
+                                <input type="hidden" name="move" value="{{ $originalMovement->id }}">
+                                <input type="hidden" name="exercise" value="{{ $movement->id }}">
+                                <button type="submit" class="dropdown-item text-white" title="Unlink"><i class="fa fa-unlink nav-icon"></i>Unlink</button>
+                            </form>
+                        @endif
+                        <a class="dropdown-item text-white" href="{{ route('movement_delete', $movement->id) }}" title="Delete Content"><i class="fa fa-trash nav-icon"></i>Delete</a>
                     @endif
-                    @if(!empty($tab) && $tab === 'exercises' && !empty($originalMovement))
-                        <form method="POST" action="{{ route('movement_exercise_unlink') }}" class="d-inline-block">
-                            @csrf
-                            <input type="hidden" name="move" value="{{ $originalMovement->id }}">
-                            <input type="hidden" name="exercise" value="{{ $movement->id }}">
-                            <button type="submit" class="btn text-white" title="Unlink"><i class="fa fa-unlink"></i></button>
-                        </form>
+                    <a class="dropdown-item text-white" href="{{ route('movement_report', $movement->id) }}" title="Report"><i class="fa fa-flag nav-icon"></i>Report</a>
+                    @if(count($movement->reports) > 0 && Route::currentRouteName() === 'report_listing')
+                        @can('manage reports')
+                            <a class="dropdown-item text-white" href="{{ route('movement_report_discard', $movement->id) }}" title="Discard Reports"><i class="fa fa-balance-scale nav-icon"></i>Discard Reports</a>
+                        @endcan
+                        @can('remove content')
+                            <a class="dropdown-item text-white" href="{{ route('movement_remove', $movement->id) }}" title="Remove Content"><i class="fa fa-trash nav-icon"></i>Remove</a>
+                        @endcan
                     @endif
-                    <a class="btn text-white" href="{{ route('movement_delete', $movement->id) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
-                @endif
-                <a class="btn text-white" href="{{ route('movement_report', $movement->id) }}" title="Report"><i class="fa fa-flag"></i></a>
-                @if(count($movement->reports) > 0 && Route::currentRouteName() === 'report_listing')
-                    @can('manage reports')
-                        <a class="btn text-white" href="{{ route('movement_report_discard', $movement->id) }}" title="Discard Reports"><i class="fa fa-balance-scale"></i></a>
+                    @can('manage copyright')
+                        @if($movement->copyright_infringed_at === null)
+                            <a class="dropdown-item text-white" href="{{ route('movement_copyright_set', $movement->id) }}" title="Mark Copyright Infringement"><i class="fa fa-copyright nav-icon"></i>Claim Copyright</a>
+                        @else
+                            <a class="dropdown-item text-white" href="{{ route('movement_copyright_remove', $movement->id) }}" title="Clear Copyright Infringement"><i class="fa fa-copyright nav-icon"></i>Clear Copyright</a>
+                        @endif
                     @endcan
-                    @can('remove content')
-                        <a class="btn text-white" href="{{ route('movement_remove', $movement->id) }}" title="Remove Content"><i class="fa fa-trash"></i></a>
-                    @endcan
-                @endif
-                @can('manage copyright')
-                    @if($movement->copyright_infringed_at === null)
-                        <a class="btn text-white" href="{{ route('movement_copyright_set', $movement->id) }}" title="Mark Copyright Infringement"><i class="fa fa-copyright"></i></a>
+                    @if(!$movement->official)
+                        <a class="dropdown-item text-white" href="{{ route('movement_officialise', $movement->id) }}" title="Officialise"><i class="fa fa-check-circle nav-icon"></i>Officialise</a>
                     @else
-                        <a class="btn text-white" href="{{ route('movement_copyright_remove', $movement->id) }}" title="Clear Copyright Infringement"><i class="fa fa-copyright"></i></a>
+                        <a class="dropdown-item text-white" href="{{ route('movement_unofficialise', $movement->id) }}" title="Unofficialise"><i class="fa fa-check-circle nav-icon"></i>Unofficialise</a>
                     @endif
-                @endcan
-                @if(!$movement->official)
-                    <a class="btn text-white" href="{{ route('movement_officialise', $movement->id) }}" title="Officialise"><i class="fa fa-check-circle"></i></a>
-                @else
-                    <a class="btn text-white" href="{{ route('movement_unofficialise', $movement->id) }}" title="Unofficialise"><i class="fa fa-check-circle"></i></a>
-                @endif
-                @if($movement->type_id === 1)
-                    <a class="btn text-white" href="{{ route('spot_listing', ['movement' => $movement->id]) }}" title="View Spots With Move"><i class="fa fa-map-marker"></i></a>
-                @elseif($movement->type_id === 2)
-                        <a class="btn text-white" href="{{ route('movement_listing', ['exercise' => $movement->id]) }}" title="View Moves For Exercise"><i class="fa fa-child"></i></a>
-                @endif
+                    @if($movement->type_id === 1)
+                        <a class="dropdown-item text-white" href="{{ route('spot_listing', ['movement' => $movement->id]) }}" title="View Spots With Move"><i class="fa fa-map-marker nav-icon"></i>View Spots</a>
+                    @elseif($movement->type_id === 2)
+                            <a class="dropdown-item text-white" href="{{ route('movement_listing', ['exercise' => $movement->id]) }}" title="View Moves For Exercise"><i class="fa fa-child nav-icon"></i>View Moves</a>
+                    @endif
+                </div>
             </div>
         </div>
         <div class="row">

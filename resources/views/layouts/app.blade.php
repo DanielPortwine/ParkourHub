@@ -85,7 +85,7 @@
                                     <a id="premium-dropdown" class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                         <i class="fa fa-diamond nav-icon text-premium"></i><span class="d-inline d-md-none">Premium</span>
                                     </a>
-                                    <div class="dropdown-menu dropdown-menu-right bg-grey" id="notification-menu" aria-labelledby="notification-dropdown">
+                                    <div class="dropdown-menu dropdown-menu-right bg-grey" id="notification-menu" aria-labelledby="premium-dropdown">
                                         <a class="dropdown-item text-white" href="{{ route('workout_listing') }}"><i class="fa fa-running nav-icon"></i>Workouts</a>
                                         <a class="dropdown-item text-white" href="{{ route('movement_listing') }}"><i class="fa fa-child nav-icon"></i>Movements</a>
                                         <a class="dropdown-item text-white" href="{{ route('equipment_listing') }}"><i class="fa fa-dumbbell nav-icon"></i>Equipment</a>

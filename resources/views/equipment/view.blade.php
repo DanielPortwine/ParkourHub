@@ -29,36 +29,40 @@
                     <h1 class="sedgwick mb-0">{{ $equipment->name }}</h1>
                 </div>
                 <div class="col-auto vertical-center">
-                    <div>
-                        @if($equipment->deleted_at === null)
+                    @if($equipment->user_id === Auth()->id() && $equipment->deleted_at !== null)
+                        <a class="btn text-white" href="{{ route('equipment_recover', $equipment->id) }}" title="Recover"><i class="fa fa-history"></i></a>
+                        <a class="btn text-white" href="{{ route('equipment_remove', $equipment->id) }}" title="Remove Forever"><i class="fa fa-trash"></i></a>
+                    @endif
+                    @if($equipment->deleted_at === null)
+                        <a class="btn text-white" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                            <i class="fa fa-ellipsis-v"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right bg-grey">
                             @if ($equipment->user->id === Auth()->id())
                                 @premium
-                                    <a class="btn text-white" href="{{ route('equipment_edit', $equipment->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
+                                    <a class="dropdown-item text-white" href="{{ route('equipment_edit', $equipment->id) }}" title="Edit"><i class="fa fa-pencil nav-icon"></i>Edit</a>
                                 @endpremium
-                                <a class="btn text-white" href="{{ route('equipment_delete', $equipment->id) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
+                                <a class="dropdown-item text-white" href="{{ route('equipment_delete', $equipment->id) }}" title="Delete Content"><i class="fa fa-trash nav-icon"></i>Delete</a>
                             @endif
-                            <a class="btn text-white" href="{{ route('equipment_report', $equipment->id) }}" title="Report"><i class="fa fa-flag"></i></a>
+                            <a class="dropdown-item text-white" href="{{ route('equipment_report', $equipment->id) }}" title="Report"><i class="fa fa-flag nav-icon"></i>Report</a>
                             @if(count($equipment->reports) > 0)
                                 @can('manage reports')
-                                    <a class="btn text-white" href="{{ route('equipment_report_discard', $equipment->id) }}" title="Discard Reports"><i class="fa fa-balance-scale"></i></a>
+                                    <a class="dropdown-item text-white" href="{{ route('equipment_report_discard', $equipment->id) }}" title="Discard Reports"><i class="fa fa-balance-scale nav-icon"></i>Discard Reports</a>
                                 @endcan
                                 @can('remove content')
-                                    <a class="btn text-white" href="{{ route('equipment_remove', $equipment->id) }}" title="Remove Content"><i class="fa fa-trash"></i></a>
+                                    <a class="dropdown-item text-white" href="{{ route('equipment_remove', $equipment->id) }}" title="Remove Content"><i class="fa fa-trash nav-icon"></i>Remove</a>
                                 @endcan
                             @endif
                             @can('manage copyright')
                                 @if($equipment->copyright_infringed_at === null)
-                                    <a class="btn text-white" href="{{ route('equipment_copyright_set', $equipment->id) }}" title="Mark Copyright Infringement"><i class="fa fa-copyright"></i></a>
+                                    <a class="dropdown-item text-white" href="{{ route('equipment_copyright_set', $equipment->id) }}" title="Mark Copyright Infringement"><i class="fa fa-copyright nav-icon"></i>Claim Copyright</a>
                                 @else
-                                    <a class="btn text-white" href="{{ route('equipment_copyright_remove', $equipment->id) }}" title="Clear Copyright Infringement"><i class="fa fa-copyright"></i></a>
+                                    <a class="dropdown-item text-white" href="{{ route('equipment_copyright_remove', $equipment->id) }}" title="Clear Copyright Infringement"><i class="fa fa-copyright nav-icon"></i>Clear Copyright</a>
                                 @endif
                             @endcan
-                            <a class="btn text-white" href="{{ route('movement_listing', ['equipment' => $equipment->id]) }}" title="View Exercises With Equipment"><i class="fa fa-child"></i></a>
-                        @elseif($equipment->user_id === Auth()->id())
-                            <a class="btn text-white" href="{{ route('equipment_recover', $equipment->id) }}" title="Recover"><i class="fa fa-history"></i></a>
-                            <a class="btn text-white" href="{{ route('equipment_remove', $equipment->id) }}" title="Remove Forever"><i class="fa fa-trash"></i></a>
-                        @endif
-                    </div>
+                            <a class="dropdown-item text-white" href="{{ route('movement_listing', ['equipment' => $equipment->id]) }}" title="View Exercises With Equipment"><i class="fa fa-child nav-icon"></i>View Exercises</a>
+                        </div>
+                    @endif
                 </div>
             </div>
             <div class="row pb-2 border-subtle">

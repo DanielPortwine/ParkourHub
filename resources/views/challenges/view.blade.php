@@ -42,34 +42,43 @@
                     </div>
                 </div>
                 <div class="col-auto vertical-center">
+                    @if($challenge->user_id === Auth()->id() && $challenge->deleted_at !== null)
+                        <a class="btn text-white" href="{{ route('challenge_recover', $challenge->id) }}" title="Recover"><i class="fa fa-history"></i></a>
+                        <a class="btn text-white" href="{{ route('challenge_remove', $challenge->id) }}" title="Remove Forever"><i class="fa fa-trash"></i></a>
+                    @endif
                     @if($challenge->deleted_at === null)
-                        @if($challenge->user_id === Auth()->id())
-                            <a class="btn text-white" href="{{ route('challenge_delete', $challenge->id) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
-                        @endif
-                        @auth
-                            <a class="btn text-white" href="{{ route('challenge_report', $challenge->id) }}" title="Report"><i class="fa fa-flag"></i></a>
-                        @endauth
-                        @if(count($challenge->reports) > 0)
-                            @can('manage reports')
-                                <a class="btn text-white" href="{{ route('challenge_report_discard', $challenge->id) }}" title="Discard Reports"><i class="fa fa-balance-scale"></i></a>
-                            @endcan
-                            @can('remove content')
-                                <a class="btn text-white" href="{{ route('challenge_remove', $challenge->id) }}" title="Remove Content"><i class="fa fa-trash"></i></a>
-                            @endcan
-                        @endif
                         @if(!empty($challenge->spot))
                             <a class="btn text-white" href="{{ route('spots', ['spot' => $challenge->spot->id]) }}" title="Locate Spot"><i class="fa fa-map-marker"></i></a>
                         @endif
-                        @can('manage copyright')
-                            @if($challenge->copyright_infringed_at === null)
-                                <a class="btn text-white" href="{{ route('challenge_copyright_set', $challenge->id) }}" title="Mark Copyright Infringement"><i class="fa fa-copyright"></i></a>
-                            @else
-                                <a class="btn text-white" href="{{ route('challenge_copyright_remove', $challenge->id) }}" title="Clear Copyright Infringement"><i class="fa fa-copyright"></i></a>
+                        <a class="btn text-white" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                            <i class="fa fa-ellipsis-v"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right bg-grey">
+                            @if($challenge->user_id === Auth()->id())
+                                @premium
+                                    <a class="dropdown-item text-white" href="{{ route('challenge_edit', $challenge->id) }}" title="Edit"><i class="fa fa-pencil nav-icon"></i>Edit</a>
+                                @endpremium
+                                <a class="dropdown-item text-white" href="{{ route('challenge_delete', $challenge->id) }}" title="Delete Content"><i class="fa fa-trash nav-icon"></i>Delete</a>
                             @endif
-                        @endcan
-                    @elseif($challenge->user_id === Auth()->id())
-                        <a class="btn text-white" href="{{ route('challenge_recover', $challenge->id) }}" title="Recover"><i class="fa fa-history"></i></a>
-                        <a class="btn text-white" href="{{ route('challenge_remove', $challenge->id) }}" title="Remove Forever"><i class="fa fa-trash"></i></a>
+                            @auth
+                                <a class="dropdown-item text-white" href="{{ route('challenge_report', $challenge->id) }}" title="Report"><i class="fa fa-flag nav-icon"></i>Report</a>
+                            @endauth
+                            @if(count($challenge->reports) > 0)
+                                @can('manage reports')
+                                    <a class="dropdown-item text-white" href="{{ route('challenge_report_discard', $challenge->id) }}" title="Discard Reports"><i class="fa fa-balance-scale nav-icon"></i>Discard Reports</a>
+                                @endcan
+                                @can('remove content')
+                                    <a class="dropdown-item text-white" href="{{ route('challenge_remove', $challenge->id) }}" title="Remove Content"><i class="fa fa-trash nav-icon"></i>Remove</a>
+                                @endcan
+                            @endif
+                            @can('manage copyright')
+                                @if($challenge->copyright_infringed_at === null)
+                                    <a class="dropdown-item text-white" href="{{ route('challenge_copyright_set', $challenge->id) }}" title="Mark Copyright Infringement"><i class="fa fa-copyright nav-icon"></i>Claim Copyright</a>
+                                @else
+                                    <a class="dropdown-item text-white" href="{{ route('challenge_copyright_remove', $challenge->id) }}" title="Clear Copyright Infringement"><i class="fa fa-copyright nav-icon"></i>Clear Copyright</a>
+                                @endif
+                            @endcan
+                        </div>
                     @endif
                 </div>
             </div>
@@ -91,11 +100,6 @@
                     @endif
                     <a class="btn-link large-text sedgwick" href="{{ route('user_view', $challenge->user->id) }}">{{ $challenge->user->name }}</a>
                 </div>
-                @if ($challenge->user->id === Auth()->id() && $challenge->deleted_at === null && Auth()->user()->isPremium())
-                    <div class="col-auto">
-                        <a class="btn text-white" href="{{ route('challenge_edit', $challenge->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
-                    </div>
-                @endif
             </div>
             <div class="row py-2 border-subtle">
                 <div class="col">

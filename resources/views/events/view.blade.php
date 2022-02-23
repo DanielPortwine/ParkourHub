@@ -42,31 +42,40 @@
                     <h1 class="sedgwick mb-0">{{ $event->name }}</h1>
                 </div>
                 <div class="col-auto vertical-center">
-                    @if($event->deleted_at === null)
-                        @if($event->user_id === Auth()->id())
-                            <a class="btn text-white" href="{{ route('event_delete', $event->id) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
-                        @endif
-                        @auth
-                            <a class="btn text-white" href="{{ route('event_report', $event->id) }}" title="Report"><i class="fa fa-flag"></i></a>
-                        @endauth
-                        @if(count($event->reports) > 0)
-                            @can('manage reports')
-                                <a class="btn text-white" href="{{ route('event_report_discard', $event->id) }}" title="Discard Reports"><i class="fa fa-balance-scale"></i></a>
-                            @endcan
-                            @can('remove content')
-                                <a class="btn text-white" href="{{ route('event_remove', $event->id) }}" title="Remove Content"><i class="fa fa-trash"></i></a>
-                            @endcan
-                        @endif
-                        @can('manage copyright')
-                            @if($event->copyright_infringed_at === null)
-                                <a class="btn text-white" href="{{ route('event_copyright_set', $event->id) }}" title="Mark Copyright Infringement"><i class="fa fa-copyright"></i></a>
-                            @else
-                                <a class="btn text-white" href="{{ route('event_copyright_remove', $event->id) }}" title="Clear Copyright Infringement"><i class="fa fa-copyright"></i></a>
-                            @endif
-                        @endcan
-                    @elseif($event->user_id === Auth()->id())
+                    @if($event->user_id === Auth()->id() && $event->deleted_at !== null)
                         <a class="btn text-white" href="{{ route('event_recover', $event->id) }}" title="Recover"><i class="fa fa-history"></i></a>
                         <a class="btn text-white" href="{{ route('event_remove', $event->id) }}" title="Remove Forever"><i class="fa fa-trash"></i></a>
+                    @endif
+                    @if($event->deleted_at === null)
+                        <a class="btn text-white" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                            <i class="fa fa-ellipsis-v"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right bg-grey">
+                            @if($event->user_id === Auth()->id())
+                                @premium
+                                    <a class="dropdown-item text-white" href="{{ route('event_edit', $event->id) }}" title="Edit"><i class="fa fa-pencil nav-icon"></i>Edit</a>
+                                @endpremium
+                                <a class="dropdown-item text-white" href="{{ route('event_delete', $event->id) }}" title="Delete Content"><i class="fa fa-trash nav-icon"></i>Delete</a>
+                            @endif
+                            @auth
+                                <a class="dropdown-item text-white" href="{{ route('event_report', $event->id) }}" title="Report"><i class="fa fa-flag nav-icon"></i>Report</a>
+                            @endauth
+                            @if(count($event->reports) > 0)
+                                @can('manage reports')
+                                    <a class="dropdown-item text-white" href="{{ route('event_report_discard', $event->id) }}" title="Discard Reports"><i class="fa fa-balance-scale nav-icon"></i>Discard Reports</a>
+                                @endcan
+                                @can('remove content')
+                                    <a class="dropdown-item text-white" href="{{ route('event_remove', $event->id) }}" title="Remove Content"><i class="fa fa-trash nav-icon"></i>Remove</a>
+                                @endcan
+                            @endif
+                            @can('manage copyright')
+                                @if($event->copyright_infringed_at === null)
+                                    <a class="dropdown-item text-white" href="{{ route('event_copyright_set', $event->id) }}" title="Mark Copyright Infringement"><i class="fa fa-copyright nav-icon"></i>Claim Copyright</a>
+                                @else
+                                    <a class="dropdown-item text-white" href="{{ route('event_copyright_remove', $event->id) }}" title="Clear Copyright Infringement"><i class="fa fa-copyright nav-icon"></i>Clear Copyright</a>
+                                @endif
+                            @endcan
+                        </div>
                     @endif
                 </div>
             </div>
@@ -79,11 +88,6 @@
                     @endif
                     <a class="btn-link large-text sedgwick" href="{{ route('user_view', $event->user->id) }}">{{ $event->user->name }}</a>
                 </div>
-                @if ($event->user->id === Auth()->id() && $event->deleted_at === null && Auth()->user()->isPremium())
-                    <div class="col-auto">
-                        <a class="btn text-white" href="{{ route('event_edit', $event->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
-                    </div>
-                @endif
             </div>
             <div class="row py-2 border-subtle">
                 <div class="col">

@@ -37,39 +37,47 @@
                     <h1 class="sedgwick mb-0"><span class="text-movement-{{ $originalMovement->category->colour }}">[{{ $originalMovement->category->name }}]</span> {{ $originalMovement->name }} @if($originalMovement->official)<sup class="text-green" title="Official"><i class="fa fa-check-circle"></i></sup> @endif </h1>
                 </div>
                 <div class="col-auto vertical-center">
-                    <div>
-                        @if($originalMovement->deleted_at === null)
-                            @if ($originalMovement->user->id === Auth()->id())
-                                <a class="btn text-white" href="{{ route('movement_edit', $originalMovement->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
-                                <a class="btn text-white" href="{{ route('movement_delete', $originalMovement->id) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
-                            @endif
-                            <a class="btn text-white" href="{{ route('movement_report', $originalMovement->id) }}" title="Report"><i class="fa fa-flag"></i></a>
-                            @if(count($originalMovement->reports) > 0)
-                                @can('manage reports')
-                                    <a class="btn text-white" href="{{ route('movement_report_discard', $originalMovement->id) }}" title="Discard Reports"><i class="fa fa-balance-scale"></i></a>
-                                @endcan
-                                @can('remove content')
-                                    <a class="btn text-white" href="{{ route('movement_remove', $originalMovement->id) }}" title="Remove Content"><i class="fa fa-trash"></i></a>
-                                @endcan
-                            @endif
-                            @can('manage copyright')
-                                @if($originalMovement->copyright_infringed_at === null)
-                                    <a class="btn text-white" href="{{ route('movement_copyright_set', $originalMovement->id) }}" title="Mark Copyright Infringement"><i class="fa fa-copyright"></i></a>
-                                @else
-                                    <a class="btn text-white" href="{{ route('movement_copyright_remove', $originalMovement->id) }}" title="Clear Copyright Infringement"><i class="fa fa-copyright"></i></a>
-                                @endif
-                            @endcan
+                    @if($originalMovement->user_id === Auth()->id() && $originalMovement->deleted_at !== null)
+                        <a class="btn text-white" href="{{ route('movement_recover', $originalMovement->id) }}" title="Recover"><i class="fa fa-history"></i></a>
+                        <a class="btn text-white" href="{{ route('movement_remove', $originalMovement->id) }}" title="Remove Forever"><i class="fa fa-trash"></i></a>
+                    @endif
+                    @if($originalMovement->deleted_at === null)
+                        @can('officialise')
                             @if(!$originalMovement->official)
                                 <a class="btn text-white" href="{{ route('movement_officialise', $originalMovement->id) }}" title="Officialise"><i class="fa fa-check-circle"></i></a>
                             @else
                                 <a class="btn text-white" href="{{ route('movement_unofficialise', $originalMovement->id) }}" title="Unofficialise"><i class="fa fa-check-circle"></i></a>
                             @endif
-                            <a class="btn text-white" href="{{ route('spot_listing', ['movement' => $originalMovement->id]) }}" title="Spots With Movement"><i class="fa fa-map-marker"></i></a>
-                        @elseif($originalMovement->user_id === Auth()->id())
-                            <a class="btn text-white" href="{{ route('movement_recover', $originalMovement->id) }}" title="Recover"><i class="fa fa-history"></i></a>
-                            <a class="btn text-white" href="{{ route('movement_remove', $originalMovement->id) }}" title="Remove Forever"><i class="fa fa-trash"></i></a>
-                        @endif
-                    </div>
+                        @endcan
+                        <a class="btn text-white" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                            <i class="fa fa-ellipsis-v"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right bg-grey">
+                            @if ($originalMovement->user->id === Auth()->id())
+                                @premium
+                                    <a class="dropdown-item text-white" href="{{ route('movement_edit', $originalMovement->id) }}" title="Edit"><i class="fa fa-pencil nav-icon"></i>Edit</a>
+                                @endpremium
+                                <a class="dropdown-item text-white" href="{{ route('movement_delete', $originalMovement->id) }}" title="Delete Content"><i class="fa fa-trash nav-icon"></i>Delete</a>
+                            @endif
+                            <a class="dropdown-item text-white" href="{{ route('movement_report', $originalMovement->id) }}" title="Report"><i class="fa fa-flag nav-icon"></i>Report</a>
+                            @if(count($originalMovement->reports) > 0)
+                                @can('manage reports')
+                                    <a class="dropdown-item text-white" href="{{ route('movement_report_discard', $originalMovement->id) }}" title="Discard Reports"><i class="fa fa-balance-scale nav-icon"></i>Discard Reports</a>
+                                @endcan
+                                @can('remove content')
+                                    <a class="dropdown-item text-white" href="{{ route('movement_remove', $originalMovement->id) }}" title="Remove Content"><i class="fa fa-trash nav-icon"></i>Remove</a>
+                                @endcan
+                            @endif
+                            @can('manage copyright')
+                                @if($originalMovement->copyright_infringed_at === null)
+                                    <a class="dropdown-item text-white" href="{{ route('movement_copyright_set', $originalMovement->id) }}" title="Mark Copyright Infringement"><i class="fa fa-copyright nav-icon"></i>Claim Copyright</a>
+                                @else
+                                    <a class="dropdown-item text-white" href="{{ route('movement_copyright_remove', $originalMovement->id) }}" title="Clear Copyright Infringement"><i class="fa fa-copyright nav-icon"></i>Clear Copyright</a>
+                                @endif
+                            @endcan
+                            <a class="dropdown-item text-white" href="{{ route('spot_listing', ['movement' => $originalMovement->id]) }}" title="Spots With Movement"><i class="fa fa-map-marker nav-icon"></i>View Spots</a>
+                        </div>
+                    @endif
                 </div>
             </div>
             <div class="row pb-2 border-subtle">

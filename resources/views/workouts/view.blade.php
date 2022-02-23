@@ -41,37 +41,46 @@
                     <h1 class="sedgwick mb-0">{{ $workout->name }}</h1>
                 </div>
                 <div class="col-auto vertical-center">
+                    @if($workout->user_id === Auth()->id() && $workout->deleted_at !== null)
+                        <a class="btn text-white" href="{{ route('workout_recover', $workout->id) }}" title="Recover"><i class="fa fa-history"></i></a>
+                        <a class="btn text-white" href="{{ route('workout_remove', $workout->id) }}" title="Remove Forever"><i class="fa fa-trash"></i></a>
+                    @endif
                     @if($workout->deleted_at === null)
-                        @if ($workout->user->id === Auth()->id())
-                            <a class="btn text-white" href="{{ route('workout_delete', $workout->id) }}" title="Delete"><i class="fa fa-trash"></i></a>
-                        @endif
-                        @auth
-                            <a class="btn text-white" href="{{ route('workout_report', $workout->id) }}" title="Report"><i class="fa fa-flag"></i></a>
-                        @endauth
-                        @if(count($workout->reports) > 0)
-                            @can('manage reports')
-                                <a class="btn text-white" href="{{ route('workout_report_discard', $workout->id) }}" title="Discard Reports"><i class="fa fa-balance-scale"></i></a>
-                            @endcan
-                            @can('remove content')
-                                <a class="btn text-white" href="{{ route('workout_remove', $workout->id) }}" title="Remove Content"><i class="fa fa-trash"></i></a>
-                            @endcan
-                        @endif
-                        @can('manage copyright')
-                            @if($workout->copyright_infringed_at === null)
-                                <a class="btn text-white" href="{{ route('workout_copyright_set', $workout->id) }}" title="Mark Copyright Infringement"><i class="fa fa-copyright"></i></a>
-                            @else
-                                <a class="btn text-white" href="{{ route('workout_copyright_remove', $workout->id) }}" title="Clear Copyright Infringement"><i class="fa fa-copyright"></i></a>
-                            @endif
-                        @endcan
-                        <a class="btn text-white" href="{{ route('recorded_workout_create', $workout->id) }}" title="Record"><i class="fa fa-calendar-plus-o"></i></a>
                         @if($workout->bookmarks->contains(Auth()->id()))
                             <a class="btn text-white" href="{{ route('workout_unbookmark', $workout->id) }}" title="Remove Bookmark"><i class="fa fa-bookmark"></i></a>
                         @else
                             <a class="btn text-white" href="{{ route('workout_bookmark', $workout->id) }}" title="Bookmark"><i class="fa fa-bookmark-o"></i></a>
                         @endif
-                    @elseif($workout->user_id === Auth()->id())
-                        <a class="btn text-white" href="{{ route('workout_recover', $workout->id) }}" title="Recover"><i class="fa fa-history"></i></a>
-                        <a class="btn text-white" href="{{ route('workout_remove', $workout->id) }}" title="Remove Forever"><i class="fa fa-trash"></i></a>
+                        <a class="btn text-white" href="{{ route('recorded_workout_create', $workout->id) }}" title="Record"><i class="fa fa-calendar-plus-o"></i></a>
+                        <a class="btn text-white" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                            <i class="fa fa-ellipsis-v"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right bg-grey">
+                            @if ($workout->user->id === Auth()->id())
+                                @premium
+                                    <a class="dropdown-item text-white" href="{{ route('workout_edit', $workout->id) }}" title="Edit"><i class="fa fa-pencil nav-icon"></i>Edit</a>
+                                @endpremium
+                                <a class="dropdown-item text-white" href="{{ route('workout_delete', $workout->id) }}" title="Delete"><i class="fa fa-trash nav-icon"></i>Delete</a>
+                            @endif
+                            @auth
+                                <a class="dropdown-item text-white" href="{{ route('workout_report', $workout->id) }}" title="Report"><i class="fa fa-flag nav-icon"></i>Report</a>
+                            @endauth
+                            @if(count($workout->reports) > 0)
+                                @can('manage reports')
+                                    <a class="dropdown-item text-white" href="{{ route('workout_report_discard', $workout->id) }}" title="Discard Reports"><i class="fa fa-balance-scale nav-icon"></i>Discard Reports</a>
+                                @endcan
+                                @can('remove content')
+                                    <a class="dropdown-item text-white" href="{{ route('workout_remove', $workout->id) }}" title="Remove Content"><i class="fa fa-trash nav-icon"></i>Remove</a>
+                                @endcan
+                            @endif
+                            @can('manage copyright')
+                                @if($workout->copyright_infringed_at === null)
+                                    <a class="dropdown-item text-white" href="{{ route('workout_copyright_set', $workout->id) }}" title="Mark Copyright Infringement"><i class="fa fa-copyright nav-icon"></i>Claim Copyright</a>
+                                @else
+                                    <a class="dropdown-item text-white" href="{{ route('workout_copyright_remove', $workout->id) }}" title="Clear Copyright Infringement"><i class="fa fa-copyright nav-icon"></i>Clear Copyright</a>
+                                @endif
+                            @endcan
+                        </div>
                     @endif
                 </div>
             </div>
@@ -84,11 +93,6 @@
                     @endif
                     <a class="btn-link large-text sedgwick" href="{{ route('user_view', $workout->user->id) }}">{{ $workout->user->name }}</a>
                 </div>
-                @if ($workout->user->id === Auth()->id() && $workout->deleted_at === null && Auth()->user()->isPremium())
-                    <div class="col-auto">
-                        <a class="btn text-white" href="{{ route('workout_edit', $workout->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
-                    </div>
-                @endif
             </div>
             <div class="row pb-2 border-subtle">
                 <div class="col">

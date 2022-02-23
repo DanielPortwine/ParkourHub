@@ -31,15 +31,20 @@
                 </h1>
             </div>
             <div class="col-auto vertical-center">
-                @if ($recordedWorkout->user->id === Auth()->id())
-                    @premium
-                        <a class="btn text-white" href="{{ route('recorded_workout_edit', $recordedWorkout->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
-                    @endpremium
-                    <a class="btn text-white" href="{{ route('recorded_workout_delete', $recordedWorkout->id) }}" title="Delete"><i class="fa fa-trash"></i></a>
-                @endif
                 @if(!empty($recordedWorkout->workout))
                     <a class="btn text-white" href="{{ route('workout_view', $recordedWorkout->workout->id) }}" title="View Workout"><i class="fa fa-eye"></i></a>
                 @endif
+                <a class="btn text-white" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                    <i class="fa fa-ellipsis-v"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right bg-grey">
+                    @if ($recordedWorkout->user->id === Auth()->id())
+                        @premium
+                            <a class="dropdown-item text-white" href="{{ route('recorded_workout_edit', $recordedWorkout->id) }}" title="Edit"><i class="fa fa-pencil nav-icon"></i>Edit</a>
+                        @endpremium
+                        <a class="dropdown-item text-white" href="{{ route('recorded_workout_delete', $recordedWorkout->id) }}" title="Delete"><i class="fa fa-trash nav-icon"></i>Delete</a>
+                    @endif
+                </div>
             </div>
         </div>
         <div class="row pb-2 border-subtle">

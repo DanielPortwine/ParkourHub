@@ -12,37 +12,42 @@
                 <a class="btn-link h3 mb-0 sedgwick" href="{{ route('equipment_view', $equipment->id) }}">{{ $equipment->name }}</a>
             </div>
             <div class="col-lg-auto vertical-center pl-0">
-                @if($equipment->user_id === Auth()->id())
-                    @premium
-                        <a class="btn text-white" href="{{ route('equipment_edit', $equipment->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
-                    @endpremium
-                    @if(isset($tab) && (($tab == null && $originalMovement->type_id === 2) || $tab === 'equipment' && !empty($originalMovement)))
-                        <form method="POST" action="{{ route('movement_equipment_unlink') }}" class="d-inline-block">
-                            @csrf
-                            <input type="hidden" name="movement" value="{{ $originalMovement->id }}">
-                            <input type="hidden" name="equipment" value="{{ $equipment->id }}">
-                            <button type="submit" class="btn text-white" title="Unlink"><i class="fa fa-unlink"></i></button>
-                        </form>
+                <a class="btn text-white" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                    <i class="fa fa-ellipsis-v"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right bg-grey">
+                    @if($equipment->user_id === Auth()->id())
+                        @premium
+                            <a class="dropdown-item text-white" href="{{ route('equipment_edit', $equipment->id) }}" title="Edit"><i class="fa fa-pencil nav-icon"></i>Edit</a>
+                        @endpremium
+                        @if(isset($tab) && (($tab == null && $originalMovement->type_id === 2) || $tab === 'equipment' && !empty($originalMovement)))
+                            <form method="POST" action="{{ route('movement_equipment_unlink') }}" class="d-inline-block">
+                                @csrf
+                                <input type="hidden" name="movement" value="{{ $originalMovement->id }}">
+                                <input type="hidden" name="equipment" value="{{ $equipment->id }}">
+                                <button type="submit" class="dropdown-item text-white" title="Unlink"><i class="fa fa-unlink nav-icon"></i>Unlink</button>
+                            </form>
+                        @endif
+                        <a class="dropdown-item text-white" href="{{ route('equipment_delete', $equipment->id) }}" title="Delete Content"><i class="fa fa-trash nav-icon"></i>Delete</a>
                     @endif
-                    <a class="btn text-white" href="{{ route('equipment_delete', $equipment->id) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
-                @endif
-                <a class="btn text-white" href="{{ route('equipment_report', $equipment->id) }}" title="Report"><i class="fa fa-flag"></i></a>
-                @if(count($equipment->reports) > 0 && Route::currentRouteName() == 'report_listing')
-                    @can('manage reports')
-                        <a class="btn text-white" href="{{ route('equipment_report_discard', $equipment->id) }}" title="Discard Reports"><i class="fa fa-balance-scale"></i></a>
-                    @endcan
-                    @can('remove content')
-                        <a class="btn text-white" href="{{ route('equipment_remove', $equipment->id) }}" title="Remove Content"><i class="fa fa-trash"></i></a>
-                    @endcan
-                @endif
-                @can('manage copyright')
-                    @if($equipment->copyright_infringed_at === null)
-                        <a class="btn text-white" href="{{ route('equipment_copyright_set', $equipment->id) }}" title="Mark Copyright Infringement"><i class="fa fa-copyright"></i></a>
-                    @else
-                        <a class="btn text-white" href="{{ route('equipment_copyright_remove', $equipment->id) }}" title="Clear Copyright Infringement"><i class="fa fa-copyright"></i></a>
+                    <a class="dropdown-item text-white" href="{{ route('equipment_report', $equipment->id) }}" title="Report"><i class="fa fa-flag nav-icon"></i>Report</a>
+                    @if(count($equipment->reports) > 0 && Route::currentRouteName() == 'report_listing')
+                        @can('manage reports')
+                            <a class="dropdown-item text-white" href="{{ route('equipment_report_discard', $equipment->id) }}" title="Discard Reports"><i class="fa fa-balance-scale nav-icon"></i>Discard Reports</a>
+                        @endcan
+                        @can('remove content')
+                            <a class="dropdown-item text-white" href="{{ route('equipment_remove', $equipment->id) }}" title="Remove Content"><i class="fa fa-trash nav-icon"></i>Remove</a>
+                        @endcan
                     @endif
-                @endcan
-                <a class="btn text-white" href="{{ route('movement_listing', ['equipment' => $equipment->id]) }}" title="View Exercises With Equipment"><i class="fa fa-child"></i></a>
+                    @can('manage copyright')
+                        @if($equipment->copyright_infringed_at === null)
+                            <a class="dropdown-item text-white" href="{{ route('equipment_copyright_set', $equipment->id) }}" title="Mark Copyright Infringement"><i class="fa fa-copyright nav-icon"></i>Claim Copyright</a>
+                        @else
+                            <a class="dropdown-item text-white" href="{{ route('equipment_copyright_remove', $equipment->id) }}" title="Clear Copyright Infringement"><i class="fa fa-copyright nav-icon"></i>Clear Copyright</a>
+                        @endif
+                    @endcan
+                    <a class="dropdown-item text-white" href="{{ route('movement_listing', ['equipment' => $equipment->id]) }}" title="View Exercises With Equipment"><i class="fa fa-child nav-icon"></i>View Exercises</a>
+                </div>
             </div>
         </div>
         <div class="row">
