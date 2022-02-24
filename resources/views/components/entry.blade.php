@@ -44,7 +44,7 @@
                     <i class="fa fa-ellipsis-v"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right bg-grey">
-                    @if($entry->challenge->user_id === Auth()->id())
+                    @if(!empty($entry->challenge) && $entry->challenge->user_id === Auth()->id())
                         @if(!empty($entry->challenge) && !$entry->challenge->won)
                             <a class="dropdown-item text-white" href="{{ route('entry_win', $entry->id) }}" title="Select Winner"><i class="fa fa-trophy nav-icon"></i>Select Winner</a>
                         @endif
