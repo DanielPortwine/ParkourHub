@@ -61,8 +61,8 @@
             <div class="row">
                 <div class="col"></div>
                 <div class="col-md-8">
-                    <p class="text-center large-text">Parkour Hub is based on the sharing of parkour spots via the spots map. Other features build on this concept such as setting challenges at spots, hosting events at spots and adding spots to your hitlist.</p>
-                    <p class="text-center large-text">Going to a new town and don't know if there are any spots? Check on Parkour Hub to see what the locals have uploaded.</p>
+                    <p class="text-center large-text">Parkour Hub is based on the sharing of parkour spots via the spots map. You can then set challenges at spots, host events and add spots to your hitlist.</p>
+                    <p class="text-center large-text">Going to a new town and don't know where to train? Check on Parkour Hub to see what the locals have uploaded and you can jump right into the best spots in town.</p>
                     <p class="text-center large-text">Found a good spot in your local area? Add it to Parkour Hub so others can find it.</p>
                     <p class="text-center large-text">Want to meet up with other freerunners? See what events are happening at spots in your area.</p>
                 </div>
@@ -99,21 +99,21 @@
                         <i class="fa fa-map feature-icon"></i>
                         <h3 class="sedgwick ml-2 ml-md-0">Spots Map</h3>
                     </div>
-                    <p class="large-text">See spots that users have created on a global map and create your own.</p>
+                    <p class="large-text">See spots worldwide so that you're never left wandering a new city to find somewhere to train.</p>
                 </div>
                 <div class="col-md-4">
                     <div class="flex d-md-block vertical-center">
                         <i class="fa fa-bullseye feature-icon"></i>
                         <h3 class="sedgwick ml-2 ml-md-0">Challenges</h3>
                     </div>
-                    <p class="large-text">Enter challenges at spots and see if you can win.</p>
+                    <p class="large-text">Enter challenges at spots and see if you can win. There could be a prize at stake!</p>
                 </div>
                 <div class="col-md-4">
                     <div class="flex d-md-block vertical-center">
                         <i class="fa fa-map-marked feature-icon"></i>
                         <h3 class="sedgwick ml-2 ml-md-0">Events</h3>
                     </div>
-                    <p class="large-text">Find out what events are being held at spots you go to.</p>
+                    <p class="large-text">Train or compete with other freerunners by finding events at spots in your area.</p>
                 </div>
             </div>
             <div class="row text-center">
@@ -129,7 +129,7 @@
                         <i class="fa fa-house-user feature-icon"></i>
                         <h3 class="sedgwick ml-2 ml-md-0">Locals</h3>
                     </div>
-                    <p class="large-text">Mark yourself as a Local at spots you frequently attend so that other locals or people passing through can get in touch to meet up.</p>
+                    <p class="large-text">Mark yourself as a Local at spots you frequently train at so other locals or people passing through can get in touch to meet up.</p>
                 </div>
                 <div class="col-md-4">
                     <div class="flex d-md-block vertical-center">
@@ -153,11 +153,11 @@
                 <div class="col"></div>
                 <div class="col-md-8">
                     <p class="text-center large-text">
-                        With Premium you can create your own challenges and events as well as moves, exercises, equipment and workouts to help yourself and others get better at parkour or general fitness.
+                        With Premium you can create challenges and events as well as moves, exercises, equipment and workouts to help yourself and others get better at parkour or general fitness.
                         You can also upload videos directly (up to 500MB) rather than use a YouTube link and your images can be up to 5MB rather than 500KB.
                     </p>
-                    <p class="text-center large-text">Found a fun challenge at a spot but nobody has set it yet? Create your own and crown a winner.</p>
-                    <p class="text-center large-text">Need some more structure to your training? Add workouts to your plan in advance so you can jump straight into it on the day.</p>
+                    <p class="text-center large-text">Found a fun challenge but nobody has set it yet? Create your own and crown a winner.</p>
+                    <p class="text-center large-text">Need structure to your training? Plan workouts in advance so you can jump straight in on the day.</p>
                     <p class="text-center large-text">Hosting a parkour jam? Add it to Parkour Hub to let other freerunners find out about it.</p>
                 </div>
                 <div class="col"></div>
@@ -177,21 +177,21 @@
                         <i class="fa fa-bullseye feature-icon text-premium"></i>
                         <h3 class="sedgwick ml-2 ml-md-0">Challenges</h3>
                     </div>
-                    <p class="large-text">Create & manage your own challenges.</p>
+                    <p class="large-text">Set challenges and see if anyone can complete them.</p>
                 </div>
                 <div class="col-md-4">
                     <div class="flex d-md-block vertical-center">
                         <i class="fa fa-map-marked feature-icon text-premium"></i>
                         <h3 class="sedgwick ml-2 ml-md-0">Events</h3>
                     </div>
-                    <p class="large-text">Organise your own events such as a training session, jam or competition.</p>
+                    <p class="large-text">Organise events to meet up with other freerunners.</p>
                 </div>
                 <div class="col-md-4">
                     <div class="flex d-md-block vertical-center">
                         <i class="fa fa-file-video-o feature-icon text-premium"></i>
                         <h3 class="sedgwick ml-2 ml-md-0">File Uploads</h3>
                     </div>
-                    <p class="large-text">Upload videos up to 500MB and upload larger images up to 5MB to showcase your content.</p>
+                    <p class="large-text">Upload direct videos and larger images to avoid using YouTube or compression tools.</p>
                 </div>
             </div>
             <div class="row text-center">
@@ -200,21 +200,21 @@
                         <i class="fa fa-child feature-icon text-premium"></i>
                         <h3 class="sedgwick ml-2 ml-md-0">Moves</h3>
                     </div>
-                    <p class="large-text">Create moves and link them to spots where they can be performed.</p>
+                    <p class="large-text">See what moves are available at a spot to find somewhere to train the moves you want.</p>
                 </div>
                 <div class="col-md-4">
                     <div class="flex d-md-block vertical-center">
                         <i class="fa fa-running feature-icon text-premium"></i>
                         <h3 class="sedgwick ml-2 ml-md-0">Workouts</h3>
                     </div>
-                    <p class="large-text">Create workouts using moves & exercises you or other users have created.</p>
+                    <p class="large-text">Create workouts using moves & exercises to track your progress.</p>
                 </div>
                 <div class="col-md-4">
                     <div class="flex d-md-block vertical-center">
                         <i class="fa fa-calendar feature-icon text-premium"></i>
                         <h3 class="sedgwick ml-2 ml-md-0">Training Planner</h3>
                     </div>
-                    <p class="large-text">Use a simple calendar to plan which workouts you want to do when.</p>
+                    <p class="large-text">Add structure to your training by adding workouts to a calendar.</p>
                 </div>
             </div>
         </div>
