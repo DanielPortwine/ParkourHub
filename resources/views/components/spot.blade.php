@@ -3,12 +3,16 @@ $hit = $spot->hits->where('user_id', Auth()->id() ?: null)->first()
 @endphp
 
 <div class="card bg-grey">
-    <div class="spot-icons">
-        @if(isset($hit) && $hit->completed_at != null)
-            <i class="fa fa-check-square-o text-shadow" title="{{ Carbon\Carbon::parse($hit->completed_at)->diffForHumans() }}"></i>
-        @endif
-    </div>
     <div class="content-wrapper">
+        <div class="spot-icons">
+            @if(!empty($hit))
+                @if(!empty($hit->completed_at))
+                    <i class="fa fa-check-square-o text-shadow" title="Ticked Off {{ Carbon\Carbon::parse($hit->completed_at)->diffForHumans() }}"></i>
+                @else
+                    <i class="fa fa-crosshairs text-shadow" title="Added {{ Carbon\Carbon::parse($hit->completed_at)->diffForHumans() }}"></i>
+                @endif
+            @endif
+        </div>
         @if(!empty($spot->image))
             <a href="{{ route('spot_view', $spot->id) }}">
                 @if(isset($lazyload) ? $lazyload : true)
@@ -29,11 +33,22 @@ $hit = $spot->hits->where('user_id', Auth()->id() ?: null)->first()
                     <i class="fa fa-ellipsis-v"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right bg-grey">
+                    @if(empty($map) || !$map)
+                        <a class="dropdown-item text-white" href="{{ route('spots', ['spot' => $spot->id]) }}" title="Locate"><i class="fa fa-map-marker nav-icon"></i>Locate</a>
+                    @endif
                     @if($spot->user_id === Auth()->id())
                         <a class="dropdown-item text-white" href="{{ route('spot_edit', $spot->id) }}" title="Edit"><i class="fa fa-pencil nav-icon"></i>Edit</a>
                         <a class="dropdown-item text-white" href="{{ route('spot_delete', $spot->id) }}" title="Delete Content"><i class="fa fa-trash nav-icon"></i>Delete</a>
                     @endif
                     @auth
+                        @if(empty($hit))
+                            <a class="dropdown-item text-white" href="{{ route('add_to_hitlist', $spot->id) }}" title="Add To Hitlist"><i class="fa fa-crosshairs nav-icon"></i>Add To Hitlist</a>
+                        @else
+                            @if(empty($hit->completed_at))
+                                <a class="dropdown-item text-white" href="{{ route('tick_off_hitlist', $spot->id) }}" title="Tick Off Hitlist"><i class="fa fa-check nav-icon"></i>Tick Off Hitlist</a>
+                            @endif
+                            <a class="dropdown-item text-white" href="{{ route('remove_from_hitlist', $spot->id) }}" title="Remove From Hitlist"><i class="fa fa-times nav-icon"></i>Remove From Hitlist</a>
+                        @endif
                         <a class="dropdown-item text-white" href="{{ route('spot_report', $spot->id) }}" title="Report"><i class="fa fa-flag nav-icon"></i>Report</a>
                     @endauth
                     @if(count($spot->reports) > 0 && Route::currentRouteName() === 'report_listing')
@@ -51,14 +66,6 @@ $hit = $spot->hits->where('user_id', Auth()->id() ?: null)->first()
                             <a class="dropdown-item text-white" href="{{ route('spot_copyright_remove', $spot->id) }}" title="Clear Copyright Infringement"><i class="fa fa-copyright nav-icon"></i>Clear Copyright</a>
                         @endif
                     @endcan
-                    @auth
-                        <a class="dropdown-item text-white tick-off-hitlist-button @if(!(!empty($hit) && $hit->completed_at == null))d-none @endif" id="hitlist-spot-{{ $spot->id }}-add" title="Tick Off Hitlist"><i class="fa fa-check nav-icon"></i>Tick Off Hitlist</a>
-                        <a class="dropdown-item text-white add-to-hitlist-button @if(!empty($hit))d-none @endif" id="hitlist-spot-{{ $spot->id }}-tick" title="Add To Hitlist"><i class="fa fa-crosshairs nav-icon"></i>Add To Hitlist</a>
-                        <a class="dropdown-item text-white remove-from-hitlist-button @if(empty($hit))d-none @endif" id="hitlist-spot-{{ $spot->id }}-remove" title="Remove From Hitlist"><i class="fa fa-times nav-icon"></i>Remove From Hitlist</a>
-                    @endauth
-                    @if(empty($map) || !$map)
-                        <a class="dropdown-item text-white" href="{{ route('spots', ['spot' => $spot->id]) }}" title="Locate"><i class="fa fa-map-marker nav-icon"></i>Locate</a>
-                    @endif
                 </div>
             </div>
         </div>

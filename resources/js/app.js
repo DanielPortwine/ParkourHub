@@ -601,47 +601,6 @@ $(document).ready(function() {
         });
     });
 
-    // add a spot to hitlist
-    $('.add-to-hitlist-button').click(function() {
-        var $button = $(this),
-            spot = $button.attr('id').split('-')[2];
-        $.ajax({
-            url: '/spots/add_to_hitlist/' + spot,
-            type: 'GET',
-            success: function(response) {
-                $button.siblings('.tick-off-hitlist-button').removeClass('d-none');
-                $button.siblings('.remove-from-hitlist-button').removeClass('d-none');
-                $button.addClass('d-none');
-            }
-        })
-    });
-    //remove a spot from hitlist
-    $('.remove-from-hitlist-button').click(function() {
-        var $button = $(this),
-            spot = $button.attr('id').split('-')[2];
-        $.ajax({
-            url: '/spots/remove_from_hitlist/' + spot,
-            type: 'GET',
-            success: function (response) {
-                $button.siblings('.tick-off-hitlist-button').addClass('d-none');
-                $button.siblings('.add-to-hitlist-button').removeClass('d-none');
-                $button.addClass('d-none');
-            }
-        })
-    });
-    // tick a spot off hitlist
-    $('.tick-off-hitlist-button').click(function() {
-        var $button = $(this),
-            spot = $button.attr('id').split('-')[2];
-        $.ajax({
-            url: '/spots/tick_off_hitlist/' + spot,
-            type: 'GET',
-            success: function(response) {
-                $button.addClass('d-none');
-            }
-        })
-    });
-
     // show the show all button if there is more than 1 line of movements
     if ($('#movements-inner-container').height() > 28) {
         $('#all-movements-button').show();

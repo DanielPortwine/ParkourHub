@@ -7,7 +7,7 @@
 @section('meta-media-content'){{ url($user->profile_image) }}@endsection
 
 @section('content')
-    @if (session('status'))
+    @if (!empty(session('status')))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             {{ session('status') }}
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">

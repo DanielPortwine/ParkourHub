@@ -387,41 +387,29 @@ class SpotController extends Controller
 
     public function addToHitlist(Request $request, $id)
     {
-        if (!$request->ajax()) {
-            return back();
-        }
-
         $hit = new Hit;
         $hit->user_id = Auth::id();
         $hit->spot_id = $id;
         $hit->save();
 
-        return false;
+        return back()->with('status', 'Successfully added spot to your hitlist');
     }
 
     public function removeFromHitlist(Request $request, $id)
     {
-        if (!$request->ajax()) {
-            return back();
-        }
-
         $hit = Hit::where('user_id', Auth::id())->where('spot_id', $id)->first();
         $hit->delete();
 
-        return false;
+        return back()->with('status', 'Successfully removed spot from your hitlist');
     }
 
     public function tickOffHitlist(Request $request, $id)
     {
-        if (!$request->ajax()) {
-            return back();
-        }
-
         $hit = Hit::where('user_id', Auth::id())->where('spot_id', $id)->first();
         $hit->completed_at = Carbon::now();
         $hit->save();
 
-        return false;
+        return back()->with('status', 'Successfully ticked off spot from your hitlist');
     }
 
     public function becomeLocal($id)
