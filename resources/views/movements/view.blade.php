@@ -237,9 +237,7 @@
                     </div>
                 @elseif($tab === 'spots')
                     <div class="card-body bg-black">
-                        @if(!empty($request['spots']))
-                            {{ $spots->links() }}
-                        @endif
+                        {{ $spots->links() }}
                         @foreach($spots->chunk(2) as $chunk)
                             <div class="row">
                                 @foreach($chunk as $spot)
@@ -249,19 +247,9 @@
                                 @endforeach
                             </div>
                         @endforeach
-                        @if(!empty($request['spots']))
-                            {{ $spots->links() }}
-                        @endif
+                        {{ $spots->links() }}
                         @if (count($originalMovement->spots) === 0)
                             <p class="mb-0">This movement has not been linked to any spots yet.</p>
-                        @elseif(count($originalMovement->spots) > 4)
-                            <div class="col text-center mb-4">
-                                @if(empty($request['spots']))
-                                    <a class="btn btn-green w-75" href="?spots=1">More</a>
-                                @else
-                                    <a class="btn btn-green w-75" href="{{ route('movement_view', $originalMovement->id) }}">Less</a>
-                                @endif
-                            </div>
                         @endif
                     </div>
                 @elseif($tab === 'equipment')
@@ -367,9 +355,7 @@
                                     </div>
                                 </div>
                             @endif
-                            @if(!empty($request['equipment']))
-                                {{ $equipments->links() }}
-                            @endif
+                            {{ $equipments->links() }}
                             @foreach($equipments->chunk(2) as $chunk)
                                 <div class="row">
                                     @foreach($chunk as $equipment)
@@ -379,19 +365,9 @@
                                     @endforeach
                                 </div>
                             @endforeach
-                            @if(!empty($request['equipment']))
-                                {{ $equipments->links() }}
-                            @endif
+                            {{ $equipments->links() }}
                             @if (count($originalMovement->equipment) === 0)
                                 <p class="mb-0">This exercise has not been linked to any equipment yet.</p>
-                            @elseif(count($originalMovement->equipment) > 4)
-                                <div class="col text-center mb-4">
-                                    @if(empty($request['equipments']))
-                                        <a class="btn btn-green w-75" href="?equipments=1">More</a>
-                                    @else
-                                        <a class="btn btn-green w-75" href="{{ route('movement_view', $originalMovement->id) }}">Less</a>
-                                    @endif
-                                </div>
                             @endif
                         @endpremium
                     </div>
@@ -533,9 +509,7 @@
                                 </div>
                             @endif
                         @endpremium
-                        @if(!empty($request['progressions']))
-                            {{ $progressions->links() }}
-                        @endif
+                        {{ $progressions->links() }}
                         @foreach($progressions->chunk(2) as $chunk)
                             <div class="row">
                                 @foreach($chunk as $movement)
@@ -545,19 +519,9 @@
                                 @endforeach
                             </div>
                         @endforeach
-                        @if(!empty($request['progressions']))
-                            {{ $progressions->links() }}
-                        @endif
+                        {{ $progressions->links() }}
                         @if (count($originalMovement->progressions) === 0)
                             <p class="mb-0">This movement has not been linked to any similar easier movements yet.</p>
-                        @elseif(count($originalMovement->progressions) > 4)
-                            <div class="col text-center mb-4">
-                                @if(empty($request['progressions']))
-                                    <a class="btn btn-green w-75" href="?progressions=1">More</a>
-                                @else
-                                    <a class="btn btn-green w-75" href="{{ route('movement_view', $originalMovement->id) }}">Less</a>
-                                @endif
-                            </div>
                         @endif
                     </div>
                 @elseif($tab === 'advancements')
@@ -698,9 +662,7 @@
                                 </div>
                             @endif
                         @endpremium
-                        @if(!empty($request['advancements']))
-                            {{ $advancements->links() }}
-                        @endif
+                        {{ $advancements->links() }}
                         @foreach($advancements->chunk(2) as $chunk)
                             <div class="row">
                                 @foreach($chunk as $movement)
@@ -710,19 +672,9 @@
                                 @endforeach
                             </div>
                         @endforeach
-                        @if(!empty($request['advancements']))
-                            {{ $advancements->links() }}
-                        @endif
+                        {{ $advancements->links() }}
                         @if (count($originalMovement->advancements) === 0)
                             <p class="mb-0">This movement has not been linked to any similar harder movements yet.</p>
-                        @elseif(count($originalMovement->advancements) > 4)
-                            <div class="col text-center mb-4">
-                                @if(empty($request['advancements']))
-                                    <a class="btn btn-green w-75" href="?advancements=1">More</a>
-                                @else
-                                    <a class="btn btn-green w-75" href="{{ route('movement_view', $originalMovement->id) }}">Less</a>
-                                @endif
-                            </div>
                         @endif
                     </div>
                 @elseif($tab === 'exercises')
@@ -850,9 +802,7 @@
                                 </div>
                             @endif
                         @endpremium
-                        @if(!empty($request['exercises']))
-                            {{ $exercises->links() }}
-                        @endif
+                        {{ $exercises->links() }}
                         @foreach($exercises->chunk(2) as $chunk)
                             <div class="row">
                                 @foreach($chunk as $movement)
@@ -862,19 +812,9 @@
                                 @endforeach
                             </div>
                         @endforeach
-                        @if(!empty($request['exercises']))
-                            {{ $exercises->links() }}
-                        @endif
+                        {{ $exercises->links() }}
                         @if (count($originalMovement->exercises) === 0)
                             <p class="mb-0">This movement has not been linked to any exercises yet.</p>
-                        @elseif(count($originalMovement->exercises) > 4)
-                            <div class="col text-center mb-4">
-                                @if(empty($request['exercises']))
-                                    <a class="btn btn-green w-75" href="?exercises=1">More</a>
-                                @else
-                                    <a class="btn btn-green w-75" href="{{ route('movement_view', $originalMovement->id) }}">Less</a>
-                                @endif
-                            </div>
                         @endif
                     </div>
                 @elseif($tab === 'moves')
@@ -1015,9 +955,7 @@
                                 </div>
                             @endif
                         @endpremium
-                        @if(!empty($request['moves']))
-                            {{ $moves->links() }}
-                        @endif
+                        {{ $moves->links() }}
                         @foreach($moves->chunk(2) as $chunk)
                             <div class="row">
                                 @foreach($chunk as $movement)
@@ -1027,19 +965,9 @@
                                 @endforeach
                             </div>
                         @endforeach
-                        @if(!empty($request['moves']))
-                            {{ $moves->links() }}
-                        @endif
+                        {{ $moves->links() }}
                         @if (count($originalMovement->moves) === 0)
                             <p class="mb-0">This movement has not been linked to any exercises yet.</p>
-                        @elseif(count($originalMovement->moves) > 4)
-                            <div class="col text-center mb-4">
-                                @if(empty($request['moves']))
-                                    <a class="btn btn-green w-75" href="?moves=1">More</a>
-                                @else
-                                    <a class="btn btn-green w-75" href="{{ route('movement_view', $originalMovement->id) }}">Less</a>
-                                @endif
-                            </div>
                         @endif
                     </div>
                 @elseif($tab === 'baseline')
@@ -1083,25 +1011,13 @@
                     </div>
                 @elseif($tab === 'history')
                     <div class="card-body bg-black">
-                        @if(!empty($request['history']))
-                            {{ $history->links() }}
-                        @endif
+                        {{ $history->links() }}
                         @foreach($history as $workoutMovement)
                             @include('components.workout_movement')
                         @endforeach
-                        @if(!empty($request['history']))
-                            {{ $history->links() }}
-                        @endif
+                        {{ $history->links() }}
                         @if (count($history) === 0)
                             <p class="mb-0">You haven't completed any workouts with this movement in yet.</p>
-                        @elseif(count($history) > 4)
-                            <div class="col text-center mb-4">
-                                @if(empty($request['history']))
-                                    <a class="btn btn-green w-75" href="?moves=1">More</a>
-                                @else
-                                    <a class="btn btn-green w-75" href="{{ route('movement_view', $originalMovement->id) }}">Less</a>
-                                @endif
-                            </div>
                         @endif
                     </div>
                 @endif

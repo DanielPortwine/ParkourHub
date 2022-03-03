@@ -68,11 +68,7 @@ class EquipmentController extends Controller
             return view('errors.404');
         }
 
-        if (!empty($request['movements'])) {
-            $movements = $equipment->movements()->paginate(20, ['*'], 'movements');
-        } else {
-            $movements = $equipment->movements()->limit(4)->get();
-        }
+        $movements = $equipment->movements()->paginate(20, ['*']);
 
         $linkableMovements = Movement::with(['type'])
             ->whereNotIn('id', $equipment->movements()->pluck('movements.id')->toArray())

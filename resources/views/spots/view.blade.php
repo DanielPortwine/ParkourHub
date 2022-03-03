@@ -414,9 +414,7 @@
                                 </div>
                             </div>
                         @endif
-                        @if(!empty($request['reviews']))
-                            {{ $reviews->links() }}
-                        @endif
+                        {{ $reviews->links() }}
                         @foreach($reviews->chunk(2) as $chunk)
                             <div class="row">
                                 @foreach($chunk as $review)
@@ -426,19 +424,9 @@
                                 @endforeach
                             </div>
                         @endforeach
-                        @if(!empty($request['reviews']))
-                            {{ $reviews->links() }}
-                        @endif
+                        {{ $reviews->links() }}
                         @if ($spotReviewsWithTextCount === 0)
                             <p class="mb-0">This spot has no reviews yet.@auth Create one by clicking 'Submit Review' above. @else <a class="btn-link" href="/login">Login</a> or <a class="btn-link" href="/register">Register</a> to create one. @endauth</p>
-                        @elseif($spotReviewsWithTextCount > 4)
-                            <div class="col text-center mb-4">
-                                @if(empty($request['reviews']))
-                                    <a class="btn btn-green w-75" href="?reviews=1">More</a>
-                                @else
-                                    <a class="btn btn-green w-75" href="{{ route('spot_view', $spot->id) }}">Less</a>
-                                @endif
-                            </div>
                         @endif
                     </div>
                 @elseif($tab === 'comments')
@@ -675,9 +663,7 @@
                                 </div>
                             </div>
                         @endif
-                        @if(!empty($request['challenges']))
-                            {{ $challenges->links() }}
-                        @endif
+                        {{ $challenges->links() }}
                         @foreach($challenges->chunk(2) as $chunk)
                             <div class="row">
                                 @foreach($chunk as $challenge)
@@ -687,19 +673,9 @@
                                 @endforeach
                             </div>
                         @endforeach
-                        @if(!empty($request['challenges']))
-                            {{ $challenges->links() }}
-                        @endif
+                        {{ $challenges->links() }}
                         @if (count($spot->challenges) === 0)
                             <p class="mb-0">This spot has no challenges yet.@auth @premium Create one by clicking 'Create Challenge' above. @else Become a <a class="btn-link text-premium" href="/premium">Premium Member</a> to create a challenge. @endpremium @else <a class="btn-link" href="/login">Login</a> or <a class="btn-link" href="/register">Register</a> to create one. @endauth</p>
-                        @elseif(count($spot->challenges) > 4)
-                            <div class="col text-center mb-4">
-                                @if(empty($request['challenges']))
-                                    <a class="btn btn-green w-75" href="?challenges=1">More</a>
-                                @else
-                                    <a class="btn btn-green w-75" href="{{ route('spot_view', $spot->id) }}">Less</a>
-                                @endif
-                            </div>
                         @endif
                     </div>
                 @elseif($tab === 'past-events')
@@ -738,9 +714,7 @@
                     </div>
                 @elseif($tab === 'locals')
                     <div class="card-body bg-black">
-                        @if(!empty($request['locals']))
-                            {{ $locals->links() }}
-                        @endif
+                        {{ $locals->links() }}
                         @foreach($locals->chunk(2) as $chunk)
                             <div class="row">
                                 @foreach($chunk as $user)
@@ -750,9 +724,7 @@
                                 @endforeach
                             </div>
                         @endforeach
-                        @if(!empty($request['locals']))
-                            {{ $locals->links() }}
-                        @endif
+                        {{ $locals->links() }}
                         @if (count($spot->locals) === 0)
                             <p class="mb-0">This spot has no locals yet.</p>
                         @endif
@@ -802,9 +774,7 @@
                                 </div>
                             </div>
                         @endif
-                        @if(!empty($request['workouts']))
-                            {{ $workouts->links() }}
-                        @endif
+                        {{ $workouts->links() }}
                         @foreach($workouts->chunk(2) as $chunk)
                             <div class="row">
                                 @foreach($chunk as $workout)
@@ -814,19 +784,9 @@
                                 @endforeach
                             </div>
                         @endforeach
-                        @if(!empty($request['workouts']))
-                            {{ $workouts->links() }}
-                        @endif
+                        {{ $workouts->links() }}
                         @if (count($spot->workouts) === 0)
                             <p class="mb-0">This spot has no workouts yet. Link one by selecting it above.</p>
-                        @elseif(count($spot->workouts) > 4)
-                            <div class="col text-center mb-4">
-                                @if(empty($request['workouts']))
-                                    <a class="btn btn-green w-75" href="?workouts=1">More</a>
-                                @else
-                                    <a class="btn btn-green w-75" href="{{ route('spot_view', $spot->id) }}">Less</a>
-                                @endif
-                            </div>
                         @endif
                     </div>
                 @endif

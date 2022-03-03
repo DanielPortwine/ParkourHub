@@ -208,9 +208,7 @@
                     </div>
                 </div>
             @endif
-            @if(!empty($request['movements']))
-                {{ $movements->links() }}
-            @endif
+            {{ $movements->links() }}
             @foreach($movements->chunk(2) as $chunk)
                 <div class="row">
                     @foreach($chunk as $movement)
@@ -220,24 +218,14 @@
                     @endforeach
                 </div>
             @endforeach
-            @if(!empty($request['movements']))
-                {{ $movements->links() }}
-            @endif
-            <div class="row mb-4">
-                @if (count($equipment->movements) === 0)
+            {{ $movements->links() }}
+            @if (count($equipment->movements) === 0)
+                <div class="row mb-4">
                     <div class="col">
                         <p class="mb-0">This equipment has not been linked to any exercises yet.</p>
                     </div>
-                @elseif(count($equipment->movements) > 4)
-                    <div class="col text-center">
-                        @if(empty($request['movements']))
-                            <a class="btn btn-green w-75" href="?movements=1">More</a>
-                        @else
-                            <a class="btn btn-green w-75" href="{{ route('equipment_view', $equipment->id) }}">Less</a>
-                        @endif
-                    </div>
-                @endif
-            </div>
+                </div>
+            @endif
         </div>
     </div>
 @endsection
