@@ -11,6 +11,7 @@ use App\Http\Requests\UpdateSpot;
 use App\Models\Movement;
 use App\Models\MovementCategory;
 use App\Models\MovementField;
+use App\Models\MovementType;
 use App\Notifications\ContentCopyrighted;
 use App\Notifications\ContentUncopyrighted;
 use App\Notifications\SpotCreated;
@@ -64,10 +65,13 @@ class SpotController extends Controller
             ->paginate(20)
             ->appends(request()->query());
 
+        $moves = MovementType::with('movements')->where('name', 'Move')->first()->movements;
+
         return view('content_listings', [
             'title' => 'Spots',
             'content' => $spots,
             'component' => 'spot',
+            'moves' => $moves,
         ]);
     }
 

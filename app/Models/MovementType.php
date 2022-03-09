@@ -17,7 +17,7 @@ class MovementType extends Model
 
     public function movements()
     {
-        return $this->hasMany('App\Models\Movement');
+        return $this->hasMany('App\Models\Movement', 'type_id', 'id');
     }
 
     public function categories()

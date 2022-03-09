@@ -198,6 +198,15 @@
                                             </div>
                                         </div>
                                         @auth
+                                            <div class="col-auto pb-3">
+                                                <label><strong>Move</strong></label>
+                                                <select class="select2-5-results" name="movement">
+                                                    <option></option>
+                                                    @foreach($moves as $move)
+                                                        <option value="{{ $move->id }}" @if(($_GET['movement'] ?? '') == $move->id)selected @endif>{{ $move->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
                                             @if(empty($hitlist))
                                                 <div class="col-auto pb-3">
                                                     <label><strong>On Hitlist</strong></label>
