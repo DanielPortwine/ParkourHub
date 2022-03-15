@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Notifications\PremiumCancelled;
+use App\Notifications\PremiumRestarted;
+use App\Notifications\PremiumStarted;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Cashier\Cashier;
@@ -64,6 +67,8 @@ class PremiumController extends Controller
 
         if (!Auth::user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium')) {
             Auth::user()->newSubscription('premium', env('STRIPE_PLAN'))->create($request['paymentMethod']);
+
+            Auth::user()->notify(new PremiumStarted);
         }
 
         return false;
@@ -86,6 +91,8 @@ class PremiumController extends Controller
     {
         Auth::user()->subscription('premium')->cancel();
 
+        Auth::user()->notify(new PremiumCancelled);
+
         return back();
     }
 
@@ -102,6 +109,8 @@ class PremiumController extends Controller
     {
         if (!Auth::user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium')) {
             Auth::user()->newSubscription('premium', env('STRIPE_PLAN'))->add();
+
+            Auth::user()->notify(new PremiumRestarted);
         }
 
         return back();
