@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Subscribe;
+use App\Models\Subscriber;
 use App\Providers\RouteServiceProvider;
 use App\Rules\NotAutoUsername;
 use App\Models\User;
@@ -55,6 +57,7 @@ class RegisterController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
             'guidelines' => 'accepted',
+            'newsletter' => 'boolean',
         ], [
             'guidelines.accepted' => 'You must accept the Community Guidelines.',
         ]);
@@ -79,6 +82,12 @@ class RegisterController extends Controller
         if (empty($data['name'])) {
             $user->name = 'User' . $user->id;
             $user->save();
+        }
+
+        if  (!empty($data['newsletter']) && !Subscriber::where('email', $data['email'])->exists()) {
+            $subscriber = new Subscriber;
+            $subscriber->email = $data['email'];
+            $subscriber->save();
         }
 
         return $user;

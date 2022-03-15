@@ -87,6 +87,20 @@
                             </div>
                         </div>
 
+                        <div class="form-group row">
+                            <div class="col-md-6 offset-md-4">
+                                <div class="form-check">
+                                    <input class="form-check-input @error('newsletter') is-invalid @enderror" type="checkbox" name="newsletter" id="newsletter" value="1">
+                                    <label class="form-check-label text-white" for="newsletter">Subscribe to Parkour Hub newsletter</label>
+                                    @error('newsletter')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="row">
                             <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn btn-green">
