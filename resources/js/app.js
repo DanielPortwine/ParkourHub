@@ -448,10 +448,10 @@ function setRating(rating, shape) {
 function updateFooterPosition() {
     let $footer = $('#footer'),
         $nav = $('.navbar'),
-        $body = $('body'),
+        $body = $('main'),
         $window = $(window);
 
-    if (($body.height() + $footer.height() + $nav.height()) < $window.height()) {
+    if (($body.outerHeight(true) + $footer.outerHeight(true) + $nav.outerHeight(true)) < $window.height()) {
         $footer.css('bottom', 0);
     } else {
         $footer.css('bottom', '');
@@ -623,7 +623,7 @@ $(document).ready(function() {
 
     // keep the footer at the bottom
     $(window).resize(updateFooterPosition);
-    updateFooterPosition();
+    setTimeout(updateFooterPosition, 500);
 
     // select2
     $('.select2-no-search').select2({
