@@ -9,7 +9,7 @@ $hit = $spot->hits->where('user_id', Auth()->id() ?: null)->first()
                 @if(!empty($hit->completed_at))
                     <i class="fa fa-check-square-o text-shadow" title="Ticked Off {{ Carbon\Carbon::parse($hit->completed_at)->diffForHumans() }}"></i>
                 @else
-                    <i class="fa fa-crosshairs text-shadow" title="Added {{ Carbon\Carbon::parse($hit->completed_at)->diffForHumans() }}"></i>
+                    <i class="fa fa-crosshairs text-shadow" title="Added {{ Carbon\Carbon::parse($hit->created_at)->diffForHumans() }}"></i>
                 @endif
             @endif
         </div>
