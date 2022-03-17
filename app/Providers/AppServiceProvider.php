@@ -6,6 +6,7 @@ use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -37,6 +38,12 @@ class AppServiceProvider extends ServiceProvider
         if ($stripeApiBase = env('STRIPE_API_BASE')) {
             \Stripe\Stripe::$apiBase = $stripeApiBase;
         }
+
+        Http::macro('convertkit', function () {
+            return Http::withHeaders([
+                'Content-Type' => 'application/json',
+            ])->baseUrl('https://api.convertkit.com/v3/');
+        });
 
         Paginator::useBootstrap();
     }

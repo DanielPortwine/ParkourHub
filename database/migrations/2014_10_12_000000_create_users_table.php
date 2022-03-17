@@ -26,6 +26,7 @@ class CreateUsersTable extends Migration
             $table->string('hometown_bounding')->nullable();
             $table->string('instagram')->nullable();
             $table->string('youtube')->nullable();
+            $table->unsignedBigInteger('subscriber_id')->nullable();
             $table->string('password');
             $table->text('settings');
             $table->boolean('accepted_community_guidelines')->default(false);

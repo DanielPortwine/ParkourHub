@@ -12,7 +12,8 @@
             <div class="col-md-8">
                 <h3 class="footer-subtitle mb-0 sedgwick">Subscribe</h3>
                 <small class="mb-2">Receive updates when new features are added or improved.</small>
-                <form method="POST" action="/subscribe">
+                <script async data-uid="57b2f68925" src="https://parkourhub.ck.page/57b2f68925/index.js"></script>
+                {{--<form method="POST" action="/subscribe">
                     @csrf
                     <div class="row">
                         <div class="col col-lg-10 pr-0">
@@ -27,7 +28,7 @@
                             <input type="submit" value="Subscribe" class="btn btn-green">
                         </div>
                     </div>
-                </form>
+                </form>--}}
             </div>
         </div>
         <p class="text-center pt-3 mb-0">Copyright &#169; Parkour Hub</p>

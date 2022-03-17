@@ -23,6 +23,7 @@ use App\Scopes\CopyrightScope;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
@@ -252,12 +253,10 @@ class UserController extends Controller
     public function manage()
     {
         $user = Auth::user();
-        $subscribed = Subscriber::where('email', $user->email)->exists();
         $settings = setting()->all();
 
         return view('user.manage', [
             'user' => $user,
-            'subscribed' => $subscribed,
             'settings' => $settings,
         ]);
     }
@@ -270,10 +269,6 @@ class UserController extends Controller
                 $user->name = 'User' . Auth::id();
             } else {
                 $user->name = $request['name'];
-            }
-            if ($user->email !== $request['email'] && !empty($subscriber = Subscriber::where('email', $user->email)->first())) {
-                $subscriber->email = $request['email'];
-                $subscriber->save();
             }
             $user->email = $request['email'];
             if (!empty($request->file('profile_image'))) {
@@ -301,12 +296,6 @@ class UserController extends Controller
             $user->instagram = str_replace('https://www.instagram.com/', '', trim($request['instagram'], '/'));
             $user->youtube = str_replace('https://www.youtube.com/c/', '', trim($request['youtube'], '/'));
             $user->save();
-
-            if  ($request['subscribed'] == true) {
-                $this->subscribe(new Subscribe(['email' => $request['email']]), false);
-            } else {
-                $this->unsubscribe();
-            }
         } else if (!empty($request['notification-form']) || !empty($request['privacy-form'])) {
             if (!empty($request['notification-form'])) {
                 setting()->set($request['notifications']);
@@ -322,27 +311,6 @@ class UserController extends Controller
         }
 
         return back()->with('status', 'Updated account information');
-    }
-
-    public function subscribe(Subscribe $request, $return = true)
-    {
-        if (!Subscriber::where('email', $request['email'])->exists()) {
-            $subscriber = new Subscriber;
-            $subscriber->email = $request['email'];
-            $subscriber->save();
-        }
-
-        if ($return) {
-            return back()->with('status', 'Thank you for subscribing!');
-        }
-    }
-
-    public function unsubscribe()
-    {
-        $subscriber = Subscriber::where('email', Auth::user()->email);
-        if ($subscriber->exists()) {
-            $subscriber->delete();
-        }
     }
 
     public function obfuscate($field)

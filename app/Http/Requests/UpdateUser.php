@@ -43,7 +43,6 @@ class UpdateUser extends FormRequest
             'hometown' => ['string', 'max:255', new Hometown],
             'instagram' => ['nullable', 'active_url', new Instagram],
             'youtube' => ['nullable', 'active_url', new YoutubeChannel],
-            'subscribed' => new Checkbox,
             'notifications' => 'required_with:notification-form|in:on-site,email,email-site,none|array:' . $notificationSettings,
             'privacy' => 'required_with:privacy-form|in:nobody,request,follower,anybody,private,public|array:' . $privacySettings,
         ];

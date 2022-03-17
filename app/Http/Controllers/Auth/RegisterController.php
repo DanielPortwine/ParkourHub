@@ -10,6 +10,7 @@ use App\Rules\NotAutoUsername;
 use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller
@@ -84,10 +85,13 @@ class RegisterController extends Controller
             $user->save();
         }
 
-        if  (!empty($data['newsletter']) && !Subscriber::where('email', $data['email'])->exists()) {
-            $subscriber = new Subscriber;
-            $subscriber->email = $data['email'];
-            $subscriber->save();
+        if  (!empty($data['newsletter'])) {
+            $subscription = Http::convertkit()->post('forms/3093513/subscribe', [
+                'api_key' => env('CONVERTKIT_KEY'),
+                'email' => $user->email,
+            ])->object()->subscription;
+            $user->subscriber_id = $subscription->subscriber->id;
+            $user->save();
         }
 
         return $user;

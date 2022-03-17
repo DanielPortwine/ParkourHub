@@ -25,8 +25,10 @@ Route::get('email/verify/{id}/{hash}', 'Auth\VerificationController@verify')->na
 Route::post('email/resend', 'Auth\VerificationController@resend')->name('verification.resend');
 
 Route::get('/home', 'HomeController@index')->name('home')->middleware(['verified', 'notBanned']);
-Route::post('/subscribe', 'UserController@subscribe')->name('user_subscribe');
 Route::get('/banned', 'BanController@view')->name('banned');
+Route::get('/newsletter-confirmation', function() {
+    return view('newsletter_confirmation');
+});
 
 Route::get('users', 'UserController@listing')->middleware(['verified', 'notBanned'])->name('user_listing');
 Route::prefix('user')->middleware(['verified', 'notBanned'])->group(function() {
