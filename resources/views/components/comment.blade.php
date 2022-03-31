@@ -20,7 +20,7 @@
     @endif
     <div class="py-3 px-4">
         <div class="row">
-            <div class="col-lg vertical-center">
+            <div class="col vertical-center">
                 <div class="row vertical-center">
                     @if(!empty($comment->user->profile_image))
                         <div class="col-auto pr-0">
@@ -34,7 +34,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-auto vertical-center pl-0">
+            <div class="col-auto vertical-center pl-0">
                 <a class="btn text-white" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                     <i class="fa fa-ellipsis-v"></i>
                 </a>

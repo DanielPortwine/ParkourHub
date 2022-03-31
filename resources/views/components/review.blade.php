@@ -44,61 +44,66 @@
                 </div>
             </div>
             <div class="col-auto d-flex d-lg-none">
-                @if($review->user_id === Auth()->id())
-                    <a class="btn text-white" href="{{ route('review_edit', $review->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
-                    <a class="btn text-white" href="{{ route('review_delete', $review->id) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
-                @endif
-                @auth
-                    <a class="btn text-white" href="{{ route('review_report', $review->id) }}" title="Report"><i class="fa fa-flag"></i></a>
-                @endauth
-                @if(count($review->reports) > 0 && Route::currentRouteName() === 'report_listing')
-                    @can('manage reports')
-                        <a class="btn text-white" href="{{ route('review_report_discard', $review->id) }}" title="Discard Reports"><i class="fa fa-balance-scale"></i></a>
-                    @endcan
-                    @can('remove content')
-                        <a class="btn text-white" href="{{ route('review_remove', $review->id) }}" title="Remove Content"><i class="fa fa-trash"></i></a>
-                    @endcan
-                @endif
+                <a class="btn text-white" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                    <i class="fa fa-ellipsis-v"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right bg-grey">
+                    @if($review->user_id === Auth()->id())
+                        <a class="dropdown-item text-white" href="{{ route('review_edit', $review->id) }}" title="Edit"><i class="fa fa-pencil nav-icon"></i>Edit</a>
+                        <a class="dropdown-item text-white" href="{{ route('review_delete', $review->id) }}" title="Delete Content"><i class="fa fa-trash nav-icon"></i>Delete</a>
+                    @endif
+                    @auth
+                        <a class="dropdown-item text-white" href="{{ route('review_report', $review->id) }}" title="Report"><i class="fa fa-flag nav-icon"></i>Report</a>
+                    @endauth
+                    @if(count($review->reports) > 0 && Route::currentRouteName() === 'report_listing')
+                        @can('manage reports')
+                            <a class="dropdown-item text-white" href="{{ route('review_report_discard', $review->id) }}" title="Discard Reports"><i class="fa fa-balance-scale nav-icon"></i>Discard Reports</a>
+                        @endcan
+                        @can('remove content')
+                            <a class="dropdown-item text-white" href="{{ route('review_remove', $review->id) }}" title="Remove Content"><i class="fa fa-trash nav-icon"></i>Remove</a>
+                        @endcan
+                    @endif
+                </div>
             </div>
         </div>
     </div>
     <div class="card-body bg-grey">
         <div class="row">
-            <div class="col-md vertical-center">
-                @if(!isset($user))
+            <div class="col vertical-center">
+                @if(empty($user))
                     @if(!empty($review->user->profile_image))
                         <div class="profile-image-wrapper--component pr-3">
                             <a href="{{ $review->user->profile_image }}"><img src="{{ $review->user->profile_image }}" alt="Profile image of the user named {{ $review->user->name }}."></a>
                         </div>
                     @endif
                     <a class="btn-link large-text sedgwick" href="{{ route('user_view', $review->user->id) }}">{{ $review->user->name }}</a>
+                @else
+                    <h4 class="sedgwick text-large">{{ $review->title }}</h4>
                 @endif
             </div>
             <div class="col-auto d-none d-lg-flex">
-                @if($review->user_id === Auth()->id())
-                    <a class="btn text-white" href="{{ route('review_edit', $review->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
-                    <a class="btn text-white" href="{{ route('review_delete', $review->id) }}" title="Delete Content"><i class="fa fa-trash"></i></a>
-                @endif
-                @auth
-                    <a class="btn text-white" href="{{ route('review_report', $review->id) }}" title="Report"><i class="fa fa-flag"></i></a>
-                @endauth
-                @if(count($review->reports) > 0 && Route::currentRouteName() === 'report_listing')
-                    @can('manage reports')
-                        <a class="btn text-white" href="{{ route('review_report_discard', $review->id) }}" title="Discard Reports"><i class="fa fa-balance-scale"></i></a>
-                    @endcan
-                    @can('remove content')
-                        <a class="btn text-white" href="{{ route('review_remove', $review->id) }}" title="Remove Content"><i class="fa fa-trash"></i></a>
-                    @endcan
-                @endif
-            </div>
-        </div>
-        @if(isset($user))
-            <div class="row mt-2">
-                <div class="col">
-                    <h4 class="sedgwick text-large">{{ $review->title }}</h4>
+                <a class="btn text-white" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                    <i class="fa fa-ellipsis-v"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right bg-grey">
+                    @if($review->user_id === Auth()->id())
+                        <a class="dropdown-item text-white" href="{{ route('review_edit', $review->id) }}" title="Edit"><i class="fa fa-pencil nav-icon"></i>Edit</a>
+                        <a class="dropdown-item text-white" href="{{ route('review_delete', $review->id) }}" title="Delete Content"><i class="fa fa-trash nav-icon"></i>Delete</a>
+                    @endif
+                    @auth
+                        <a class="dropdown-item text-white" href="{{ route('review_report', $review->id) }}" title="Report"><i class="fa fa-flag nav-icon"></i>Report</a>
+                    @endauth
+                    @if(count($review->reports) > 0 && Route::currentRouteName() === 'report_listing')
+                        @can('manage reports')
+                            <a class="dropdown-item text-white" href="{{ route('review_report_discard', $review->id) }}" title="Discard Reports"><i class="fa fa-balance-scale nav-icon"></i>Discard Reports</a>
+                        @endcan
+                        @can('remove content')
+                            <a class="dropdown-item text-white" href="{{ route('review_remove', $review->id) }}" title="Remove Content"><i class="fa fa-trash nav-icon"></i>Remove</a>
+                        @endcan
+                    @endif
                 </div>
             </div>
-        @endif
+        </div>
         <div class="row">
             <div class="col">
                 {!! nl2br(e($review->review)) !!}

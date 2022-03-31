@@ -17,7 +17,7 @@
     </div>
     <div class="py-3 px-4">
         <div class="row border-subtle">
-            <div class="col-lg vertical-center">
+            <div class="col vertical-center">
                 @if(!isset($challenge) && !empty($entry->challenge))
                     <a class="btn-link h3 mb-0 sedgwick" href="{{ route('challenge_view', $entry->challenge->id) }}">
                         @if($entry->winner)
@@ -39,7 +39,7 @@
                     </a>
                 @endif
             </div>
-            <div class="col-lg-auto vertical-center pl-0">
+            <div class="col-auto vertical-center pl-0">
                 <a class="btn text-white" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                     <i class="fa fa-ellipsis-v"></i>
                 </a>

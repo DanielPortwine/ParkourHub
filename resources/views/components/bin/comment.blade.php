@@ -23,7 +23,7 @@
             <div class="col sedgwick">
                 <a class="btn-link h3 mb-0 sedgwick" href="{{ route(strtolower(str_replace('App\Models\\', '', $comment->commentable_type)) . '_view', $comment->commentable_id) }}">{{ str_replace('App\Models\\', '', $comment->commentable_type) }} - {{ $comment->commentable()->first()->name }}</a>
             </div>
-            <div class="col-lg-auto vertical-center pl-0">
+            <div class="col-auto vertical-center pl-0">
                 @if(!empty($linkSpotOnComment) && $linkSpotOnComment)
                     <a class="btn text-white" href="{{ route(strtolower(str_replace('App\Models\\', '', $comment->commentable_type)) . '_view', $comment->commentable_id) }}" title="View {{ str_replace('App\Models\\', '', $comment->commentable_type) }}"><i class="fa fa-eye"></i></a>
                 @endif

@@ -12,10 +12,10 @@
     @endif
     <div class="py-3 px-4">
         <div class="row">
-            <div class="col-md vertical-center">
+            <div class="col vertical-center">
                 <a class="btn-link large-text sedgwick" href="{{ route('workout_view', $workout->id) }}">{{ $workout->name  }}</a>
             </div>
-            <div class="col-md-auto vertical-center">
+            <div class="col-auto vertical-center">
                 <div>
                     <a class="btn text-white" href="{{ route('workout_recover', $workout->id) }}" title="Recover"><i class="fa fa-history"></i></a>
                     <a class="btn text-white" href="{{ route('workout_remove', $workout->id) }}" title="Remove Forever"><i class="fa fa-trash"></i></a>

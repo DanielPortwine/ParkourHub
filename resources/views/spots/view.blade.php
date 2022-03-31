@@ -58,14 +58,6 @@
                     @endif
                     @if($spot->deleted_at === null)
                         @auth
-                            @if(empty($hit))
-                                    <a class="btn text-white" href="{{ route('add_to_hitlist', $spot->id) }}" title="Add To Hitlist"><i class="fa fa-crosshairs"></i></a>
-                            @else
-                                @if(empty($hit->completed_at))
-                                    <a class="btn text-white" href="{{ route('tick_off_hitlist', $spot->id) }}" title="Tick Off Hitlist"><i class="fa fa-check"></i></a>
-                                @endif
-                                    <a class="btn text-white" href="{{ route('remove_from_hitlist', $spot->id) }}" title="Remove From Hitlist"><i class="fa fa-times"></i></a>
-                            @endif
                             @if(!in_array(Auth()->id(), $localsIDs))
                                 <a class="btn text-white" href="{{ route('spot_become_local', $spot->id) }}" title="Become a Local"><i class="fa fa-house-user"></i></a>
                             @else
@@ -82,6 +74,14 @@
                                 <a class="dropdown-item text-white" href="{{ route('spot_delete', $spot->id) }}" title="Delete Content"><i class="fa fa-trash nav-icon"></i>Delete</a>
                             @endif
                             @auth
+                                @if(empty($hit))
+                                    <a class="dropdown-item text-white" href="{{ route('add_to_hitlist', $spot->id) }}" title="Add To Hitlist"><i class="fa fa-crosshairs nav-icon"></i>Add To Hitlist</a>
+                                @else
+                                    @if(empty($hit->completed_at))
+                                        <a class="dropdown-item text-white" href="{{ route('tick_off_hitlist', $spot->id) }}" title="Tick Off Hitlist"><i class="fa fa-check nav-icon"></i>Tick Off Hitlist</a>
+                                    @endif
+                                    <a class="dropdown-item text-white" href="{{ route('remove_from_hitlist', $spot->id) }}" title="Remove From Hitlist"><i class="fa fa-times nav-icon"></i>Remove From Hitlist</a>
+                                @endif
                                 <a class="dropdown-item text-white" href="{{ route('spot_report', $spot->id) }}" title="Report"><i class="fa fa-flag nav-icon"></i>Report</a>
                             @endauth
                             @if(count($spot->reports) > 0)

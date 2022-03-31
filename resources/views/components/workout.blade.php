@@ -12,10 +12,10 @@
     @endif
     <div class="py-3 px-4">
         <div class="row">
-            <div class="col-md vertical-center">
+            <div class="col vertical-center">
                 <a class="btn-link large-text sedgwick" href="{{ route('workout_view', $workout->id) }}">{{ $workout->name  }}</a>
             </div>
-            <div class="col-md-auto vertical-center">
+            <div class="col-auto vertical-center">
                 @if($workout->bookmarks->contains(Auth()->id()))
                     <a class="btn text-white" href="{{ route('workout_unbookmark', $workout->id) }}" title="Remove Bookmark"><i class="fa fa-bookmark"></i></a>
                 @else
@@ -27,6 +27,7 @@
                 <div class="dropdown-menu dropdown-menu-right bg-grey">
                     @if ($workout->user_id === Auth()->id() && Auth()->user()->isPremium())
                         <a class="dropdown-item text-white" href="{{ route('workout_edit', $workout->id) }}" title="Edit"><i class="fa fa-pencil nav-icon"></i>Edit</a>
+                        <a class="dropdown-item text-white" href="{{ route('workout_delete', $workout->id) }}" title="Delete Content"><i class="fa fa-trash nav-icon"></i>Delete</a>
                     @endif
                     @auth
                         <a class="dropdown-item text-white" href="{{ route('workout_report', $workout->id) }}" title="Report"><i class="fa fa-flag nav-icon"></i>Report</a>

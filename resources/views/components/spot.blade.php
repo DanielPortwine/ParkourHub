@@ -25,10 +25,10 @@ $hit = $spot->hits->where('user_id', Auth()->id() ?: null)->first()
     </div>
     <div class="py-3 px-4">
         <div class="row border-subtle mb-2">
-            <div class="d-block d-lg-flex col-md vertical-center">
+            <div class="col vertical-center">
                 <a class="btn-link h3 mb-0 sedgwick" href="{{ route('spot_view', $spot->id) }}">{{ $spot->name }}</a>
             </div>
-            <div class="col-lg-auto vertical-center pl-0">
+            <div class="col-auto vertical-center pl-0">
                 <a class="btn text-white" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                     <i class="fa fa-ellipsis-v"></i>
                 </a>

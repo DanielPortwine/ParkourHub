@@ -8,10 +8,10 @@
     </div>
     <div class="py-3 px-4">
         <div class="row border-subtle mb-2">
-            <div class="d-block d-lg-flex col-lg vertical-center">
+            <div class="col vertical-center">
                 <a class="btn-link h3 mb-0 sedgwick" href="{{ route('challenge_view', $challenge->id) }}">{{ $challenge->name }}</a>
             </div>
-            <div class="col-lg-auto vertical-center pl-0">
+            <div class="col-auto vertical-center pl-0">
                 <a class="btn text-white" href="{{ route('challenge_recover', $challenge->id) }}" title="Recover"><i class="fa fa-history"></i></a>
                 <a class="btn text-white" href="{{ route('challenge_remove', $challenge->id) }}" title="Remove Forever"><i class="fa fa-trash"></i></a>
             </div>

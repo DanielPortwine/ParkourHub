@@ -23,10 +23,10 @@
     </div>
     <div class="py-3 px-4">
         <div class="row border-subtle mb-2">
-            <div class="col-lg vertical-center">
+            <div class="col vertical-center">
                 <a class="btn-link h3 mb-0 sedgwick" href="{{ route('movement_view', $movement->id) }}">{{ $movement->name }}</a>
             </div>
-            <div class="col-lg-auto vertical-center pl-0">
+            <div class="col-auto vertical-center pl-0">
                 <a class="btn text-white" href="{{ route('movement_recover', $movement->id) }}" title="Recover"><i class="fa fa-history"></i></a>
                 <a class="btn text-white" href="{{ route('movement_remove', $movement->id) }}" title="Remove Forever"><i class="fa fa-trash"></i></a>
             </div>
