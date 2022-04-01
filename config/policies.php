@@ -2,4 +2,5 @@
 
 return [
     'community-guidelines',
+    'contact',
 ];
