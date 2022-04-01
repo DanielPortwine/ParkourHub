@@ -14,10 +14,8 @@ class PolicyController extends Controller
 
     public function view($policy)
     {
-        $policy = Policy::where('slug', $policy)->first();
-
-        if (!empty($policy)) {
-            return view('policies.' . $policy->slug);
+        if (in_array($policy, config('policies'))) {
+            return view('policies.' . $policy);
         }
 
         abort(404);
