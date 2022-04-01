@@ -56,8 +56,8 @@
                 <div class="col"></div>
                 <div class="col-md-8 text-center large-text">
                     <p>Premium is where you get the most out of Parkour Hub.</p>
-                    <p>As a Premium Member, you will be able to create your own challenges and events.</p>
-                    <p>You will also have access to the training system to help you improve on your parkour and fitness goals.</p>
+                    <p>As a Premium Member, you can create your own challenges and events.</p>
+                    <p>You will also have access to the training system to help you achieve your parkour and fitness goals.</p>
                     <p>The image size restriction increases from 500KB to 5MB and videos (up to 500MB) can be uploaded directly rather than needing to upload to YouTube first.</p>
                 </div>
                 <div class="col"></div>
@@ -86,30 +86,14 @@
                         <i class="fa fa-bullseye feature-icon text-premium"></i>
                         <h3 class="sedgwick ml-2 ml-md-0">Challenges</h3>
                     </div>
-                    <p class="large-text">Create & manage your own challenges.</p>
+                    <p class="large-text">Create challenges to encourage people to push themselves.</p>
                 </div>
                 <div class="col-md-6">
                     <div class="d-block vertical-center">
                         <i class="fa fa-map-marked feature-icon text-premium"></i>
                         <h3 class="sedgwick ml-2 ml-md-0">Events</h3>
                     </div>
-                    <p class="large-text">Organise your own events such as a training session, jam or competition.</p>
-                </div>
-            </div>
-            <div class="row my-md-4 text-center">
-                <div class="col-md-6">
-                    <div class="d-block vertical-center">
-                        <i class="fa fa-child feature-icon-premium"></i>
-                        <h3 class="sedgwick ml-2 ml-md-0">Movements</h3>
-                    </div>
-                    <p class="large-text">Create and share movements - either a parkour move such as a vault or an exercise such as push-ups.</p>
-                </div>
-                <div class="col-md-6">
-                    <div class="d-block vertical-center">
-                        <i class="fa fa-dumbbell feature-icon-premium"></i>
-                        <h3 class="sedgwick ml-2 ml-md-0">Equipment</h3>
-                    </div>
-                    <p class="large-text">Add equipment that can be used in moves or exercises.</p>
+                    <p class="large-text">Get together with other freerunners by organising events such as training sessions, jams or competitions.</p>
                 </div>
             </div>
             <div class="row my-md-4 text-center">
@@ -118,14 +102,14 @@
                         <i class="fa fa-running feature-icon-premium"></i>
                         <h3 class="sedgwick ml-2 ml-md-0">Workouts</h3>
                     </div>
-                    <p class="large-text">Combine movements into a workout to record your training and track your progress.</p>
+                    <p class="large-text">Create movements and combine them into a workout to record your training and track your progress.</p>
                 </div>
                 <div class="col-md-6">
                     <div class="d-block vertical-center">
                         <i class="fa fa-calendar feature-icon-premium"></i>
                         <h3 class="sedgwick ml-2 ml-md-0">Training Planner</h3>
                     </div>
-                    <p class="large-text">Add workouts to your calendar to plan your journey to achieving your parkour or fitness goals.</p>
+                    <p class="large-text">Add structure to your training by adding workouts to your calendar to help you achieve your parkour or fitness goals.</p>
                 </div>
             </div>
             <div class="row my-md-4 text-center">
@@ -134,14 +118,14 @@
                         <i class="fa fa-file-video-o feature-icon-premium"></i>
                         <h3 class="sedgwick ml-2 ml-md-0">Video Upload</h3>
                     </div>
-                    <p class="large-text">Upload videos of up to 500MB directly from your device without needing to upload to YouTube first.</p>
+                    <p class="large-text">Upload videos up to 500MB directly from your device without needing to upload to YouTube first.</p>
                 </div>
                 <div class="col-md-6">
                     <div class="d-block vertical-center">
                         <i class="fa fa-file-image-o feature-icon-premium"></i>
                         <h3 class="sedgwick ml-2 ml-md-0">Image Upload</h3>
                     </div>
-                    <p class="large-text">Upload images of up to 5MB, a significant increase over the standard 500KB.</p>
+                    <p class="large-text">Upload images up to 5MB, a significant increase over the standard 500KB.</p>
                 </div>
             </div>
             <div class="row my-md-4 text-center">
@@ -150,7 +134,7 @@
                         <i class="fa fa-ellipsis-h feature-icon-premium"></i>
                         <h3 class="sedgwick ml-2 ml-md-0">More</h3>
                     </div>
-                    <p class="large-text">There are more great features coming in future.</p>
+                    <p class="large-text">There are even more fantastic features coming in future. If there are any features you'd like to see, <a href="{{ route('policy_view', 'contact') }}" class="btn-link">get in touch.</a></p>
                 </div>
             </div>
         </div>
