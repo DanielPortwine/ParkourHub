@@ -7,6 +7,7 @@
                     <li class="footer-link"><a href="{{ route('policy_view', 'contact') }}">Contact</a></li>
                     <li class="footer-link"><a href="">Privacy Policy</a></li>
                     <li class="footer-link"><a href="{{ route('policy_view', 'community-guidelines') }}">Community Guidelines</a></li>
+                    <li class="footer-link"><a href="{{ route('policy_view', 'refund-policy') }}">Refund Policy</a></li>
                 </ul>
             </div>
             <div class="col-md-8">
