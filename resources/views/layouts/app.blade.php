@@ -184,7 +184,9 @@
                                     @can('manage copyright')
                                         <a class="dropdown-item text-white" href="{{ route('copyright_listing') }}"><i class="fa fa-copyright nav-icon"></i>Copyright</a>
                                     @endcan
-                                    <a class="dropdown-item text-white" href="{{ route('user_bin') }}"><i class="fa fa-trash nav-icon"></i>Bin</a>
+                                    @if(!empty(Auth::user()->email_verified_at))
+                                        <a class="dropdown-item text-white" href="{{ route('user_bin') }}"><i class="fa fa-trash nav-icon"></i>Bin</a>
+                                    @endif
                                     <a class="dropdown-item text-white" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
