@@ -136,6 +136,15 @@ html, body {
     color: $green;
 }
 
+.btn-link-premium {
+    color: $premium;
+}
+
+.btn-link-premium:hover {
+    color: $premium;
+    text-decoration: underline;
+}
+
 .links {
     top: 18px;
 }

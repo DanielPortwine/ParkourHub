@@ -134,7 +134,7 @@
                         <i class="fa fa-ellipsis-h feature-icon-premium"></i>
                         <h3 class="sedgwick ml-2 ml-md-0">More</h3>
                     </div>
-                    <p class="large-text">There are even more fantastic features coming in future. If there are any features you'd like to see, <a href="{{ route('policy_view', 'contact') }}" class="btn-link">get in touch.</a></p>
+                    <p class="large-text">There are even more fantastic features coming in future. If there are any features you'd like to see, <a href="{{ route('policy_view', 'contact') }}" class="btn-link-premium">get in touch.</a></p>
                 </div>
             </div>
         </div>
@@ -166,7 +166,7 @@
                                 If you did not receive the email,
                                 <form class="d-inline" method="POST" action="{{ route('verification.resend') }}">
                                     @csrf
-                                    <button type="submit" class="btn btn-link p-0 m-0 align-baseline large-text">click here to request another</button>.
+                                    <button type="submit" class="btn btn-link-premium p-0 m-0 align-baseline large-text">click here to request another</button>.
                                 </form>
                             </p>
                         </div>
