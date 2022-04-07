@@ -182,7 +182,9 @@
                                     @can('manage bans')
                                         <a class="dropdown-item text-white" href="{{ route('ban_listing') }}"><i class="fa fa-gavel nav-icon"></i>Bans</a>
                                     @endcan
-                                    <a class="dropdown-item text-white" href="{{ route('user_copyright_listing') }}"><i class="fa fa-copyright nav-icon"></i>Claims</a>
+                                    @if(!empty(Auth::user()->email_verified_at))
+                                        <a class="dropdown-item text-white" href="{{ route('user_copyright_listing') }}"><i class="fa fa-copyright nav-icon"></i>Claims</a>
+                                    @endif
                                     @can('manage copyright')
                                         <a class="dropdown-item text-white" href="{{ route('copyright_listing') }}"><i class="fa fa-copyright nav-icon"></i>Copyright</a>
                                     @endcan
