@@ -156,7 +156,9 @@
                                         <a class="dropdown-item btn-premium" href="{{ route('premium') }}"><i class="fa fa-diamond nav-icon"></i>Premium</a>
                                     @endpremium
                                     <a class="dropdown-item text-white" href="{{ route('home') }}"><i class="fa fa-home nav-icon"></i>Home</a>
-                                    <a class="dropdown-item text-white" href="{{ route('user_view', Auth()->id()) }}"><i class="fa fa-user nav-icon"></i>Profile</a>
+                                    @if(!empty(Auth::user()->email_verified_at))
+                                        <a class="dropdown-item text-white" href="{{ route('user_view', Auth()->id()) }}"><i class="fa fa-user nav-icon"></i>Profile</a>
+                                    @endif
                                     <a class="dropdown-item text-white" href="{{ route('user_manage') }}"><i class="fa fa-user-cog nav-icon"></i>Settings</a>
                                     @premium
                                         <a class="dropdown-item text-white dropdown-toggle" id="workouts-nav-item"><i class="fa fa-running nav-icon"></i>Training <span class="caret"></span></a>
