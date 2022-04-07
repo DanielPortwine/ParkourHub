@@ -153,24 +153,167 @@
                     </div>
                 </div>
             @else
-                @if(Auth()->user()->hasPermissionTo('access premium'))
-                        <div class="alert alert-warning position-static mt-4">
-                            <p class="mb-0 text-black-50"><strong>You have free access to Premium services! You can cancel below if you previously signed up for Premium membership or continue your membership if you'd like to support the site.</strong></p>
+                @if(empty(Auth()->user()->email_verified_at))
+                    <div class="row my-3">
+                        <div class="col">
+                            <h1 class="text-center subtitle text-premium sedgwick">Verify Your Email To Sign Up For Premium</h1>
                         </div>
-                @endif
-                @if(!Auth()->user()->hasDefaultPaymentMethod())
-                    @if(!Auth()->user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium')  || Auth()->user()->subscription('premium')->ended())
+                    </div>
+                    <div class="row my-3">
+                        <div class="col text-center">
+                            <p class="mb-0 large-text">
+                                Before proceeding, please check your email for a verification link.
+                                If you did not receive the email,
+                                <form class="d-inline" method="POST" action="{{ route('verification.resend') }}">
+                                    @csrf
+                                    <button type="submit" class="btn btn-link p-0 m-0 align-baseline large-text">click here to request another</button>.
+                                </form>
+                            </p>
+                        </div>
+                    </div>
+                @else
+                    @if(Auth()->user()->hasPermissionTo('access premium'))
+                            <div class="alert alert-warning position-static mt-4">
+                                <p class="mb-0 text-black-50"><strong>You have free access to Premium services! You can cancel below if you previously signed up for Premium membership or continue your membership if you'd like to support the site.</strong></p>
+                            </div>
+                    @endif
+                    @if(!Auth()->user()->hasDefaultPaymentMethod())
+                        @if(!Auth()->user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium')  || Auth()->user()->subscription('premium')->ended())
+                            <div class="row my-3">
+                                <div class="col">
+                                    <h1 class="text-center subtitle text-premium sedgwick">Sign Up Now</h1>
+                                </div>
+                            </div>
+                            <div class="row my-3">
+                                <div class="col text-center">
+                                    <p class="mb-0">Become a <span class="text-premium">premium member</span> now and get instant access to all the above features for just £5/month.</p>
+                                </div>
+                            </div>
+                            <div class="row my-4">
+                                <div class="col">
+                                    <div class="form-group row">
+                                        <label for="card-holder-name" class="col-md-4 col-form-label text-md-right">Name on Card</label>
+                                        <div class="col-md-4">
+                                            <input id="card-holder-name" type="text" class="form-control" name="card-holder-name" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="card-element" class="col-md-4 col-form-label text-md-right">Card Details</label>
+                                        <div class="col-md-4">
+                                            <div id="card-element"></div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-4 offset-md-4">
+                                            <a id="card-button" class="btn btn-premium" data-secret="{{ $intent->client_secret }}">Sign Up</a>
+                                        </div>
+                                    </div>
+
+                                    <script>
+                                        const stripe = Stripe('{{ env('STRIPE_KEY') }}');
+                                        const elements = stripe.elements();
+                                        const cardElement = elements.create('card');
+                                        const cardHolderName = document.getElementById('card-holder-name');
+                                        const cardButton = document.getElementById('card-button');
+                                        const clientSecret = cardButton.dataset.secret;
+
+                                        cardElement.mount('#card-element');
+
+                                        cardButton.addEventListener('click', async (e) => {
+                                            cardButton.innerHTML = 'Signing Up...';
+                                            cardButton.removeAttribute('id');
+                                            const { setupIntent, error } = await stripe.confirmCardSetup(
+                                                clientSecret, {
+                                                    payment_method: {
+                                                        card: cardElement,
+                                                        billing_details: { name: cardHolderName.value }
+                                                    }
+                                                }
+                                            );
+
+                                            if (error) {
+                                                cardButton.innerHTML = 'Sign Up';
+                                                cardButton.id = 'card-button';
+                                            } else {
+                                                $.ajax({
+                                                    url: '{{ route('premium_register') }}',
+                                                    type: 'POST',
+                                                    data: {
+                                                        "_token": '{{ csrf_token() }}',
+                                                        paymentMethod: setupIntent.payment_method
+                                                    },
+                                                    success: function() {
+                                                        location.reload();
+                                                    }
+                                                })
+                                            }
+                                        });
+                                    </script>
+                                </div>
+                            </div>
+                        @endif
+                    @else
+                        @if(!Auth()->user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium'))
+                            <div class="row my-3">
+                                <div class="col">
+                                    <h1 class="text-center subtitle text-premium sedgwick">Restart Membership</h1>
+                                </div>
+                            </div>
+                            <div class="row my-3">
+                                <div class="col text-center">
+                                    <p class="mb-0">Restart your membership for just £5/month.</p>
+                                </div>
+                            </div>
+                            <div class="row my-4">
+                                <div class="col text-center">
+                                    <a class="btn btn-premium require-confirmation">Restart</a>
+                                    <a class="btn btn-premium d-none confirmation-button" href="{{ route('premium_restart') }}">Confirm Restart</a>
+                                </div>
+                            </div>
+                        @elseif(Auth()->user()->subscription('premium')->onGracePeriod())
+                            <div class="row my-3">
+                                <div class="col">
+                                    <h1 class="text-center subtitle text-premium sedgwick">Resume Membership</h1>
+                                </div>
+                            </div>
+                            <div class="row my-3">
+                                <div class="col text-center">
+                                    <p class="mb-0">You have until {{ $endDate }} to resume your current membership at no additional cost.</p>
+                                </div>
+                            </div>
+                            <div class="row my-4">
+                                <div class="col text-center">
+                                    <a class="btn btn-premium require-confirmation">Resume</a>
+                                    <a class="btn btn-premium d-none confirmation-button" href="{{ route('premium_resume') }}">Confirm Resume</a>
+                                </div>
+                            </div>
+                        @elseif(Auth()->user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium'))
+                            <div class="row my-3">
+                                <div class="col">
+                                    <h1 class="text-center subtitle text-premium sedgwick">Cancel Membership</h1>
+                                </div>
+                            </div>
+                            <div class="row my-3">
+                                <div class="col text-center">
+                                    <p class="mb-0">Your membership will auto-renew at £5 on {{ $nextInvoiceDate }}.</p>
+                                </div>
+                            </div>
+                            <div class="row my-4">
+                                <div class="col text-center">
+                                    <a class="btn btn-premium require-confirmation">Cancel</a>
+                                    <a class="btn btn-premium d-none confirmation-button" href="{{ route('premium_cancel') }}">Confirm Cancel</a>
+                                </div>
+                            </div>
+                        @endif
                         <div class="row my-3">
-                            <div class="col">
-                                <h1 class="text-center subtitle text-premium sedgwick">Sign Up Now</h1>
+                            <div class="col-md-6 offset-md-2">
+                                <i class="fa fa-cc-{{ str_replace(' ', '_', strtolower($cardBrand)) }}"></i> {{ $card }}
+                            </div>
+                            <div class="col-md-2 text-md-right">
+                                <a class="btn btn-sm btn-premium" id="change-payment-card">Change</a>
                             </div>
                         </div>
-                        <div class="row my-3">
-                            <div class="col text-center">
-                                <p class="mb-0">Become a <span class="text-premium">premium member</span> now and get instant access to all the above features for just £5/month.</p>
-                            </div>
-                        </div>
-                        <div class="row my-4">
+                        <div class="row my-3 d-none" id="update-card-form">
                             <div class="col">
                                 <div class="form-group row">
                                     <label for="card-holder-name" class="col-md-4 col-form-label text-md-right">Name on Card</label>
@@ -186,7 +329,7 @@
                                 </div>
                                 <div class="form-group row">
                                     <div class="col-md-4 offset-md-4">
-                                        <a id="card-button" class="btn btn-premium" data-secret="{{ $intent->client_secret }}">Sign Up</a>
+                                        <a id="card-button" class="btn btn-premium" data-secret="{{ $intent->client_secret }}">Update</a>
                                     </div>
                                 </div>
 
@@ -197,11 +340,18 @@
                                     const cardHolderName = document.getElementById('card-holder-name');
                                     const cardButton = document.getElementById('card-button');
                                     const clientSecret = cardButton.dataset.secret;
+                                    const changeCardButton = document.getElementById('change-payment-card');
+                                    const cardUpdateForm = document.getElementById('update-card-form');
+
+                                    changeCardButton.addEventListener('click', function() {
+                                        cardUpdateForm.classList.remove('d-none');
+                                        changeCardButton.remove();
+                                    });
 
                                     cardElement.mount('#card-element');
 
                                     cardButton.addEventListener('click', async (e) => {
-                                        cardButton.innerHTML = 'Signing Up...';
+                                        cardButton.innerHTML = 'Updating...';
                                         cardButton.removeAttribute('id');
                                         const { setupIntent, error } = await stripe.confirmCardSetup(
                                             clientSecret, {
@@ -213,11 +363,11 @@
                                         );
 
                                         if (error) {
-                                            cardButton.innerHTML = 'Sign Up';
+                                            cardButton.innerHTML = 'Update';
                                             cardButton.id = 'card-button';
                                         } else {
                                             $.ajax({
-                                                url: '{{ route('premium_register') }}',
+                                                url: '{{ route('premium_update') }}',
                                                 type: 'POST',
                                                 data: {
                                                     "_token": '{{ csrf_token() }}',
@@ -233,136 +383,6 @@
                             </div>
                         </div>
                     @endif
-                @else
-                    @if(!Auth()->user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium'))
-                        <div class="row my-3">
-                            <div class="col">
-                                <h1 class="text-center subtitle text-premium sedgwick">Restart Membership</h1>
-                            </div>
-                        </div>
-                        <div class="row my-3">
-                            <div class="col text-center">
-                                <p class="mb-0">Restart your membership for just £5/month.</p>
-                            </div>
-                        </div>
-                        <div class="row my-4">
-                            <div class="col text-center">
-                                <a class="btn btn-premium require-confirmation">Restart</a>
-                                <a class="btn btn-premium d-none confirmation-button" href="{{ route('premium_restart') }}">Confirm Restart</a>
-                            </div>
-                        </div>
-                    @elseif(Auth()->user()->subscription('premium')->onGracePeriod())
-                        <div class="row my-3">
-                            <div class="col">
-                                <h1 class="text-center subtitle text-premium sedgwick">Resume Membership</h1>
-                            </div>
-                        </div>
-                        <div class="row my-3">
-                            <div class="col text-center">
-                                <p class="mb-0">You have until {{ $endDate }} to resume your current membership at no additional cost.</p>
-                            </div>
-                        </div>
-                        <div class="row my-4">
-                            <div class="col text-center">
-                                <a class="btn btn-premium require-confirmation">Resume</a>
-                                <a class="btn btn-premium d-none confirmation-button" href="{{ route('premium_resume') }}">Confirm Resume</a>
-                            </div>
-                        </div>
-                    @elseif(Auth()->user()->subscribedToPlan(env('STRIPE_PLAN'), 'premium'))
-                        <div class="row my-3">
-                            <div class="col">
-                                <h1 class="text-center subtitle text-premium sedgwick">Cancel Membership</h1>
-                            </div>
-                        </div>
-                        <div class="row my-3">
-                            <div class="col text-center">
-                                <p class="mb-0">Your membership will auto-renew at £5 on {{ $nextInvoiceDate }}.</p>
-                            </div>
-                        </div>
-                        <div class="row my-4">
-                            <div class="col text-center">
-                                <a class="btn btn-premium require-confirmation">Cancel</a>
-                                <a class="btn btn-premium d-none confirmation-button" href="{{ route('premium_cancel') }}">Confirm Cancel</a>
-                            </div>
-                        </div>
-                    @endif
-                    <div class="row my-3">
-                        <div class="col-md-6 offset-md-2">
-                            <i class="fa fa-cc-{{ str_replace(' ', '_', strtolower($cardBrand)) }}"></i> {{ $card }}
-                        </div>
-                        <div class="col-md-2 text-md-right">
-                            <a class="btn btn-sm btn-premium" id="change-payment-card">Change</a>
-                        </div>
-                    </div>
-                    <div class="row my-3 d-none" id="update-card-form">
-                        <div class="col">
-                            <div class="form-group row">
-                                <label for="card-holder-name" class="col-md-4 col-form-label text-md-right">Name on Card</label>
-                                <div class="col-md-4">
-                                    <input id="card-holder-name" type="text" class="form-control" name="card-holder-name" required>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="card-element" class="col-md-4 col-form-label text-md-right">Card Details</label>
-                                <div class="col-md-4">
-                                    <div id="card-element"></div>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <div class="col-md-4 offset-md-4">
-                                    <a id="card-button" class="btn btn-premium" data-secret="{{ $intent->client_secret }}">Update</a>
-                                </div>
-                            </div>
-
-                            <script>
-                                const stripe = Stripe('{{ env('STRIPE_KEY') }}');
-                                const elements = stripe.elements();
-                                const cardElement = elements.create('card');
-                                const cardHolderName = document.getElementById('card-holder-name');
-                                const cardButton = document.getElementById('card-button');
-                                const clientSecret = cardButton.dataset.secret;
-                                const changeCardButton = document.getElementById('change-payment-card');
-                                const cardUpdateForm = document.getElementById('update-card-form');
-
-                                changeCardButton.addEventListener('click', function() {
-                                    cardUpdateForm.classList.remove('d-none');
-                                    changeCardButton.remove();
-                                });
-
-                                cardElement.mount('#card-element');
-
-                                cardButton.addEventListener('click', async (e) => {
-                                    cardButton.innerHTML = 'Updating...';
-                                    cardButton.removeAttribute('id');
-                                    const { setupIntent, error } = await stripe.confirmCardSetup(
-                                        clientSecret, {
-                                            payment_method: {
-                                                card: cardElement,
-                                                billing_details: { name: cardHolderName.value }
-                                            }
-                                        }
-                                    );
-
-                                    if (error) {
-                                        cardButton.innerHTML = 'Update';
-                                        cardButton.id = 'card-button';
-                                    } else {
-                                        $.ajax({
-                                            url: '{{ route('premium_update') }}',
-                                            type: 'POST',
-                                            data: {
-                                                "_token": '{{ csrf_token() }}',
-                                                paymentMethod: setupIntent.payment_method
-                                            },
-                                            success: function() {
-                                                location.reload();
-                                            }
-                                        })
-                                    }
-                                });
-                            </script>
-                        </div>
-                    </div>
                 @endif
                 @if(count($payments))
                     <div class="row my-3">
