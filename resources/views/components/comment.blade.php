@@ -35,34 +35,36 @@
                 </div>
             </div>
             <div class="col-auto vertical-center pl-0">
-                <a class="btn text-white" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                    <i class="fa fa-ellipsis-v"></i>
-                </a>
-                <div class="dropdown-menu dropdown-menu-right bg-grey">
-                    @if($comment->user_id === Auth()->id())
-                        <a class="dropdown-item text-white" href="{{ route('comment_edit', $comment->id) }}" title="Edit"><i class="fa fa-pencil nav-icon"></i>Edit</a>
-                        <a class="dropdown-item text-white" href="{{ route('comment_delete', $comment->id) }}" title="Delete Content"><i class="fa fa-trash nav-icon"></i>Delete</a>
-                    @endif
-                    @if(!empty($linkSpotOnComment) && $linkSpotOnComment)
-                        <a class="dropdown-item text-white"
-                           href="{{ route(strtolower(str_replace('App\Models\\', '', $comment->commentable_type)) . '_view', $comment->commentable_id) }}"
-                           title="View {{ str_replace('App\Models\\', '', $comment->commentable_type) }}"
-                        >
-                            <i class="fa fa-eye nav-icon"></i>View {{ str_replace('App\Models\\', '', $comment->commentable_type) }}
-                        </a>
-                    @endif
-                    @auth
-                        <a class="dropdown-item text-white" href="{{ route('comment_report', $comment->id) }}" title="Report"><i class="fa fa-flag nav-icon"></i>Report</a>
-                    @endauth
-                    @if(count($comment->reports) > 0 && Route::currentRouteName() === 'report_listing')
-                        @can('manage reports')
-                            <a class="dropdown-item text-white" href="{{ route('comment_report_discard', $comment->id) }}" title="Discard Reports"><i class="fa fa-balance-scale nav-icon"></i>Discard Reports</a>
-                        @endcan
-                        @can('remove content')
-                            <a class="dropdown-item text-white" href="{{ route('comment_remove', $comment->id) }}" title="Remove Content"><i class="fa fa-trash nav-icon"></i>Remove</a>
-                        @endcan
-                    @endif
-                </div>
+                @if(!empty(Auth()->user()->email_verified_at))
+                    <a class="btn text-white" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                        <i class="fa fa-ellipsis-v"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right bg-grey">
+                        @if($comment->user_id === Auth()->id())
+                            <a class="dropdown-item text-white" href="{{ route('comment_edit', $comment->id) }}" title="Edit"><i class="fa fa-pencil nav-icon"></i>Edit</a>
+                            <a class="dropdown-item text-white" href="{{ route('comment_delete', $comment->id) }}" title="Delete Content"><i class="fa fa-trash nav-icon"></i>Delete</a>
+                        @endif
+                        @if(!empty($linkSpotOnComment) && $linkSpotOnComment)
+                            <a class="dropdown-item text-white"
+                               href="{{ route(strtolower(str_replace('App\Models\\', '', $comment->commentable_type)) . '_view', $comment->commentable_id) }}"
+                               title="View {{ str_replace('App\Models\\', '', $comment->commentable_type) }}"
+                            >
+                                <i class="fa fa-eye nav-icon"></i>View {{ str_replace('App\Models\\', '', $comment->commentable_type) }}
+                            </a>
+                        @endif
+                        @auth
+                            <a class="dropdown-item text-white" href="{{ route('comment_report', $comment->id) }}" title="Report"><i class="fa fa-flag nav-icon"></i>Report</a>
+                        @endauth
+                        @if(count($comment->reports) > 0 && Route::currentRouteName() === 'report_listing')
+                            @can('manage reports')
+                                <a class="dropdown-item text-white" href="{{ route('comment_report_discard', $comment->id) }}" title="Discard Reports"><i class="fa fa-balance-scale nav-icon"></i>Discard Reports</a>
+                            @endcan
+                            @can('remove content')
+                                <a class="dropdown-item text-white" href="{{ route('comment_remove', $comment->id) }}" title="Remove Content"><i class="fa fa-trash nav-icon"></i>Remove</a>
+                            @endcan
+                        @endif
+                    </div>
+                @endif
             </div>
         </div>
         <div class="row @if(!empty($comment->comment))border-subtle mb-2 @endif">

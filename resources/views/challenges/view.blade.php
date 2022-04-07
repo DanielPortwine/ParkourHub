@@ -50,35 +50,37 @@
                         @if(!empty($challenge->spot))
                             <a class="btn text-white" href="{{ route('spots', ['spot' => $challenge->spot->id]) }}" title="Locate Spot"><i class="fa fa-map-marker"></i></a>
                         @endif
-                        <a class="btn text-white" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                            <i class="fa fa-ellipsis-v"></i>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right bg-grey">
-                            @if($challenge->user_id === Auth()->id())
-                                @premium
-                                    <a class="dropdown-item text-white" href="{{ route('challenge_edit', $challenge->id) }}" title="Edit"><i class="fa fa-pencil nav-icon"></i>Edit</a>
-                                @endpremium
-                                <a class="dropdown-item text-white" href="{{ route('challenge_delete', $challenge->id) }}" title="Delete Content"><i class="fa fa-trash nav-icon"></i>Delete</a>
-                            @endif
-                            @auth
-                                <a class="dropdown-item text-white" href="{{ route('challenge_report', $challenge->id) }}" title="Report"><i class="fa fa-flag nav-icon"></i>Report</a>
-                            @endauth
-                            @if(count($challenge->reports) > 0)
-                                @can('manage reports')
-                                    <a class="dropdown-item text-white" href="{{ route('challenge_report_discard', $challenge->id) }}" title="Discard Reports"><i class="fa fa-balance-scale nav-icon"></i>Discard Reports</a>
-                                @endcan
-                                @can('remove content')
-                                    <a class="dropdown-item text-white" href="{{ route('challenge_remove', $challenge->id) }}" title="Remove Content"><i class="fa fa-trash nav-icon"></i>Remove</a>
-                                @endcan
-                            @endif
-                            @can('manage copyright')
-                                @if($challenge->copyright_infringed_at === null)
-                                    <a class="dropdown-item text-white" href="{{ route('challenge_copyright_set', $challenge->id) }}" title="Mark Copyright Infringement"><i class="fa fa-copyright nav-icon"></i>Claim Copyright</a>
-                                @else
-                                    <a class="dropdown-item text-white" href="{{ route('challenge_copyright_remove', $challenge->id) }}" title="Clear Copyright Infringement"><i class="fa fa-copyright nav-icon"></i>Clear Copyright</a>
+                        @if(!empty(Auth()->user()->email_verified_at))
+                            <a class="btn text-white" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                <i class="fa fa-ellipsis-v"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right bg-grey">
+                                @if($challenge->user_id === Auth()->id())
+                                    @premium
+                                        <a class="dropdown-item text-white" href="{{ route('challenge_edit', $challenge->id) }}" title="Edit"><i class="fa fa-pencil nav-icon"></i>Edit</a>
+                                    @endpremium
+                                    <a class="dropdown-item text-white" href="{{ route('challenge_delete', $challenge->id) }}" title="Delete Content"><i class="fa fa-trash nav-icon"></i>Delete</a>
                                 @endif
-                            @endcan
-                        </div>
+                                @auth
+                                    <a class="dropdown-item text-white" href="{{ route('challenge_report', $challenge->id) }}" title="Report"><i class="fa fa-flag nav-icon"></i>Report</a>
+                                @endauth
+                                @if(count($challenge->reports) > 0)
+                                    @can('manage reports')
+                                        <a class="dropdown-item text-white" href="{{ route('challenge_report_discard', $challenge->id) }}" title="Discard Reports"><i class="fa fa-balance-scale nav-icon"></i>Discard Reports</a>
+                                    @endcan
+                                    @can('remove content')
+                                        <a class="dropdown-item text-white" href="{{ route('challenge_remove', $challenge->id) }}" title="Remove Content"><i class="fa fa-trash nav-icon"></i>Remove</a>
+                                    @endcan
+                                @endif
+                                @can('manage copyright')
+                                    @if($challenge->copyright_infringed_at === null)
+                                        <a class="dropdown-item text-white" href="{{ route('challenge_copyright_set', $challenge->id) }}" title="Mark Copyright Infringement"><i class="fa fa-copyright nav-icon"></i>Claim Copyright</a>
+                                    @else
+                                        <a class="dropdown-item text-white" href="{{ route('challenge_copyright_remove', $challenge->id) }}" title="Clear Copyright Infringement"><i class="fa fa-copyright nav-icon"></i>Clear Copyright</a>
+                                    @endif
+                                @endcan
+                            </div>
+                        @endif
                     @endif
                 </div>
             </div>
