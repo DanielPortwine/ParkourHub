@@ -102,76 +102,78 @@
                 </div>
                 <a class="btn btn-link" id="description-more">More</a>
             </div>
-            <div class="row py-3">
-                <div class="col">
-                    @if(empty($userAttendance) && ($event->accept_method === 'none' || $event->user_id === Auth()->id()))
-                        <form method="POST" action="{{ route('event_attendee_store', $event->id) }}" enctype="multipart/form-data">
-                            @csrf
-                            <input type="hidden" name="event" value="{{ $event->id }}">
-                            <input type="hidden" name="user" value="{{ Auth()->id() }}">
-                            <input type="hidden" name="accepted" value="true">
-                            <button type="submit" class="btn btn-green">Attend</button>
-                        </form>
-                    @elseif(empty($userAttendance) && $event->accept_method === 'accept')
-                        <div class="card @error('apply_comment') border-danger @enderror ">
-                            <div class="card-header bg-green sedgwick card-hidden-body">
-                                <div class="row">
-                                    <div class="col">
-                                        Apply To Attend
-                                    </div>
-                                    <div class="col-auto">
-                                        <i class="fa fa-caret-down"></i>
+            @auth
+                <div class="row py-3">
+                    <div class="col">
+                        @if(empty($userAttendance) && ($event->accept_method === 'none' || $event->user_id === Auth()->id()))
+                            <form method="POST" action="{{ route('event_attendee_store', $event->id) }}" enctype="multipart/form-data">
+                                @csrf
+                                <input type="hidden" name="event" value="{{ $event->id }}">
+                                <input type="hidden" name="user" value="{{ Auth()->id() }}">
+                                <input type="hidden" name="accepted" value="true">
+                                <button type="submit" class="btn btn-green">Attend</button>
+                            </form>
+                        @elseif(empty($userAttendance) && $event->accept_method === 'accept')
+                            <div class="card @error('apply_comment') border-danger @enderror ">
+                                <div class="card-header bg-green sedgwick card-hidden-body">
+                                    <div class="row">
+                                        <div class="col">
+                                            Apply To Attend
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fa fa-caret-down"></i>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="card-body bg-grey text-white">
-                                <form method="POST" action="{{ route('event_attendee_store') }}" enctype="multipart/form-data">
-                                    @csrf
-                                    <input type="hidden" name="event" value="{{ $event->id }}">
-                                    <input type="hidden" name="user" value="{{ Auth()->id() }}">
-                                    <div class="form-group row">
-                                        <label for="comment" class="col-md-2 col-form-label text-md-right">Comment</label>
-                                        <div class="col-md-8">
-                                            <textarea id="comment" class="form-control @error('comment') is-invalid @enderror" name="comment" maxlength="255">{{ old('comment') }}</textarea>
-                                            @error('comment')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                            @enderror
-                                            <small>Briefly explain why you want to attend this event.</small>
+                                <div class="card-body bg-grey text-white">
+                                    <form method="POST" action="{{ route('event_attendee_store') }}" enctype="multipart/form-data">
+                                        @csrf
+                                        <input type="hidden" name="event" value="{{ $event->id }}">
+                                        <input type="hidden" name="user" value="{{ Auth()->id() }}">
+                                        <div class="form-group row">
+                                            <label for="comment" class="col-md-2 col-form-label text-md-right">Comment</label>
+                                            <div class="col-md-8">
+                                                <textarea id="comment" class="form-control @error('comment') is-invalid @enderror" name="comment" maxlength="255">{{ old('comment') }}</textarea>
+                                                @error('comment')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                                @enderror
+                                                <small>Briefly explain why you want to attend this event.</small>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <div class="col-md-8 offset-md-2">
-                                            <button type="submit" class="btn btn-green">Submit</button>
+                                        <div class="form-group row">
+                                            <div class="col-md-8 offset-md-2">
+                                                <button type="submit" class="btn btn-green">Submit</button>
+                                            </div>
                                         </div>
-                                    </div>
-                                </form>
+                                    </form>
+                                </div>
                             </div>
-                        </div>
-                    @elseif(empty($userAttendance) && $event->accept_method === 'invite')
-                        You have not been invited to this event.
-                    @elseif(!empty($userAttendance) && $userAttendance->pivot->accepted == false && $event->accept_method === 'invite')
-                        <form method="POST" action="{{ route('event_attendee_update', $event->id) }}" enctype="multipart/form-data">
-                            @csrf
-                            <input type="hidden" name="user" value="{{ Auth()->id() }}">
-                            <input type="hidden" name="accepted" value="true">
-                            <button type="submit" class="btn btn-green">Accept Invite</button>
-                        </form>
-                    @elseif(!empty($userAttendance) && $userAttendance->pivot->accepted == false && $event->accept_method === 'accept')
-                        Your request to attend is under review.
-                    @elseif(!empty($userAttendance) && $userAttendance->pivot->accepted == true && $event->accept_method === 'invite' && $event->user_id !== Auth()->id())
-                        <form method="POST" action="{{ route('event_attendee_update', $event->id) }}" enctype="multipart/form-data">
-                            @csrf
-                            <input type="hidden" name="user" value="{{ Auth()->id() }}">
-                            <input type="hidden" name="accepted" value="false">
-                            <button type="submit" class="btn btn-danger">Cancel Attendance</button>
-                        </form>
-                    @else
-                        <a href="{{ route('event_attendee_delete', ['event' => $event->id, 'user' => Auth()->id()]) }}" class="btn btn-danger">Cancel Attendance</a>
-                    @endif
+                        @elseif(empty($userAttendance) && $event->accept_method === 'invite')
+                            You have not been invited to this event.
+                        @elseif(!empty($userAttendance) && $userAttendance->pivot->accepted == false && $event->accept_method === 'invite')
+                            <form method="POST" action="{{ route('event_attendee_update', $event->id) }}" enctype="multipart/form-data">
+                                @csrf
+                                <input type="hidden" name="user" value="{{ Auth()->id() }}">
+                                <input type="hidden" name="accepted" value="true">
+                                <button type="submit" class="btn btn-green">Accept Invite</button>
+                            </form>
+                        @elseif(!empty($userAttendance) && $userAttendance->pivot->accepted == false && $event->accept_method === 'accept')
+                            Your request to attend is under review.
+                        @elseif(!empty($userAttendance) && $userAttendance->pivot->accepted == true && $event->accept_method === 'invite' && $event->user_id !== Auth()->id())
+                            <form method="POST" action="{{ route('event_attendee_update', $event->id) }}" enctype="multipart/form-data">
+                                @csrf
+                                <input type="hidden" name="user" value="{{ Auth()->id() }}">
+                                <input type="hidden" name="accepted" value="false">
+                                <button type="submit" class="btn btn-danger">Cancel Attendance</button>
+                            </form>
+                        @else
+                            <a href="{{ route('event_attendee_delete', ['event' => $event->id, 'user' => Auth()->id()]) }}" class="btn btn-danger">Cancel Attendance</a>
+                        @endif
+                    </div>
                 </div>
-            </div>
+            @endauth
         </div>
     </div>
     <div class="section">

@@ -209,8 +209,6 @@
                                     </div>
                                 </div>
                             </div>
-                        @elseif($challenge->deleted_at === null)
-                            <a class="btn-link" href="/login">Login</a> or <a class="btn-link" href="/register">Register</a> to enter.
                         @endif
                         {{ $entries->links() }}
                         @foreach($entries->chunk(2) as $chunk)
@@ -223,7 +221,7 @@
                             </div>
                         @endforeach
                         @if (count($challenge->entries) === 0)
-                            <p>This challenge has no entries yet.@auth Create one by clicking 'Enter Challenge' above.@endauth </p>
+                            <p>This challenge has no entries yet.@auth Create one by clicking 'Enter Challenge' above.@else <a class="btn-link" href="/login">Login</a> or <a class="btn-link" href="/register">Register</a> to create one. @endauth </p>
                         @endif
                         {{ $entries->links() }}
                     </div>
