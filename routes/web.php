@@ -32,7 +32,7 @@ Route::get('/newsletter-confirmation', function() {
 
 Route::get('users', 'UserController@listing')->middleware(['verified', 'notBanned'])->name('user_listing');
 Route::prefix('user')->middleware(['verified', 'notBanned'])->group(function() {
-    Route::get('/view/{id}/{tab?}', 'UserController@view')->withoutMiddleware('verified')->name('user_view');
+    Route::get('/view/{id}/{tab?}', 'UserController@view')->withoutMiddleware(['verified', 'notBanned'])->name('user_view');
     Route::get('/manage', 'UserController@manage')->withoutMiddleware(['verified', 'notBanned'])->middleware('auth')->name('user_manage');
     Route::post('/manage', 'UserController@update')->withoutMiddleware(['verified', 'notBanned'])->middleware('auth')->name('user_update');
     Route::get('/reset_password', 'UserController@resetPassword')->withoutMiddleware(['verified', 'notBanned'])->middleware('auth')->name('user_reset_password');
