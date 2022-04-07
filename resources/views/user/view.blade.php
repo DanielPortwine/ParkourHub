@@ -4,7 +4,7 @@
 
 @section('description')View user '{{ $user->name }}' on Parkour Hub.@endsection
 @section('twitter-card-type'){{ 'summary_large_image' }}@endsection
-@section('meta-media-content'){{ url($user->profile_image) }}@endsection
+@section('meta-media-content'){{ !empty($user->profile_image) ? url($user->profile_image) : '' }}@endsection
 
 @section('content')
     @if (!empty(session('status')))
