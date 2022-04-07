@@ -417,9 +417,11 @@
             </div>
         @endforeach
         {{ $content->links() }}
-        @if(!empty($create) && $create)
-            <a class="btn btn-green z-10" style="position:absolute;top:1rem;left:1rem" href="{{ route($component . '_create') }}" title="Create New {{ ucfirst($component) }}"><i class="fa fa-plus"></i></a>
-        @endif
+        @premium
+            @if(!empty($create) && $create)
+                <a class="btn btn-green z-10" style="position:absolute;top:1rem;left:1rem" href="{{ route($component . '_create') }}" title="Create New {{ ucfirst($component) }}"><i class="fa fa-plus"></i></a>
+            @endif
+        @endpremium
     </div>
 @endsection
 
