@@ -151,7 +151,17 @@
             <div class="row mb-3">
                 <div class="col">
                     <div class="card">
-                        <div class="card-header bg-green sedgwick @if(empty($_GET) || (count($_GET) === 1 && isset($_GET['search'])) || (count($_GET) === 1 && isset($_GET['personal'])))card-hidden-body @endif">
+                        <div class="card-header bg-green sedgwick @if(
+                                empty($_GET) ||
+                                (count($_GET) === 1 && isset($_GET['search'])) ||
+                                (count($_GET) === 1 && isset($_GET['personal'])) ||
+                                (count($_GET) === 1 && isset($_GET['page'])) ||
+                                (count($_GET) === 2 && isset($_GET['search']) && isset($_GET['page'])) ||
+                                (count($_GET) === 2 && isset($_GET['personal']) && isset($_GET['page'])) ||
+                                (count($_GET) === 3 && isset($_GET['search']) && isset($_GET['personal']) && isset($_GET['page']))
+                            )
+                            card-hidden-body
+                        @endif">
                             <div class="row">
                                 <div class="col">
                                     Filters
