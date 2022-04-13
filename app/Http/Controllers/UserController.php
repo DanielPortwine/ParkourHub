@@ -10,6 +10,7 @@ use App\Models\Follower;
 use App\Http\Requests\Subscribe;
 use App\Http\Requests\UpdateUser;
 use App\Models\Movement;
+use App\Models\MovementType;
 use App\Models\Workout;
 use App\Notifications\UserFollowed;
 use App\Notifications\UserFollowRequested;
@@ -369,11 +370,14 @@ class UserController extends Controller
             ->paginate(20)
             ->appends(request()->query());
 
+        $moves = MovementType::with('movements')->where('name', 'Move')->first()->movements;
+
         return view('content_listings', [
             'title' => 'Your Hitlist',
             'content' => $spots,
             'component' => 'spot',
             'hitlist' => true,
+            'moves' => $moves,
         ]);
     }
 
