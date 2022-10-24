@@ -93,7 +93,7 @@
             </div>
             <div class="row py-2 border-subtle">
                 <div class="col">
-                    <span>{{ Carbon\Carbon::parse($event->date_time)->diffForHumans(['options' => Carbon\Carbon::ONE_DAY_WORDS]) }} | {{ count($event->spots) . (count($event->spots) === 1 ? ' spot' : ' spots') }} | {{ count($event->attendees) . (count($event->attendees) === 1 ? ' attendee' : ' attendees') }}</span>
+                    <span>{{ Carbon\Carbon::parse($event->date_time)->diffForHumans(['options' => Carbon\Carbon::ONE_DAY_WORDS]) }} | {{ count($event->spots) . (count($event->spots) === 1 ? ' spot' : ' spots') }} | {{ $attendeesCount . ($attendeesCount === 1 ? ' attendee' : ' attendees') }}</span>
                 </div>
             </div>
             <div class="py-3 border-subtle">
